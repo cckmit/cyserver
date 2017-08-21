@@ -1,0 +1,209 @@
+
+    <style>
+        /* 设置文字显示多少行 */
+        .H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            word-wrap: break-word;
+            white-space: normal !important;
+            -webkit-box-orient: vertical; }
+
+        .H-text-show-row-1 {
+            line-clamp: 1;
+            -webkit-line-clamp: 1; }
+
+        .H-text-show-row-2 {
+            line-clamp: 2;
+            -webkit-line-clamp: 2; }
+
+        .H-text-show-row-3 {
+            line-clamp: 3;
+            -webkit-line-clamp: 3; }
+
+        .H-text-show-row-4 {
+            line-clamp: 4;
+            -webkit-line-clamp: 4; }
+
+        .H-text-show-row-5 {
+            line-clamp: 5;
+            -webkit-line-clamp: 5; }
+
+        .H-text-show-row-6 {
+            line-clamp: 6;
+            -webkit-line-clamp: 6; }
+
+
+
+
+        .bg{
+            height: 100%;
+            width:100%;
+            background-color:#f2f2f2;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        /*list*/
+        .resume_list{
+            flex:1;
+        }
+        .resume_item{
+
+        }
+        .item_1{
+            display: flex;
+            justify-content: center;
+            background-color:#fff;
+            padding:0.2rem;
+            margin-bottom:0.02rem;
+
+        }
+        .item_1 .item_l{
+            width:1.6rem;
+            height:1.6rem;
+
+            margin-right: 0.2rem;
+        }
+        .item_1 .item_m{
+            flex:1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            /*align-items: center;*/
+        }
+        .item_1 .item_m .row1{
+            font-size: 0.3rem;
+            line-height: 2;
+            color:#333;
+        }
+        .item_1 .item_m .row2{
+            font-size: 0.26rem;
+            line-height: 2;
+            color:#576B95;
+        }
+        .item_1 .item_m .row3{
+            font-size: 0.24rem;
+            color:#555;
+            line-height: 2;
+        }
+
+        .item_1 .item_r .row1{
+            font-size: 0.3rem;
+            line-height: 2;
+            color:#F15B4B;
+        }
+        .item_1 .item_r .row2{
+            font-size: 0.26rem;
+            line-height: 2;
+            color:#888;
+            text-align: right;
+        }
+        .item_1 .item_r .row3{
+            font-size: 0.26rem;
+            line-height: 2;
+            color:#0F88EB;
+        }
+
+        .list_null{
+            width:100%;
+            height:100%;
+            text-align: center;
+
+        }
+        .list_null img{
+            margin-top:2rem;
+            margin-bottom: 1rem;
+        }
+        .list_null .tip{
+            font-size: 0.28rem;
+            line-height: 2;
+            color:#888;
+        }
+    </style>
+
+<div class="bg">
+
+
+    <div class="resume_list">
+        <div class="resume_item">
+            <div class="item_1">
+                <div class="item_l">
+                    <img style="width:100%; height: 100%; " src="img/avatar.png"/>
+                </div>
+                <div class="item_m">
+                    <div class="row1 name">急聘2017届管理实习生</div>
+                    <div class="row2 firm">武汉金森医药科技有限公司</div>
+                    <div class="row3 require H-text-show-row-1">
+                        <span class="city">武汉</span>
+                        <span>-</span>
+                        <span class="area">武昌区</span>
+                        <span>／</span>
+                        <span class="epx">经验不限</span>
+                        <span>／</span>
+                        <span class="aca">本科</span>
+                    </div>
+                </div>
+                <div class="item_r">
+                    <div class="row1 sal">
+                        <span class="min_sal">2k</span>
+                        <span>-</span>
+                        <span class="max_sal">3k</span>
+                    </div>
+                    <div class="row2">刚刚</div>
+                    <div class="row3">[被查看]</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="resume_item">
+            <div class="item_1">
+                <div class="item_l">
+                    <img style="width:100%; height: 100%; " src="img/avatar.png"/>
+                </div>
+                <div class="item_m">
+                    <div class="row1 name">急聘2017届管理实习生</div>
+                    <div class="row2 firm">武汉金森医药科技有限公司</div>
+                    <div class="row3 require H-text-show-row-1">
+                        <span class="city">武汉</span>
+                        <span>-</span>
+                        <span class="area">武昌区</span>
+                        <span>／</span>
+                        <span class="epx">经验不限</span>
+                        <span>／</span>
+                        <span class="aca">本科</span>
+                    </div>
+                </div>
+                <div class="item_r">
+                    <div class="row1 sal">
+                        <span class="min_sal">2k</span>
+                        <span>-</span>
+                        <span class="max_sal">3k</span>
+                    </div>
+                    <div class="row2">刚刚</div>
+                    <div class="row3">[被查看]</div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+    <!--职位收藏为空-->
+    <div class="list_null" ng-if="">
+
+        <img style=" width:3.56rem; height:3.56rem; " src="img/none.png"/>
+
+        <div class="tip">您还没收藏职位呢！</div>
+    </div>
+
+
+
+
+</div>

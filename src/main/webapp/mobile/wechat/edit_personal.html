@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title></title>
+
+    <!--css-->
+    <link href="static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+
+        .submit_btn{
+            font-size: 14px;
+            outline:none;
+            padding:5px;
+            background-color:#3498db;
+            color:#fff;
+            border:1px solid #3498db;
+            min-width: 80px;
+
+        }
+
+        /*update by jl - yanzhangma*/
+        .code_box{
+            position:relative;
+            width:100%;
+        }
+        .validate_code {
+            font-size: 1.2rem;
+            position: absolute;
+            right: 10px;
+            top:6px;
+            border-radius: 5px;
+            padding: 2px 5px;
+            height: 20px;
+            line-height: 20px;
+            margin-top: 5px;
+            word-break: keep-all;
+        }
+
+        .disabled_button {
+            border: 1px solid dimgrey;color: dimgrey;
+        }
+        .active_button {
+            border: 1px solid #3498db;color: #3498db;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<div class="edit_box H-theme-background-color-eb">
+
+    <div class="btn_box H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-padding-horizontal-right-10" style="border-bottom:1px solid #ebebeb">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12"><div class="edit_obj"></div></div>
+
+       <!-- <button id="submitBtn"  name=""  onclick="saveDate()" class="submit_btn H-flex-item H-button">保&nbsp;&nbsp;存</button>-->
+
+        <!--邮箱绑定-->
+       <!-- <button id="bindEmail"  name=""  class="H-flex-item H-button H-font-size-14 H-outline-none H-padding-vertical-both-5 H-padding-horizontal-both-5
+        H-theme-background-color1 H-theme-font-color-white H-theme-border-color1
+        H-theme-border-color1-click H-theme-background-color1-click H-theme-font-color1-click" style="min-width: 80px;">绑&nbsp;&nbsp;定</button>-->
+    </div>
+
+
+    <!--输入框-->
+    <div class="text_box">
+      <!--  <input id="editObj" type="text" value="" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14
+        H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border">-->
+    </div>
+
+    <!--password-->
+    <div class="pwd_box" style="display:none;">
+
+        <input id="phone" name="phone" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14
+        H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border" placeholder="手机号码"/>
+
+        <div class="code_box">
+            <input id="code" name="code" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14
+        H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border" placeholder="验证码"/>
+            <a href="javascript:;" id="getCode" class="validate_code active_button">获取验证码</a>
+        </div>
+
+        <input id="editPwd" type="password" value="" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14
+        H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border" placeholder="请输入新密码">
+
+        <input id="editPwd2" type="password" value="" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14
+        H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border" placeholder="请再次输入密码">
+
+
+    </div>
+
+    <!--对于日期, 可以选择日期,不能输入-->
+    <div class="date_box H-flexbox-horizontal H-margin-vertical-bottom-10 bottom_border">
+       <!-- <input id="editDate" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12"
+               readonly="readonly" tapmode="" onclick="H.dateTip(this, function (date) {  }, function (date) {  });">
+        <span class="H-icon H-vertical-middle H-padding-horizontal-right-10 H-theme-background-color-white">
+        <i class="H-iconfont H-icon-time H-font-size-16 H-vertical-middle H-theme-font-color-999"></i>
+        </span>-->
+    </div>
+
+    <!--对于性别,进行选择-->
+    <div class="sex_box">
+        <!--<div tap="" onclick="selectSex(this)" class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">男</div>
+            <span class="chk_part H-icon H-padding-horizontal-right-5 H-display-block">
+            <i class="male_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle "></i>
+            </span>
+        </div>
+
+        <div tap="" onclick="selectSex(this)" class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">女</div>
+            <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                <i class="female_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle"></i>
+            </span>
+        </div>-->
+    </div>
+
+</div>
+
+
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="static/js/lrz.mobile.min.js"></script>
+<script src="static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+<script>
+    // 接收参数
+    var objStr = B.getUrlParamByName("obj") ;
+    var flag = B.getUrlParamByName("flag");
+    var urlName = B.getUrlParamByName("urlName");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("edit_personal.html?ts=" + B.getRandomInt(4)) + "&objStr=" + objStr + "&flag=" + flag + "&urlName=" + urlName;
+                    H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '編輯個人',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        $("title").html("编辑"+urlName);//修改title值
+        $(".edit_obj").html("编辑"+urlName);//修改title值
+
+        //初始化 编辑项
+        if(flag==3) {
+            var btnStr = '<button id="submitBtn" class="submit_btn H-flex-item H-button">保&nbsp;&nbsp;存</button>';
+            $('.btn_box').append(btnStr);
+            //日期
+            var dateStr =
+                    '<input id="editDate" type="text" ' +
+                    'class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" ' +
+                    'readonly="readonly" tapmode="" onclick="H.dateTip(this, function (date) {  }, function (date) {  });">'+
+                    '<span class="H-icon H-vertical-middle H-padding-horizontal-right-10 H-theme-background-color-white">'+
+                    '<i class="H-iconfont H-icon-time H-font-size-16 H-vertical-middle H-theme-font-color-999"></i>'+
+                    '</span>';
+
+            $(".date_box").append(dateStr);
+
+            $("#editDate").val(objStr);//初始化
+
+        }
+        else if(flag==9) {
+            var btnStr = '<button id="submitBtn" class="submit_btn H-flex-item H-button">保&nbsp;&nbsp;存</button>';
+            $('.btn_box').append(btnStr);
+            //性别
+            //添加"性别"dom节点
+            var sexStr =
+                    '<div tap="" onclick="selectSex(this)" ' +
+                    'class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">'+
+                    '<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">男</div>'+
+                    '<span class="chk_part H-icon H-padding-horizontal-right-5 H-display-block">'+
+                    '<i class="male_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle "></i>'+
+                    '</span>'+
+                    '</div>'+
+                    '<div tap="" onclick="selectSex(this)" ' +
+                    'class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">'+
+                    '<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">女</div>'+
+                    '<span class="H-icon H-padding-horizontal-right-5 H-display-block">'+
+                    ' <i class="female_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle"></i>'+
+                    '</span>'+
+                    '</div>';
+
+            $(".sex_box").append(sexStr);
+
+
+            //根据URL传递的 obj(1或者0),显示不同的选择Icon
+            if(objStr==0) {
+                $(".female_checked").addClass("H-theme-font-color16");
+                $(".male_checked").addClass("H-display-none-important");
+            }else if(objStr==1) {
+                $(".male_checked").addClass("H-theme-font-color16");
+                $(".female_checked").addClass("H-display-none-important");
+
+            }
+
+        }
+        else if(flag == 8){
+            //编辑密码
+            var btnStr = '<button id="savePwdBtn" class="submit_btn H-flex-item H-button">保&nbsp;&nbsp;存</button>';
+            $('.btn_box').append(btnStr);
+
+            $(".pwd_box").show();
+
+
+           /* $(".pwd_box").append('<input id="editPwd" type="password" placeholder="请输入新密码" value="" ' +
+                    'class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14 H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border">');
+*/
+
+            //提示密码格式
+            $(".pwd_box").append('<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-12 H-padding-vertical-both-12 H-theme-font-color-red">' +
+                    '只能输入6-20个字母、数字、下划线</div>');
+            if(objStr != "绑定邮箱"){
+                $("#editPwd").val(objStr);
+            }
+
+
+            //test
+            //点击"获取验证码"
+            if(!($('#getCode').hasClass('disabled_button'))){
+                $('#getCode').click(function(){
+                    //先判断是否有输入电话
+                    var phoneVar = $('#phone').val();
+                    if(!phoneVar || phoneVar ==''){
+                        H.alert('请先输入手机号码');
+                        return false;
+                    }
+//                  console.log(phoneVar);
+                    //60s倒计时
+                    countDown($("#getCode"));
+
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "3","content": {"phoneNum": "' + phoneVar + '","secretKey": "getRegisterCode123"}}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                            if (data && data.success) {
+                                H.alert(data.msg);
+                            }
+                            else{
+                                H.alert(data.msg);
+
+                                $("#getCode").removeAttr("disabled");
+                                $("#getCode").addClass("active_button");
+                                $("#getCode").removeClass("disabled_button");
+                            }
+                        }
+                    });
+
+                })
+            }
+
+            $('#savePwdBtn').click(function () {
+                if(chkPwd()){
+                    savePwd();
+                }
+
+            });
+
+
+        }else if(flag == 5){
+            //编辑邮箱
+            var btnStr = '<button id="submitBtn" class="submit_btn H-flex-item H-button">绑&nbsp;&nbsp;定</button>';
+            $('.btn_box').append(btnStr);
+
+            $(".text_box").append('<input id="editObj" type="text" value="" ' +
+                    'class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14 H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border">');
+            if(objStr != "绑定邮箱"){
+                $("#editObj").val(objStr);
+            }
+
+
+        }
+        else{
+            var btnStr = '<button id="submitBtn" class="submit_btn H-flex-item H-button">保&nbsp;&nbsp;存</button>';
+            $('.btn_box').append(btnStr);
+            //其他文本项目
+            $(".text_box").append('<input id="editObj" type="text" value="" ' +
+                    'class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-14 H-box-sizing-border-box H-border-none H-outline-none H-padding-12 H-width-100-percent bottom_border">');
+
+            $("#editObj").val(objStr);
+
+        }
+
+        $('#submitBtn').click(function () {
+            saveDate();
+        });
+    });
+
+
+    //保存输入信息,提交表单
+    function saveDate() {
+        //1. 从页面上获取新的数据
+        if(flag==3) {
+            //日期
+            var birthdayStr = $("#editDate").val();
+        }
+        var nObj = $("#editObj").val();
+
+        if(nObj==''){
+            nObj=' ';
+        }
+
+        //2. 提交之前, 校验 输入的姓名 的有效性
+        if(flag==1) {
+            // 去掉前后所有空字符
+            nObj = $.trim(nObj);
+            // 验证是否为空字符或空格字符串
+            if(nObj == '') {
+                H.alert("没有输入姓名, 请重新填写");
+                return false;
+            }
+            // 是否包含特殊字符
+            var pattern = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）&;|{}【】‘；：”“'。，、？]");
+            if (nObj.match(pattern)) {
+                H.alert("姓名中不能包含特殊字符, 请重新填写");
+                return false;
+            }
+
+        }else if(flag == 5){
+            // 去掉前后所有空字符
+            nObj = $.trim(nObj);
+
+            if(!nObj){
+                nObj = '';
+            }
+            //验证邮箱的有效性
+            var emailStr = nObj;
+
+           /* var pattern2 = new RegExp("^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$");
+            if(!emailStr.match(pattern2)){
+                H.alert("邮箱输入有误");
+                return false;
+            }*/
+
+        }
+       /* else if(flag == 8){
+            var pwdStr = $("#editPwd").val();
+//            console.log(pwdStr);
+            //验证密码的有效性
+
+            var pattern3 = new RegExp("^(\w){6,20}$");
+            if(pwdStr.match(pattern3)){
+                H.alert("密码输入有误");
+                return false;
+            }
+
+        }*/
+
+
+        //3. 拼写字符串
+        var formData={
+            command: "23",
+            content: {
+                accountNum: accountNum,
+                name:"",
+                sex:"",
+                phoneNum:"",
+                birthday:"",
+                address: "",
+                email: "",
+                hobby: "",
+                workUtil: "",
+                profession: "",
+                position:"",
+                sign:""
+            }
+        };
+
+        if(flag==1) {
+            //姓名
+            formData.content.name = nObj;
+        }else if(flag==2) {
+            //手机号 没有手机号
+            formData.content.phoneNum = nObj;
+        }else if(flag == 3) {
+            //生日: 日期插件
+            formData.content.birthday = birthdayStr;
+        }else if(flag==4){
+            //地址
+            formData.content.address = nObj;
+        }else if(flag==5){
+            //邮箱
+            formData.content.email = emailStr;
+        }else if(flag==6){
+            //工作单位
+            formData.content.workUtil = nObj;
+        }else if(flag ==7){
+            //职业
+            formData.content.profession = nObj;
+        }
+       /* else if(flag ==8){
+            //密码
+            updatePwd(pwdStr);
+        }*/
+
+        //3.提交表单
+        B.ready(function () {
+
+//            console.log(JSON.stringify(formData));
+
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr:JSON.stringify(formData)
+                },
+                dataType: 'json',
+                success: function(data) {
+//                    console.log("确认修改=="+JSON.stringify(data));
+
+                    if(data.success) {
+                        //提交成功后,跳转到 个人信息  personal.html
+                        H.toastTip(null, data.msg, 2000);
+                        history.go(-1);
+                    }else{
+                        H.toastTip(null, data.msg, 2000);
+                    }
+                },
+                error: function(xhr, type) {
+
+                }
+            });
+        })
+
+    }
+
+
+    //daojishi
+    var waitTime = 60;
+    function countDown($item) {
+        if(waitTime==0){
+            //60s到后
+            $item.text("重新获取验证码");
+            $item.removeAttr("disabled");
+            $item.removeClass('disabled_button').addClass('active_button');
+            waitTime=60;
+        }else{
+            $item.attr("disabled","disabled");
+            $item.removeClass('active_button').addClass('disabled_button');
+            setTimeout(function(){
+                countDown($item);
+            },1000);
+            $item.text(waitTime+" 重新获取验证码");
+            waitTime--;
+        }
+
+    }
+
+    //校验输入项
+
+    function chkPwd(){
+
+        if(!$('#phone').val() ||$('#phone').val()=='' ){
+            H.alert('请填写手机号码');
+            return false;
+        }
+        if(!$('#code').val() ||$('#code').val()==''){
+            H.alert('请填写验证码');
+            return false;
+        }
+        //验证密码
+        if(!$('#editPwd').val() ||$('#editPwd').val()==''){
+
+            H.alert('请填写密码');
+            return false;
+        }
+        if(!test($('#editPwd').val())){
+            H.alert("密码必须由6-20个字母数字组合");
+            return false;
+        }
+        if(!$('#editPwd2').val() ||$('#editPwd2').val()==''){
+
+            H.alert('请填写确认密码');
+            return false;
+        }
+        if($('#editPwd').val() != $('#editPwd2').val()){
+
+            H.alert('两次密码不同,请再次确认');
+            return false;
+        }
+        return true;
+    }
+
+    //校验密码有效性
+    function test(pwdStr){
+//        var pattern = new RegExp("^(\w){6,20}$");
+        var pattern = new RegExp("^[A-Za-z0-9]{6,20}$");
+        if(pwdStr.match(pattern)){
+            return true;
+        }
+    }
+    //保存密码
+    function savePwd(){
+
+        //获得表单值
+        var phoneVar = $('#phone').val();
+        var codeVar = $('#code').val();
+        var pwd1 = $('#editPwd').val();
+        var pwd2 = $('#editPwd2').val();
+
+        console.log('{"command":"16","content":{"phoneNum":"' + phoneVar + '","password":"' + pwd1 + '","checkCode":"' + codeVar + '"}}');
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data: {
+                jsonStr:'{"command":"16","content":{"phoneNum":"' + phoneVar + '","password":"' + pwd1 + '","checkCode":"' + codeVar + '"}}'
+            },
+            dataType: 'json',
+            success: function(data) {
+                console.log("pwd=="+JSON.stringify(data));
+
+
+                if(data.success) {
+                    //提交成功后,跳转到 个人信息  personal.html
+                    H.toastTip(null, data.msg, 2000);
+                    history.go(-1);
+                }else{
+                    H.toastTip(null, data.msg, 2000);
+                }
+            },
+            error: function(xhr, type) {
+
+            }
+        });
+    }
+
+
+
+</script>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.inviteSms.dao.InviteSmsMapper">
+    <resultMap id="inviteSmsResultMap" type="com.cy.core.inviteSms.entity.InviteSms">
+        <id column="id" property="id" />
+        <result column="inviterId" property="inviterId" />
+        <result column="inviterName" property="inviterName" />
+        <result column="inviteeId" property="inviteeId" />
+        <result column="inviteeName" property="inviteeName" />
+        <result column="className" property="className" />
+        <result column="inviteeTelephone" property="inviteeTelephone" />
+        <result column="inviteCode" property="inviteCode" />
+    </resultMap>
+
+    <select id="selectByTerAndTee" parameterType="map" resultMap="inviteSmsResultMap">
+        SELECT
+        (SELECT u.user_Id FROM cy_user_info u WHERE u.user_id=#{inviterId}) inviterId,
+        (SELECT u1.user_name from cy_user_info u1 WHERE u1.user_id=#{inviterId}) inviterName,
+        (SELECT d.dept_name FROM cy_dept_info d WHERE d.dept_id=LEFT (#{inviterId}, 16)) className,
+        u2.user_id AS inviteeId,
+        u2.user_name AS inviteeName,
+        u2.tel_id AS inviteeTelephone
+        FROM cy_user_info u2
+        WHERE u2.user_id=#{inviteeId}
+    </select>
+
+    <insert id="saveInviteEvent" parameterType="com.cy.core.inviteSms.entity.InviteSms">
+        INSERT INTO cy_invite_code(
+        id,
+        inviter_id,
+        invitee_id,
+        invitee_telephone,
+        invite_code,
+        create_date,
+        create_by,
+        update_date,
+        update_by,
+        remarks,
+        del_flag
+        )VALUES(
+        #{id},
+        #{inviterId},
+        #{inviteeId},
+        #{inviteeTelephone},
+        #{inviteCode},
+        #{createDate},
+        #{createBy},
+        #{updateDate},
+        #{updateBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <select id="isClassAdmin" parameterType="String" resultType="String">
+        SELECT is_class_admin FROM cy_user_info WHERE user_id=#{inviterId}
+    </select>
+</mapper>

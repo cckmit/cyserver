@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.alumnicard.dao.AlumniCardExtMapper">
+    <resultMap type="com.cy.core.alumnicard.entity.AlumniCardExt" id="alumniCardExtMap">
+        <id column="id" property="id" />
+        <result column="alumni_card_id" property="alumniCardId"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="student_number" property="studentNumber"/>
+        <result column="depart" property="depart"/>
+        <result column="clazz" property="clazz"/>
+        <result column="major" property="major"/>
+        <result column="degree" property="degree"/>
+        <result column="graduation_certificate" property="graduationCertificate"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="sign_card_id" property="signCardId"/>
+    </resultMap>
+    
+    <select id="selectList" parameterType="string" resultMap="alumniCardExtMap">
+        SELECT cace.* FROM cy_alumni_card_extend cace WHERE cace.alumni_card_id = #{alumniCardId} AND cace.del_flag != '1'
+    </select>
+
+    <select id="selectListForSign" parameterType="string" resultMap="alumniCardExtMap">
+        SELECT cace.* FROM cy_alumni_card_extend cace WHERE cace.sign_card_id = #{signCardId} AND cace.del_flag != '1'
+    </select>
+
+    <insert id="save" parameterType="com.cy.core.alumnicard.entity.AlumniCardExt">
+        INSERT INTO cy_alumni_card_extend(
+        id,
+        alumni_card_id,
+        sign_card_id,
+        start_time,
+        end_time,
+        student_number,
+        depart,
+        clazz,
+        major,
+        degree,
+        graduation_certificate,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )VALUES(
+        #{id},
+        #{alumniCardId},
+        #{signCardId},
+        #{startTime},
+        #{endTime},
+        #{studentNumber},
+        #{depart},
+        #{clazz},
+        #{major},
+        #{degree},
+        #{graduationCertificate},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.alumnicard.entity.AlumniCardExt">
+        UPDATE cy_alumni_card_extend SET
+        alumni_card_id = #{alumniCardId},
+        sign_card_id = #{signCardId},
+        start_time = #{startTime},
+        end_time = #{endTime},
+        student_number = #{studentNumber},
+        depart = #{depart},
+        clazz = #{clazz},
+        major = #{major},
+        degree = #{degree},
+        graduationCertificate = #{graduationCertificate},
+        del_flag = #{delFlag},
+        update_date = #{updateDate},
+        update_by = #{updateBy},
+        create_date = #{createDate},
+        create_by = #{createBy},
+        remarks = #{remarks}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="string">
+        DELETE FROM cy_alumni_card_extend WHERE alumni_card_id=#{alumniCardId}
+    </delete>
+
+    <delete id="deleteForSign" parameterType="string">
+        DELETE FROM cy_alumni_card_extend WHERE sign_card_id=#{signCardId}
+    </delete>
+</mapper>

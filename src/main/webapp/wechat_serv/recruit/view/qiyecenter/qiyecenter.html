@@ -1,0 +1,309 @@
+<style>
+    .qy_box{
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    .top_box{
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+
+        background: #00a5e0 url("img/zanwupic.png");
+        background: #00a5e0;
+        background-size: cover;
+    }
+
+    .qiye_logo{
+        text-align: center;
+
+    }
+    .qiye_logo img{
+        width: 1.16rem;
+        height:1.16rem;
+        margin-top: 10px;
+    }
+    .qiye_mames{
+        margin-top: 15px;
+        padding-bottom: 25px;
+    }
+    .qiye_mames p{
+        margin-top: 5px;
+        font-size: 15px;
+        color: #FFFFFF;
+        line-height: 18px;
+        text-align: center;
+    }
+
+
+    .zx_titles{
+        color: #333333;
+        font-size: 14px;
+        height: 0.9rem;
+        line-height: 0.9rem;
+        padding: 0 10px;
+    }
+    .zx_titles .zx_icon{
+        font-size: 20px;
+        display: inline-block;
+        width: 20px;
+    }
+
+    .qy_jianjie{
+        padding: 8px 10px;
+        background: #fff;
+    }
+    .qy_centers{
+        line-height: 0.5rem;
+        font-size: 13px;
+        text-indent: 26px;
+    }
+    .zhankai{
+        text-align: right;
+        font-size: 13px;
+        color: #0F88EB;
+        line-height: 20px;
+    }
+
+    .tuandui{
+        width: 100%;
+        background: #fff;
+        padding: 10px 0;
+    }
+
+
+
+    #wrapper {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        background: #fff;
+        overflow: hidden;
+    }
+
+    #scroller {
+        position: relative;
+        z-index: 1;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        width: 100%;
+        height: 100%;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        -o-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-text-size-adjust: none;
+        -moz-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        -o-text-size-adjust: none;
+        text-size-adjust: none;
+    }
+
+    #scroller ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        overflow: hidden;
+    }
+
+    #scroller li {
+        display: block;
+        float: left;
+        width: 2.4rem;
+        height: 100%;
+        font-size: 14px;
+        margin-left: 0.2rem;
+    }
+
+    .s_img img{
+        width: 2.4rem;
+        height:2.4rem;
+    }
+    .s_wenzi{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        padding: 7px 5px;
+    }
+
+    .zx_mores{
+        float: right;
+        font-size: 13px;
+        color: #0F88EB;
+        line-height: 0.9rem;
+    }
+    .zxcp_centers{
+        padding: 10px;
+        box-sizing: border-box;
+        background: #fff;
+    }
+    .zx_chanpin{
+        display: flex;
+        margin-bottom: 10px;
+        height:3rem;
+    }
+    .zxcp_pic{
+        width: 3rem;
+        height:3rem;
+    }
+    .zxcp_pic img{
+        width: 100%;
+        height:100%;
+    }
+    .zxcp_wenzi {
+        margin-left: 0.2rem;
+        flex: 1;
+        height: 100%;
+        width: 100%;
+    }
+    .zxcp_wenzi_t{
+        display: table;
+        height: 100%;
+        width: 100%;
+    }
+
+    .zxcp_wenzi_c{
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .zxcp_title{
+        font-size: 15px;
+        color: #333333;
+    }
+    .zxcp_jies{
+        font-size: 13px;
+        color: #888888;
+        line-height: 18px;
+        margin-top: 10px;
+        line-clamp: 6;
+        -webkit-line-clamp: 6;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: box;
+        display: -webkit-box;
+        word-wrap: break-word;
+        white-space: normal !important;
+        -webkit-box-orient: vertical;
+    }
+
+</style>
+
+<div class="qy_box">
+    <div class="top_box">
+        <div class="qiye_logo">
+            <img src="img/zanwupic.png">
+        </div>
+        <div class="qiye_mames">
+            <p>武汉卡巴教育咨询有限公司</p>
+            <p>http://www.kabba.cn/</p>
+        </div>
+    </div>
+
+    <div class="zx_titles">
+        <span class="zx_icon"><i class="fa fa-building"></i></span>
+        <span class="zx_wenzi">企业简介</span>
+    </div>
+    <div class="qy_jianjie">
+        <div class="qy_centers">
+            卡巴Kabba青少儿科技活动中心，旨在为3-16岁青少儿提供科技启蒙教育，培养孩子的创造力。卡巴KABBA以风靡欧美等发达国家的科技启蒙教具为载体，通过"做中学"，即Learning by making，激发孩子们的学习兴趣，想象力、动手能力、组织协调能力等，为孩子们成为创新型人才奠定基础，深受青少儿和家长的好评。
+        </div>
+        <div class="zhankai">
+            <span>展开</span>
+        </div>
+    </div>
+
+    <div class="zx_titles">
+        <span class="zx_icon"><i class="fa fa-users"></i></span>
+        <span class="zx_wenzi">团队风采</span>
+    </div>
+    <div class="tuandui">
+        <div id="wrapper">
+            <div id="scroller">
+                <ul>
+                    <li>
+                        <div class="s_img">
+                            <img src="img/zanwupic.png">
+                        </div>
+                        <div class="s_wenzi">郑虔 董事长郑虔 董事长</div>
+                    </li>
+                    <li>
+                        <div class="s_img">
+                            <img src="img/zanwupic.png">
+                        </div>
+                        <div class="s_wenzi">郑虔 董事长郑虔 董事长</div>
+                    </li>
+                    <li>
+                        <div class="s_img">
+                            <img src="img/zanwupic.png">
+                        </div>
+                        <div class="s_wenzi">郑虔 董事长郑虔 董事长</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="zx_titles">
+        <span class="zx_icon"><i class="fa fa-delicious"></i></span>
+        <span class="zx_wenzi">我们的产品</span>
+        <span class="zx_mores">查看更多</span>
+    </div>
+    <div class="zxcp_centers">
+        <div class="zx_chanpin">
+            <div class="zxcp_pic">
+                <img src="img/zanwupic.png">
+            </div>
+            <div class="zxcp_wenzi">
+                <div class="zxcp_wenzi_t">
+                    <div class="zxcp_wenzi_c">
+                        <div class="zxcp_title">支付宝（第三方支付平台）</div>
+                        <div class="zxcp_jies">开启孩子内心的温情，感知家与社
+                            会的爱，培养爱家庭的观念。感知
+                            并认识亲人朋友间更原始的情感。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zx_chanpin">
+            <div class="zxcp_pic">
+                <img src="img/zanwupic.png">
+            </div>
+            <div class="zxcp_wenzi">
+                <div class="zxcp_wenzi_t">
+                    <div class="zxcp_wenzi_c">
+                        <div class="zxcp_title">支付宝（第三方支付平台）</div>
+                        <div class="zxcp_jies">开启孩子内心的温情开启孩子内心的温情开启孩子内心的温情开启孩子内心的温情开启孩子内心的温情，感知家与社
+                            会的爱，培养爱家庭的观念。感知
+                            并认识亲人朋友间更原始的情感。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="zx_titles">
+        <span class="zx_icon"><i class="fa fa-user-plus"></i></span>
+        <span class="zx_wenzi">加入我们</span>
+        <span class="zx_mores">查看更多</span>
+    </div>
+
+</div>
+
+<script>
+
+    $('#scroller').css("width",$('#scroller li').length*2.6+"rem");
+    var myScroll;
+    myScroll = new IScroll('#wrapper', { scrollX: true, scrollY: false, mouseWheel: true });
+
+
+</script>

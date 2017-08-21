@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.log.dao.LogMapper">
+    <resultMap type="com.cy.core.log.entity.Log" id="logResultMap">
+        <id column="id" property="id" />
+        <result column="type" property="type" />
+        <result column="title" property="title" />
+        <result column="remote_addr" property="remoteAddr" />
+        <result column="user_agent" property="userAgent" />
+        <result column="method" property="method" />
+        <result column="request_uri" property="requestUri" />
+        <result column="params" property="params" />
+        <result column="exception" property="exception" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="userName" property="userName" />
+        <result column="userAccount" property="userAccount" />
+    </resultMap>
+
+    <insert id="saveLog" parameterType="com.cy.core.log.entity.Log">
+        INSERT INTO sys_log(
+          id,
+          `type`,
+          title,
+          remote_addr,
+          user_agent,
+          method,
+          request_uri,
+          params,
+          `exception`,
+          create_by,
+          create_date
+        )VALUES(
+          #{id},
+          #{type},
+          #{title},
+          #{remoteAddr},
+          #{userAgent},
+          #{method},
+          #{requestUri},
+          #{params},
+          #{exception},
+          #{createBy},
+          #{createDate}
+        )
+    </insert>
+
+    <select id="selectLogs" parameterType="map" resultMap="logResultMap">
+        SELECT
+            sl.*,
+            cu.userName ,
+            cu.userAccount
+        FROM
+            sys_log sl
+        LEFT JOIN cy_user cu ON cu.userId = sl.create_by
+        <where>1=1
+            <if test="title != null and title != ''">
+                AND sl.title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="userName != null and userName != ''">
+                AND cu.userName LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                AND cu.userAccount LIKE CONCAT('%',#{userAccount},'%')
+            </if>
+            <if test="type != null and type != ''">
+                AND sl.type = #{type}
+            </if>
+            <if test="method != null and method != ''">
+                AND sl.method = #{method}
+            </if>
+            <if test="beginDate!=null and beginDate!=''">
+                and <![CDATA[sl.create_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and <![CDATA[sl.create_date < #{endDate}]]>
+            </if>
+        </where>
+        ORDER BY sl.create_date DESC limit #{start},#{rows}
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT
+            count(sl.id)
+        FROM
+            sys_log sl
+        LEFT JOIN cy_user cu ON cu.userId = sl.create_by
+        <where>1=1
+            <if test="title != null and title != ''">
+                AND sl.title LIKE CONCAT('%',#{title},'%')
+            </if>
+            <if test="userName != null and userName != ''">
+                AND cu.userName LIKE CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                AND cu.userAccount LIKE CONCAT('%',#{userAccount},'%')
+            </if>
+            <if test="type != null and type != ''">
+                AND sl.type = #{type}
+            </if>
+            <if test="method != null and method != ''">
+                AND sl.method = #{method}
+            </if>
+            <if test="beginDate!=null and beginDate!=''">
+                and <![CDATA[sl.create_date >= #{beginDate}]]>
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and <![CDATA[sl.create_date < #{endDate}]]>
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="logResultMap">
+        SELECT
+            sl.*,
+            cu.userName ,
+            cu.userAccount
+        FROM
+            sys_log sl
+        LEFT JOIN cy_user cu ON cu.userId = sl.create_by
+        WHERE id=#{id}
+    </select>
+
+    <delete id="delete" parameterType="list">
+        DELETE FROM sys_log WHERE id IN
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+</mapper>

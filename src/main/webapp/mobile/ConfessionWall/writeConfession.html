@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表白墙</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+</head>
+<link rel="stylesheet" href="css/common.css" type="text/css">
+<link rel="stylesheet" href="css/writeConfession.css">
+<body>
+    <div class="live-int absolute dis-n"></div>
+    <main>
+        <textarea placeholder="说你想说，爱你所爱..."></textarea>
+        <ul class="img-list">
+            <li class="list-li">
+                <input type="file" id="picNative" name="picNative" onchange="getPicUrl(this);" style="display: none;"/>
+                <div class="f-r img-add" onclick="selectPic()">
+                    <img id="picPreview" name="picPreview" src="image/add.png" />
+                </div>
+            </li>
+            <li class="f-l limitImg">仅限3张</li>
+        </ul>
+        <div class="live-tit">
+            <span>To&nbsp;&nbsp;&nbsp;&nbsp;:</span>
+            <input type="text" name="" placeholder="他(她)的名字" />
+        </div>
+        <div class="live-tit">
+            <span>From:</span>
+            <input type="text" name="" placeholder="你的名字(不输入则为匿名)" />
+        </div>
+        <div class="sub">发&nbsp;&nbsp;&nbsp;布</div>
+    </main>
+
+</body>
+</html>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/lrz.mobile.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script>
+
+    /*选取本地图片*/
+    var accountNum = B.getUrlParamByName("accountNum");
+    var accountNum1=accountNum.toString();
+    var ImgArr=[];
+    var ImgName=[];
+    var totalImgNameObj=[];
+    function selectPic() {
+        $("#picNative").trigger("click");
+    }
+    function getPicUrl(obj) {
+        // 验证上传图片
+        var fileExt = document.getElementById('picNative').value;
+        var fileName = "";
+        if (fileExt != null && fileExt != ''){
+            fileName = fileExt.substring(0, fileExt.lastIndexOf("."));
+            fileName = fileName.substr(fileName.lastIndexOf("\\") + 1, fileName.length);
+            fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+            /*  photoSrc2=fileName+fileExt;*/
+            if (fileExt == null || fileExt == '') {
+                $('.live-int').html('上传失败！');
+                $('.live-int').fadeIn(200);
+                $('.live-int').fadeOut(2000);
+                return;
+            }
+            fileExt = fileExt.toLowerCase();
+            if (fileExt == '.gif' || fileExt == '.jpg' || fileExt == '.png' || fileExt == '.bmp' || fileExt == '.jpeg') {} else {
+                $('.live-int').html('上传失败！');
+                $('.live-int').fadeIn(200);
+                $('.live-int').fadeOut(2000);
+                return;
+            }
+        }
+
+        // 图片压缩
+        lrz(obj.files[0], {
+            width: 400,
+            quality: 0.8,
+            done: function(results) {
+                // 预览选择的图片
+                var li = $('<li></li>');
+                li.addClass('list-li1');
+                var img = $("<img src=''/>");
+                img.attr({"src":results.base64});
+                li.append(img);
+                $(".list-li").before(li);
+                ImgArr.push(results.base64.substring(results.base64.lastIndexOf(",") + 1));
+                ImgName.push(fileName+fileExt);
+
+            if(ImgArr.length==3){
+                $(".list-li").hide()
+            }
+                console.log(ImgArr.length);
+                var base = Math.ceil((ImgArr.length+1)/4);
+                if(base==1){
+                    $("ul").css('height',base*6.5+"rem")
+                }else{
+                    $("ul").css('height',base*7+"rem")
+                }
+
+                console.log(ImgArr);
+                console.log(ImgName);
+                var uploadImgParam = {
+                    uploadFileBase64:results.base64.substring(results.base64.lastIndexOf(",") + 1),
+                    uploadFileName:fileName + fileExt,
+                    jsonStr:'{"command": "1","content": {"accountNum": "'+accountNum+'","type": "1"}}'
+                };
+
+                // 上传图片到服务器，返回图片在服务器的完整地址
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:uploadImgParam,
+                    dataType: 'json',
+                    success: function(data){
+                        // 将图片地址保存于隐藏域
+                        console.log(data);
+                        //console.log(data.obj.substr(data.obj.indexOf('file')-1,data.obj.length));
+                        totalImgNameObj.push({'pic':data.obj.substr(data.obj.indexOf('file')-1,data.obj.length)});
+                    },
+                    error: function(xhr, type){
+                        // 保存失败
+                    }
+                });
+            }
+        });
+    }
+
+    var subFlag=true;
+    $(".sub").click(function(){
+        if(subFlag==true){
+        var val1=$('textArea').val().trim();
+        var val2=$('input').eq(1).val().trim();
+        var val3=$('input').eq(2).val().trim()==''?'匿名':$('input').eq(2).val().trim();
+        var formData = {
+            command: "790",
+            content: {
+                expressTo: val2,
+                expressFrom: val3,
+                expressContent:val1,
+                cyExpressPicList:totalImgNameObj,
+                accountNum:accountNum1
+            }
+        };
+        console.log(JSON.stringify(formData));
+
+        if(val2.length>=10||val3.length>=10){
+            $('.live-int').html('名字长度不得超过10个字');
+            $('.live-int').fadeIn(200);
+            $('.live-int').fadeOut(2000);
+        }
+        else if(val1==''||val2==''||val3==''){
+            $('.live-int').html('请填写完整！');
+            $('.live-int').fadeIn(200);
+            $('.live-int').fadeOut(2000);
+        }else{
+            $.ajax({
+                type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:JSON.stringify(formData)
+                },
+                dataType:'json',
+                success:function(data){
+                    console.log(data);
+                    subFlag=false
+                    $(".live-int").html("发布成功");
+                    $(".live-int").show(200);
+                    $(".live-int").hide(1500);
+                    setTimeout(function () {
+                       window.location.href='ConfessionWall.html?accountNum='+accountNum;
+                    },3000)
+                },
+                error: function(xhr, type) {
+                    console.log('Ajax error!');
+                    // 即使加载出错，也得重置
+                }
+            });
+        }
+        }
+    })
+
+    var jsonStr = {
+        "title":"表白墙",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+
+    }
+    function fallback() {
+        window.history.back()
+    }
+
+
+
+</script>

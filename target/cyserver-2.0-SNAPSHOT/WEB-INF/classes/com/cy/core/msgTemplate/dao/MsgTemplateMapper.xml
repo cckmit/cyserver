@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.msgTemplate.dao.MsgTemplateMapper">
+	<insert id="save" parameterType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		insert into
+		cy_msg_template(msgTemplateTitle,msgTemplateContent,msgTemplateParamNumber,msgTemplateStatus)
+		values(#{msgTemplateTitle},#{msgTemplateContent},#{msgTemplateParamNumber},#{msgTemplateStatus})
+	</insert>
+	<update id="update" parameterType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		update cy_msg_template set
+		msgTemplateTitle=#{msgTemplateTitle},
+		msgTemplateContent=#{msgTemplateContent},
+		msgTemplateParamNumber=#{msgTemplateParamNumber},
+		msgTemplateStatus=#{msgTemplateStatus}
+		where msgTemplateId=#{msgTemplateId}
+	</update>
+	<delete id="delete" parameterType="list">
+		delete from cy_msg_template where msgTemplateId in
+		<foreach collection="list" open="(" separator="," close=")"
+			item="ids">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="selectAll" resultType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		select * from
+		cy_msg_template
+	</select>
+	<select id="findList" parameterType="map"
+		resultType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		select * from cy_msg_template
+		<where>
+			<if test="msgTemplateTitle!=null and msgTemplateTitle!=''">
+				msgTemplateTitle like
+				concat('%',#{msgTemplateTitle},'%')
+			</if>
+		</where>
+		order by msgTemplateId
+	</select>
+	<select id="selectList" parameterType="map"
+		resultType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		select * from cy_msg_template
+		<where>
+			<if test="msgTemplateTitle!=null and msgTemplateTitle!=''">
+				msgTemplateTitle like
+				concat('%',#{msgTemplateTitle},'%')
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+	<select id="count" resultType="long">
+		select count(msgTemplateId) from cy_msg_template
+		<where>
+			<if test="msgTemplateTitle!=null and msgTemplateTitle!=''">
+				msgTemplateTitle like
+				concat('%',#{msgTemplateTitle},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectByTitle" parameterType="com.cy.core.msgTemplate.entity.MsgTemplate" resultType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		select * from cy_msg_template 
+		<where>
+			<if test="msgTemplateTitle!=null and msgTemplateTitle!=''">
+				msgTemplateTitle=#{msgTemplateTitle}
+			</if>
+			<if test="msgTemplateId!=0">
+				and msgTemplateId!=#{msgTemplateId}
+			</if>
+		</where>
+	</select>
+	<select id="selectById" parameterType="long" resultType="com.cy.core.msgTemplate.entity.MsgTemplate">
+		select * from cy_msg_template where msgTemplateId=#{msgTemplateId}
+	</select>
+</mapper>

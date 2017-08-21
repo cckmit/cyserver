@@ -1,0 +1,26 @@
+<div class="main_box">
+    <header>
+        <div class="headers" ng-controller="indexCtr">
+            <div class="top_tabs">
+                <span ng-class="{'lines':jselect1}" ng-click="jchangeTabs(1)" ui-sref="jianlizhuangtai.jianli({'id':'1'})">全部</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':jselect2}" ng-click="jchangeTabs(2)" ui-sref="jianlizhuangtai.jianli({'id':'2'})">被查看</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':jselect3}"  ng-click="jchangeTabs(3)"ui-sref="jianlizhuangtai.jianli({'id':'3'})">待沟通</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':jselect4}"  ng-click="jchangeTabs(4)"ui-sref="jianlizhuangtai.jianli({'id':'4'})">邀面试</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':jselect5}"  ng-click="jchangeTabs(5)"ui-sref="jianlizhuangtai.jianli({'id':'5'})">OFFER</span>
+            </div>
+        </div>
+    </header>
+
+    <div ui-view class="views_main">
+
+    </div>
+
+</div>

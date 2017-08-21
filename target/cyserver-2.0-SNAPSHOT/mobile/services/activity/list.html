@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <title>校友活动</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/Hui.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/font-awesome.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/dropload.css" />
+    <style type="text/css">
+        .dropdown{
+            position:fixed;
+            top: -65%;
+            width: 100%;
+            z-index: 2;
+            -webkit-transition-duration: 0.4s;
+        }
+        .grade-w-roll{
+            top: 41px;
+        }
+        .search{
+            position: absolute;
+            top:-65%;
+            width: 100%;
+            z-index:4;
+            height: 40px;
+            -webkit-transition-duration: 0.4s;
+        }
+        .search-w-roll{
+            top:0px;
+        }
+        .mask{
+            position: fixed;
+            width:100%;
+            height:100%;
+            background: #000000;
+            opacity: 0.5;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .mask-hide{
+            display: none;
+        }
+        .over{
+            overflow: hidden;
+        }
+        .box-bg {
+            background: #ffffff;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .act-img {
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 6px;
+
+        }
+        .act-img img {
+            width: 100%;
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+        }
+        .select-box{
+            border: 0;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 24px;
+            padding: 0;
+            background-color:#f15b4b;
+            color: #ffffff;
+            border-radius:3px ;
+        }
+        .already {
+            border: 0;
+            font-size: 1.2rem;
+            width: 50px;
+            height: 26px;
+            padding: 0;
+            background-color: #0f88eb;
+            color: #ffffff;
+            border-radius: 3px;
+        }
+        .icon-size{
+            width: 1.6rem;
+            height:1.6rem ;
+            display: inline-block;
+            text-align: center;
+            margin-right: 5px;
+        }
+        .act-header{
+            height: 6rem;
+            width: 100%;
+            box-sizing: border-box;
+            /*  border: 1px solid red;*/
+        }
+        .act-header img{
+            width:4rem;
+            height:4rem;
+            margin-top: 0.45rem;
+            border-radius: 50%;
+            float: left;
+
+        }
+        .act-header div{
+            margin-top: 0.3rem;
+            margin-left: 1.2rem;
+            float: left;
+            color:#576B95;
+        }
+        .act-header div .showTime{
+            display: block;
+            font-size: 1.2rem;
+            color:#888888;
+            text-decoration: none
+        }
+        .act-header p{
+            margin-top:1.3rem;
+            float: right;
+            font-size: 1.4rem;
+            color:#0F88EB
+        }
+        /*
+        #float-menu{
+            position:fixed;
+            z-index: 5;
+            bottom:50px;
+            left:10px;
+        }
+        */
+    </style>
+    <script type="text/html" id="tppl">
+        <%for(var key in list){%>
+        <div tapmode="" onclick="openDetail('<%=list[key].id%>');" class="box-bg" style="position: relative;">
+            <%
+            if(list[key].type==0||list[key].type==99) {
+            %>
+            <div class="act-header">
+                <img src="../static/img/icon_official.png" alt=""/>
+                <div><%=list[key].user.userName%><abbr class="timeago showTime" title="<%=list[key].createTime%>"></abbr></div>
+                <p><%=list[key].nowStatus%></p>
+            </div>
+            <%
+            }else if(list[key].type==9){
+            %>
+            <div class="act-header">
+                <%
+                if(list[key].userProfile.picture_xd && list[key].userProfile.picture_xd!='') {
+                %>
+                    <img onerror="javascript:this.src='../static/img/userimg.png';" src="<%=B.getImageAbsoluteUrl(list[key].userProfile.picture_xd)%>" alt="" title="" >
+
+                <%
+                }else{
+                %>
+                    <img src="../static/img/userimg.png" alt=""/>
+                <%
+                }
+                %>
+                <div><%=list[key].userProfile.name%><abbr class="timeago showTime" title="<%=list[key].createTime%>"></abbr></div>
+                <p><%=list[key].nowStatus%></p>
+            </div>
+            <%
+            }
+            %>
+
+            <div class="act-img">
+                <%
+                if(list[key].picUrl && list[key].picUrl!='') {
+                %>
+                <img onerror="javascript:this.src='../static/img/tupian@2x.png';" src="<%=B.getImageAbsoluteUrl(list[key].picUrl)%>" alt="" title="" >
+                <%
+                }else{
+                %>
+                <img onerror="javascript:this.src='../static/img/tupian@2x.png';" src="../static/img/tupian@2x.png" alt="" title=""  >
+                <%
+                }
+                %>
+
+                <!--<img onerror="javascript:this.src='../static/img/tupian@2x.png';" src="../../img/default-banner.jpg" alt="" title="" class="H-display-block H-margin-horizontal-left-10" style="width: 90px; height: 105px;">-->
+
+            </div>
+            <div>
+                <div class="H-font-size-16 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-5">
+                    <label class="icon-flag icon-size"></label>
+                    <label style="color: #333333"><%=list[key].title%></label>
+                </div>
+
+                <div class="H-font-size-16 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-5">
+                    <label class="icon-map-marker icon-size"></label>
+                    <label><%=list[key].place%></label>
+                </div>
+                <div class="H-font-size-16 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-2">
+                    <label class="icon-time icon-size"></label>
+                    <label><%=list[key].startTime%>-<%=list[key].endTime%></label>
+                </div>
+                <div class="H-font-size-16 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-2">
+                    <label class="icon-user icon-size"></label>
+                    <label><%=list[key].signupNum%><%if(list[key].maxPeople==0){%><%}else{%>/<%=list[key].maxPeople%><%}%></label>
+                </div>
+                <%if(list[key].type==0){%>
+                <button class="select-box" style="position: absolute; bottom: 10px; right: 10px;">
+                    <%if(list[key].dept_id == 1){%>
+                        总会
+                    <%}else{%>
+                        分会
+                    <%}%>
+                </button>
+                <%}%>
+
+                <%if(list[key].type==99){%>
+                <button class="select-box" style="position: absolute; top: 10px; right: 10px;">社团</button>
+                <%}%>
+
+                <%if(list[key].isJoined=='1'){%>
+                <button class="already" style="position: absolute; top: 8rem; right: 2rem;">已报名</button>
+                <%}%>
+            </div>
+        </div>
+        <%}%>
+    </script>
+</head>
+<body>
+<header id="header"></header>
+<!--
+<span id="float-menu" class="H-icon H-center-all H-theme-background-color3 H-border-radius-circle H-margin-horizontal-auto" style="height: 42px; width: 42px; ">
+			<i class="H-iconfont H-icon-user2 H-font-size-22 H-theme-font-color-white"></i>
+		</span>
+		-->
+<div class="mask mask-hide"></div>
+<div class="H-theme-background-color-white" style="position: fixed; width:100%;z-index: 3;top:0;">
+    <div class="H-border-vertical-bottom-after H-flexbox-horizontal">
+        <div tapmode="" onclick="toggleSort();" class="H-flex-item H-text-show-row-1 H-padding-vertical-both-10 H-border-horizontal-right-after H-box-sizing-border-box H-touch-active">
+            <span class="H-font-size-14 H-theme-font-color-999 H-center-all"><span id='sort-bar'>综合排序</span><i class="icon-angle-down H-display-block H-theme-font-color-999 H-font-size-16 H-padding-horizontal-left-5"></i></span>
+        </div>
+        <div tapmode="" onclick="toggleFilter();" class="H-flex-item H-text-show-row-1 H-padding-vertical-both-10 H-border-horizontal-right-after H-box-sizing-border-box H-touch-active">
+            <span class="H-font-size-14 H-theme-font-color-999 H-center-all">条件筛选<i class="icon-angle-down H-display-block H-theme-font-color-999 H-font-size-16 H-padding-horizontal-left-5"></i></span>
+        </div>
+        <div tapmode="" onclick="searchBar();" class="H-flex-item H-text-show-row-1 H-padding-vertical-both-10 H-border-horizontal-right-after H-box-sizing-border-box H-touch-active">
+            <span class="H-font-size-14 H-theme-font-color-999 H-center-all">搜索<i class="icon-search H-display-block H-theme-font-color-999 H-font-size-16 H-padding-horizontal-left-5"></i></span>
+        </div>
+    </div>
+</div>
+<div class="dropdown" id="sort">
+    <div class="query-item H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-both-10-after H-vertical-middle H-touch-active">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-10 H-theme-font-color-999">综合排序</div>
+    </div>
+    <div class="query-item H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-10 H-theme-font-color-999">参与人数</div>
+    </div>
+</div>
+<div class="dropdown" id="filter">
+    <div onclick="filter1Change()" class="query-item H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-both-10-after H-vertical-middle H-touch-active">
+        <input type="checkbox" id="filter1" class="H-checkbox H-checkbox-null H-margin-horizontal-left-10 H-vertical-align-middle H-font-size-18 H-theme-font-color-999 H-border-radius-5">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-top-15 H-padding-vertical-bottom-10 H-theme-font-color-999">只显示总会活动</div>
+    </div>
+    <div onclick="filter4Change()" class="query-item H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-both-10-after H-vertical-middle H-touch-active">
+        <input type="checkbox" id="filter4" class="H-checkbox H-checkbox-null H-margin-horizontal-left-10 H-vertical-align-middle H-font-size-18 H-theme-font-color-999 H-border-radius-5">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-top-15 H-padding-vertical-bottom-10 H-theme-font-color-999">只显示分会活动</div>
+    </div>
+    <div onclick="filter3Change()" class="query-item H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-both-10-after H-vertical-middle H-touch-active">
+        <input type="checkbox" id="filter3" class="H-checkbox H-checkbox-null H-margin-horizontal-left-10 H-vertical-align-middle H-font-size-18 H-theme-font-color-999 H-border-radius-5">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-top-15 H-padding-vertical-bottom-10 H-theme-font-color-999">只显示社团活动</div>
+    </div>
+    <div class="query-item H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-both-10-after H-vertical-middle H-touch-active">
+        <input type="checkbox" id="filter2" class="H-checkbox H-checkbox-null H-margin-horizontal-left-10 H-vertical-align-middle H-font-size-18 H-theme-font-color-999 H-border-radius-5">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-top-15 H-padding-vertical-bottom-10 H-theme-font-color-999">只显示未结束活动</div>
+    </div>
+    <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle ">
+        <div class="H-border-vertical-bottom-after H-flexbox-horizontal">
+            <div class="H-flex-item H-text-show-row-1 H-padding-vertical-both-5 H-box-sizing-border-box H-center-all">
+                <button tapmode="" onclick="filterCannel();" class="H-font-size-14 H-padding-vertical-both-3 H-padding-horizontal-both-20 H-outline-none H-theme-background-color7 H-theme-font-color-white H-theme-border-color7 H-theme-border-color7-click H-theme-background-color7-click H-theme-font-color7-click H-border-radius-3">取消</button>
+            </div>
+            <div class="H-flex-item H-text-show-row-1 H-padding-vertical-both-5 H-box-sizing-border-box H-center-all">
+                <button tapmode="" onclick="filterOK();" class="H-font-size-14 H-padding-vertical-both-3 H-padding-horizontal-both-20 H-outline-none H-theme-background-color7 H-theme-font-color-white H-theme-border-color7 H-theme-border-color7-click H-theme-background-color7-click H-theme-font-color7-click H-border-radius-3">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<form onsubmit="return false;">
+    <div class="H-search H-flexbox-horizontal H-box-sizing-border-box H-overflow-hidden H-theme-background-color-white search">
+        <input type="search" onsearch="keySearch();"  name="keyword" id="ipt" class="H-border-none  H-border-radius-15 H-theme-background-color-f4f4f4 H-flex-item H-font-size-14 H-padding-horizontal-both-10 H-padding-vertical-both-5 H-theme-background-color-f4f4f4 H-margin-5" placeholder="请输入关键字">
+		<span class="H-display-block H-font-size-14 H-vertical-middle H-theme-font-color1 H-padding-horizontal-both-10 btn">
+			<i class="H-iconfont H-icon-search H-vertical-middle" onclick="keySearch();"></i>
+			<i class="H-iconfont H-vertical-middle">&emsp;</i>
+			<i class="H-iconfont H-icon-close H-vertical-middle" onclick="closeSearch();"></i>
+		</span>
+    </div>
+</form>
+
+
+<div class="H-padding-vertical-bottom-10" style="margin-top: 41px;"></div>
+
+<div class="content">
+    <div class="list">
+    </div>
+</div>
+
+<!--去我的活动页面-->
+<div onclick="go_list_user()" class="add_active" hidden style="position: fixed;right: 20px;bottom: 40px;">
+	<span class="H-icon H-center-all H-border-radius-circle H-margin-horizontal-auto" style="height: 42px; width: 42px; left: 0px; top: 261px; background: rgba(1,1,1,.5)">
+		<i class="H-iconfont H-icon-user2 H-font-size-22 H-theme-font-color-white"></i>
+	</span>
+</div>
+<script type="text/javascript" src="../../js/H.js" ></script>
+<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+<script type="text/javascript" src="../../js/jquery.timeago.js" ></script>
+<script type="text/javascript" src="../../js/xdomain.min.js"></script>
+<script type="text/javascript" src="../../js/B.js" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript" src="../static/js/dropload.min.js" ></script>
+<script type="text/javascript" src="../static/js/dateformat.js" ></script>
+<script type="text/javascript">
+
+
+    // 接收URL中的参数
+    var teamId = B.getUrlParamByName("teamId");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '校友活动',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    //下来加载错误弹框开关
+    var flag=true;
+    var query={
+        sort:'0',
+        filter:[0,0,0,0],
+        keyword:''
+    };
+    var page={
+        page:1,
+        rows:10
+    };
+    var jsonStr={
+        command: "61",
+        content: {
+            type: "",
+            eventStatusScope: "50,60,70,80,90",
+            title: "",
+            flag: "0",
+            page: "1",
+            rows: "10"
+        }
+    }
+    if(teamId && teamId!=''&& teamId !='null'){
+        var jsonStr={
+            command: "61",
+            content: {
+                type: "99",
+                eventStatusScope: "50,60,70,80,90",
+                title: "",
+                flag: "0",
+                page: "1",
+                associationId:teamId,
+                rows: "10"
+            }
+        }
+    }
+    function openDetail(eventId){
+        H.openWin('活动详情', "detail.html?eventId=" + eventId+"&accountNum="+accountNum + "&sourceFlag=0&teamId="+teamId );
+    }
+    function initQuery(){
+        query.sort='0';
+        query.filter=[0,0,0,0];
+        query.keyword='';
+    }
+    function initPage(){
+        page.page=1;
+        page.rows=10;
+    }
+    function queryToJsonStr(p,r){
+        jsonStr.content.flag=query.sort;
+        jsonStr.content.title=query.keyword;
+        if(accountNum == 'null'){
+            accountNum = '';
+        }
+
+        jsonStr.content.accountNum = accountNum;
+        if(query.filter[0]==1){
+            jsonStr.content.type='0';
+        }else if(query.filter[2] == 1){
+            jsonStr.content.type='99';
+        }else if(query.filter[3] == 1){
+            jsonStr.content.type='1';
+        }else{
+            jsonStr.content.type='';
+        }
+        if(query.filter[1]==0){
+            jsonStr.content.eventStatusScope='50,60,70,80,90';
+        }else{
+            jsonStr.content.eventStatusScope='50,60,80,90';
+        }
+
+
+        if(H.isNumber(p)){
+            jsonStr.content.page=p+'';
+        }else{
+            jsonStr.content.page=page.page+'';
+        }
+        if(H.isNumber(r)){
+            jsonStr.content.rows=r+'';
+        }else{
+            jsonStr.content.rows=page.rows+'';
+        }
+        return jsonStr;
+    }
+
+    function transData(data){
+        for(var key in data.obj.rows){
+            var startTmp = data.obj.rows[key].startTime;
+            var endTmp = data.obj.rows[key].endTime;
+            startTmp = startTmp.substring(0,16);
+            endTmp = endTmp.substring(0,16);
+
+            //startTmp = startTmp.substring(0,4)+'年'+startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日'+startTmp.substring(11,16);
+
+            if(startTmp.substring(0,4) == endTmp.substring(0,4)){
+                if(startTmp.substring(5,7) == endTmp.substring(5,7)){
+                    if(startTmp.substring(8,10) == endTmp.substring(8,10)){
+                        startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日&nbsp;'+startTmp.substring(11,16);
+                        endTmp = endTmp.substring(11,16);
+                    }else{
+                        startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日';
+                        endTmp = endTmp.substring(5,7)+'月'+endTmp.substring(8,10)+'日';
+                    }
+                }else{
+                    startTmp = startTmp.substring(0,4)+'年'+startTmp.substring(5,7)+'月';
+                    endTmp = endTmp.substring(5,7)+'月';
+                }
+            }else{
+                startTmp = startTmp.substring(0,4)+'年';
+                endTmp = endTmp.substring(0,4)+'年';
+            }
+
+            data.obj.rows[key].startTime = startTmp;
+            data.obj.rows[key].endTime = endTmp;
+            /*
+             console.log(JSON.stringify(data.obj.rows[key]));
+             var format = new DateFormat();
+             var startTime = format.parseDate(data.obj.rows[key].startTime);
+             var endTime = format.parseDate(data.obj.rows[key].endTime);
+             var startFormatStr = 'yyyy年MM月dd日';
+             var endFormatStr = 'yyyy年MM月dd日'
+             if(startTime.getFullYear()==format.curDate.getFullYear()&&endTime.getFullYear()==format.curDate.getFullYear()){
+             startFormatStr = 'MM月dd日';
+             endFormatStr = 'MM月dd日'
+             }
+             if(startTime.getFullYear()==endTime.getFullYear()&&startTime.getMonth()==endTime.getMonth()&&startTime.getDate()==endTime.getDate()){
+             startFormatStr = startFormatStr + ' HH:mm';
+             endFormatStr = 'HH:mm';
+             }
+             data.obj.rows[key].startTime = format.format(startTime,startFormatStr);
+             data.obj.rows[key].endTime = format.format(endTime,endFormatStr);
+             */
+        }
+        return data;
+    }
+    function search(){
+        console.log(queryToJsonStr(1,10));
+        H.showProgress();
+        $('.list').empty();
+        //H.alert(queryToJsonStr(1,10));
+        $.ajax({
+            type:"post",
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{jsonStr:JSON.stringify(queryToJsonStr(1,10))},
+            dataType:"json",
+            success:function(data){
+                transData(data);
+                page.page=1;
+                flag=true;
+                var result = '';
+                var render = H.tppl(H.D("#tppl").innerHTML);
+                result = render({list:data.obj.rows});
+                $('.list').html(result);
+                page.page=page.page+1;
+                H.hideProgress();
+            },
+            error:function(xhr,type){
+                H.hideProgress();
+                if(flag){
+                    H.alert("亲，加载数据失败，请联系管理员！");
+                    flag=false;
+                }
+            }
+        });
+    }
+    function keySearch(){
+        initQuery();
+        initPage();
+        query.keyword=$('#ipt').val();
+        search();
+    }
+    function toggleSort(){
+        if ($('#sort').hasClass('grade-w-roll')) {
+            if($('body').hasClass('over')){
+                $('body').removeClass('over');
+                $('.mask').addClass('mask-hide');
+            }
+            $('#sort').removeClass('grade-w-roll');
+        } else {
+            if(!$('body').hasClass('over')){
+                $('body').addClass('over');
+                $('.mask').removeClass('mask-hide');
+            }
+            if($('#filter').hasClass('grade-w-roll')){
+                $('#filter').removeClass('grade-w-roll');
+            }
+            $('#sort').addClass('grade-w-roll');
+        }
+
+    }
+    function toggleFilter(){
+        if ($('#filter').hasClass('grade-w-roll')) {
+            if($('body').hasClass('over')){
+                $('body').removeClass('over');
+                $('.mask').addClass('mask-hide');
+            }
+            $('#filter').removeClass('grade-w-roll');
+        } else {
+            if(query.filter[0]==1){
+                H.D('#filter1').checked=true;
+                H.D('#filter3').checked=false;
+                H.D('#filter4').checked=false;
+            }else if(query.filter[2]==1){
+                H.D('#filter3').checked=true;
+                H.D('#filter1').checked=false;
+                H.D('#filter4').checked=false;
+            }else if(query.filter[3]==1){
+                H.D('#filter4').checked=true;
+                H.D('#filter1').checked=false;
+                H.D('#filter3').checked=false;
+            }else{
+                H.D('#filter1').checked=false;
+                H.D('#filter3').checked=false;
+                H.D('#filter4').checked=false;
+            }
+
+            if(query.filter[1]==0){
+                H.D('#filter2').checked=false;
+            }else{
+                H.D('#filter2').checked=true;
+            }
+
+            if(!$('body').hasClass('over')){
+                $('body').addClass('over');
+                $('.mask').removeClass('mask-hide');
+            }
+            if ($('#sort').hasClass('grade-w-roll')) {
+                $('#sort').removeClass('grade-w-roll');
+            }
+            $('#filter').addClass('grade-w-roll');
+        }
+
+
+    }
+    function filterOK(){
+        if($('body').hasClass('over')){
+            $('body').removeClass('over');
+            $('.mask').addClass('mask-hide');
+        }
+
+        if ($('#filter').hasClass('grade-w-roll')) {
+            $('#filter').removeClass('grade-w-roll');
+        }
+        if(H.D('#filter1').checked){
+            query.filter[0]=1;
+        }else{
+            query.filter[0]=0;
+        }
+
+        if(H.D('#filter2').checked){
+            query.filter[1]=1;
+        }else{
+            query.filter[1]=0;
+        }
+
+        if(H.D('#filter3').checked){
+            query.filter[2]=1;
+        }else{
+            query.filter[2]=0;
+        }
+
+        if(H.D('#filter4').checked){
+            query.filter[3]=1;
+        }else{
+            query.filter[3]=0;
+        }
+
+        search();
+    }
+
+    function filterCannel(){
+        if($('body').hasClass('over')){
+            $('body').removeClass('over');
+            $('.mask').addClass('mask-hide');
+        }
+
+        if ($('#filter').hasClass('grade-w-roll')) {
+            $('#filter').removeClass('grade-w-roll');
+        }
+    }
+    function searchBar(){
+        if(!$('.search').hasClass('search-w-roll')){
+            $('.search').addClass('search-w-roll');
+            if($('body').hasClass('over')){
+                $('body').removeClass('over');
+                $('.mask').addClass('mask-hide');
+            }
+
+            if ($('#filter').hasClass('grade-w-roll')) {
+                $('#filter').removeClass('grade-w-roll');
+            }
+
+            if ($('#sort').hasClass('grade-w-roll')) {
+                $('#sort').removeClass('grade-w-roll');
+            }
+        }
+    }
+    function closeSearch(){
+        if($('.search').hasClass('search-w-roll')){
+            $('.search').removeClass('search-w-roll');
+            $('#ipt').val('');
+        }
+        H.D('#sort-bar').innerText='综合排序';
+        initQuery();
+        initPage();
+        search();
+    }
+
+    $(function(){
+        H.tppl_flag = ["<%", "%>"];
+//		H.D('#float-menu').style.left='0px';
+//		H.D('#float-menu').style.top=$(window).height()/2+'px';
+//		H.D("#float-menu").addEventListener("touchmove",function(event){
+        //H.alert($(window).width()+"px"+$(window).height()+"px");
+//			event.preventDefault();//阻止其他事件
+//			if(event.targetTouches.length==1) {
+//				var touch = event.targetTouches[0];  // 把元素放在手指所在的位置
+        //console.log(event);
+//				H.D('#float-menu').style.left = (touch.clientX-30) + 'px';
+//				H.D('#float-menu').style.top = (touch.clientY-30) + 'px';
+//				if(parseInt(H.D('#float-menu').style.left)<0){
+//					H.D('#float-menu').style.left = '0px';
+//				}
+//				if(parseInt(H.D('#float-menu').style.top)<0){
+//					H.D('#float-menu').style.top = '0px';
+//				}
+//				if(parseInt(H.D('#float-menu').style.left)>(parseInt($(window).width())-42)){
+//					H.D('#float-menu').style.left=(parseInt($(window).width())-42)+'px';
+//				}
+//				if(parseInt(H.D('#float-menu').style.top)>(parseInt($(window).height())-42)){
+//					H.D('#float-menu').style.top=(parseInt($(window).height())-42)+'px';
+//				}
+//			}
+//		});
+//		H.D("#float-menu").addEventListener("click",function(event){
+//			H.openWin('我的活动', "list_user.html?accountNum="+accountNum);
+//		});
+
+        B.ready(function(){
+            //判断用户认证
+            renzhenguser();
+        });
+
+        H.D(".mask").click( function () {
+            if($('body').hasClass('over')){
+                $('body').removeClass('over');
+                $('.mask').addClass('mask-hide');
+            }
+
+            if ($('#filter').hasClass('grade-w-roll')) {
+                $('#filter').removeClass('grade-w-roll');
+            }
+
+            if ($('#sort').hasClass('grade-w-roll')) {
+                $('#sort').removeClass('grade-w-roll');
+            }
+
+        });
+        H.on(H.Ds('.query-item','#sort'),'click',function(event){
+            H.D('#sort-bar').innerText=event.target.innerText;
+            if ($('#sort').hasClass('grade-w-roll')) {
+                if($('body').hasClass('over')){
+                    $('body').removeClass('over');
+                    $('.mask').addClass('mask-hide');
+                }
+                $('#sort').removeClass('grade-w-roll');
+            }
+            if(event.target.innerText=='综合排序'){
+                query.sort='0';
+            }else{
+                query.sort='1';
+            }
+            search();
+        });
+        H.on(H.Ds('.query-item','#filter'),'click',function(event){
+            if(event.target.childNodes.length==1){
+                if(event.target.parentNode.childNodes[1].checked){
+                    event.target.parentNode.childNodes[1].checked=false;
+                }else{
+                    event.target.parentNode.childNodes[1].checked=true;
+                }
+            }
+        });
+        B.ready(function(){
+
+            /*
+             * @updateAuthor：niu
+             * @description：APP端隐藏跳转我的活动图标
+             * */
+            if (!openId || openId =='' ||openId == 'null') {
+                $('.add_active').hide();
+            }else {
+                $('.add_active').show();
+            }
+
+
+            $('.content').dropload({
+                scrollArea : window,
+                domUp : {
+                    domClass   : 'dropload-up',
+                    domRefresh : '<div class="dropload-refresh">↓下拉刷新-校友活动</div>',
+                    domUpdate  : '<div class="dropload-update">↑释放更新-校友活动</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                },
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-校友活动</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"> </div>'
+                },
+                loadUpFn : function(me){
+                    console.log(queryToJsonStr(1,10));
+                    $.ajax({
+                        type:"post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{jsonStr:JSON.stringify(queryToJsonStr(1,10))},
+                        dataType:"json",
+                        success:function(data){
+                            console.log(data);
+                            transData(data);
+                            page.page=1;
+                            flag=true;
+                            var result = '';
+                            var render = H.tppl(H.D("#tppl").innerHTML);
+                            result = render({list:data.obj.rows});
+                            $('.list').html(result);
+                            jQuery("abbr.timeago").timeago();
+                            me.resetload();
+                            me.unlock();
+                            if(((page.page+1)*page.rows-parseInt(data.obj.total))>=page.rows){
+                                me.noData(true);
+                            }else{
+                                me.noData(false);
+                            }
+                            page.page=page.page+1;
+                        },
+                        error:function(xhr,type){
+                            if(flag){
+                                H.alert("亲，加载数据失败，请联系管理员！");
+                                flag=false;
+                            }
+                            //me.resetload();
+                        }
+                    });
+
+                },
+                loadDownFn : function(me){
+                    console.log(queryToJsonStr(1,10));
+                    $.ajax({
+                        type:"post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{jsonStr:JSON.stringify(queryToJsonStr())},
+                        dataType:"json",
+                        success:function(data){
+                            transData(data);
+                            console.log(data);
+                            flag=true;
+                            var result = '';
+                            var render = H.tppl(H.D("#tppl").innerHTML);
+                            result = render({list:data.obj.rows});
+                            $('.list').append(result);
+                            jQuery("abbr.timeago").timeago();
+                            if(((page.page+1)*page.rows-parseInt(data.obj.total))>=page.rows){
+                                me.lock();
+                                me.noData(true);
+                            }else{
+                                page.page=page.page+1;
+                            }
+                            me.resetload();
+                        },
+                        error:function(xhr,type){
+                            if(flag){
+                                H.alert("亲，加载数据失败，请联系管理员！");
+                                flag=false;
+                            }
+                            // me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+
+    });
+
+    function filter1Change () {
+        if(!$('#filter1').prop("checked")){
+            H.D('#filter3').checked=false;
+            H.D('#filter4').checked=false;
+        }
+    }
+
+    function filter3Change () {
+        if(!$('#filter3').prop("checked")){
+            H.D('#filter1').checked=false;
+            H.D('#filter4').checked=false;
+        }
+    }
+
+    function filter4Change () {
+        if(!$('#filter4').prop("checked")){
+            H.D('#filter1').checked=false;
+            H.D('#filter3').checked=false;
+        }
+    }
+
+    //关闭
+    if (!teamId && teamId == '' && teamId == 'null'){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                    WeixinJSBridge.call('closeWindow');
+                } else if(ua.indexOf("alipay")!=-1){
+                    AlipayJSBridge.call('closeWebview');
+                }else if(ua.indexOf("baidu")!=-1){
+                    BLightApp.closeWindow();
+                }
+                else{
+                    window.close();
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }
+
+    //跳转我的活动
+    function go_list_user(){
+        if(accountNum=='null' || !accountNum || accountNum == ''){
+            $('.list div').css('pointer-events', 'none');
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("../services/activity/list.html?ts=" + B.getRandomInt(4));
+                    window.location.href = "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl;
+                };
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else{
+            H.openWin('我的活动', "list_user.html?accountNum="+accountNum +"&teamId="+ teamId);
+        }
+    }
+
+
+    //判断是否已认证
+    var userrz='';
+    function renzhenguser(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj && data.obj.baseInfoId){
+                    userrz = 1;
+                }else{
+                    userrz = 0;
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+
+    //    var t = B.getUrlParamByName("t");
+    //    $(function () {
+    //        var u = navigator.userAgent, app = navigator.appVersion;
+    //        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+    //        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    //        if (isAndroid) {
+    //
+    //        }
+    //       /* if (isIOS) {
+    //            var rnumber = Math.floor(Math.random()*1000)
+    //            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber +"&teamId="+teamId);
+    //            window.onpopstate = function(event) {
+    //                location.reload();
+    //            };
+    //        }*/
+    //    });
+    //返回
+    var jsonStrBut = {
+        "title":"校友活动",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        },
+        "btn2":{
+            "imgname":"icon_me@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAA4klEQVRIie3TsQ2CQBSAYUZgA5nAMAAm1E7BBAYXMJYOYaKFsXUE3cDKykJLCxMYQP0tkAQJyHHvSWH8k6u/3Lt7jvOvIiAARl0gR+DBewkQa2PjCqjcQQsbGmB5Ow3wYojlBRLMa4nJbgnMLMBUAi67BicW4FUC2rzhxhp8oeeWYE8K9oG7ITYXYQV0ANwasLUKVkJPNdgKcLUgH9gajnQhgoHYECqWAKENZrP0xaI2WCTE8nwTzCUbi0Z7E3CqhOV9Hi2QKoP1tyRbgW9UvSrofZZyYR0Ykr2h9vEaP8/P9AQnfVw0kAKWzQAAAABJRU5ErkJggg==",
+            "name":"我的",
+            "action":"my"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+    function fallback() {
+        if(teamId && teamId !='' && teamId !='null'){
+            window.location.href = B.serverUrl + "/mobile/services/team/detail.html?accountNum=" + accountNum +"&associationId="+ teamId;
+        }else {
+            window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+        }
+    }
+    function my() {
+        window.location.href = B.serverUrl + "/mobile/services/activity/list_user.html?accountNum=" + accountNum +"&teamId="+teamId;
+    }
+
+
+    function checkLogin() {
+        if(!accountNum || accountNum == '' || accountNum == 'null'){
+            if(openId && openId != 'null'){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/list.html?accountNum=' + accountNum +'&teamId='+ teamId)+"&ts=" + B.getRandomInt(4));
+                    }
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+                return false;
+            }else {
+                H.alert('亲，您尚未登陆，请先去登陆吧！');
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+    //timeago插件改变时间显示方式
+    $(function(){
+        $('.showTime').html('oooo');
+    });
+</script>
+</body>
+</html>

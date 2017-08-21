@@ -1,0 +1,106 @@
+<div class="work_willtk" style="
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.2);" ng-show="workxinzi">
+
+    <style>
+
+        .xinzi_box{
+            width: 5.8rem;
+            border-radius: 5px;
+            background: #fff;
+            position: absolute;
+            top:40%;
+            left:50%;
+            margin-top: -2.9rem;
+            margin-left: -2.9rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .xinzi_title{
+            font-size: 15px;
+            color: #333333;
+            line-height: 0.9rem;
+            text-align: center;
+        }
+
+        .xinzi_center{
+            height: 3.68rem;
+            display: flex;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .queding_box{
+            height:1rem;
+            line-height: 1rem;
+            text-align: center;
+            font-size: 14px;
+            color: #0F88EB;
+            border-top: 1px solid #dddddd;
+        }
+
+        .left_boxs,.right_boxs{
+            height:100%;
+            flex:1;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
+            display: block;
+        }
+        .left_boxs ul,.right_boxs ul{
+            height:100%;
+            overflow: auto;
+            -webkit-overflow-scroll:touch
+        }
+
+        .left_boxs li,.right_boxs li{
+            line-height: 30px;
+            font-size: 14px;
+            color: #555555;
+        }
+        .left_boxs li.dq_xinzi,.right_boxs li.dq_xinzi{
+            color: #0F88EB;
+        }
+
+        .lines{
+            width: 1px;
+            height:100%;
+            display: flex;
+            align-items: center;
+        }
+        .center_line{
+            width: 1px;
+            height:80%;
+            background: #dddddd;
+        }
+
+    </style>
+
+    <div class="xinzi_box">
+        <div class="xinzi_title">期望薪资（k/月）</div>
+        <div class="xinzi_center">
+            <div class="left_boxs">
+                <ul>
+                    <li ng-click="minXinzi(list)" class="djxinzi" ng-repeat="list in work_xinzis">{{list.title}}</li>
+                </ul>
+            </div>
+            <div class="lines">
+                <div class="center_line"></div>
+            </div>
+            <div class="right_boxs">
+                <ul>
+                    <li ng-click="maxXinzi(list)" class="djxinzi" ng-repeat="list in work_xinzis">{{list.title}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="queding_box" ng-click="quedingXinzi()">
+            确定
+        </div>
+    </div>
+</div>

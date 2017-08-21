@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>分会列表</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<meta content="校友会" name="description" />
+		<meta content="校友会" name="author" />
+		<!--引入css文件-->
+		<link href="../css/style.css" type="text/css" rel="stylesheet" />
+
+		<link href="../css/fenhui_style.css" type="text/css" rel="stylesheet"  />
+		<link rel="stylesheet" href="../css/user.css" type="text/css" />
+
+		<!--引入js文件-->
+		<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../js/jquery.page.js" type="text/javascript"></script>
+		<script src="../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../js/B.js" type="text/javascript"></script>
+		<script src="../js/common.js"></script>
+		<script src="../js/interfacepath.js"></script>
+
+
+		<script type="text/javascript">
+			// 接收的参数
+			var categoryId = B.getUrlParamByName("categoryId");
+			var deptId=B.getUrlParamByName("deptId");
+
+
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+
+			var categoryName = "";
+			
+			var currentCategoryId = 0;
+			var currentCategoryName = "";
+			
+			// 分页参数
+			var pageSize = 6;
+			var pageTotal = 0;
+			var pageCount = 1;
+			var page='';
+
+			$(function(){
+				//news_list(categoryId, $(".centerBox"),1)
+				$(".shoouye").attr("href",'fenhui_index.html?alumniId='+deptId+'');
+				$(".login_tk_dlh").attr("href",B.clientUrl+"users/user_personal.html");
+				$(".zhuce_tk").attr("href",B.clientUrl+"users/user_register.html");
+				//当前分会
+				fenhuiDq()
+
+				navTestCookie()
+
+				initFoot();
+			})
+
+			window.onresize = function () {
+				initFoot();
+			}
+			function initFoot(){
+				var windowHeight = $(window).height() ;
+				if(windowHeight > 200) {
+					$(".list_contenai").css("min-height",windowHeight-200);
+				}
+			}
+
+
+
+
+			//------------------------------------------------------------------------------------
+
+//
+			// 分页参数
+			var pageSize = 6;
+			var pageTotal = 0;
+			var pageCount = 1;
+			var pageCurrent = 1;
+
+			// 初始化页面
+			$(function() {
+				B.ready(function() {
+
+					// 获取网站所有栏目（包括子栏目和校友服务）
+					interface.FenhuiList.jsonData.content.deptId = deptId.toString();
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + interface.FenhuiList.url,
+						data: {
+							jsonStr:  JSON.stringify(interface.FenhuiList.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+//							console.log("---1111---" + JSON.stringify(data));
+
+							if(data && data.obj && data.obj.length > 0) {
+								categoryTreeData = data.obj;
+
+								var serviceList = '';
+								var serviceCategoryIndex = 0;
+
+								for(var i=0; i<categoryTreeData.length; i++) {
+
+
+									if(categoryTreeData[i].checked==false){
+										// 初始化顶部导航
+										//console.log(categoryTreeData[i].id+"---"+categoryId)
+										//$("#nav").append('<li><a href="fenhui_list.html?categoryId=' + categoryTreeData[i].id + '&&deptId='+deptId+'">' + categoryTreeData[i].text + '</a></li>');
+									}else{}
+
+									// 初始化页面数据
+									if(categoryTreeData[i].id == categoryId){
+										console.log(categoryTreeData[i])
+
+										// 当前栏目是一级栏目
+										if(categoryTreeData[i].children && categoryTreeData[i].children.length > 0){
+											// 当前一级栏目有子栏目
+											// 设置左侧导航标题
+											console.log(categoryTreeData[i].text)
+											categoryName = categoryTreeData[i].text;
+											$(".list_name_nav").text(categoryName);
+
+											// 初始化左侧导航
+											var len = categoryTreeData[i].children.length;
+											for(var j = 0; j < len; j++) {
+												if(categoryTreeData[i].children[j].id){
+													$(".list_name_nav1").append('<li><a name="'+categoryTreeData[i].children[j].id+'" onclick="loadNewsList(1,\'' + categoryTreeData[i].children[j].id + '\',\'' + categoryTreeData[i].children[j].text + '\')">' + categoryTreeData[i].children[j].text + '</a></li>');
+												}
+											}
+
+											// 默认加载第一个子栏目的列表数据
+											currentCategoryId = categoryTreeData[i].children[0].id;
+											currentCategoryName = categoryTreeData[i].children[0].text;
+										}
+										else {
+											// 当前一级栏目无子栏目
+											// 初始化左侧导航
+											$(".list_name_nav1").append('<li><a name="'+categoryTreeData[i].id+'" onclick="loadNewsList(1,\'' + categoryTreeData[i].id + '\',\'' + categoryTreeData[i].text + '\')">' + categoryTreeData[i].text + '</a></li>');
+											// 加载第一页列表数据
+											currentCategoryId = categoryTreeData[i].id;
+											currentCategoryName = categoryTreeData[i].text;
+										}
+
+
+
+										loadNewsList(1, currentCategoryId, currentCategoryName);
+
+
+									}
+									/*else{
+//										alert("====catergoryId=="+categoryId);
+										if(categoryTreeData[i].children && categoryTreeData[i].children.length > 0){
+											console.log("-------"+JSON.stringify(categoryTreeData[i].children));
+											// 初始化左侧导航
+											var len = categoryTreeData[i].children.length;
+											for(var j = 0; j < len; j++) {
+//												alert(categoryTreeData[i].children[j].id +"== "+categoryId);
+												if(categoryTreeData[i].children[j].id == categoryId){
+													$(".list_name_nav1").append('<li><a id="'+categoryTreeData[i].children[j].id+'" onclick="loadNewsList(1,\'' + categoryTreeData[i].children[j].id + '\',\'' + categoryTreeData[i].children[j].text + '\')">' + categoryTreeData[i].children[j].text + '</a></li>');
+
+													// 初始化列表数据
+													currentCategoryId = categoryTreeData[i].children[j].id;
+													currentCategoryName = categoryTreeData[i].children[j].text;
+													loadNewsList(1, currentCategoryId, currentCategoryName);
+													break;
+												}
+											}
+										}
+									}*/
+								}
+
+								//$("#serviceCategoryList").append(serviceList);
+							}
+
+						},
+						error: function(xhr, type) {}
+					});
+				});
+
+			});
+
+
+			function loadNewsList(page, id, name) {
+
+				//点击后，重置栏目id
+				currentCategoryId = id;
+				currentCategoryName = name;
+				//刷新左側導航欄
+				currentCategory();
+//				alert("2----点击后的栏目id===="+currentCategoryId);
+				$(".centerBox").empty();
+				$(".break_list").empty();
+
+				$(".break_list").append('您现在的位置：<a href="funhui_index.html?alumniId='+deptId+'">首页</a>');
+				if(categoryName && categoryName != '') {
+					$(".break_list").append('&gt;&gt;<a href="fenhui_list.html?categoryId=' + categoryId + '&&deptId='+deptId+'">' + categoryName + '</a> ');
+				}
+				$(".break_list").append('&gt;&gt;<a href="javascript:void(0);" onclick="loadNewsList(1, \''+currentCategoryId+'\',\''+currentCategoryName+'\')">' + name + '</a> ');
+
+				// 加载子栏目下的新闻列表
+				$(".centerBox").html("");
+
+				interface.FenhuiListLiebiao.jsonData.content.page = page.toString();
+				interface.FenhuiListLiebiao.jsonData.content.rows = pageSize.toString();
+				interface.FenhuiListLiebiao.jsonData.content.category = id.toString();
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + interface.FenhuiListLiebiao.url,
+					data: {
+						jsonStr: JSON.stringify(interface.FenhuiListLiebiao.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						//console.log(JSON.stringify(data));
+						if(data.obj) {
+							var newsObj = data.obj;
+							var newsList = newsObj.rows;
+
+
+							if(newsList.length > 0) {
+								for(var key=0; key<newsList.length; key++) {
+							var tpplStr =
+								'<div class="center_lists">' +
+								'	<a href="fenhui_content.html?newsId=' + newsList[key].newsId + '&&deptId='+deptId+'" class="center_img">' +
+								'	<img src="'+newsList[key].pic+'" />' +
+								'	</a>' +
+								'<div class="center_wenzi">' +
+								'	<a class="wenzi_title" href="fenhui_content.html?newsId=' + newsList[key].newsId + '&&deptId='+deptId+'">'+
+									newsList[key].title+'</a>' +
+								'	<a class="wenzi_center" href="fenhui_content.html?newsId=' + newsList[key].newsId + '&&deptId='+deptId+'">'+
+									newsList[key].introduction+'</a>' +
+								'</div>' +
+								'	<div class="center_line">' +
+								'		<img src="../image/listLine.jpg">' +
+								'	</div>' +
+								'</div>';
+
+									$(".centerBox").append(tpplStr);
+
+								}
+
+								//显示页面新闻栏目条数
+//								alert(newsObj.total);
+								$(".count font").text(newsObj.total);
+							}
+
+							pageTotal = newsObj.total;
+							pageCount = Math.ceil(pageTotal / pageSize);
+
+							$(".pagerbar").createPage({
+								pageTotal:pageTotal,
+								pageCount:pageCount,
+								current:page,
+								backFn:function(p){
+									loadNewsList(p, currentCategoryId, currentCategoryName);
+								}
+							});
+						}
+					},
+					error: function(xhr, type) {}
+				});
+
+			}
+
+			//導航欄當前欄目
+			function currentCategory(){
+				var categoryTitleList = $('.list_name_nav1').find('a');
+				for(var i in categoryTitleList){
+//					alert(categoryTitleList[i].name);
+					$("a[name='"+categoryTitleList[i].name+"']").css("color","#000");
+					if(categoryTitleList[i].name == currentCategoryId){
+						// change the element color
+						$("a[name='"+categoryTitleList[i].name+"']").css("color",headColor);
+					}
+				}
+			}
+			//====================================================================================
+
+		</script>
+
+	</head>
+
+	<body>
+
+		<div id="head">
+
+			<div class="lines">
+			</div>
+
+			<div class="header_nav">
+			</div>
+
+			<div class="header_content">
+			</div>
+
+		</div>
+		<div class="dengluTankuang"></div>
+		<!--退出登录框-->
+		<div class="logoutTankuaung"></div>
+
+		<div class="list_contenai">
+			<div class="list_nav_left">
+				<div class="list_name_nav">导航</div>
+				<ul class="list_name_nav1">
+					<!--<li class="nav_dangqian"><a href="javascript:;">动态</a></li>-->
+					<!--<li><a href="javascript:;">动态</a></li>-->
+					<!--<li><a href="javascript:;">动态</a></li>-->
+				</ul>
+			</div>
+			<div class="list_content">
+				<p class="break_list">
+					<span>您现在的位置：</span>
+					<a class="shoouye" href="index.html">首页</a>
+					<!--&gt;&gt;<a href="list.html?categoryId=39">校友</a> -->
+					<!--&gt;&gt;<a href="javascript:void(0);" onclick="loadNewsList(1, '40','动态')">动态</a>-->
+				</p>
+				<div class="centerBox">
+
+
+				</div>
+
+				<!--分页-->
+				<div class="change_ye">
+					<div class="page_box">
+						<div class="pagerbar"></div>
+					</div>
+				</div>
+
+			</div>
+			<div class="list_right">
+				<img class="right_zstp" src="../image/listrighttop.jpg">
+
+				<table class="wenxinLanMu" width="289" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F2F8FF" style="font-size: 14px; margin-top: 10px;">
+					<tbody>
+					<tr height="10"></tr>
+					<tr>
+						<td align="center">
+							<img height="85px" src="../image/cy_qr.png">
+						</td>
+						<td align="center">
+							<img height="85px" src="../image/qrcode_jmiwxh.jpg">
+						</td>
+					</tr>
+					<tr height="5"></tr>
+					<tr>
+						<td align="center">窗友&nbsp;&nbsp;APP</td>
+						<td align="center">科贸校友服务</td>
+					</tr>
+					<tr height="10"></tr>
+					</tbody>
+				</table>
+
+				<div class="juanzeng">
+					<li>
+						<span class="right-title">在线捐赠</span>
+					</li>
+					<li class="juanzeng_tp">
+						<a href="../service/donate/donateList.html?flag=1">
+							<img src="../image/img_donation.png" width="289" height="142">
+						</a>
+					</li>
+				</div>
+
+				<div class="lianxi">
+					<li>
+						<span class="right-title">联系我们</span>
+					</li>
+					<li class="juanzeng_tp">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+							<tbody><tr>
+								<td width="25%" height="33" align="center" style="border-bottom:#EDF3E9 solid 1px;"><img src="../image/icon_phone.png" width="22" height="22"></td>
+								<td width="75%" style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+							</tr>
+							<tr>
+								<td height="36" align="center" style="border-bottom:#EDF3E9 solid 1px;"><img src="../image/icon_fax.png" width="22" height="22"></td>
+								<td style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+							</tr>
+							<tr>
+								<td height="34" align="center"><img src="../image/icon_email.png" width="22" height="22"></td>
+								<td>gzkmuxy@163.com</td>
+							</tr>
+							</tbody></table>
+					</li>
+				</div>
+
+			</div>
+
+		</div>
+
+
+		<!--顶部线条::start-->
+		<div id="footer_line"></div>
+		<!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="fenhuiPublic/public.js"></script>
+<script src="../js/G.js"></script>

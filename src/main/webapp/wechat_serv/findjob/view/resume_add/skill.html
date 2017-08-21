@@ -1,0 +1,229 @@
+<style>
+    .add_boxs{
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+        background: #eeeeee;
+    }
+
+
+    .add_shang{
+        flex: 1;
+    }
+    .add_list{
+        position: relative;
+        display: flex;
+        height:1rem;
+        line-height: 1rem;
+        margin-bottom: 1px;
+        background: #fff;
+        padding:0px 10px;
+        font-size: 12px;
+        color: #555555;
+    }
+
+
+
+
+    .add_footer{
+        height: 1.4rem;
+        width: 100%;
+        padding: 0.2rem;
+        display: flex;
+        box-sizing: border-box;
+    }
+    .del{
+        width: 2.4rem;
+        margin-right: 0.2rem;
+        height:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F15B4B;
+        border-radius: 5px;
+        font-size: 14px;
+        color: #FFFFFF;
+    }
+    .sive{
+        flex: 1;
+        height:100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0F88EB;
+        border-radius: 5px;
+        font-size: 14px;
+        color: #FFFFFF;
+    }
+    .add_title{
+        flex: 1;
+        position: relative;
+    }
+    .add_r{
+        margin-left: 5px;
+    }
+    input{
+        border: none;
+        outline: none;
+        background: none;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+        height: 1rem;
+        text-align: right;
+        color: #333333;
+        z-index: 2;
+    }
+    .add_r{
+        color: #BBBBBB;
+    }
+    .add_name{
+        color: #aaaaaa;
+    }
+
+
+
+
+
+
+
+
+
+    .mengban{
+        background: rgba(1,1,1,0.5);
+        position: fixed;
+        top:0;
+        left:0;
+        width: 100%;
+        height:100%;
+        z-index: 3;
+    }
+    .xuewei{
+        width:5.8rem;
+        height:5.8rem;
+        position: absolute;
+        top:40%;
+        left:50%;
+        margin-top: -2.9rem;
+        margin-left: -2.9rem;
+        background: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .xuewei_title{
+        font-size: 15px;
+        color: #333333;
+        line-height: 0.9rem;
+        text-align: center;
+    }
+    .xuewei_div{
+        flex: 1;
+        padding:10px;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .xuewei_div ul{
+        height: 100%;
+        overflow: auto;
+    }
+    .xuewei_div li{
+        line-height: 30px;
+        font-size: 14px;
+        color: #555555;
+        text-align: center;
+    }
+    .xuewei_div li.dq_xuewei{
+        color: #0F88EB;
+    }
+    .xuewei_true {
+        height: 1rem;
+        line-height: 1rem;
+        text-align: center;
+        font-size: 14px;
+        color: #0F88EB;
+        border-top: 1px solid #dddddd;
+    }
+
+
+    select {
+        border: none;
+        outline: none;
+        background: none;
+        font-size: 12px;
+
+        appearance:none;
+        -moz-appearance:none;
+        -webkit-appearance:none;
+
+        position: absolute;
+        top:0;
+        left:0;
+        bottom:0;
+        width: 100%;
+        box-sizing: border-box;
+        direction: rtl;
+        padding-right: 0.1rem;
+    }
+    /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+    select::-ms-expand { display: none; }
+
+    .xxlist{
+        color: #aaaaaa;
+    }
+</style>
+<div class="add_boxs">
+    <div class="add_shang">
+        <div class="add_list">
+            <div class="add_title">
+                技能名称
+                <input placeholder="请输入技能名称">
+            </div>
+            <div class="add_name">
+            </div>
+            <div class="add_r" style="visibility: hidden">
+                <i class="fa fa-angle-right"></i>
+            </div>
+        </div>
+
+        <div class="add_list" ng-click="xueweiChange()">
+            <div class="add_title">掌握程度
+                <select ng-class="{'xxlist':xuename}" ng-change="selectValue(destate)" ng-model="destate.id" ng-options="list.id as list.title for list in xueweilist">
+                    <option ng-show="deshow" value="">请选择掌握程度</option>
+                </select>
+            </div>
+
+            <div class="add_r">
+                <i class="fa fa-angle-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="add_footer">
+        <div class="del">删除</div>
+        <div class="sive">保存</div>
+    </div>
+</div>
+
+
+<div class="mengban" ng-show="xuewei">
+    <div class="xuewei">
+        <div class="xuewei_title">掌握程度</div>
+        <div class="xuewei_div">
+            <ul>
+                <li class="xuew_li" ng-repeat="list in xueweilist">{{list.title}}</li>
+            </ul>
+        </div>
+        <div class="xuewei_true" ng-click="queding()">
+            <span>确定</span>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>

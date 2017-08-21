@@ -1,0 +1,81 @@
+.chapter-sel{
+	width: 100%;
+	height: 4.2rem
+}
+.chapter-sel div {
+	width: 28.333333333%;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	text-align: center;
+	line-height: 4.2rem;
+	font-size: 1.4rem;
+	color: #555555;
+	box-sizing: border-box;
+	height: 4.2rem
+}
+.active{
+	border-bottom: .2rem solid #0F88EB ;
+
+}
+.intest{
+	height: 4rem;
+	width: 100%;
+	line-height: 4rem;
+	color: #888888;
+	font-size: 1.4rem;
+	background: #f8f8f8;
+	padding-left: 1rem;
+	box-sizing: border-box
+}
+
+.box-content,.box1,.box2,.box3{
+	width: 100%
+}
+.box1-list {
+    width: 100%;
+    height: 8rem;
+    border-bottom: .2rem solid #f8f8f8
+}
+
+.box1-img1 {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 1rem;
+    margin: 1rem;
+}
+.box1-img2 {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 1rem;
+    margin-right: 1rem;
+    margin-top: 1rem
+}
+.box1-cont{
+	margin-left: .5rem
+}
+.box1-p1{
+	height:3rem;
+	line-height: 3rem;
+	font-size: 1.4rem;
+	color: #576B95;
+	margin-top: 1rem;
+	width: 16rem;
+}
+.box1-p2{
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 1.2rem;
+	color: #555555;
+
+}
+.p2-sp{
+	margin-right: 1rem
+}
+.no-more{
+	width: 100%;
+	height: 4rem;
+	line-height: 4rem;
+	text-align: center;
+	color: #a7a7a7;
+	font-size: 1.4rem;
+}

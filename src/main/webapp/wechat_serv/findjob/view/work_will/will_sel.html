@@ -1,0 +1,131 @@
+
+    <style>
+
+        .bg{
+            background-color:#f2f2f2;
+            height:100%;
+            width:100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .sel_item{
+            display: flex;
+            padding:0 0.2rem;
+            line-height: 1rem;
+            margin:0.02rem 0;
+            background-color:#fff;
+        }
+
+        .item_l{
+            font-size:0.26rem;
+            color:#555;
+        }
+        .item_r{
+            flex:1;
+            text-align: right;
+        }
+        .item_r span{
+            display: inline-block;
+            font-size:0.28rem;
+            color:#BBB;
+
+        }
+
+        .item_r i{
+            display: inline-block;
+            font-size:0.35rem;
+            color:#888;
+            margin-left:0.12rem;
+        }
+
+        .none img{
+            width:3.56rem;
+            height:3.56rem;
+            padding-top:1rem;
+            padding-bottom:1.2rem;
+        }
+
+
+
+        /*底部按钮*/
+        .foot_box{
+            box-sizing: border-box;
+            width:100%;
+            padding:0.2rem;
+            padding-top:0;
+
+            position:fixed;
+            bottom:0;
+            /*bottom:1.2rem;*/
+        }
+        .foot_box .btn{
+            color:#fff;
+            background-color:#0F88EB;
+            line-height: 1rem;
+            width:100%;
+            text-align: center;
+            border-radius:0.1rem;
+
+            font-size:0.3rem;
+        }
+
+        .work_willtk{
+            /*display: none;*/
+        }
+    </style>
+
+<div class="bg">
+
+    <div class="sel_list">
+        <div class="sel_item" ng-click="gongztype(1)">
+            <div class="item_l">期望职位</div>
+            <div class="item_r">
+                <span ng-show="zw_types">请选择职位类型</span>
+                <span style="color: #333333;">{{type_title}}</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="sel_item" ng-click="gongztype(2)">
+            <div class="item_l">期望行业</div>
+            <div class="item_r">
+                <span ng-show="zw_hangyes">请选择期望行业</span>
+                <span style="color: #333333;">{{hangye_title}}</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="sel_item" ng-click="gongztype(3)">
+            <div class="item_l">期望城市</div>
+            <div class="item_r">
+                <span ng-show="zw_citys">请选择期望城市</span>
+                <span style="color: #333333;">{{city_title}}</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div class="sel_item" ng-click="gongztype(4)">
+            <div class="item_l">期望薪资</div>
+            <div class="item_r">
+                <span ng-show="zw_xinzis">请选择期望的薪资范围</span>
+                <span style="color: #333333;">{{xz_fanwei}}</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+
+
+
+    <work-type></work-type>
+    <work-hangye></work-hangye>
+    <work-city></work-city>
+    <work-xinzi></work-xinzi>
+
+    <div class="foot_box">
+        <div class="btn">
+            保 存
+        </div>
+    </div>
+
+</div>
+
+

@@ -1,0 +1,294 @@
+﻿<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<title>服务大厅</title>
+	<link href="static/plug/layer/skin/layer.css" rel="stylesheet" type="text/css" />
+
+	<link href="static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+	<link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+
+	<script type="text/html" id="systemTppl">
+		<%
+		// 分页总数，每页六个菜单
+		var pageSize = systemList.length/6;
+
+		// 遍历页数，加载每页菜单
+		for(var i = 0; i < pageSize; i++){
+		%>
+		<div class="swiper-slide H-border-horizontal-left-after H-border-vertical-top-after">
+			<%
+			// 每页分三行，遍历加载每行菜单
+			for(var j = 0; j < 3; j++){
+			%>
+			<div class="H-flexbox-horizontal H-text-align-center">
+				<%
+				// 每行两列，遍历加载每列菜单
+				for(var k = 0; k < 2; k++){
+				if(systemList[i*6+j*2+k]){
+				%>
+				<div onclick="clickHandler('<%=systemList[i*6+j*2+k].serviceName%>','<%=systemList[i*6+j*2+k].serviceUrl%>','<%=systemList[i*6+j*2+k].need_authentication%>')"
+					 class="H-display-table-cell H-width-avg-2 H-border-vertical-bottom-after H-border-horizontal-right-after"
+					 style="height: 66px;display: -webkit-box; -webkit-box-orient: horizontal; -webkit-box-pack: left; -webkit-box-align: center; display: box; box-orient: horizontal; box-pack: left; box-align: center;padding-left: 30px;">
+					<div style="width: 30px; height: 30px; ">
+						<img src="<%=systemList[i*6+j*2+k].servicePic%>"
+							 class="H-display-block H-width-100-percent H-height-100-percent" />
+					</div>
+					<div class="H-padding-horizontal-both-15 H-vertical-middle H-overflow-hidden">
+						<div class="H-max-width-100-percent H-font-size-14">
+							<%=systemList[i*6+j*2+k].serviceName%>
+						</div>
+					</div>
+				</div>
+				<%
+				}else{
+				%>
+				<div class="H-display-table-cell H-width-avg-2 H-border-vertical-bottom-after H-border-horizontal-right-after"
+					 style="height: 40px;display: -webkit-box; -webkit-box-orient: horizontal; -webkit-box-pack: left; -webkit-box-align: center; display: box; box-orient: horizontal; box-pack: left; box-align: center;padding-left: 30px;">
+				</div>
+				<%
+				}
+				}
+				%>
+			</div>
+			<%
+			}
+			%>
+		</div>
+		<%
+		}
+		%>
+	</script>
+
+	<script type="text/html" id="generalTppl">
+		<%
+		for(var i = 0; i < generalList.length; i++){
+		%>
+		<div onclick="clickHandler('<%=generalList[i].serviceName%>','<%=generalList[i].serviceUrl%>','<%=generalList[i].need_authentication%>')"
+			 class="H-display-table-cell H-center-all H-border-vertical-bottom-after H-theme-background-color-white"
+			 style="min-height: 40px;">
+			<div style="width: 24px; height: 24px; padding-left: 34px;">
+				<img src="<%=generalList[i].servicePic%>" class="H-display-block H-width-100-percent H-height-100-percent" />
+			</div>
+			<div class="H-flex-item H-padding-horizontal-both-15 H-vertical-middle H-overflow-hidden H-box-sizing-border-box">
+				<div class="H-max-width-100-percent H-font-size-14"><%=generalList[i].serviceName%></div>
+			</div>
+            <span class="H-icon H-display-block H-vertical-middle H-margin-horizontal-right-10">
+		        <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-16"></i>
+		    </span>
+		</div>
+		<%
+		if(i > 0 && i%3 == 0 &&　i != generalList.length-1){
+		%>
+		<div class="H-border-vertical-bottom-after" style="width: 100%;height: 20px;"></div>
+		<%
+		}
+		}
+		%>
+	</script>
+</head>
+<body>
+<div class="swiper-container H-margin-vertical-both-20 H-width-100-percent H-theme-background-color-white">
+	<div id="systemServices" class="swiper-wrapper"></div>
+	<!--<div class="swiper-pagination" style="bottom: 0;"></div>-->
+</div>
+
+<div class="H-n-grid H-clear-both">
+	<div id="generalServices" class="H-clear-both H-width-100-percent H-display-table H-box-sizing-border-box H-border-vertical-top-after"></div>
+</div>
+
+<script src="../js/jquery.min.js" type="text/javascript" ></script>
+<script src="static/plug/layer/layer.js" type="text/javascript" ></script>
+
+<script src="static/plug/swiper/swiper.min.js"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+
+<script type="text/javascript">
+	// 接收URL参数
+	var accountNum = B.getUrlParamByName("accountNum");// 当前登录用户ID
+	//alert('accountNum------->'+accountNum);
+	var authMark = false;
+
+	var jsonStr = {
+		"title":"服务"
+	}
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+		return jsonStr;
+
+	}
+
+
+	// 页面初始化
+	$(function(){
+		// 定义模板标识符
+		H.tppl_flag = ["<%", "%>"];
+
+		// 跨域请求处理
+		B.ready(function(){
+
+			// 异步加载系统服务
+			$.ajax({
+				type: 'POST',
+				url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data:{
+					jsonStr:'{"command":"81","content":{"systemService":"1"}}'
+				},
+				dataType: 'json',
+				success: function(data){
+					// 系统服务总条数
+					var sysServiceTotal = data.obj.length;
+
+//	                	H.alert("系统服务总数：" + sysServiceTotal);
+
+					if(sysServiceTotal > 0){
+						// 渲染加载系统服务模板
+						var render = H.tppl(H.D("#systemTppl").innerHTML);
+						var result = render({systemList:data.obj});
+
+						$('#systemServices').append(result);
+
+						// 初始化分页
+						var swiper = new Swiper('.swiper-container', {
+							pagination: '.swiper-pagination',
+							mode:'horizontal',
+							onTouchStart: function (swiper, even) {
+								H.setFrameAttr(H.frameName, null, { bounces: false });
+							},
+							onTouchEnd: function (swiper) {
+								H.setFrameAttr(H.frameName, null, { bounces: true });
+							}
+						});
+					}
+				},
+				error: function(xhr, type){
+					H.alert("数据加载失败！");
+				}
+			});
+
+			// 异步加载普通服务
+			$.ajax({
+				type: 'POST',
+				url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data:{
+					jsonStr:'{"command":"81","content":{"systemService":"0"}}'
+				},
+				dataType: 'json',
+				success: function(data){
+					// 普通服务总条数
+					var generalServiceTotal = data.obj.length;
+
+//	                	H.alert("普通服务总数：" + generalServiceTotal);
+
+					if(generalServiceTotal > 0){
+						// 渲染加载普通服务模板
+						var render = H.tppl(H.D("#generalTppl").innerHTML);
+						var result = render({generalList:data.obj});
+
+						$('#generalServices').append(result);
+					}
+				},
+				error: function(xhr, type){
+					H.alert("数据加载失败！");
+				}
+			});
+			// 异步加载普通服务
+			$.ajax({
+				type: 'POST',
+				url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data:{
+					jsonStr:'{"command":"27","content":{"accountNum":"'+accountNum+'"}}'
+				},
+				dataType: 'json',
+				success: function(data){
+					//H.alert(data);
+					try{
+						if(data && data.obj && data.obj.baseInfoId!=""&&data.obj.baseInfoId!=undefined){
+							authMark = true;
+						}else{
+							authMark = false;
+						}
+					}catch(e){
+						authMark = false;
+					}
+				},
+				error: function(xhr, type){
+					H.alert("数据加载失败！");
+				}
+			});
+		});
+	});
+
+
+
+
+	// 切换tab，加载对应的body部分
+	function clickHandler(name, url, need){
+
+		//创建时正在加载
+		var manban=$('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;">' +
+				'<div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;">' +
+				'<img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../img/loading-jiazai.gif"><p style="margin: 0;">加载中...</p></div></div>');
+		$("body").append(manban);
+
+		//H.alert("当前登录用ID=" + url);
+		if(need=='0'){
+			// 如果跳转页面需要当前用户ID（通过url是否包含"accountNum="来判断），则在url后面追加当前用户ID值
+			var str = url.substr(url.length-11, 11);
+
+			if(str == "accountNum="){
+				url += accountNum;
+			}
+
+			//删除正在加载
+			//获取div节点对象
+			var divNode2 = document.getElementById("manban");
+			//获取父节点
+			var parentNode = divNode2.parentNode;
+			parentNode.removeChild(divNode2);
+
+			//			console.log("------------"+url);
+			//			H.alert(url);
+			//			return false;
+			// DEMO 测试值
+			//url = "http://192.168.0.56:8020/CYWeb/donate/list_index_head.html?accountNum=420";
+			H.openWin(name,url);
+		}else if(authMark){
+			// 如果跳转页面需要当前用户ID（通过url是否包含"accountNum="来判断），则在url后面追加当前用户ID值
+			var str = url.substr(url.length-11, 11);
+
+			if(str == "accountNum="){
+				url += accountNum;
+			}
+
+			//删除正在加载
+			//获取div节点对象
+			var divNode2 = document.getElementById("manban");
+			//获取父节点
+			var parentNode = divNode2.parentNode;
+			parentNode.removeChild(divNode2);
+
+			//			console.log("------------"+url);
+			//			H.alert(url);
+			//			return false;
+			// DEMO 测试值
+			//url = "http://192.168.0.56:8020/CYWeb/donate/list_index_head.html?accountNum=420";
+			H.openWin(name,url);
+		}else{
+			//删除正在加载
+			//获取div节点对象
+			var divNode2 = document.getElementById("manban");
+			//获取父节点
+			var parentNode = divNode2.parentNode;
+			parentNode.removeChild(divNode2);
+			layer.alert("亲，您还未认证，请先去认证吧！");
+		}
+	}
+</script>
+</body>
+</html>

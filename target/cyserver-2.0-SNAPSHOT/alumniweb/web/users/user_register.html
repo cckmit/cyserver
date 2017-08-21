@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>会员注册</title>
+    <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+    <link rel="stylesheet" href="../css/user.css" type="text/css"/>
+
+
+    <!--CSS-->
+    <link href="../css/artDialog/ui-dialog.css" rel="stylesheet" type="text/css"/>
+
+    <!--JS-->
+    <script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+    <!--<script type="text/javascript" src="js/artDialog/dialog-plus.js"></script>-->
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/interfacepath.js"></script>
+    <script src="../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../js/B.js" type="text/javascript"></script>
+    <!--用户注册-->
+    <!--<script type="text/javascript" charset="utf-8" src="js/form/jquery.form.js"></script>-->
+    <script type="text/javascript" charset="utf-8" src="../js/Validform_v5.3.2_min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/register-validate.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+
+
+            $("#chk_id").change(function () {
+                if ($("#chk_id").prop("checked")) {
+                    $("#btnSubmit").removeProp("disabled");
+                    $("#btnSubmit").removeClass("btn-gray");
+                    $("#btnSubmit").addClass("btn-success");
+                } else {
+                    $("#btnSubmit").attr("disabled", "disabled");
+                    $("#btnSubmit").removeClass("btn-success");
+                    $("#btnSubmit").addClass("btn-gray");
+                }
+            });
+
+            initFoot();
+
+        });
+
+
+        //提交表单
+        function subForm() {
+            var txtMob = $('#txtMobile').val();
+            var txtPass = $('#txtPassword').val();
+            var txtName = $("#txtUserName").val();
+            var txtCode = $("#txtMobileCode").val();
+            B.ready(function () {
+                interface.userRegister.jsonData.content.phoneNum = txtMob.toString();
+                interface.userRegister.jsonData.content.password = txtPass.toString();
+                interface.userRegister.jsonData.content.name = txtName.toString();
+                interface.userRegister.jsonData.content.checkCode = txtCode.toString();
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl + interface.userRegister.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userRegister.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("---register---" + JSON.stringify(data));
+                        $(".react").empty();
+
+//                        //判断按钮的状态
+                        if(data.success) {
+                            $("#btnSubmit").val(data.msg);
+                            $("#btnSubmit").removeClass("btn-gray");
+                            $("#btnSubmit").addClass("btn-success");
+                        }else{
+                            $("#btnSubmit").val("注册");
+                            $("#btnSubmit").attr("disabled", "disabled");
+                            $("#btnSubmit").addClass("btn-gray");
+                            $(".react").html('<span style="color:#FF0000">'+data.msg+'</span>');
+                        }
+
+                    },
+                    error: function (xhr, type) {
+                    }
+                });
+            });
+        }
+
+
+        // 验证码获取后60s倒计时
+        var wait = 60;
+        function times(val){
+            if(wait == 0){
+                val.text("重新获取验证码");
+                val.removeAttr("disabled");
+                val.removeClass("gray_button");
+                wait = 60;
+            }else{
+                val.attr("disabled","disabled");
+                val.addClass("gray_button");
+                setTimeout(function(){
+                    times(val);
+                },1000)
+                val.text(wait+" 重新获取验证码");
+                wait--;
+            }
+        }
+
+        // 手机号格式验证
+        function isMobile(inputString){
+            var partten = /^1[3,5,8]\d{9}$/;
+            var fl=false;
+            if(partten.test(inputString))
+            {
+        //                alert('是手机号码');
+        return true;
+        }
+        else
+        {
+            return false;
+//                alert('不是手机号码');
+        }
+
+        }
+
+        // 获取验证码
+        function getCode() {
+            var txtMob = $('#txtMobile').val();
+            // 判断手机号是否有值
+            if (txtMob == '') {
+                $("#txtMobile").parent().find(".Validform_checktip").html("<span style='colo=#F00'>请输入手机号码</span>") ;
+                return false;
+
+            }
+            // 判断手机号格式是否正确
+            else if (!isMobile(txtMob)) {
+                $("#txtMobile").parent().find(".Validform_checktip").html("<span style='colo=#F00'>手机号码格式不正确</span>");
+                return false;
+
+            }
+            else {
+                B.ready(function () {
+                    interface.userCodeGet.jsonData.content.phoneNum = txtMob.toString();
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl + interface.userCodeGet.url,
+                        data: {
+                            jsonStr: JSON.stringify(interface.userCodeGet.jsonData)
+                        },
+
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log("---register---" + JSON.stringify(data));
+
+                            if($('.get-mobile-code-btn').attr("disabled") == "disabled"){
+                                return;
+                            }else{
+                                times($('.get-mobile-code-btn'));
+                            }
+
+
+                        },
+                        error: function (xhr, type) {
+                        }
+                    });
+                });
+
+            }
+
+
+        }
+
+        window.onresize = function () {
+            initFoot();
+        }
+
+        function initFoot(){
+            var windowHeight = $(window).height() ;
+            if(windowHeight > 200) {
+                $(".section").css("min-height",windowHeight-225);
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+<!--这是顶部::start-->
+<div id="head">
+
+    <div class="lines">
+    </div>
+
+    <div class="header_nav">
+    </div>
+
+    <div class="header_content">
+    </div>
+
+</div>
+<!--这是顶部::end-->
+
+<div class="dengluTankuang"></div>
+
+<!--新闻栏目::start-->
+<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+    <tr>
+        <td align="left" valign="top">
+
+            <div class="main-box">
+                <div class="section clearfix">
+
+                    <div class="main-tit">
+                        <h2>会员注册</h2>
+                    </div>
+                    <div class="inner-box">
+                        <form id="regform" name="regform">
+                            <div class="dl-list">
+                                <dl>
+                                    <dt>真实姓名：</dt>
+                                    <dd>
+                                        <input id="txtUserName" name="txtUserName" type="text" class="input txt"
+                                               placeholder="输入登录用户名" datatype="zeName" nullmsg="请输入登录的用户名" sucmsg=" "/>
+                                        <!--<span class="Validform_checktip">请输入登录的用户名</span>-->
+                                    </dd>
+                                </dl>
+                                <!--开放注册及手机注册-->
+                                <dl>
+                                    <dt>手&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;机：</dt>
+                                    <dd>
+                                        <input id="txtMobile" name="txtMobile" type="text" class="input txt"
+                                               placeholder="输入手机号码" datatype="m" nullmsg="请输入手机号码" errormsg="手机号码格式不正确" sucmsg=" "/>
+                                        <!--<span class="Validform_checktip">请输入手机号码</span>-->
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</dt>
+                                    <dd>
+                                        <input id="txtPassword" name="txtPassword" type="password" class="input txt"
+                                               placeholder="输入登录密码" datatype="*6-20" nullmsg="请输入登录密码"
+                                               errormsg="密码范围在6-20位之间" sucmsg=" "/>
+                                        <!--<span class="Validform_checktip">请输入6-20位的登录密码</span>-->
+                                    </dd>
+                                </dl>
+                                <dl>
+                                    <dt>确认密码：</dt>
+                                    <dd>
+                                        <input id="txtPassword1" name="txtPassword1" type="password" class="input txt"
+                                               placeholder="请再次输入密码" datatype="*" recheck="txtPassword"
+                                               nullmsg="请再输入一次密码" errormsg="两次输入的密码不一致" sucmsg=" "/>
+                                        <!--<span class="Validform_checktip">请再次输入登录密码</span>-->
+                                    </dd>
+                                </dl>
+
+                                <!--/开放注册及手机注册-->
+                                <dl>
+                                    <dt>短信验证码：</dt>
+                                    <dd>
+                                        <input id="txtMobileCode" name="txtMobileCode" type="text" class="input code"
+                                               placeholder="输入验证码" datatype="s4-20" nullmsg="请输验证码" sucmsg=" "/>
+                                        <a onclick="getCode();" class="blue-button get-mobile-code-btn " href="javascript:void(0);">获取验证码</a><span
+                                            id="hide_tip" style="display:none;"></span>
+                                    </dd>
+                                </dl>
+
+                                <!--认证协议-->
+                                <dl>
+                                    <dt>
+                                        <input type="checkbox" id="chk_id">
+                                    </dt>
+                                    <dd>
+                                        <span><a href="javascript:;">窗友软件许可及服务协议</a></span>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt></dt>
+                                    <dd>
+                                        <input id="btnSubmit" name="btnSubmit" onclick="subForm();" class="btn-gray"
+                                               type="button" value="注册" disabled/>
+                                        <span class="react"></span>
+
+                                    </dd>
+                                </dl>
+                            </div>
+
+                        </form>
+                    </div>
+                    <!--用户注册-->
+
+                </div>
+            </div>
+
+        </td>
+    </tr>
+</table>
+<!--新闻栏目::end-->
+<!--顶部线条::start-->
+<!--<div id="top_line"></div>-->
+<div id="footer_line"></div>
+<!--顶部线条::end-->
+
+</body>
+
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>

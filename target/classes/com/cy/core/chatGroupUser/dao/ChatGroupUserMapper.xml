@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.chatGroupUser.dao.ChatGroupUserMapper">
+
+    <resultMap type="com.cy.core.chatGroupUser.entity.ChatGroupUser" id="chatGroupUserResultMap">
+        <id column="id" property="id"/>
+        <result column="group_id" property="groupId"/>
+		<result column="user_id" property="userId"/>
+		<result column="nick_name" property="nickName"/>
+		<result column="nick_name_flag" property="nickNameFlag"/>
+		<result column="user_photo" property="userPhoto"/>
+		<result column="background" property="background"/>
+		<result column="notice_flag" property="noticeFlag"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+    <select id="query" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultMap="chatGroupUserResultMap">
+        select c.*
+       	from cy_chat_group_user c
+        WHERE c.del_flag = '0'
+			<if test="groupId!= null and groupId!= ''">
+				and c.group_id= #{groupId}
+			</if>
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="nickName!= null and nickName!= ''">
+				and c.nick_name= #{nickName}
+			</if>
+			<if test="nickNameFlag!= null and nickNameFlag!= ''">
+				and c.nick_name_flag= #{nickNameFlag}
+			</if>
+			<if test="userPhoto!= null and userPhoto!= ''">
+				and c.user_photo= #{userPhoto}
+			</if>
+			<if test="background!= null and background!= ''">
+				and c.background= #{background}
+			</if>
+			<if test="noticeFlag!= null and noticeFlag!= ''">
+				and c.notice_flag= #{noticeFlag}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+        order by c.update_date desc
+
+		<if test="start != null and start != '' and rows != null and rows != ''">
+			limit #{start},#{rows}
+		</if>
+    </select>
+
+	<!-- 查询群成员列表 -->
+    <select id="queryGroupUserInterface" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultType="java.util.Map">
+		select
+		c.user_id AS userId,
+		c.nick_name AS userName ,
+		p.phoneNum AS phoneNum,
+		p.picture AS pictureUrl ,
+		p.sex AS sex ,
+		p.profession AS profession ,
+		p.hobby AS hobby ,
+		p.address AS address ,
+		p.baseInfoId AS baseInfoId ,
+		p.classes AS departName ,
+		p.workUtil AS workUtil
+		from cy_chat_group_user c
+		JOIN cy_userprofile p ON p.accountNum = c.user_id
+		WHERE c.del_flag = '0'
+		<if test="groupId!= null and groupId!= ''">
+			and c.group_id= #{groupId}
+		</if>
+		<if test="userId!= null and userId!= ''">
+			and c.user_id= #{userId}
+		</if>
+		<if test="nickName!= null and nickName!= ''">
+			and c.nick_name= #{nickName}
+		</if>
+		<if test="nickNameFlag!= null and nickNameFlag!= ''">
+			and c.nick_name_flag= #{nickNameFlag}
+		</if>
+		<if test="userPhoto!= null and userPhoto!= ''">
+			and c.user_photo= #{userPhoto}
+		</if>
+		<if test="background!= null and background!= ''">
+			and c.background= #{background}
+		</if>
+		<if test="noticeFlag!= null and noticeFlag!= ''">
+			and c.notice_flag= #{noticeFlag}
+		</if>
+		<if test="createDate!= null and createDate!= ''">
+			and c.create_date= #{createDate}
+		</if>
+		<if test="createBy!= null and createBy!= ''">
+			and c.create_by= #{createBy}
+		</if>
+		<if test="updateDate!= null and updateDate!= ''">
+			and c.update_date= #{updateDate}
+		</if>
+		order by c.update_date desc
+    </select>
+
+	<!-- 查询班级群成员列表 -->
+    <select id="queryClassGroupUserInterface" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultType="java.util.Map">
+		SELECT
+			c.accountNum AS userId,
+			c.user_name AS userName ,
+			p.picture AS pictureUrl ,
+			c.sex AS sex ,
+			c.user_id AS baseInfoId ,
+			c.tel_id AS phoneNum,
+			c.industryType AS profession ,
+			c.is_class_admin AS isAdmin ,
+			p.hobby AS hobby ,
+			p.address AS address ,
+			p.classes AS departName ,
+			p.workUtil AS workUtil
+		FROM cy_user_info c
+		JOIN cy_chat_dept_group dg ON dg.dept_id = LEFT (c.user_id,16)
+		LEFT JOIN cy_userprofile p ON p.accountNum = c.accountNum
+		WHERE 1=1
+		<if test="groupId!= null and groupId!= ''">
+			and dg.group_id= #{groupId}
+		</if>
+		<if test="userId!= null and userId!= ''">
+			and c.accountNum= #{userId}
+		</if>
+		<if test="hasAccountNum!= null and hasAccountNum == '1'">
+			and c.accountNum IS NOT NULL AND TRIM(c.accountNum) != ''
+		</if>
+    </select>
+
+	<!-- 查询班级群成员列表4App -->
+	<select id="queryClassGroupUserForApp" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultType="java.util.Map">
+		SELECT
+		c.accountNum AS userId,
+		c.user_name AS userName ,
+		p.picture AS pictureUrl ,
+		c.sex AS sex ,
+		c.user_id AS baseInfoId ,
+		c.tel_id AS phoneNum,
+		c.industryType AS profession ,
+		c.is_class_admin AS isAdmin ,
+		p.hobby AS hobby ,
+		p.address AS address ,
+		p.classes AS departName ,
+		p.workUtil AS workUtil,
+		<if test="userId != null and userId != ''">
+			CASE(SELECT count(1) FROM cy_chat_contacts ccc WHERE c.accountNum=ccc.friend_id AND ccc.user_id = #{userId} AND ccc.status=1)
+			WHEN 0 THEN '0'
+			ELSE '1' END
+			isFriend,
+		</if>
+		c.mobile_local AS mobileArea
+		FROM cy_user_info c
+		JOIN cy_chat_dept_group dg ON dg.dept_id = LEFT (c.user_id,16)
+		LEFT JOIN cy_userprofile p ON p.accountNum = c.accountNum
+		WHERE dg.group_id= #{groupId}
+	</select>
+	<!-- 查询群成员列表4App -->
+	<select id="queryGroupUserForApp" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultType="java.util.Map">
+		select
+		c.user_id AS userId,
+		c.nick_name AS userName ,
+		p.phoneNum AS phoneNum,
+		p.picture AS pictureUrl ,
+		p.sex AS sex ,
+		p.profession AS profession ,
+		p.hobby AS hobby ,
+		p.address AS address ,
+		p.baseInfoId AS baseInfoId ,
+		p.groupName AS departName ,
+		p.workUtil AS workUtil,
+		<if test="userId != null and userId != ''">
+			CASE(SELECT count(1) FROM cy_chat_contacts ccc WHERE c.user_id=ccc.friend_id AND ccc.user_id = #{userId})
+			WHEN 0 THEN '0'
+			ELSE '1' END
+			isFriend,
+		</if>
+		cm.mobileArea
+		from cy_chat_group_user c
+		JOIN cy_userprofile p ON p.accountNum = c.user_id
+		LEFT JOIN cy_mobile cm ON LEFT(p.phoneNum,7) = cm.mobileNumber
+		WHERE c.del_flag = '0' AND c.group_id= #{groupId}
+		order by c.update_date desc
+	</select>
+
+	<!-- 查询好友信息数据 -->
+
+    <select id="count" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser" resultType="long">
+        select count(c.id) from cy_chat_group_user c
+        WHERE c.del_flag = '0'
+			<if test="groupId!= null and groupId!= ''">
+				and c.group_id= #{groupId}
+			</if>
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="nickName!= null and nickName!= ''">
+				and c.nick_name= #{nickName}
+			</if>
+			<if test="nickNameFlag!= null and nickNameFlag!= ''">
+				and c.nick_name_flag= #{nickNameFlag}
+			</if>
+			<if test="userPhoto!= null and userPhoto!= ''">
+				and c.user_photo= #{userPhoto}
+			</if>
+			<if test="background!= null and background!= ''">
+				and c.background= #{background}
+			</if>
+			<if test="noticeFlag!= null and noticeFlag!= ''">
+				and c.notice_flag= #{noticeFlag}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="chatGroupUserResultMap">
+        select c.*
+        from cy_chat_group_user c
+       	where c.id=#{id}
+    </select>
+
+	<insert id="insert">
+		INSERT INTO cy_chat_group_user(
+			id,
+			group_id,
+			user_id,
+			nick_name,
+			nick_name_flag,
+			user_photo,
+			background,
+			notice_flag,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+ 		) VALUES (
+			#{id},
+			#{groupId},
+			#{userId},
+			#{nickName},
+			#{nickNameFlag},
+			#{userPhoto},
+			#{background},
+			#{noticeFlag},
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+	<insert id="insertMemeber">
+		INSERT INTO cy_chat_group_user(
+			id,
+			group_id,
+			user_id,
+			nick_name,
+			nick_name_flag,
+			user_photo,
+			background,
+			notice_flag,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+ 		) VALUES (
+			#{id},
+			#{groupId},
+			#{userId},
+			(SELECT NAME FROM cy_userprofile WHERE accountNum = #{userId}) ,
+			'1',
+			(SELECT picture FROM cy_userprofile WHERE accountNum = #{userId}),
+			#{background},
+			'1',
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser">
+        update cy_chat_group_user set
+		<if test="groupId!= null and groupId!= ''">
+			group_id= #{groupId} ,
+		</if>
+		<if test="userId!= null and userId!= ''">
+			user_id= #{userId} ,
+		</if>
+		<if test="nickName!= null and nickName!= ''">
+			nick_name= #{nickName} ,
+		</if>
+		<if test="nickNameFlag!= null and nickNameFlag!= ''">
+			nick_name_flag= #{nickNameFlag} ,
+		</if>
+		<if test="userPhoto!= null and userPhoto!= ''">
+			user_photo= #{userPhoto} ,
+		</if>
+		<if test="background!= null and background!= ''">
+			background= #{background} ,
+		</if>
+		<if test="noticeFlag!= null and noticeFlag!= ''">
+			notice_flag= #{noticeFlag} ,
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+			update_date = now()
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="list">
+        update cy_chat_group_user
+		set
+			del_flag=1,
+			update_date = now()
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+    <delete id="delete" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser">
+        update cy_chat_group_user
+        set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+        where id = #{id}
+    </delete>
+
+	<!--add by jiangling-->
+	<!--查询群组组员-->
+	<select id="queryGroupUser" parameterType="com.cy.core.chatGroupUser.entity.ChatGroupUser"
+			resultMap="chatGroupUserResultMap">
+		select c.*
+        from cy_chat_group_user c
+       	where c.user_id=#{userId} and c.group_id = #{groupId} and c.del_flag='0'
+	</select>
+
+	<!--更新del_flag-->
+	<update id="updateDelFlag" parameterType="String">
+		update cy_chat_group_user
+		set del_flag = 1,update_date = now()
+		where id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.docount.dao.DoCountMapper">
+	<resultMap type="com.cy.core.docount.entity.DoCount" id="countResultMap">
+		<!-- <id column="countId" property="countId"/> -->
+		<result column="countUsers" property="countUsers"/>
+		<result column="full_name" property="fullName"/>
+		<result column="dept_id" property="deptId"/>
+		<result column="dept_name" property="deptName"/>
+		<result column="age_name" property="ageName"/>
+		<result column="college_name" property="collegeName"/>
+		<result column="class_name" property="className"/>
+		
+<!-- 		<collection property="list" ofType="com.cy.core.userinfo.entity.UserInfo">
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="url" property="url" />
+			<result column="pid" property="pid" />
+			<result column="iconCls" property="iconCls" />
+			<result column="type" property="type" />
+			<result column="seq" property="seq" />
+		</collection> -->
+	</resultMap>
+
+
+	<select id="countByClass" parameterType="map" resultMap="countResultMap">
+
+		SELECT
+			tbc.*,
+			tbd.dept_name AS college_name,
+			tbd.parent_id AS parent_id3
+		FROM
+			(
+				SELECT
+					tba.*, tbb.dept_name AS age_name,
+					tbb.parent_id AS parent_id2
+				FROM
+					(
+						SELECT
+							count(u.user_id) AS countUsers,
+							d.dept_name AS class_name,
+							d.dept_id,
+							d.parent_id
+						FROM
+							cy_user_info u
+						LEFT JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id
+						
+							<where>
+								<if test="location!=null and location!=''">
+									and u.resourceArea like concat('%',#{location},'%')
+								</if>
+								<if test="background!=null and background!=''">
+									and u.studentType like concat('%',#{background},'%')
+								</if>
+								<if test="department!=null and department!=''">
+									and u.user_id like concat('%',#{department},'%')
+								</if>
+								<if test="joinYear!=null and joinYear!=''">
+									and u.user_id like concat('%',#{joinYear},'%')
+								</if>
+								<if test="specialty!=null and specialty!=''">
+									and u.user_id like concat('%',#{specialty},'%')
+								</if>
+								<if test="school!=null and school!=''">
+									and u.user_id like concat('%',#{school},'%')
+								</if>
+								<if test="majorId!=null and majorId!=''">
+									and u.majorId = #{majorId}
+								</if>
+								<if test="sex!=null and sex!=''">
+									and u.sex like concat('%',#{sex},'%')
+								</if>
+								<if test="birthDate!=null and birthDate!=''">
+									and u.birthDay like concat('%',#{birthDate},'%')
+								</if>
+								
+							</where>
+						
+						GROUP BY
+							d.dept_id
+					) tba
+				LEFT OUTER JOIN cy_dept_info tbb ON (tba.parent_id = tbb.dept_id)
+			) tbc
+		LEFT OUTER JOIN cy_dept_info tbd ON (tbc.parent_id2 = tbd.dept_id)
+		ORDER BY
+			dept_id DESC
+
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="rowsForCountByClass" parameterType="map" resultType="long">
+		SELECT count(tba.countUsers) AS numOfRows FROM
+		 (SELECT count(u.user_id) AS countUsers from cy_user_info u left join cy_dept_info d 
+			on LEFT(u.user_id,16) = d.dept_id 
+			
+				<where>
+					<if test="location!=null and location!=''">
+						and u.resourceArea like concat('%',#{location},'%')
+					</if>
+					<if test="background!=null and background!=''">
+						and u.studentType like concat('%',#{background},'%')
+					</if>
+					<if test="department!=null and department!=''">
+						and u.user_id like concat('%',#{department},'%')
+					</if>
+					<if test="joinYear!=null and joinYear!=''">
+						and u.user_id like concat('%',#{joinYear},'%')
+					</if>
+					<if test="specialty!=null and specialty!=''">
+						and u.user_id like concat('%',#{specialty},'%')
+					</if>
+					<if test="school!=null and school!=''">
+						and u.user_id like concat('%',#{school},'%')
+					</if>
+					<if test="majorId!=null and majorId!=''">
+						and u.majorId = #{majorId}
+					</if>
+					<if test="sex!=null and sex!=''">
+						and u.sex like concat('%',#{sex},'%')
+					</if>
+					<if test="birthDate!=null and birthDate!=''">
+						and u.birthDay like concat('%',#{birthDate},'%')
+					</if>
+				</where>
+			
+			GROUP BY d.dept_id) tba
+	</select>
+	
+	<select id="countByCollege" parameterType="map" resultMap="countResultMap" >
+		
+		SELECT count(u.user_id) AS countUsers, d.dept_name AS college_name, d.dept_id ,d.parent_id from cy_user_info u left join cy_dept_info d 
+			on LEFT(u.user_id,10) = d.dept_id 
+			
+				<where>
+					<if test="location!=null and location!=''">
+						and u.resourceArea like concat('%',#{location},'%')
+					</if>
+					<if test="background!=null and background!=''">
+						and u.studentType like concat('%',#{background},'%')
+					</if>
+					<if test="department!=null and department!=''">
+						and u.user_id like concat('%',#{department},'%')
+					</if>
+					<if test="joinYear!=null and joinYear!=''">
+						and u.user_id like concat('%',#{joinYear},'%')
+					</if>
+					<if test="specialty!=null and specialty!=''">
+						and u.user_id like concat('%',#{specialty},'%')
+					</if>
+					<if test="school!=null and school!=''">
+						and u.user_id like concat('%',#{school},'%')
+					</if>
+					<if test="majorId!=null and majorId!=''">
+						and u.majorId = #{majorId}
+					</if>
+					<if test="sex!=null and sex!=''">
+						and u.sex like concat('%',#{sex},'%')
+					</if>
+					<if test="birthDate!=null and birthDate!=''">
+						and u.birthDay like concat('%',#{birthDate},'%')
+					</if>
+				</where>
+			
+			GROUP BY d.dept_id ORDER BY dept_id DESC 
+		
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="rowsForCountByCollege" parameterType="map" resultType="long">
+		SELECT count(tba.countUsers) AS numOfRows FROM
+		 (SELECT count(u.user_id) AS countUsers from cy_user_info u left join cy_dept_info d 
+			on LEFT(u.user_id,10) = d.dept_id 
+			
+				<where>
+					<if test="location!=null and location!=''">
+						and u.resourceArea like concat('%',#{location},'%')
+					</if>
+					<if test="background!=null and background!=''">
+						and u.studentType like concat('%',#{background},'%')
+					</if>
+					<if test="department!=null and department!=''">
+						and u.user_id like concat('%',#{department},'%')
+					</if>
+					<if test="joinYear!=null and joinYear!=''">
+						and u.user_id like concat('%',#{joinYear},'%')
+					</if>
+					<if test="specialty!=null and specialty!=''">
+						and u.user_id like concat('%',#{specialty},'%')
+					</if>
+					<if test="school!=null and school!=''">
+						and u.user_id like concat('%',#{school},'%')
+					</if>
+					<if test="majorId!=null and majorId!=''">
+						and u.majorId = #{majorId}
+					</if>
+					<if test="sex!=null and sex!=''">
+						and u.sex like concat('%',#{sex},'%')
+					</if>
+					<if test="birthDate!=null and birthDate!=''">
+						and u.birthDay like concat('%',#{birthDate},'%')
+					</if>
+				</where>
+			
+			GROUP BY d.dept_id) tba
+	</select>
+	
+	<select id="getAllProvince" resultType="com.cy.core.docount.entity.DoCount">
+		SELECT id AS provinceId, provinceName FROM cy_province order by orderId
+	</select>
+	
+	<select id="getAllCollege" resultType="com.cy.core.docount.entity.DoCount">
+		select DISTINCT(dept_name) AS deptName, dept_id AS deptId  from cy_dept_info where LENGTH(dept_id) = 10 order by dept_name
+	</select>
+	
+	<select id="getAllAge" resultType="com.cy.core.docount.entity.DoCount">
+		select DISTINCT(dept_name) AS deptName, dept_id AS deptId  from cy_dept_info where LENGTH(dept_id) = 14 order by dept_name DESC
+	</select>
+	
+	<select id="getAllClass" resultType="com.cy.core.docount.entity.DoCount">
+		select DISTINCT(dept_name) AS deptName, dept_id AS deptId  from cy_dept_info where LENGTH(dept_id) = 16 order by dept_name
+	</select>
+	
+	<select id="getAllBirthDate" resultType="com.cy.core.docount.entity.DoCount">
+		
+		SELECT tba.birthDate, concat(tba.birthDate,'年') AS deptName FROM
+		(select DISTINCT(LEFT(birthDay,4)) AS birthDate FROM cy_user_info 
+					WHERE birthDay is not null) tba ORDER BY tba.birthDate DESC
+
+	</select>
+	
+</mapper>

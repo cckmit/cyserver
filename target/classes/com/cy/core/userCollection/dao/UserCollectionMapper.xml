@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.userCollection.dao.UserCollectionMapper">
+	<insert id="insertUserCollection" parameterType="com.cy.core.userCollection.entity.UserCollection">
+		insert into
+		cy_user_collection (accountNum,address,createTime)
+		values(#{accountNum},#{address},now())
+	</insert>
+	<!--用户信息收集个数获取-->
+	<select id="userCollectionCount"  resultType="long">
+		select
+		count(collectionId)
+		from
+		cy_user_collection
+	</select>
+</mapper>

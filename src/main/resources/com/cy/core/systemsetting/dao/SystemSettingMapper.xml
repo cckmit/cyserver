@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.systemsetting.dao.SystemSettingMapper">
+	<resultMap type="com.cy.core.systemsetting.entity.SystemSetting"
+			   id="systemSettingMap">
+		<id column="systemId" property="systemId" />
+		<result column="smtpHost" property="smtpHost" />
+		<result column="smtpPort" property="smtpPort" />
+		<result column="email_account" property="email_account" />
+		<result column="email_password" property="email_password" />
+		<result column="download_app_url" property="download_app_url" />
+		<result column="partner" property="partner" />
+		<result column="key" property="key" />
+		<result column="private_key" property="private_key" />
+		<result column="wap_public_key" property="wap_public_key"/>
+		<result column="notify_url" property="notify_url" />
+		<result column="return_url" property="return_url" />
+		<result column="wap_notify_url" property="wap_notify_url" />
+		<result column="wap_return_url" property="wap_return_url" />
+		<result column="wap_merchant_url" property="wap_merchant_url" />
+		<result column="exter_invoke_ip" property="exter_invoke_ip" />
+		<result column="sms_account" property="smsAccount" />
+		<result column="sms_password" property="smsPassword" />
+		<result column="sms_url" property="smsUrl" />
+		<result column="sendType" property="sendType" />
+		<result column="smsVisitTemplate" property="smsVisitTemplate" />
+		<result column="smsCodeTemplate" property="smsCodeTemplate" />
+		<result column="smsBirthdayTemplate" property="smsBirthdayTemplate" />
+		<result column="web_homepage_api_url" property="web_homepage_api_url" />
+		<result column="is_new_type_open" property="is_new_type_open" />
+		<result column="school_logo" property="schoolLogo" />
+		<result column="seller_email" property="sellerEmail" />
+		<result column="app_id" property="appId" />
+		<result column="partner" property="partner" />
+		<result column="input_charset" property="inputCharset" />
+		<result column="alipay_public_key" property="alipayPublicKey" />
+		<result column="app_public_key" property="appPublicKey" />
+		<result column="app_private_key" property="appPrivateKey" />
+		<result column="payment_type" property="paymentType" />
+		<result column="server_url" property="serverUrl" />
+		<result column="sign_up_text" property="signUpText"/>
+		<result column="donate_text" property="donateText"/>
+		<result column="foundation_name" property="foundationName" />
+		<result column="foundation_signet" property="foundationSignet" />
+		<result column="foundation_logo" property="foundationLogo"/>
+		<result column="foundation_smtpHost" property="foundationSmtpHost"/>
+		<result column="foundation_smtpPort" property="foundationSmtpPort" />
+		<result column="foundation_email_account" property="foundationEmailAccount" />
+		<result column="foundation_email_password" property="foundationEmailPassword"/>
+		<result column="is_audit_personal_activity" property="is_audit_personal_activity"/>
+		<result column="client_id" property="clientId"/>
+		<result column="client_secret" property="clientSecret"/>
+		<result column="cloud_user_name" property="cloudUserName"/>
+		<result column="cloud_user_password" property="cloudUserPassword"/>
+	</resultMap>
+	<select id="selectAll" resultMap="systemSettingMap">
+		select * from cy_system_setting
+	</select>
+	<select id="selectById" parameterType="long" resultMap="systemSettingMap">
+		select *
+		from cy_system_setting where systemId=#{systemId}
+	</select>
+	<update id="update" parameterType="com.cy.core.systemsetting.entity.SystemSetting">
+		update cy_system_setting set
+		school_logo=#{schoolLogo},
+		smtpHost=#{smtpHost},
+		smtpPort=#{smtpPort},
+		email_account=#{email_account},
+		email_password=#{email_password},
+		download_app_url=#{download_app_url},
+		`key`=#{key},
+		notify_url=#{notify_url},
+		return_url=#{return_url},
+		exter_invoke_ip=#{exter_invoke_ip},
+		sms_account=#{smsAccount},
+		sms_password=#{smsPassword},
+		sms_url=#{smsUrl},
+		sendType=#{sendType},
+		wap_public_key=#{wap_public_key},
+		smsCodeTemplate=#{smsCodeTemplate},
+		smsVisitTemplate=#{smsVisitTemplate},
+		smsBirthdayTemplate=#{smsBirthdayTemplate},
+		private_key=#{private_key},
+		wap_notify_url=#{wap_notify_url},
+		wap_return_url=#{wap_return_url},
+		wap_merchant_url=#{wap_merchant_url},
+		web_homepage_api_url=#{web_homepage_api_url},
+		is_new_type_open=#{is_new_type_open},
+		seller_email=#{sellerEmail},
+		app_id=#{appId},
+		partner=#{partner},
+		input_charset=#{inputCharset},
+		alipay_public_key=#{alipayPublicKey},
+		app_public_key=#{appPublicKey},
+		app_private_key=#{appPrivateKey},
+		payment_type=#{paymentType},
+		server_url=#{serverUrl},
+		sign_up_text=#{signUpText},
+		donate_text=#{donateText},
+		foundation_name=#{foundationName},
+		foundation_signet=#{foundationSignet},
+		foundation_logo=#{foundationLogo},
+		foundation_smtpHost=#{foundationSmtpHost},
+		foundation_smtpPort=#{foundationSmtpPort},
+		foundation_email_account=#{foundationEmailAccount},
+		foundation_email_password=#{foundationEmailPassword},
+		is_audit_personal_activity=#{is_audit_personal_activity},
+		client_id=#{clientId},
+		client_secret=#{clientSecret},
+		cloud_user_name=#{cloudUserName},
+		cloud_user_password=#{cloudUserPassword}
+		where
+		systemId=#{systemId}
+	</update>
+	<insert id="insert" parameterType="com.cy.core.systemsetting.entity.SystemSetting"
+			useGeneratedKeys="true" keyProperty="systemId">
+		insert into
+		cy_system_setting(school_logo,smtpHost,smtpPort,email_account,email_password,download_app_url,
+				`key`,private_key,notify_url,return_url,wap_notify_url,wap_return_url,wap_merchant_url,
+				exter_invoke_ip,sms_account,sms_password,sms_url,sendType,smsVisitTemplate,smsCodeTemplate,
+				smsBirthdayTemplate,wap_public_key, web_homepage_api_url, is_new_type_open
+				,partner,seller_email,app_id,input_charset,alipay_public_key,app_public_key,app_private_key,payment_type,server_url,
+				sign_up_text,donate_text,foundation_name,foundation_signet,foundation_logo,foundation_smtpHost,foundation_smtpPort,
+				foundation_email_account,foundation_email_password,is_audit_personal_activity,client_id,client_secret,cloud_user_name,cloud_user_password
+				)
+		values(#{schoolLogo},#{smtpHost},#{smtpPort},#{email_account},#{email_password},#{download_app_url},
+				#{key},#{private_key},#{notify_url},#{return_url},#{wap_notify_url},#{wap_return_url},
+				#{wap_merchant_url},#{exter_invoke_ip},#{smsAccount},#{smsPassword},#{smsUrl},#{sendType},
+				#{smsVisitTemplate},#{smsCodeTemplate},#{smsBirthdayTemplate},#{wap_public_key},#{web_homepage_api_url},#{is_new_type_open}
+				,#{partner},#{seller_email},#{appId},#{inputCharset},#{alipayPublicKey},#{appPublicKey},#{appPrivateKey},#{paymentType},#{serverUrl},
+				#{signUpText},#{donateText},#{foundationName},#{foundationSignet},#{foundationLogo},#{foundationSmtpHost},#{foundationSmtpPort},
+				#{foundationEmailAccount},#{foundationEmailPassword},#{is_audit_personal_activity},#{clientId},#{clientSecret},#{cloudUserName},#{cloudUserPassword}
+				)
+	</insert>
+</mapper>

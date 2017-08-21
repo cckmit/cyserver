@@ -6,16 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="business" />
-        <module name="web" />
-        <module name="web-interface" />
+        <module name="cyserver" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="business" target="1.7" />
-      <module name="ctravel" target="1.7" />
-      <module name="web" target="1.7" />
-      <module name="web-interface" target="1.7" />
+      <module name="cyserver" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,0 +1,62 @@
+
+<div class="seach_box">
+    <div class="seach_zhong">
+        <div class="sousuo_box">
+            <from action="" onsubmit="return false;">
+                <i class="fa fa-search iconss"></i>
+                <input type="search" placeholder="搜索职位/公司" ng-keypress="shousuoLists($event)" ng-model="searchs">
+                <a class="clear_seach" href="javascript:;" ng-hide="clearSearch" ng-click="clearInput()"><i class="fa fa-close"></i></a>
+            </from>
+        </div>
+    </div>
+</div>
+<div class="list_container">
+    <ion-view>
+        <ion-content class="main1_center">
+            <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+
+            <ul class="qz_list">
+                <li>
+                    <div class="qz_left_pic">
+                        <img src="img/zanwupic.png">
+                    </div>
+                    <div class="qz_right_xx">
+                        <div class="qz_wenzi qz_zhiwei">
+                            <div class="wenzi_qian">急聘2017届管理实习生生生生生生生生生生生</div>
+                        </div>
+                        <div class="qz_wenzi qz_gongsi">
+                            <div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司</div>
+                            <div class="wenzi_hou">5分钟前</div>
+                        </div>
+                        <div class="qz_wenzi qz_tiaojian">
+                            <div class="wenzi_qian"> 武汉-武昌区／学历不限／本科 武汉-武昌区／学历不限／本科</div>
+                        </div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="qz_left_pic">
+                        <img src="img/zanwupic.png">
+                    </div>
+                    <div class="qz_right_xx">
+                        <div class="qz_wenzi qz_zhiwei">
+                            <div class="wenzi_qian">急聘2017届管理实习生生生生生生生生生生生</div>
+                        </div>
+                        <div class="qz_wenzi qz_gongsi">
+                            <div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司</div>
+                            <div class="wenzi_hou">5分钟前</div>
+                        </div>
+                        <div class="qz_wenzi qz_tiaojian">
+                            <div class="qz_weizhi"><i class="fa fa-map-marker"></i><span>武汉</span></div>
+                            <div class="qz_renshu"><i class="fa fa-user-o"></i><span>若干</span></div>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+
+            <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+            <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" ></ion-infinite-scroll>
+        </ion-content>
+    </ion-view>
+</div>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html style="height: auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>企业详情</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/product.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .swiper-slide-active .img_canp{
+            transition: all 0.4s ease 0s;
+            -moz-transform:scale(1.2);
+            -webkit-transform:scale(1.2);
+            -o-transform:scale(1.2);
+            /*transform: translate(100px);*/
+        }
+
+        .swiper-slide-prev .img_canp{
+            transform: translate(85px);
+        }
+        .swiper-slide-next .img_canp{
+            transform: translate(-85px);
+        }
+    </style>
+
+    <script type="text/html" id="company_top">
+        <div class="H-flexbox-horizontal H-theme-background-color-white">
+            <div class="H-padding-vertical-both-8">
+                <img onerror="javascript:this.src='<%=B.getImageAbsoluteUrl(companyTop.schoolLogo)%>';" src="<%=B.getImageAbsoluteUrl(companyTop.logoUrl)%>" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+            </div>
+            <div class="H-flex-item H-margin-10">
+                <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                    <span class="H-display-block H-theme-font-color-black H-flex-item H-text-align-left H-font-size-14">
+                        <%=companyTop.name%>
+                    </span>
+                    <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-999 H-font-size-12" style="max-width: 125px">
+                        <i class="H-iconfont H-icon-find H-font-size-14 H-theme-font-color-999"></i>
+                        <span class="H-margin-horizontal-right-5 liulans">
+                            <%=companyTop.clickNumber%>
+                        </span>
+
+                        <%
+                        if(companyTop.hasPraised==0){
+                        %>
+                            <i id="dz_btn" onclick="danzan('<%=companyTop.hasPraised%>')" class="zz_dianz H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color-999"></i>
+                            <span id="z_zannum" class="zz_dianz H-margin-horizontal-right-5 fudznum">
+                                <%=companyTop.praiseNumber%>
+                            </span>
+                        <%
+                        }else{
+                        %>
+                            <i id="dz_btn" onclick="danzan('<%=companyTop.hasPraised%>')" class="zz_dianz H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color1"></i>
+                            <span id="z_zannum" class="zz_dianz H-margin-horizontal-right-5 fudznum H-theme-font-color1">
+                                <%=companyTop.praiseNumber%>
+                            </span>
+                        <%
+                        }
+                        %>
+
+
+
+
+                    </span>
+                </div>
+                <div class="H-theme-font-color-999 H-text-show-row-1 H-margin-vertical-top-0 H-font-size-14" style="color:#0F88EB" onclick="window.location.href='<%=companyTop.website%>';return false">
+                    <%=companyTop.website%>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="company_img">
+        <div id="canpinList" style="position: relative;" >
+            <div class="H-swiper H-width-100-percent H-box-sizing-border-box H-overflow-scrolling" style="height:490px;">
+                <div class="swiper-container  swiper-normal H-position-relative H-width-100-percent H-height-100-percent">
+                    <div class="swiper-wrapper">
+                        <%
+                        if(companyImg && companyImg!=''){
+                            for(var i in companyImg){
+                            %>
+                            <div class="swiper-slide H-position-relative" style="box-sizing: border-box; padding: 55px 70px;">
+
+                                <!--
+                                <%
+                                if(!companyImg[i].posterPic || companyImg[i].posterPic=='' || !CheckImgExists(companyImg[i].posterPic)){
+                                %>
+                                <div onclick="go_proxiangq('<%=companyImg[i].id%>')" class="img_canp" align="center" style="background:url('../static/img/kongtup.png') no-repeat center center;background-size: cover;height: 333px;box-shadow: 0px 0px 10px #9c9c9c; overflow: hidden"></div>
+                                <%
+                                }else{
+                                %>
+                                <div onclick="go_proxiangq('<%=companyImg[i].id%>')" class="img_canp" align="center" style="background:url('<%=companyImg[i].posterPic%>') no-repeat center center;background-size: cover;height: 333px;box-shadow: 0px 0px 10px #9c9c9c; overflow: hidden"></div>
+                                <%
+                                }
+                                %>
+                                -->
+                                <div onclick="go_proxiangq('<%=companyImg[i].id%>')" class="img_canp" align="center" style="height: 333px;box-shadow: 0px 0px 10px #9c9c9c; overflow: hidden">
+                                    <img onerror="javascript:this.src='../static/img/nothing.jpg';" class=""  src="<%=B.getImageAbsoluteUrl(companyImg[i].posterPicUrl)%>" style="height: 100%;width: 100%">
+                                </div>
+
+                                <div class="m_jianjie" style="position: absolute; bottom: 0;left: 0;right: 0;width: 100%;box-sizing: border-box;">
+                                    <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box" style="display: table-cell; vertical-align: middle;position: relative;">
+                                        <span onclick="go_proxiangq('<%=companyImg[i].id%>')" id="" class="H-display-block H-theme-font-color-black H-flex-item H-text-align-left H-font-size-14" style="float: left;width: 100%; padding-right: 115px;">
+                                            <%=companyImg[i].name%>
+                                        </span>
+                                        <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-999 H-font-size-12" style="float: right;position: absolute; right: 0;">
+                                            <i class="H-iconfont H-icon-find H-font-size-14 H-theme-font-color-999"></i>
+                                            <span class="H-margin-horizontal-right-5">
+                                                <%=companyImg[i].clickNumber%>
+                                            </span>
+
+                                            <%
+                                            if(companyImg[i].hasPraised==0){
+                                            %>
+                                                <i onclick="danzan_fu(this,'<%=companyImg[i].hasPraised%>','<%=companyImg[i].id%>')" class="H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color-999"></i>
+                                                <span id="f_dznum" class="H-margin-horizontal-right-5">
+                                                    <%=companyImg[i].praiseNumber%>
+                                                </span>
+                                            <%
+                                            }else{
+                                            %>
+                                                <i id="f_dz_btn" onclick="danzan_fu(this,'<%=companyImg[i].hasPraised%>','<%=companyImg[i].id%>')" class="H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color1"></i>
+                                                <span id="f_dznum"  class="H-margin-horizontal-right-5 H-theme-font-color1">
+                                                    <%=companyImg[i].praiseNumber%>
+                                                </span>
+                                            <%
+                                            }
+                                            %>
+
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <%
+                            }
+                        }else{
+                        %>
+                        <div class="swiper-slide H-position-relative" style="box-sizing: border-box; padding: 55px 70px;">
+
+                            <div class="img_canp" align="center" style="background:url('../static/img/kongtu.png') no-repeat center center;background-size: cover;height: 333px;box-shadow: 0px 0px 10px #9c9c9c; overflow: hidden"></div>
+
+                            <div class="m_jianjie" style="position: absolute; bottom: 0;left: 0;right: 0;width: 100%;box-sizing: border-box;">
+                                <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box" style="display: table-cell; vertical-align: middle;position: relative;">
+                                    <span class="H-display-block H-theme-font-color-black H-flex-item H-text-align-left H-font-size-14" style="float: left;width: 100%; padding-right: 115px;">
+                                        暂无
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <%
+                        }
+                        %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="company_jiben">
+        <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">基本信息</div>
+            <span class="H-font-size-12" style="position: relative">
+                <img class="m_icon_tell" src="../static/img/tells.png" />
+                <span id="lxr_name"> <%=companyJiben.linkman%></span>：<span id="lxr_phone"> <%=companyJiben.contactNumber%></span>
+            </span>
+        </div>
+        <div id="company_jianjie" class="H-theme-font-color-333 H-padding-10 H-font-size-14">
+            <%=companyJiben.summary%>
+        </div>
+    </script>
+
+    <script type="text/html" id="company_jieshao">
+        <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">公司介绍</div>
+        </div>
+        <div class="H-theme-font-color-999 H-padding-10 H-font-size-14">
+            <%
+            if(companyJieshao.name && companyJieshao.name!=''){
+            %>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/qiyes.png" />
+                <span class="xinxi_buebi xinxi_name"><%=companyJieshao.name%></span>
+            </div>
+            <%
+            }
+            %>
+
+
+            <%
+            if(companyJieshao.typeName && companyJieshao.typeName!=''){
+            %>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/anjians.png" />
+                <span class="xinxi_buebi xinxi_leixing"><%=companyJieshao.typeName%></span>
+            </div>
+            <%
+            }
+            %>
+
+
+            <%
+            if(companyJieshao.createDate && companyJieshao.createDate!=''){
+            %>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/shijians.png" />
+                <span class="xinxi_buebi xinxi_time"><%=companyJieshao.createDate.substring(0,10)%></span>
+            </div>
+            <%
+            }
+            %>
+
+
+            <%
+            if(companyJieshao.serviceArea && companyJieshao.serviceArea!=''){
+            %>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/yewus.png" />
+                <span class="xinxi_buebi xinxi_fuwu"><%=companyJieshao.serviceArea%></span>
+            </div>
+            <%
+            }
+            %>
+
+
+            <%
+            if(companyJieshao.address && companyJieshao.address!=''){
+            %>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/diidans.png" />
+                <span class="xinxi_buebi xinxi_dizhi"><%=companyJieshao.address%></span>
+            </div>
+            <%
+            }
+            %>
+
+
+
+        </div>
+    </script>
+
+    <script type="text/html" id="company_tuwen">
+        <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">图文详情</div>
+        </div>
+        <div class="H-theme-font-color-333 H-padding-10 H-font-size-14 m_tuwen">
+            <div class='xiangqing_wenz'>
+
+                <%=B.changeSrcFromRelativeToAbsolute(companyTuwen.description)%>
+
+            </div>
+        </div>
+    </script>
+
+</head>
+
+<body class="H-flexbox-vertical content">
+
+
+
+    <div id="companyTop" class="H-flex-item H-position-relative H-box-sizing-border-box H-theme-background-color-white">
+        <!--
+            <div class="H-flexbox-horizontal H-theme-background-color-white">
+            <div class="H-padding-vertical-both-8">
+                <img id="company_logo" onerror="javascript:this.src='../static/img/logo@2x.png';" src="" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+            </div>
+            <div class="H-flex-item H-margin-10">
+                <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                    <span id="company_name" class="H-display-block H-theme-font-color-black H-flex-item H-text-align-left H-font-size-14">
+
+                    </span>
+                    <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-999 H-font-size-12">
+                        <i class="H-iconfont H-icon-find H-font-size-14 H-theme-font-color-999"></i>
+                        <span class="H-margin-horizontal-right-5 liulans">1</span>
+                        <i onclick="danzan()" class="H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color-999"></i>
+                        <span class="H-margin-horizontal-right-5 fudznum">0</span>
+                    </span>
+                </div>
+                <div id="compant_website" class="H-theme-font-color-999 H-text-show-row-1 H-margin-vertical-top-0 H-font-size-14">
+
+                </div>
+            </div>
+        </div>
+        -->
+    </div>
+
+    <div class="m_gsimg_box">
+       <!--
+        <div id="canpinList" style="position: relative;" >
+            <div class="H-swiper H-width-100-percent H-box-sizing-border-box H-overflow-scrolling" style="height:480px;">
+                <div class="swiper-container  swiper-normal H-position-relative H-width-100-percent H-height-100-percent">
+                    <div class="swiper-wrapper">
+
+                        <div class="swiper-slide H-position-relative" style="box-sizing: border-box; padding: 20px 40px;">
+                            <img onerror="javascript:this.src='../static/img/tupian@2x.png';" class="H-width-100-percent H-height-100-percent"  src="../static/img/tupian@2x.png" style="height: 400px;box-shadow: 0px 0px 10px #9c9c9c;">
+
+                            <div class="m_jianjie" style="position: absolute; bottom: 0;left: 0;right: 0;width: 100%;box-sizing: border-box;">
+                                <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                                    <span id="" class="H-display-block H-theme-font-color-black H-flex-item H-text-align-left H-font-size-14">
+                                        123
+                                    </span>
+                                    <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-999 H-font-size-12">
+                                        <i class="H-iconfont H-icon-find H-font-size-14 H-theme-font-color-999"></i>
+                                        <span class="H-margin-horizontal-right-5">1</span>
+                                        <i class="H-iconfont H-icon-ding-fill H-font-size-14 H-theme-font-color-999"></i>
+                                        <span class="H-margin-horizontal-right-5 fudznum">0</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+       -->
+    </div>
+
+    <div id="jbxx_box" class="H-theme-background-color-white" style="margin-top: 5px">
+        <!--
+            <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">基本信息</div>
+            <span class="H-font-size-12" style="position: relative">
+                <img class="m_icon_tell" src="../static/img/tells.png" />
+                <span id="lxr_name"> </span>：<span id="lxr_phone"></span>
+            </span>
+        </div>
+        <div id="company_jianjie" class="H-theme-font-color-333 H-padding-10 H-font-size-14">
+        </div>
+        -->
+    </div>
+
+    <div id="jieshao" class="H-theme-background-color-white" style="margin-top: 5px">
+        <!--
+            <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">公司介绍</div>
+        </div>
+        <div class="H-theme-font-color-999 H-padding-10 H-font-size-14">
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/qiyes.png" />
+                <span class="xinxi_buebi xinxi_name">北京信息科技邮箱公司</span>
+            </div>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/anjians.png" />
+                <span class="xinxi_buebi xinxi_leixing">创业型</span>
+            </div>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/shijians.png" />
+                <span class="xinxi_buebi xinxi_time">2016.2.2</span>
+            </div>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/yewus.png" />
+                <span class="xinxi_buebi xinxi_fuwu">工程信息服务</span>
+            </div>
+            <div class="H-padding-horizontal-left-10 H-position-relative H-margin-vertical-top-5">
+                <img class="xuebi_img" src="../static/img/diidans.png" />
+                <span class="xinxi_buebi xinxi_dizhi">北京市丰台区</span>
+            </div>
+        </div>
+        -->
+    </div>
+
+    <div id="tuwen" class="H-theme-background-color-white" style="margin-top: 5px">
+        <!--
+            <div class="H-vertical-middle" style="border-bottom: 1px solid #999999; margin: 10px; margin-bottom: 0; padding-bottom: 10px">
+            <div class="H-channel-line H-theme-background-color6 H-padding-vertical-top-15 H-padding-horizontal-left-3"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-16 H-theme-font-color-black H-text-show-row-1 H-font-weight-600 H-margin-horizontal-left-5">图文详情</div>
+        </div>
+        <div class="H-theme-font-color-333 H-padding-10 H-font-size-14 m_tuwen">
+            <img class="twxq_img" onerror="javascript:this.src='../static/img/tupian@2x.png';" src="" />
+            <div class='xiangqing_wenz'></div>
+        </div>
+        -->
+    </div>
+
+</body>
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<!--动态-->
+<script type="text/javascript">
+    // 接收URL中的参数
+    var enterpriseId = B.getUrlParamByName("enterpriseId"); //用户账号
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+    }
+
+    // 初始化页面
+    $(function(){
+        H.tppl_flag = ["<%", "%>"];
+
+        //获取企业详情
+        enterpriseConter();
+    });
+
+    //获取企业详情
+    function enterpriseConter(){
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "263","content": {"enterpriseId":"'+enterpriseId+'","accountNum":"'+accountNum+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+//                    console.log(data)
+                    if(data.obj){
+                        var render1 = H.tppl(H.D("#company_top").innerHTML);
+                        var result1 = render1({companyTop:data.obj});
+                        $('#companyTop').append(result1);
+
+
+                        var render2 = H.tppl(H.D("#company_img").innerHTML);
+                        var result2 = render2({companyImg:data.obj.productList});
+                        $('.m_gsimg_box').append(result2);
+
+
+                        var swiper = new Swiper('.swiper-normal', {
+                            mode:'horizontal',
+                            autoplayDisableOninteraction: false,
+                            onSlideChangeEnd: function(swiper){
+                            }
+
+                        });
+                        $('.m_jianjie').css('width',$(window).width());
+
+                        var render3 = H.tppl(H.D("#company_jiben").innerHTML);
+                        var result3 = render3({companyJiben:data.obj});
+                        $('#jbxx_box').append(result3);
+
+                        var render4 = H.tppl(H.D("#company_jieshao").innerHTML);
+                        var result4 = render4({companyJieshao:data.obj});
+                        $('#jieshao').append(result4);
+
+                        var render5 = H.tppl(H.D("#company_tuwen").innerHTML);
+                        var result5 = render5({companyTuwen:data.obj});
+                        $('#tuwen').append(result5);
+
+                        if(openId && openId != 'null'){
+                            var title = data.obj.name;
+                            var desc = data.obj.description;
+                            var imgUrl = B.getImageAbsoluteUrl(data.obj.logo);
+                            var shareData = {
+                                title: title,
+                                desc: desc,
+                                link: location.href.split('?')[0]+"?enterpriseId="+enterpriseId,
+                                imgUrl: imgUrl
+                            };
+                            mkShareInfo(location.href, shareData, 0);
+                        }
+
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+    //点赞
+    function danzan(num) {
+        var DQnum=parseInt($('#z_zannum').html());
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "255","content": {"bussId": "'+enterpriseId+'","userId": "'+accountNum+'","type": "30","bussType":"40"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data)
+                    if(data.success){
+                        if(num==0){
+                            H.toast(null, '点赞成功！', 2000);
+                            $("#z_zannum").html(DQnum+1);
+                            $(".zz_dianz").addClass('H-theme-font-color1').removeClass('H-theme-font-color-999');
+                            $("#dz_btn").attr('onclick','danzan(1)');
+                            H.toastTip(null, data.msg, 2000);
+                        }else{
+                            H.toast(null, '取消点赞！', 2000);
+                            $("#z_zannum").html(DQnum-1);
+                            $(".zz_dianz").addClass('H-theme-font-color-999').removeClass('H-theme-font-color1');
+                            $("#dz_btn").attr('onclick','danzan(0)')
+                            H.toastTip(null, data.msg, 2000);
+                        }
+
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+    //副点赞
+    function danzan_fu(obj,num,ids) {
+        var nums=$(obj).siblings('#f_dznum');
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "255","content": {"bussId": "'+ids+'","userId": "'+accountNum+'","type": "30","bussType":"50"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data)
+                    if(data.success){
+                        if(num==0){
+                            nums.html(parseInt(nums.html())+1);
+                            nums.addClass('H-theme-font-color1').removeClass('H-theme-font-color-999');
+                            $(obj).addClass('H-theme-font-color1').removeClass('H-theme-font-color-999');
+                            $(obj).attr('onclick','danzan_fu(this,1,"'+ids+'")');
+                            H.toastTip(null, data.msg, 2000);
+                        }else{
+                            nums.html(parseInt(nums.html())-1);
+                            nums.addClass('H-theme-font-color-999').removeClass('H-theme-font-color1');
+                            $(obj).addClass('H-theme-font-color-999').removeClass('H-theme-font-color1');
+                            $(obj).attr('onclick','danzan_fu(this,0,"'+ids+'")');
+                            H.toastTip(null, data.msg, 2000);
+                        }
+
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+
+    }
+
+    // 单机跳转产品详情
+    function go_proxiangq(productId){
+        H.openWin("产品详情", "product_detail.html?accountNum="+accountNum+"&productId="+productId);
+    }
+
+    //检测图片地址
+    function CheckImgExists(imgurl) {
+        var ImgObj = new Image(); //判断图片是否存在
+        ImgObj.src = imgurl;
+        //没有图片，则返回-1
+        if (ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+//    function CheckImgExists(site_value){
+//        var site_value = site_value;
+//        var strRegex = "^((https|http)?://)";
+//        var re=new RegExp(strRegex);
+//        if (re.test(site_value)){
+//            return true;
+//        }else{
+//            return false;
+//        }
+//    }
+
+//    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            //ios返回
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber+"&enterpriseId="+enterpriseId);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+    //返回
+    var jsonStrBut = {
+        "title":"企业详情",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/product/alumni_enterprise.html?accountNum=" + accountNum;
+
+    }
+
+</script>
+
+</html>
+

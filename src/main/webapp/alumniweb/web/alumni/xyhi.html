@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <title>总会信息</title>
+    <!--避免IE使用兼容模式-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--使用webkit内核-->
+    <meta name="renderer" content="webkit">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="校友会" name="description"/>
+    <meta content="校友会" name="author"/>
+    <!--引入css文件-->
+    <link href="../css/style.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/user.css" type="text/css" />
+
+    <!--引入js文件-->
+    <script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../js/B.js" type="text/javascript"></script>
+    <script src="../js/common.js" type="text/javascript"></script>
+    <script src="../js/interfacepath.js" type="text/javascript"></script>
+
+    <script language="javascript">
+        // 接收参数
+        var alumniId = B.getUrlParamByName("alumniId");
+
+        // 全局变量-网站栏目（包括子栏目）
+        var categoryTreeData = [];
+
+        $(function() {
+            B.ready(function() {
+                // 获取网站所有栏目（包括子栏目和不在导航上显示的校友服务）
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl + interface.loaderNav.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.loaderNav.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("------" + JSON.stringify(data));
+
+                        if(data && data.obj && data.obj.length > 0) {
+                            categoryTreeData = data.obj;
+
+                            // 初始化网站顶部导航
+//                            for(var i in categoryTreeData) {
+//                                if(categoryTreeData[i].checked){
+//                                    $("#nav").append('<li><a href=' + categoryTreeData[i].id + '"../news/list.html?categoryId=">' + categoryTreeData[i].text + '</a></li>');
+//                                }
+//                            }
+                        }
+                        //頂部導航欄添加校友分會列表
+                        //$("#nav").append('<li><a href="xyh.html">校友组织</a></li>');
+                    },
+                    error: function(xhr, type) {
+
+                    }
+                });
+                interface.zongalumniNews.jsonData.content.alumniId= alumniId.toString();
+                $.ajax({
+                    type: 'post',
+//                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                    data: {
+//                        jsonStr: '{"command": "240","content": {"alumniId":"' + alumniId + '"}}'
+//                    },
+                    url: B.serverUrl + interface.zongalumniNews.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.zongalumniNews.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        //console.log("------" + JSON.stringify(data));
+                        if(data && data.obj){
+
+                            //分會名
+                            if(data.obj.alumniName && data.obj.alumniName != '')
+                               $('#title').html(data.obj.alumniName);
+
+                            //聯繫人姓名
+                            if(data.obj.presidentName && data.obj.presidentName != '')
+                                $('#content').append('<tr><td valign="top" width="70px" height="40px" ><strong> 联系人：</strong></td><td valign="top">'+data.obj.presidentName+'</td></tr>');
+
+                            //聯繫電話
+                            if(data.obj.telephone && data.obj.telephone != '')
+                                $('#content').append('<tr><td valign="top" width="80px" height="40px" ><strong>联系电话：</strong></td><td valign="top">'+data.obj.telephone+'</td></tr>');
+
+                            //地址
+                            if(data.obj.address && data.obj.address != '')
+                                $('#content').append('<tr><td valign="top" width="80px" height="40px" ><strong>分会地址：</strong></td><td valign="top">'+data.obj.address+'</td></tr>');
+
+                            //郵箱
+                            if(data.obj.email && data.obj.email != '')
+                                $('#content').append('<tr><td valign="top" width="80px" height="40px" ><strong>E-mail：</strong></td><td valign="top"><a href="mailto:'+data.obj.email+'">'+data.obj.email+'</a></td></tr>');
+
+
+                            //創建時間
+                            if(data.obj.createTime && data.obj.createTime != '')
+                                $('#content').append('<tr><td valign="top" width="80px" height="40px" ><strong>创建时间：</strong></td><td valign="top">'+data.obj.createTime.substring(0, 10)+'</td></tr>');
+
+                            //分會類型
+//                            if(data.obj.mainType && data.obj.mainType != '')
+//                                $('#content').append('<li>分会类型：'+data.obj.mainType+'</li>');
+
+                            if(data.obj.introduction && data.obj.introduction != '')
+                            $('#content').append('<tr><td valign="top" width="80px" ><strong>分会简介：</strong></td><td >'+data.obj.introduction+'</td></tr>');
+
+                        }
+                    }
+                });
+            });
+
+            initFoot();
+        });
+
+        window.onresize = function () {
+            initFoot();
+        };
+
+        function initFoot(){
+            var windowHeight = $(window).height() ;
+            if(windowHeight > 200) {
+                $(".news_view").css("min-height",windowHeight-220);
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+
+<!--这是顶部::start-->
+<div id="head">
+
+    <div class="lines">
+    </div>
+
+    <div class="header_nav">
+    </div>
+
+    <div class="header_content">
+    </div>
+
+</div>
+<!--这是顶部::end-->
+<div class="dengluTankuang"></div>
+<!--退出登录框-->
+<div class="logoutTankuaung"></div>
+<!--分會詳情::start-->
+
+<div id="bodyer">
+    <div class="news_view">
+        <div class="news">
+            <h1 class="title" id="title"></h1>
+            <div class="content">
+                <table style="text-align: left" border="0" width="800" align="center" cellpadding="0" cellspacing="0" id="content">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!--分會詳情::end-->
+
+<!--顶部线条::start-->
+<div id="footer_line"></div>
+<!--顶部线条::end-->
+</body>
+
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>

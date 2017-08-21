@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加好友</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+
+<div class="input_wai">
+    <form action="" onsubmit="return false;" class=" H-position-relative">
+        <div id="ser" class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle H-text-align-center H-theme-font-color-999  H-border-radius-15" style="">
+            <span class="H-display-block H-width-100-percent H-font-size-14">
+                <i id="ss_brn" class="H-iconfont H-icon-search H-font-size-14"></i>
+                <span id="ss_title">请输入名称</span>
+            </span>
+        </div>
+        <input onsearch="findfriend()" type="search" class="top-input" id="sousuo_byn" placeholder="">
+        <div class="sanchu" style="display: none;position: absolute;top: 5px;right: 5px;background: #999999;color:#fff;width: 20px;height: 20px;line-height: 20px;font-size:12px;text-align: center;border-radius: 50%">×</div>
+    </form>
+</div>
+
+<div>
+    <div id="conter_list">
+
+    </div>
+
+    <div class="wu_friend" style="background: #fff;display: none">
+        <div style="padding: 40px;padding-bottom: 10px box-sizing: border-box">
+            <img src="../static/img/bucunzai.png" style="width: 100%">
+        </div>
+        <div class="H-position-relative" style="height: 25px;padding: 20px;box-sizing: border-box">
+            <div style="background: gray; height: 1px;width: 100%;"></div>
+            <div class="H-position-absolute" style="top: 8px;left:50%;margin-left:-60px;width: 120px;font-size: 14px;background: #fff;height: 23px;line-height: 23px;text-align: center;">该用户不存在</div>
+        </div>
+    </div>
+
+
+</div>
+<script type="text/html" id="conterList">
+    <%
+    for(var i in conterList){
+        if(conterList[i].userId==accountNum){
+    %>
+        <div class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+
+                <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>"
+                     class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+            <div style="position:relative">
+                <%
+                if(conterList[i].baseInfoId!=''){
+                %>
+
+                <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                <%
+                }else {
+                %>
+                <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                <%
+                }
+                %>
+            </div>
+
+            <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                    <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                        <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                            <%
+                            if(conterList[i].sex==0){
+                            %>
+                                <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                            <%
+                            }else if(conterList[i].sex==1){
+                            %>
+                                <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                            <%
+                            }else{
+                            }
+                            %>
+                        </span>
+                    </strong>
+                    <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                </div>
+                <div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #4fd04f">
+                    我
+                </div>
+            </div>
+        </div>
+        <%
+        }else if(conterList[i].isFriend==0){
+        %>
+            <div onclick='H.openWin("申请好友", "sq_friend_detail.html?accountNum=<%=accountNum%>&userId=<%=conterList[i].userId%>");' class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+                    <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+                <div style="position:relative">
+                    <%
+                    if(conterList[i].baseInfoId!=''){
+                    %>
+                    <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                    <%
+                    }else {
+                    %>
+                    <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                    <%
+                    }
+                    %>
+                </div>
+
+                    <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                    <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                        <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                        <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                            <%
+                            if(conterList[i].sex==0){
+                            %>
+                                <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                            <%
+                            }else if(conterList[i].sex==1){
+                            %>
+                                <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                            <%
+                            }else{
+                            }
+                            %>
+                        </span>
+                        </strong>
+                        <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                    </div>
+                    <div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #ff6666">
+                        可添加
+                    </div>
+                </div>
+            </div>
+        <%
+        }else if(conterList[i].isFriend==1){
+        %>
+            <div onclick='H.openWin("好友详情", "friend_detail.html?accountNum=<%=accountNum%>&userId=<%=conterList[i].userId%>");' class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+                    <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+
+                <div style="position:relative">
+                    <%
+                    if(conterList[i].baseInfoId!=''){
+                    %>
+                    <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                    <%
+                    }else {
+                    %>
+                    <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                    <%
+                    }
+                    %>
+                </div>
+
+                    <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                    <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                        <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                            <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                                <%
+                                if(conterList[i].sex==0){
+                                %>
+                                    <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                                <%
+                                }else if(conterList[i].sex==1){
+                                %>
+                                    <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                                <%
+                                }else{
+                                }
+                                %>
+                            </span>
+                        </strong>
+                        <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                    </div>
+                    <div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #999999">
+                        已是好友
+                    </div>
+                </div>
+            </div>
+        <%
+        }else if(conterList[i].isFriend==2){
+        %>
+            <div onclick="H.openWin('申请好友', 'sq_friend_detail.html?accountNum=<%=accountNum%>&userId=<%=conterList[i].userId%>')" class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+                    <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+                <div style="position:relative">
+                    <%
+                    if(conterList[i].baseInfoId!=''){
+                    %>
+
+                    <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                    <%
+                    }else {
+                    %>
+                    <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                    <%
+                    }
+                    %>
+                </div>
+                <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                    <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                        <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                            <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                                <%
+                                if(conterList[i].sex==0){
+                                %>
+                                    <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                                <%
+                                }else if(conterList[i].sex==1){
+                                %>
+                                    <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                                <%
+                                }else{
+                                }
+                                %>
+                            </span>
+                        </strong>
+                        <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                    </div>
+                    <div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #3498db">
+                        待对方认证
+                    </div>
+                </div>
+            </div>
+        <%
+        }else if(conterList[i].isFriend==3){
+        %>
+            <div onclick="H.openWin('申请好友', 'newfriend_detail.html?accountNum=<%=accountNum%>&userId=<%=conterList[i].userId%>')" class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+                    <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+                <div style="position:relative">
+                    <%
+                    if(conterList[i].baseInfoId!=''){
+                    %>
+                    <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                    <%
+                    }else {
+                    %>
+                    <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                    <%
+                    }
+                    %>
+                </div>
+                    <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                    <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                        <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                            <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                                <%
+                                if(conterList[i].sex==0){
+                                %>
+                                    <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                                <%
+                                }else if(conterList[i].sex==1){
+                                %>
+                                    <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                                <%
+                                }else{
+                                }
+                                %>
+                            </span>
+                        </strong>
+                        <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                    </div>
+                    <div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #ff6666">
+                        待同意
+                    </div>
+                </div>
+            </div>
+        <%
+        }else{
+        %>
+            <div class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">
+
+                    <img onerror="javascript:this.src='../static/img/default_profile.png';" src="<%=conterList[i].pictureUrl%>" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">
+                <div style="position:relative">
+                    <%
+                    if(conterList[i].baseInfoId!=''){
+                    %>
+
+                    <img src="../static/img/verify_flag.png" class="verify_pic verify_icon_small">
+                    <%
+                    }else {
+                    %>
+                    <img src="../static/img/unverified@3x.png" class="verify_pic verify_icon_small">
+                    <%
+                    }
+                    %>
+                </div>
+                <div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden H-position-relative">
+                    <div class="H-width-100-percent" style="box-sizing: border-box;padding-right: 60px;">
+                        <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1"><%=conterList[i].userName%>
+                            <span class="H-icon H-display-inline-block H-padding-horizontal-both-5">
+                                <%
+                                if(conterList[i].sex==0){
+                                %>
+                                    <i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i>
+                                <%
+                                }else if(conterList[i].sex==1){
+                                %>
+                                    <i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i>
+                                <%
+                                }else{
+                                }
+                                %>
+                            </span>
+                        </strong>
+                        <div class="H-theme-font-color-999 H-font-size-12 H-text-show-row-1"><%=conterList[i].departName%></div>
+                    </div>
+                    <!--<div class="H-position-absolute" style="top: 10px;right: 10px;font-size: 12px; color: #ff6666">-->
+                        <!--无-->
+                    <!--</div>-->
+                </div>
+            </div>
+    <%
+        }
+    }
+    %>
+
+
+</script>
+
+
+
+
+
+</body>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("tongxunlu/add_friend.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '添加好友',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+    });
+
+    //搜索好友
+    function findfriend(){
+        var name=$('#sousuo_byn').val();
+//        console.log('{"command": "42","content": {"currUserId": "'+accountNum+'","name": "'+name+'" }}')
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "42","content": {"currUserId": "'+accountNum+'","name": "'+name+'" }}'
+                },
+                dataType: 'json',
+                success: function(data){
+//                    console.log(JSON.stringify(data));
+                    if(data.obj && data.success){
+
+                        $('.wu_friend').hide()
+                        $('#conter_list').empty();
+
+                        var render = H.tppl(H.D("#conterList").innerHTML);
+                        var result = render({conterList:data.obj});
+                        $('#conter_list').append(result);
+
+                    }else{
+                        $('#conter_list').empty();
+                        $('.wu_friend').show()
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+
+
+    //搜索框
+    $('.top-input').val('')
+    H.D("#ser").addEventListener("touchend", function (e) {
+        $("#ser").css('width','30px');
+        $('#ss_title').hide();
+        $('.top-input').css('text-align','left');
+        $('.top-input').attr("placeholder", "请输入名称");
+    });
+    $('.top-input').focus(function(){
+        $('.sanchu').show();
+    })
+    $('.top-input').blur(function(){
+        if($('.top-input').val()==''){
+            $("#ser").css('width','100%');
+            $('#ss_title').show();
+            $('.top-input').css('text-align','center').val('');
+            $('.top-input').attr("placeholder", " ");
+            $('.sanchu').hide();
+            //findfriend();
+        }
+    })
+    $('.sanchu').click(function(){
+        $("#ser").css('width','100%');
+        $('#ss_title').show();
+        $('.top-input').css('text-align','center').val('');
+        $('.top-input').attr("placeholder", " ");
+        //findfriend();
+        $('.sanchu').hide();
+    })
+
+
+    //ios返回刷新页面
+//    var rnumber = Math.floor(Math.random()*1000)
+//    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&mod='+rnumber);
+//    window.onpopstate = function(event) {
+//        location.reload();
+//        //alert("location: " + document.location);
+//    };
+
+</script>
+
+
+</html>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.dicttype.dao.DictTypeMapper">
+	<resultMap type="com.cy.core.dicttype.entity.DictType" id="dictTypeResultMap">
+		<id column="dict_type_id" property="dictTypeId" />
+		<result column="dict_type_name" property="dictTypeName" />
+		<result column="dict_type_value" property="dictTypeValue" />
+		<collection property="list" ofType="com.cy.core.dict.entity.Dict">
+			<id column="dict_id" property="dictId" />
+			<result column="dict_name" property="dictName" />
+		</collection>
+	</resultMap>
+	<insert id="addDictType" parameterType="com.cy.core.dicttype.entity.DictType">
+		insert into cy_dict_type(dict_type_name,dict_type_value) values(#{dictTypeName},#{dictTypeValue})
+	</insert>
+	<select id="countDcitType" parameterType="map" resultType="long">
+		select count(dict_type_id) from cy_dict_type
+		<where>
+			<if test="dictTypeName!=null and dictTypeName!=''">
+				dict_type_name like concat('%',#{dictTypeName},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectDictType" parameterType="map" resultMap="dictTypeResultMap">
+		select dict_type_id,dict_type_name,dict_type_value from cy_dict_type
+		<where>
+			1=1
+			<if test="dictTypeName!=null and dictTypeName!=''">
+				AND dict_type_name like concat('%',#{dictTypeName},'%')
+			</if>
+			<if test="dictTypeValue!=null and dictTypeValue!=''">
+				AND dict_type_value = #{dictTypeValue}
+			</if>
+		</where>
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<select id="selectById" resultMap="dictTypeResultMap" parameterType="int">
+		select dict_type_id,dict_type_name,dict_type_value from cy_dict_type where dict_type_id=#{id}
+	</select>
+	<update id="updateDictType" parameterType="com.cy.core.dicttype.entity.DictType">
+		update cy_dict_type set dict_type_name=#{dictTypeName},dict_type_value=#{dictTypeValue} where dict_type_id=#{dictTypeId}
+	</update>
+	<delete id="deleteDictType" parameterType="long">
+		delete from cy_dict_type where dict_type_id =#{id}
+	</delete>
+	<select id="selectAll" resultMap="dictTypeResultMap">
+		select dt.*,d.* from cy_dict_type dt left join cy_dict d on dt.dict_type_id=d.dict_type_id
+	</select>
+</mapper>

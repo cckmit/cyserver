@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.web.news.dao.WebNewsMapper">
+    
+    <resultMap type="com.cy.web.news.entity.WebNewsType" id="webNewsResultMap">
+		<id column="id" property="id" />
+		<result column="parent_id" property="parentId" />
+		<result column="name" property="name" />
+		<result column="type" property="type" />
+		<result column="url" property="url" />
+		<result column="orderNum" property="orderNum" />
+		<result column="origin" property="origin" />
+		<result column="isNavigation" property="isNavigation" />
+		<collection property="webNewsType" ofType="com.cy.web.news.entity.WebNewsType">
+			<id column="id2" property="id" />
+			<result column="parent_id2" property="parentId" />
+			<result column="name2" property="name" />
+			<result column="type2" property="type" />
+			<result column="url2" property="url" />
+			<result column="orderNum2" property="orderNum" />
+		</collection>
+	</resultMap>
+    
+    <select id="getWebNewsTypeList" parameterType="com.cy.web.news.entity.WebNewsType" resultMap="webNewsResultMap">
+		
+		SELECT ta.*, tb.* FROM cy_web_news_type ta
+		      LEFT OUTER JOIN 
+		      (select id AS id2, parent_id AS parent_id2, name AS name2, type AS type2, url AS url2, orderNum AS orderNum2
+		         from cy_web_news_type
+		        <where>
+		            and parent_id>0
+		            <!-- <if test="origin!=null and origin!='' and origin!=0">
+						and origin = #{origin}
+					</if> -->
+					
+		            <!-- <if test="cityName!=null and cityName!=''">
+						and cityName = #{cityName}
+					</if> -->
+		        </where>      
+		      ) tb 
+		      ON tb.parent_id2=ta.id
+	     <where>
+			
+	        and ta.parent_id=0
+			<if test="origin!=null and origin!='' and origin!=0">
+				and ta.origin = #{origin}
+			</if>
+			
+			<if test="cityName!=null and cityName!=''">
+				and ta.cityName like concat('%',#{cityName},'%')
+			</if>
+			<!-- 是否上导航（0：不上导航， 1：上导航） -->
+			and ta.isNavigation = 1
+			
+			
+		  </where>
+		     
+		order by ta.orderNum, tb.orderNum2  
+	</select>
+    
+    <select id="getAlumniLocList" parameterType="com.cy.web.news.entity.WebNewsType" resultType="com.cy.web.news.entity.WebNewsType">
+		
+		select alumniId AS id, alumniName AS name, region AS cityName from cy_alumni order by region
+        
+	</select>
+	
+	
+	<select id="getWebNewsList" parameterType="com.cy.web.news.entity.WebNews" resultType="com.cy.web.news.entity.WebNews">
+		select 
+			*
+		from 
+			cy_news
+		<where>
+			<if test="categoryWeb!=null and categoryWeb!='' and categoryWeb!='0'">
+				and categoryWeb = #{categoryWeb}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+				and topnewsWeb = #{topnews}
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName like concat('%',#{cityName},'%')
+			</if>
+		</where>
+		order by newsId desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	
+	<select id="getWebNewsCount" parameterType="com.cy.web.news.entity.WebNews" resultType="long">
+		select 
+			count(newsId)
+		from 
+			cy_news
+		<where>
+			<if test="categoryWeb!=null and categoryWeb!='' and categoryWeb!='0'">
+				and categoryWeb = #{categoryWeb}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+				and topnewsWeb = #{topnews}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="getWebNews" parameterType="com.cy.web.news.entity.WebNews" resultType="com.cy.web.news.entity.WebNews">
+		select 
+			*
+		from 
+			cy_news
+		<where>
+			<if test="newsId!=null and newsId!=''">
+				and newsId = #{newsId}
+			</if>
+			<if test="categoryWeb!=null and categoryWeb!='' and categoryWeb!='0'">
+				and categoryWeb = #{categoryWeb}
+			</if>
+		</where>
+		limit 1
+	</select>
+	
+	
+	<select id="getMainWebNewsType" parameterType="com.cy.web.news.entity.WebNewsType" resultType="com.cy.web.news.entity.WebNewsType">
+		select 
+			*
+		from 
+			cy_web_news_type
+		<where>
+			<if test="origin!=null and origin!=''">
+				and (parent_id in(select id from cy_web_news_type where origin = #{origin}) or (origin = #{origin} and parent_id = 0)) 
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName like concat('%',#{cityName},'%')
+			</if>
+			and isMain = 1
+		</where>
+		order by orderNum
+	</select>
+	
+	
+	<select id="getWebNewsTypeById" parameterType="com.cy.web.news.entity.WebNewsType" resultType="com.cy.web.news.entity.WebNewsType">
+		select 
+			name
+		from 
+			cy_web_news_type
+		<where>
+			<if test="id!=null and id!=''">
+				and id = #{id}
+			</if>
+		</where>
+		limit 1
+	</select>
+    
+	
+	<select id="getWebTypeByParentId" parameterType="com.cy.web.news.entity.WebNewsType" resultType="com.cy.web.news.entity.WebNewsType">
+		
+	    SELECT * FROM cy_web_news_type
+	    <where>
+			and parent_id = #{parentId}
+			and type=1
+			<if test="origin!=null and origin!='' and parentId==0">
+				and origin = #{origin}
+			</if>
+		</where>
+	    
+	</select>
+	
+	<select id="getWebParentsByTypeId" parameterType="com.cy.web.news.entity.WebNewsType" resultType="com.cy.web.news.entity.WebNewsType">
+		
+	    SELECT * FROM cy_web_news_type where id= (select parent_id from cy_web_news_type where id=#{id}) 
+	    
+	</select>
+    
+    <select id="getByName" parameterType="string" resultMap="webNewsResultMap">
+		select * from cy_web_news_type where name=#{name}
+	</select>
+</mapper>

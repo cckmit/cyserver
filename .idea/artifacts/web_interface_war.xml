@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="web-interface:war">
-    <output-path>$PROJECT_DIR$/web-interface/target</output-path>
-    <root id="archive" name="web-interface-0.0.1-SNAPSHOT.war">
-      <element id="artifact" artifact-name="web-interface:war exploded" />
-    </root>
-  </artifact>
-</component>

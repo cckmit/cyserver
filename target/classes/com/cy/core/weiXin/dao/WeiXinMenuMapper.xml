@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.weiXin.dao.WeiXinMenuMapper">
+    <resultMap type="com.cy.core.weiXin.entity.WeiXinMenu" id="weiXinMenuResultMap">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="parent_ids" property="parentIds" />
+        <result column="menu_key" property="menuKey" />
+        <result column="catalog_id" property="catalogId" />
+        <result column="msg_type" property="msgType" />
+        <result column="template_id" property="templateId" />
+        <result column="type" property="type" />
+        <result column="url" property="url" />
+        <result column="account_id" property="accountId" />
+        <result column="sort" property="sort" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+        <result column="parentName" property="parentName" />
+        <result column="account_app_id" property="accountAppId" />
+        <result column="accountName" property="accountName" />
+        <result column="content" property="content" />
+        <result column="is_out_side" property="isOutSide"/>
+    </resultMap>
+    <select id="query" parameterType="map"  resultMap="weiXinMenuResultMap">
+        SELECT wm.*,
+        wa.account_app_id,
+        wa.account_name AS accountName
+        FROM weixin_menu wm
+        LEFT JOIN   weixin_account wa ON  wa.id = wm.account_id AND wa.del_flag != '1'
+        WHERE wm.del_flag != '1'
+        <if test="name!=null and name!=''">
+            AND wm.name like concat('%',#{name},'%')
+        </if>
+        <if test="parentId !=null and parentId!=''">
+            AND wm.parent_id = #{parentId}
+        </if>
+        <if test="accountId !=null and accountId!=''">
+            AND wm.account_id = #{accountId}
+        </if>
+        <if test="accountAppId !=null and accountAppId != ''">
+            AND wa.account_app_id = #{accountAppId}
+        </if>
+        <if test="menuKey != null and menuKey !=''">
+            AND wm.menu_key =#{menuKey}
+        </if>
+        ORDER BY (wm.sort + 0),wm.update_date DESC
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="weiXinMenuResultMap">
+        SELECT wm.*,wp.name parentName, wa.account_name AS accountName
+        FROM weixin_menu wm
+        LEFT JOIN   weixin_menu wp ON  wm.parent_id = wp.id
+        LEFT JOIN   weixin_account wa ON  wa.id = wm.account_id AND wa.del_flag != '1'
+        WHERE wm.id=#{id}
+    </select>
+
+    <select id="getByName" parameterType="string" resultMap="weiXinMenuResultMap">
+        select *
+        from weixin_menu
+        where name=#{name} AND del_flag != '1'
+    </select>
+
+    <insert id="save" parameterType="com.cy.core.weiXin.entity.WeiXinMenu">
+        insert into
+        weixin_menu(
+        id,
+        name,
+        parent_id,
+        parent_ids,
+        menu_key,
+        msg_type,
+        template_id,
+        type,
+        url,
+        catalog_id,
+        content,
+        account_id,
+        sort,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        is_out_side,
+        del_flag
+        ) VALUES (
+        #{id},
+        #{name},
+        #{parentId},
+        #{parentIds},
+        #{menuKey},
+        #{msgType},
+        #{templateId},
+        #{type},
+        #{url},
+        #{catalogId},
+        #{content},
+        #{accountId},
+        #{sort},
+        #{createBy},
+        #{createDate},
+        #{updateBy},
+        #{updateDate},
+        #{remarks},
+        #{isOutSide},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.weiXin.entity.WeiXinMenu">
+        UPDATE weixin_menu SET
+        id = #{id}
+        <if test="name!=null and name!=''">
+            ,name=#{name}
+        </if>
+        <if test="parentId!=null and parentId!=''">
+            ,parent_id=#{parentId}
+        </if>
+        <if test="parentIds!=null and parentIds!=''">
+            ,parent_ids=#{parentIds}
+        </if>
+        <if test="menuKey!=null and menuKey!=''">
+            ,menu_key=#{menuKey}
+        </if>
+        <if test="msgType!=null and msgType!=''">
+            ,msg_type=#{msgType}
+        </if>
+
+
+        <if test="templateId!=null and templateId!=''">
+            ,template_id=#{templateId}
+        </if>
+        <choose>
+            <when test='isNull != "1"'>
+                <if test="content!=null and content!=''">
+                    ,content=#{content}
+                </if>
+                <if test="catalogId!=null and catalogId!=''">
+                    ,catalog_id=#{catalogId}
+                </if>
+                <if test="url!=null and url!=''">
+                    ,url=#{url}
+                </if>
+            </when>
+            <when test='isNull == "1"'>
+                ,content=#{content}
+                ,catalog_id=#{catalogId}
+                ,url=#{url}
+            </when>
+        </choose>
+        <if test="type!=null and type!=''">
+            ,type=#{type}
+        </if>
+
+        <if test="accountId!=null and accountId!=''">
+            ,account_id=#{accountId}
+        </if>
+        <if test="sort!=null and sort!=''">
+            ,sort=#{sort}
+        </if>
+        <if test="createBy!=null and createBy!=''">
+            ,create_by=#{createBy}
+        </if>
+        <if test="createDate!=null and createDate!=''">
+            ,create_date=#{createDate}
+        </if>
+        <if test="updateBy!=null and updateBy!=''">
+            ,update_by=#{updateBy}
+        </if>
+        <if test="updateDate!=null and updateDate!=''">
+            ,update_date=#{updateDate}
+        </if>
+        <if test="remarks!=null and remarks!=''">
+            ,remarks=#{remarks}
+        </if>
+        <if test='isOutSide != null and isOutSide != ""'>
+            ,is_out_side=#{isOutSide}
+        </if>
+        <if test="delFlag!=null and delFlag!=''">
+            ,del_flag=#{delFlag}
+        </if>
+        WHERE id = #{id}
+    </update>
+</mapper>

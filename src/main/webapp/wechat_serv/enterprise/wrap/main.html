@@ -1,0 +1,370 @@
+<style>
+    .views_box{
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+        background: #F8F8F8;
+    }
+    .top_scroll{
+        width: 100%;
+        height:0.34rem;
+        font-size: 0.12rem;
+        background: #fff;
+        position: relative;
+    }
+    .top_seach{
+        width: 100%;
+        height:0.5rem;
+        display: table;
+    }
+    .container{
+        flex:1;
+        position: relative;
+    }
+
+    .pane, .view{
+        background: none;
+    }
+
+    #wrapper {
+        position: absolute;
+        z-index: 1;
+        top: 0px;
+        bottom: 0px;
+        left: 0;
+        right:0.4rem;
+        overflow: hidden;
+    }
+
+    #scroller {
+        width: 5000px;
+        position: absolute;
+        z-index: 1;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        height: 100%;
+        -webkit-transform: translateZ(0);
+        -moz-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        -o-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-text-size-adjust: none;
+        -moz-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        -o-text-size-adjust: none;
+        text-size-adjust: none;
+    }
+
+    #scroller ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+    }
+
+    #scroller li {
+        display: block;
+        float: left;
+        height: 100%;
+        height: 0.32rem;
+        line-height: 0.32rem;
+        padding: 0 10px;
+        color: #333333;
+    }
+    #scroller li.dqhangye{
+        color: #0F88EB;
+    }
+
+
+
+    .type_more{
+        position: absolute;
+        top:0;
+        right:0;
+        width: 0.4rem;
+        height:0.32rem;
+        background: #fff;
+        line-height: 0.32rem;
+        text-align: center;
+        color: #0F88EB;
+    }
+    .type_more i{
+        font-size: 0.2rem;
+        vertical-align: middle;
+        display: inline-block;
+        -moz-transition: all 0.3s;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+    }
+    .type_more.fan i{
+        transform:rotate(180deg);
+        -ms-transform:rotate(180deg); 	/* IE 9 */
+        -moz-transform:rotate(180deg); 	/* Firefox */
+        -webkit-transform:rotate(180deg); /* Safari 和 Chrome */
+        -o-transform:rotate(180deg);
+    }
+
+
+    .sousuo_div{
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
+    input[type="search"]{-webkit-appearance:none;}
+    input::-webkit-search-cancel-button {display: none;}
+
+    .sousuo_box{
+        position: relative;
+        width: 90%;
+        background: #fff;
+        height:0.31rem;
+        border: 1px solid #d0d0d0;
+        border-radius: 5px;
+        display: inline-block;
+        box-sizing: content-box;
+
+    }
+    .sousuo_box form{
+        width: 100%;
+        height:100%;
+    }
+    .sousuo_box .icon-shousuo{
+        position: absolute;
+        top: 0;
+        left: 0px;
+        width: 0.31rem;
+        height:0.31rem;
+        text-align: center;
+        line-height: 0.31rem;
+        color: #757575;
+    }
+    .clear_seach{
+        position: absolute;
+        top: 0;
+        right: 0px;
+        width: 0.31rem;
+        height:0.31rem;
+        text-align: center;
+        line-height: 0.31rem;
+        font-size: 14px;
+    }
+    .clear_seach i{
+        color: #757575 ;
+    }
+    .sousuo_box input{
+        width: 100%;
+        height:100%;
+        border:none;
+        outline: none;
+        padding-right: 0.31rem;
+        line-height: 0.31rem;
+        font-size: 12px;
+        padding-left: 0.31rem;
+        box-sizing: border-box;
+        background: none;
+        padding-top: 0;
+    }
+
+    .nodata{
+        line-height: 30px;
+        text-align: center;
+        color: #333333;
+        font-size: 12px;
+    }
+
+    .qy_list{
+        box-sizing: border-box;
+        padding: 0.1rem;
+        background: #fff;
+        margin-bottom: 5px;
+        display: flex;
+    }
+    .left_picbox{
+        width: 1rem;
+        height:1rem;
+        overflow: hidden;
+    }
+    .left_picbox img{
+        width: 100%;
+        height:100%;
+    }
+    .right_textbox{
+        flex:1;
+        overflow: hidden;
+        margin-left: 0.1rem;
+    }
+
+    .right_textbox p{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 0.16rem;
+    }
+
+    .right_textbox .qy_title{
+        font-size: 0.14rem;
+        color: #333333;
+        margin-top: 0.1rem;
+        margin-top: 0.06rem;
+        line-height: 0.16rem;
+        margin-bottom: 0px;
+    }
+    .right_textbox .qy_web {
+        font-size: 0.12rem;
+        color: #0F88EB;
+        margin-top: 0.06rem;
+        margin-top: 0.1rem;
+        line-height: 0.14rem;
+        margin-bottom: 0;
+    }
+    .right_textbox .qy_yewu{
+        font-size: 0.12rem;
+        color: #333333;
+        line-height: 0.14rem;
+        margin-bottom: 0;
+        margin-top: 0.12rem;
+        margin-top: 0.1rem;
+    }
+    .right_textbox .qy_dizhi{
+        font-size: 0.12rem;
+        line-height: 0.14rem;
+        color: #333333;
+        margin-bottom: 0;
+        margin-top: 0.06rem;
+        margin-top: 0.1rem;
+    }
+    .qy_yewu span,.qy_dizhi span{
+        color: #666666;
+    }
+
+
+    .hangye_type{
+        position: fixed;
+        top:0.32rem;
+        left:0;
+        width: 100%;
+        height:100%;
+        background: #F8F8F8;
+        z-index: 3;
+    }
+
+    .type_list_box{
+        width: 100%;
+        height:100%;
+        overflow: auto;
+        box-sizing: border-box;
+        padding: 0.05rem;
+        padding-top: 0.15rem;
+    }
+    .type_list_box li{
+        width: 0.91rem;
+        height: 0.31rem;
+        line-height: 0.31rem;
+        font-size: 0.12rem;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        border: 1px solid #888888;
+        border-radius: 3px;
+        color: #333;
+        float: left;
+        margin: 0.08rem 0.15rem;
+    }
+    .type_list_box li.dqtys{
+        background: #0F88EB;
+        border:1px solid #0F88EB;
+        color: #fff;
+    }
+
+    .scroll-refresher .icon-pulling{
+        line-height: 1;
+    }
+
+</style>
+
+<div class="views_box">
+    <div class="top_scroll">
+        <div id="wrapper">
+            <div id="scroller">
+                <ul>
+                    <li ng-click="chosetype('')" class="top_types {{''==dqid?'dqhangye':''}}">全部</li>
+                    <li ng-click="chosetype(list)" class="top_types {{list.dictId==dqid?'dqhangye':''}}" ng-repeat="list in qiyetypes" on-finish-render-type>{{list.dictName}}</li>
+                </ul>
+            </div>
+        </div>
+        <div class="type_more {{fans?'fan':''}}" ng-click="qytrypes()">
+            <i class="icon iconfont icon-xiajiantou"></i>
+        </div>
+    </div>
+    <div class="top_seach">
+        <div class="sousuo_div">
+            <div class="sousuo_box">
+                <form action="" onsubmit="return false;">
+                    <i class="icon iconfont icon-shousuo"></i>
+                    <input ng-change="seachMain()" ng-keyup='keyup($event)' type="search" placeholder="请输入企业名称" ng-model="searchs">
+                    <a ng-show="clearbtn" class="clear_seach" href="javascript:;" ng-click="clearInput()">×</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <ion-view>
+            <ion-content class="main1_center">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+                <ul class="qy_listbox">
+                    <li class="qy_list" ng-repeat="list in qiyelist" ui-sref="enterprise_detail({'id':list.id})">
+                        <div class="left_picbox">
+                            <img onerror="javascript:this.src='../../images/wechat_serv/default_profile.png';" alt="" ng-src="{{list.logoUrl||'img/product.png' | filter_pic}}">
+                        </div>
+                        <div class="right_textbox">
+                            <p class="qy_title">
+                                {{list.name}}
+                            </p>
+                            <p class="qy_web">
+                                <!--网站:http://www.kaba.cn/-->
+                                {{list.website}}
+                            </p>
+                            <p class="qy_yewu">主营业务：
+                                <!--教育培训-->
+                                <span>{{list.mainBusiness}}</span>
+                            </p>
+                            <p class="qy_dizhi">地址：
+                                <!--西安市雁塔区-->
+                                <span>{{list.address}}</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+                <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore(name,type)" distance="1%"> </ion-infinite-scroll>
+                <div class="nodata" ng-if="dataNull">没有更多了!</div>
+            </ion-content>
+        </ion-view>
+    </div>
+</div>
+
+<div class="hangye_type" ng-show="types">
+    <div class="type_list_box">
+        <ul>
+            <li ng-click="chosetype(list)" ng-repeat="list in qiyetypes" class="types_li {{list.dictId==dqid?'dqtys':''}}">{{list.dictName}}</li>
+
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    $(function(){
+    })
+
+</script>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>创建成功</title>
+</head>
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/personal-success.css">
+<body>
+    <main class="">
+        <div class="success">
+            <img class="" src="images/success.png" alt="">
+            <p>恭喜!&nbsp;&nbsp;请耐心等待，计划正在审核中</p>
+            <div class="sub">前往查看</div>
+        </div>
+    </main>
+
+</body>
+<script src="js/jquery.min.js"></script>
+<script>
+
+        var accountNum=localStorage.getItem('accountNum');
+        $('.sub').click(function () {
+            window.location.href='plan.html?accountNum='+accountNum
+        });
+        setTimeout(function(){
+            window.location.href='plan.html?accountNum='+accountNum},
+        2000)
+
+
+    var jsonStr = {
+        "title":"计划待审核",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+
+
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+
+    }
+    function fallback() {
+        window.location.href="plan.html?accountNum="+accountNum;
+    }
+
+</script>
+</html>

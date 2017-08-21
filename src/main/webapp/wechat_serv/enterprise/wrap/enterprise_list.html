@@ -1,0 +1,156 @@
+<link rel="stylesheet" href="../../css/font-awesome.min.css">
+<link href="css/ionic.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" href="scss/enterprise.css">
+
+
+<style>
+
+    .list{
+        background-color:#f2f2f2;
+    }
+    .firm_list .item-content{
+         position: inherit;
+         z-index: 2;
+         padding: 0;
+        border: none;
+        background-color: #fff;
+        display: flex;
+    }
+
+    .chk_active{
+        color:#0F88EB;
+    }
+
+    .no_more{
+        font-size: 14px;
+        color: #747474;
+        letter-spacing: -0.29px;
+        text-align: center;
+        background-color: #f2f2f2;
+    }
+
+    /*test*/
+    .nav_wrap{
+        display: flex;
+        margin: 0.1rem;
+
+    }
+    .nav_scroll_box{
+        width:100%;
+        overflow:auto;
+        font-size: 0.12rem;
+        background-color: #FFF;
+
+    }
+    .nav_scroll_list{
+
+    }
+    .nav_item{
+        display: inline-block;
+        margin:0 0.1rem;
+    }
+    .item_arrow{
+        flex:1;
+        margin-left: 0.1rem;
+    }
+
+    .firm_list .list{
+        padding: 0 0.1rem;
+    }
+
+
+    /*移动端隐藏滚动条*/
+    *::-webkit-scrollbar{
+        display: none;
+    }
+</style>
+
+<div style="height: 100%;display: flex; flex-direction: column;">
+
+    <div class="test" style="">
+
+
+        <div class="nav_wrap">
+            <nav class="nav_scroll_box">
+                <div class="nav_scroll_list">
+                    <div ng-click="enterpriseList('','')" class="nav_item chk_active i_{{typeItem.dictValue}}" data-val="all">全部</div>
+                    <div class="nav_item i_{{typeItem.dictValue}}" data-val="{{typeItem.dictValue}}"
+                        ng-repeat="typeItem in firmTypeList" ng-click="enterpriseList(typeItem.dictValue,'')">{{typeItem.dictName}}</div>
+                </div>
+            </nav>
+            <div class="item_arrow" ng-click="toggle();$event.stopPropagation();">
+                <i class="icon_arrow fa fa-chevron-down" aria-hidden="true"></i>
+            </div>
+        </div>
+        <!--search bar-->
+        <div class="ser_box" ng-show="serVar">
+            <form type="" class="ser_form">
+                <input class="ser_input" type="search" ng-focus="serFocus()" ng-blur="serBlur();$event.stopPropagation();" ng-keydown="ser(serName)" ng-model="serName" placeholder="请输入企业名称"/>
+                <span class="icon_ser"><i class="fa fa-search" aria-hidden="true"></i></span>
+                <span class="icon_clear" ng-click="serClear()"><i class="fa fa-times" aria-hidden="true"></i></span>
+            </form>
+        </div>
+
+    </div>
+
+    <!--content panel_1-->
+    <div class="panel_1" style="position: relative;flex: 1;">
+        <!--enter_list-->
+        <ion-pane>
+            <ion-content>
+                <!--下拉刷新-->
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+
+
+
+                <ion-list class="firm_list">
+                    <ion-item ng-repeat="firmItem in bItems" class="firm_item"
+                              ui-sref="enterprise_detail({'id':firmItem.id})">
+
+
+                        <div class="item_l">
+                            <img class="logo_pic"
+                                 onerror="javascript:this.src='../../images/wechat_serv/default_profile.png' "
+                                 ng-src="{{firmItem.logoUrl | filter_pic }}"/>
+                        </div>
+                        <div class="item_r">
+                            <div class="r_li name H-text-show-row-1">{{firmItem.name}}</div>
+                            <div ng-if="firmItem.website && firmItem.website!=''" class="r_li link H-text-show-row-1">
+                                <a href="javascript:;" >{{firmItem.website}}</a>
+                            </div>
+                            <div class="r_li business H-text-show-row-1">主营业务:&nbsp; {{firmItem.mainBusiness}}</div>
+                            <div class="r_li add H-text-show-row-1">地址: &nbsp; {{firmItem.address}}</div>
+
+                        </div>
+                    </ion-item>
+
+                </ion-list>
+                <div class="assertive no_more" ng-if="dataNull">没有更多啦!</div>
+                <ion-infinite-scroll ng-if="hasMore" on-infinite="doInfinite()" distance="1%">没有更多啦!</ion-infinite-scroll>
+            </ion-content>
+        </ion-pane>
+
+    </div>
+
+
+    <!--content panel_2-->
+    <div class="panel_2" ng-show="myVar">
+        <div class="type_list">
+
+            <div class="type_item t_{{typeItem.dictValue}}"
+                 ng-click="enterpriseList(typeItem.dictValue,'')" ng-repeat="typeItem in firmTypeList">
+                {{typeItem.dictName}}
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+

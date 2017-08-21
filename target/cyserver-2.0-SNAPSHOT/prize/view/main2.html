@@ -1,0 +1,85 @@
+<style>
+    .main1_box{
+        width: 100%;
+        height:100%;
+    }
+    .main_centers{
+        width: 1000px;
+        height:760px;
+        position: absolute;
+        left:50%;
+        margin-left: -500px;
+        top:50%;
+        margin-top: -380px;
+        overflow: hidden;
+        text-align: center;
+    }
+    .main2_leftbox{
+        width: 348px;
+        float: left;
+        margin-left: 87px;
+        margin-top: 140px;
+    }
+    .main2_rightbox{
+        width: 446px;
+        height:492px;
+        float: left;
+        margin-left: 30px;
+        margin-top: 140px;
+    }
+    .wenzi{
+        width: 100%;
+        height:70px;
+        line-height: 70px;
+        border-radius: 35px;
+        background: #ffb80a;
+        font-size: 48px;
+        color: #fff;
+        text-align: center;
+    }
+    .djss{
+        width: 100%;
+        background: url("img/daojishi.png");
+        height:345px;
+        text-align: center;
+        line-height: 345px;
+        font-size: 120px;
+        color:#fff;
+    }
+    .main2_rightbox{
+        width: 445px;
+        background: url("img/djs_ewm.png");
+        text-align: center;
+    }
+    .main2_rightbox img{
+        width: 200px;
+        height:200px;
+        margin-top: 167px;
+    }
+    .jbf_2{
+        position: absolute;
+        bottom: 48px;
+        right: 89px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+        width: 445px;
+        text-align: center;
+    }
+
+</style>
+<div class="main1_box">
+    <div class="main_centers">
+        <div class="main2_leftbox">
+            <div class="wenzi">活动倒计时</div>
+            <div class="djss">
+                <span>{{sstimes}}</span>S
+            </div>
+        </div>
+        <div class="main2_rightbox">
+            <img src="img/erweima.png" alt="">
+        </div>
+        <p class="jbf_2">举办方：{{hdxiangqing.organizer}}</p>
+    </div>
+</div>
+

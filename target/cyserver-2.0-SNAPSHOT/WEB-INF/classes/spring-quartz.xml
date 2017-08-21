@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://www.springframework.org/schema/task 
+http://www.springframework.org/schema/task/spring-task-3.1.xsd 
+"> 
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="analysisTrigger" />
+				<ref bean="mobileLocalTrigger" />
+				<ref bean="birthdayTrigger" />
+				<ref bean="userInfoSynchronousTrigger"/>
+				<ref bean="weChatUserTrigger"/>
+				<ref bean="enterpriseTrigger"/>
+			</list>
+		</property>
+		<property name="startupDelay" value="5"/>
+	</bean>
+	<bean id="analysisTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="analysisJob" />
+		<property name="cronExpression" value="0 0 0 * * ?" />
+	</bean>
+	<bean id="analysisJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.AnalysisJob" />
+		<property name="jobDataMap">
+			<map>
+				<entry key="userInfoService" value-ref="userInfoService" />
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+
+
+	<bean id="mobileLocalTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="mobileLocalJob" />
+		<property name="cronExpression" value="0 0 1 * * ?" />
+	</bean>
+	<bean id="mobileLocalJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.MobileLocalJob" />
+		<property name="jobDataMap">
+			<map>
+				<entry key="userInfoService" value-ref="userInfoService" />
+				<entry key="loggerService" value-ref="loggerService" />
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+	<bean id="birthdayTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="birthdayJob" />
+		<property name="cronExpression" value="0 0 8 * * ?" />
+	</bean>
+	<bean id="birthdayJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.BirthdayJob" />
+		<property name="jobDataMap">
+			<map>
+				<entry key="userInfoService" value-ref="userInfoService" />
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+	<bean id="userInfoSynchronousTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="userInfoSynchronousJob" />
+		<property name="cronExpression" value="0 0 17 * * ?" />
+	</bean>
+	<bean id="userInfoSynchronousJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.UserInfoSynchronousJob" />
+		<property name="jobDataMap">
+			<map>
+				<entry key="userInfoService" value-ref="userInfoService" />
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+	<bean id="weChatUserTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="weChatUserJob" />
+		<property name="cronExpression" value="0 0 0 ? * sun" />
+	</bean>
+	<bean id="weChatUserJob"
+		  class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.WeChatUserJob" />
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="weiXinUserService" value-ref="weiXinUserService" />
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+   <!--云平台校友企业信息更新定时器-->
+	<bean id="enterpriseTrigger"
+		  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="enterpriseJobDetail"/>
+		<property name="cronExpression" value="0 59 23 * * ?"/>
+	</bean>
+	<bean id="enterpriseJobDetail"
+		  class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass" value="com.cy.schedule.EnterpriseJob"/>
+		<property name="jobDataAsMap">
+			<map>
+				<entry key="cloudEnterpriseService" value-ref="cloudEnterpriseService"/>
+			</map>
+		</property>
+		<property name="durability" value="true" />
+	</bean>
+
+</beans>

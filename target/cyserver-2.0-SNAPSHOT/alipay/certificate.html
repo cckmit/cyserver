@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查看证书</title>
+
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <link href="../jslib/hui/plugins/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        body{
+            background-color:#fff;
+
+        }
+        .img_bg {
+            position: relative;
+            padding: 30px 10px 0;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="img_bg">
+
+</div>
+
+
+</body>
+
+<!--js-->
+<script src="../jslib/hui/script/H.js" type="text/javascript"></script>
+<script src="../mobile/js/B.js" type="text/javascript" ></script>
+<script src="../jslib/xdomain.min.js" type="text/javascript"></script>
+<script src="../jslib/zepto/zepto.min.js" type="text/javascript"></script>
+<script src="../jslib/dropload/dropload.min.js" type="text/javascript"></script>
+<script src="../mobile/js/jbase64.js" type="text/javascript"></script>
+<script src="../mobile/js/wechat.js" type="text/javascript"></script>
+
+<script>
+
+    var certificateImageUrl = request.getParameter("certificateImageUrl");
+    //donorName
+    var imgUrl = B.decrypt(certificateImageUrl);
+    $(function(){
+        $('.img_bg').append('<img src="'+B.imageServiceHttp+imgUrl+'" style="width:100%"/>');
+    })
+
+
+</script>
+</html>

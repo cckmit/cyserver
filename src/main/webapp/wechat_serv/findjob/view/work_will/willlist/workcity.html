@@ -1,0 +1,150 @@
+<div class="work_willtk" style="
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    background: #f2f2f2;
+    top: 0;
+    left: 0;" ng-show="workcity">
+
+    <style>
+        .seach_box{
+            height: 46px;
+            width: 100%;
+            background: #f8f8f8;
+            display: table;
+        }
+        input[type="search"]{-webkit-appearance:none;}
+        input::-webkit-search-cancel-button {display: none;}
+
+        .seach_zhong{
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .sousuo_box{
+            position: relative;
+            width: 90%;
+            background: #fff;
+            height:26px;
+            border: 1px solid #d0d0d0;
+            border-radius: 5px;
+            display: inline-block;
+            box-sizing: content-box;
+
+        }
+        .sousuo_box .iconss{
+            position: absolute;
+            top: 0;
+            left: 0px;
+            width: 28px;
+            height:28px;
+            text-align: center;
+            line-height: 28px;
+            color: #757575;
+        }
+        .clear_seach{
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 28px;
+            height:28px;
+            text-align: center;
+            line-height: 26px;
+        }
+        .clear_seach i{
+            color: #757575 ;
+        }
+        .sousuo_box input{
+            width: 100%;
+            height:100%;
+            border:none;
+            outline: none;
+            padding-right: 28px;
+            line-height: 28px;
+            font-size: 12px;
+            padding-left: 28px;
+            box-sizing: border-box;
+            background: none;
+            padding-top: 0;
+        }
+
+
+
+
+
+        .city_box{
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+        .city_center{
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            overflow: hidden;
+        }
+        .sheng{
+            float: left;
+            width: 45%;
+            background: #EEEEEE;
+            height: 100%;
+            overflow: auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .shi{
+            width: 55%;
+            background: #ffffff;
+            height: 100%;
+            overflow: auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .sheng li{
+            line-height: 30px;
+            font-size: 12px;
+        }
+        .shi li{
+            line-height: 40px;
+            font-size: 14px;
+        }
+
+        .shi li.da_city,.sheng li.da_city{
+            color: #0F88EB;
+        }
+
+    </style>
+
+    <div class="city_box">
+        <div class="type_tops">
+            <div class="seach_box">
+                <div class="seach_zhong">
+                    <div class="sousuo_box">
+                        <from action="" onsubmit="return false;">
+                            <i class="fa fa-search iconss"></i>
+                            <input ng-change="" type="search" placeholder="搜索" ng-model="searchs">
+                            <!--<a class="clear_seach" ng-show="clearbtn" href="javascript:;"><i class="fa fa-close"></i></a>-->
+                        </from>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="city_center">
+
+            <div class="sheng">
+                <ul>
+                    <li class="shengde" ng-click="workSheng(list)" ng-repeat="list in work_sheng">{{list.title}}</li>
+                </ul>
+            </div>
+
+            <div class="shi">
+                <ul>
+                    <li class="shide" ng-click="workShi(list)" ng-repeat="list in work_shi">{{list.title}}</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

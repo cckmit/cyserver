@@ -1,0 +1,1474 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.news.dao.NewsMapper">
+	<resultMap type="com.cy.core.news.entity.News" id="newsResultMap">
+		<id column="newsId" property="newsId" />
+		<result column="title" property="title" />
+		<result column="content" property="content" />
+		<!--<result column="pic" property="pic" />-->
+		<result column="pic" property="picUrl" />
+		<result column="introduction" property="introduction" />
+		<result column="createTime" property="createTime" />
+		<result column="type" property="type" />
+		<result column="channelName" property="channelName" />
+		<!--<result column="newsUrl" property="newsUrl" />-->
+		<result column="newsUrl" property="newNewsUrl" />
+		<result column="fDateTime" property="fDateTime" />
+		<result column="cityName" property="cityName" />
+		<result column="category" property="category" />
+		<result column="categoryName" property="categoryName" />
+		<result column="topnews" property="topnews" />
+		<result column="pCategory" property="pCategory"/>
+		<result column="pCategoryName" property="pCategoryName"/>
+		<result column="origin" property="origin"/>
+		<result column="originWeb" property="originWeb"/>
+		<result column="categoryWeb" property="categoryWeb" />
+		<result column="categoryWebName" property="categoryWebName" />
+		<result column="categoryWechat" property="categoryWechat" />
+		<result column="categoryWechatName" property="categoryWechatName" />
+		<result column="topnewsWeb" property="topnewsWeb" />
+		<result column="pCategoryWeb" property="pCategoryWeb"/>
+		<result column="pCategoryWebName" property="pCategoryWebName"/>
+		<result column="dept_id" property="dept_id"/>
+        <result column="dept_name" property="dept_name"/>
+		<result column="status" property="status" />
+		<result column="opinions" property="opinions" />
+		<result column="approve_dept_id" property="approveDeptId" />
+		<result column="approve_dept_name" property="approveDeptName" />
+		<result column="u_dept_id" property="uDeptId" />
+		<result column="channel" property="channel" />
+		<result column="channelId" property="channelId" />
+		<result column="main_name" property="mainName"/>
+		<result column="channelIds" property="channelIds"/>
+		<result column="channels" property="channels"/>
+		<result column="browse_num" property="clickRate" />
+		<result column="create_date" property="createDate" />
+		<result column="update_date" property="updateDate" />
+	</resultMap>
+	
+	<resultMap type="com.cy.core.news.entity.News" id="newsNoContentResultMap">
+		<id column="newsId" property="newsId" />
+		<result column="title" property="title" />
+		<result column="pic" property="picUrl" />
+		<result column="introduction" property="introduction" />
+		<result column="createTime" property="createTime" />
+		<result column="type" property="type" />
+		<result column="channelName" property="channelName" />
+		<result column="newsUrl" property="newNewsUrl" />
+		<result column="category" property="category" />
+		<result column="categoryName" property="categoryName" />
+		<result column="topnews" property="topnews" />
+		<result column="fDateTime" property="fDateTime" />
+		<result column="cityName" property="cityName" />
+		<result column="approve_dept_id" property="approveDeptId" />
+		<result column="browse_num" property="clickRate" />
+		<result column="createDate" property="createDate" />
+		<result column="updateDate" property="updateDate" />
+	</resultMap>
+	
+	<resultMap type="com.cy.core.dict.entity.Dict" id="dictResultMap">
+		<id column="dict_id" property="dictId" />
+		<result column="dict_type_id" property="dictTypeId" />
+		<result column="dict_name" property="dictName" />
+		<result column="dict_value" property="dictValue" />
+	</resultMap>
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+
+	<!-- lixun 新数数 -->
+	<select id="countNewsNew" parameterType="map" resultType="long">
+		SELECT
+		count(a.counts) FROM (
+		select count(newsId) counts from cy_news cyn
+		left join cy_news_types t on newsid=news_id
+		left join cy_mobile_news_type m on m.id=channel_id
+		left join cy_mobile_news_type p on m.parent_id=p.id
+		left join cy_alumni alu on cyn.dept_id = alu.alumniId
+		<where>
+			(m.type = 1 or p.type = 1)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+			<if test="deptList!=null and deptList.size()>0">
+				and cyn.dept_id in
+				<foreach collection="deptList" open="(" close=")" item="dept" separator="," >
+					#{dept.deptId}
+				</foreach>
+			</if>
+			<if test="title != null and title !=''">
+				and title like concat('%',#{title},'%')
+			</if>
+			<!--  郭亚斌添加的条件-->
+			<if test="dept_name !=null and dept_name!=''">
+				and  alu.alumniName like concat('%',#{dept_name},'%')
+			</if>
+
+			<if test="channel !=null and channel!=''">
+				and  t.channel=#{channel}
+				<if test="newsType != null and newsType != ''">
+					and m.id = #{newsType}
+					OR
+					p.id=#{newsType}
+				</if>
+			</if>
+			<if test="channelNameList!=null">
+				and channelName in
+				<foreach collection="channelNameList" open="(" close=")" item="channelName" separator=",">
+					#{channelName}
+				</foreach>
+			</if>
+			<if test="alumniChildrenId!=null and alumniChildrenId!=''">
+				and find_in_set(cyn.dept_id , #{alumniChildrenId})
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cyn.cityName like concat('%',#{cityName},'%')
+			</if>
+			<if test="currDeptId!=null and currDeptId!=''">
+				<if test="isFromCheckPage!=null and isFromCheckPage!='' and isFromCheckPage == 1">
+					and ((cyn.status=10 OR cyn.status=15) AND cyn.approve_dept_id = #{currDeptId} )
+				</if>
+				<if test="isFromCheckPage==null or isFromCheckPage=='' or isFromCheckPage != 1">
+					and (cyn.dept_id = #{currDeptId} OR cyn.approve_dept_id = #{currDeptId} )
+				</if>
+			</if>
+			<!--添加 chensheng-->
+			<if test="status!=null and status!=''">
+				and cyn.status = #{status}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+				<choose>
+					<when test="topnews == 100">
+						and cyn.topnews = #{topnews}
+					</when>
+					<when test='topnews=="0"'>
+						and (cyn.topnews is null or cyn.topnews != '100')
+					</when>
+				</choose>
+
+			</if>
+		</where>
+		group by newsid) a
+
+	</select>
+
+	<select id="countNews" parameterType="map" resultType="long">
+		select count(newsId) from cy_news cyn
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+		LEFT OUTER JOIN cy_web_news_type wtype ON cyn.categoryWeb = wtype.id
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			(mtype.type = 1 or wtype.type = 1)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+			<if test="deptList!=null and deptList.size()>0">
+				and cyn.dept_id in 
+				<foreach collection="deptList" open="(" close=")" item="dept" separator="," >
+					#{dept.deptId}
+				</foreach>
+			</if>
+			<if test="title!=null and title!=''">
+				and cyn.title like concat('%',#{title},'%')
+			</if>
+			<if test="alumniChildrenId!=null and alumniChildrenId!=''">
+				and find_in_set(cyn.dept_id , #{alumniChildrenId})
+			</if>
+			<if test="channelNameList!=null">
+				and channelName in
+				<foreach collection="channelNameList" open="(" close=")" item="channelName" separator=",">
+					#{channelName}
+				</foreach>
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cyn.cityName like concat('%',#{cityName},'%')
+			</if>
+			<if test="currDeptId!=null and currDeptId!=''">
+				<if test="isFromCheckPage!=null and isFromCheckPage!='' and isFromCheckPage == 1">
+					and ((cyn.status=10 OR cyn.status=15) AND cyn.approve_dept_id = #{currDeptId} )
+				</if>
+				<if test="isFromCheckPage==null or isFromCheckPage=='' or isFromCheckPage != 1">
+					and (cyn.dept_id = #{currDeptId} OR cyn.approve_dept_id = #{currDeptId} )
+				</if>
+			</if>
+			<!--添加 chensheng-->
+			<if test="status!=null and status!=''">
+				and cyn.status = #{status}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+				<choose>
+					<when test="topnews == 100">
+						and cyn.topnews = #{topnews}
+					</when>
+					<when test='topnews=="0"'>
+						and (cyn.topnews is null or cyn.topnews != '100')
+					</when>
+				</choose>
+
+			</if>
+		</where>
+	</select>
+
+	<!-- lixun 新新闻列表 -->
+	<select id="selectNewsNew" parameterType="map" resultMap="newsResultMap">
+		select newsId, title, topnews,topnewsWeb,content=null, cyn.pic, cyn.introduction, cyn.createTime, cyn.status, cyn.type, channelName,newsUrl,cyn.cityName,cyn.dept_id,cyn.approve_dept_id,
+		alu.alumniName dept_name,update_date,create_date,
+		(select ca.alumniName FROM cy_alumni ca WHERE ca.alumniId = cyn.approve_dept_id ) approve_dept_name,
+		(#{uDeptId}) u_dept_id,
+		CASE alu.main WHEN '99' THEN '总会' WHEN '1' THEN '院系' WHEN '2' THEN '地方' WHEN '3' THEN '行业' END main_name,
+		group_concat(m.id) channelIds,
+		GROUP_CONCAT( (select  cdit.dict_name  from cy_dict cdit where  cdit.dict_value = t.channel  and cdit.dict_type_id = (select dict_type_id from cy_dict_type where dict_type_value = 110)  ),'_',
+		case when p.`name` is null then '' else concat(p.`name`,'-') end,m.`name`) channels from cy_news cyn
+		left join cy_news_types t on cyn.newsId= t.news_id
+		left join cy_mobile_news_type m on m.id=channel_id
+		left join cy_mobile_news_type p on m.parent_id=p.id
+		left join cy_alumni alu on cyn.dept_id = alu.alumniId
+		<where>
+			(m.type = 1 or p.type = 1)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+			<if test="deptList!=null and deptList.size()>0">
+				and cyn.dept_id in
+				<foreach collection="deptList" open="(" close=")" item="dept" separator="," >
+					#{dept.deptId}
+				</foreach>
+			</if>
+			<if test="title != null and title !=''">
+				and title like concat('%',#{title},'%')
+			</if>
+			<!--  郭亚斌添加的条件-->
+			<if test="dept_name !=null and dept_name!=''">
+				and  alu.alumniName like concat('%',#{dept_name},'%')
+			</if>
+
+			<if test="channel !=null and channel!=''">
+				and  t.channel=#{channel}
+                    <if test="newsType != null and newsType != ''">
+						and m.id = #{newsType}
+						               OR
+						p.id=#{newsType}
+					</if>
+			</if>
+			<if test="channelNameList!=null">
+				and channelName in
+				<foreach collection="channelNameList" open="(" close=")" item="channelName" separator=",">
+					#{channelName}
+				</foreach>
+			</if>
+			<if test="alumniChildrenId!=null and alumniChildrenId!=''">
+				and find_in_set(cyn.dept_id , #{alumniChildrenId})
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cyn.cityName like concat('%',#{cityName},'%')
+			</if>
+			<if test="currDeptId!=null and currDeptId!=''">
+				<if test="isFromCheckPage!=null and isFromCheckPage!='' and isFromCheckPage == 1">
+					and ((cyn.status=10 OR cyn.status=15) AND cyn.approve_dept_id = #{currDeptId} )
+				</if>
+				<if test="isFromCheckPage==null or isFromCheckPage=='' or isFromCheckPage != 1">
+					and (cyn.dept_id = #{currDeptId} OR cyn.approve_dept_id = #{currDeptId} )
+				</if>
+			</if>
+			<if test="idList!=null">
+				and newsId in
+				<foreach collection="idList" open="(" close=")" item="ids" separator=",">
+					#{ids}
+				</foreach>
+			</if>
+			<if test="status!=null and status!=''">
+				and cyn.status = #{status}
+			</if>
+			<!--添加 chensheng-->
+			<if test="topnews!=null and topnews!=''">
+				<choose>
+					<when test="topnews == 100">
+						and cyn.topnews = #{topnews}
+					</when>
+					<when test='topnews=="0"'>
+						and (cyn.topnews is null or cyn.topnews != '100')
+					</when>
+				</choose>
+
+			</if>
+		</where>
+		group by newsid
+		<if test="start!=null and rows!=null ">
+			order by  create_date desc limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- 管理后台新闻列表数据,不需要查询content -->
+	<select id="selectNews" parameterType="map" resultMap="newsResultMap">
+		<!--
+		select newsId, title, content=null, pic, introduction, createTime, cyn.type, channelName,
+		newsUrl, category, cyd.dict_name AS categoryName,topnews,cityName
+		from cy_news cyn
+		LEFT OUTER JOIN cy_dict cyd ON cyn.category = cyd.dict_id
+		where 1 = 1
+		-->
+		select newsId, title, content=null, cyn.pic, cyn.introduction, cyn.createTime, cyn.status, cyn.type, channelName,newsUrl,cyn.cityName,cyn.dept_id,cyn.approve_dept_id,
+		alu.alumniName dept_name,
+		(select ca.alumniName FROM cy_alumni ca WHERE ca.alumniId = cyn.approve_dept_id ) approve_dept_name,
+		(#{uDeptId}) u_dept_id,
+		CASE alu.main WHEN '99' THEN '总会' WHEN '1' THEN '院系' WHEN '2' THEN '地方' WHEN '3' THEN '行业' END main_name,
+		mtype.origin as origin, pmtype.origin as originP,
+		wtype.origin as originWeb,pwtype.origin as originWebP,
+		category, mtype.name AS categoryName,topnews,mtype.parent_id as pCategory,pmtype.`name` as pCategoryName,
+		categoryWeb, wtype.name AS categoryWebName,topnewsWeb,wtype.parent_id as pCategoryWeb,pwtype.`name` as pCategoryWebName
+		from cy_news cyn
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT OUTER JOIN cy_web_news_type wtype ON cyn.categoryWeb = wtype.id
+		LEFT OUTER JOIN cy_web_news_type pwtype ON wtype.parent_id = pwtype.id
+		<!--LEFT OUTER JOIN cy_dept_info d on cyn.dept_id = d.dept_id-->
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			(mtype.type = 1 or wtype.type = 1)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+		<if test="deptList!=null and deptList.size()>0">
+			and cyn.dept_id in 
+			<foreach collection="deptList" open="(" close=")" item="dept" separator="," >
+				#{dept.deptId}
+			</foreach>
+		</if>
+		<if test="title!=null and title!=''">
+			and title like concat('%',#{title},'%')
+		</if>
+		<if test="channelNameList!=null">
+			and channelName in
+			<foreach collection="channelNameList" open="(" close=")" item="channelName" separator=",">
+				#{channelName}
+			</foreach>
+		</if>
+		<if test="alumniChildrenId!=null and alumniChildrenId!=''">
+			and find_in_set(cyn.dept_id , #{alumniChildrenId})
+		</if>
+		<if test="cityName!=null and cityName!=''">
+			and cyn.cityName like concat('%',#{cityName},'%')
+		</if>
+		<if test="currDeptId!=null and currDeptId!=''">
+			and (cyn.dept_id = #{currDeptId} OR cyn.approve_dept_id = #{currDeptId} )
+		</if>
+			<!--添加 chensheng-->
+		<if test="status!=null and status!=''">
+			and cyn.status = #{status}
+		</if>
+		<if test="topnews!=null and topnews!=''">
+			<choose>
+				<when test="topnews == 100">
+					and cyn.topnews = #{topnews}
+				</when>
+				<when test='topnews=="0"'>
+					and (cyn.topnews is null or cyn.topnews != '100')
+				</when>
+			</choose>
+		</if>
+		</where>
+		<if test="start!=null and rows!=null ">
+			order by update_date desc limit #{start},#{rows}
+		</if>	
+	</select>
+
+	<!-- lixun 新单个新闻 -->
+	<select id="selectByIdNew" parameterType="long" resultMap="newsResultMap">
+		SELECT
+			t1.*, GROUP_CONCAT(
+				concat(
+					userName,
+					' : ',
+					handle_opinion,
+					'(',
+					handle_date,
+					')--=-'
+				)
+			) opinions
+		FROM
+		(
+			SELECT
+				newsId,
+				title,
+				cyn.create_date,
+				content,
+				cyn.pic,
+				cyn.introduction,
+				cyn.update_date,
+				cyn.type,
+				channelName,
+				newsUrl,
+				cyn.cityName,
+				cyn.dept_id,
+				cyn.approve_dept_id,
+				alu.alumniName dept_name,
+				cyn.channel,
+				category,
+				topnews,
+				topnewsWeb,
+				profession,
+				cyn.alumniid,
+				CASE cyn. STATUS
+					WHEN '10' THEN
+					'审核中'
+					WHEN '15' THEN
+					'重新审核'
+					WHEN '20' THEN
+					'审核通过'
+					WHEN '30' THEN
+					'审核不通过'
+					WHEN '40' THEN
+					'下线'
+				END STATUS,
+				CASE alu.main
+					WHEN '99' THEN
+					'总会'
+					WHEN '1' THEN
+					'院系'
+					WHEN '2' THEN
+					'地方'
+					WHEN '3' THEN
+					'行业'
+				END main_name,
+				ap.handle_opinion,
+				ap.handle_date,
+				cu.userName,
+				group_concat(m.id) channelIds,
+				GROUP_CONCAT(
+					(case t.channel when '10' then '手机' when '20' then '网页' when '30' then '微信' when '90' then '其他' else '' end ),'_',
+					case when p.`name` is null then '' else concat(p.`name`,'-') end,m.`name`) channels
+			FROM
+			cy_news cyn
+			left join cy_news_types t on newsid=news_id
+			left join cy_mobile_news_type m on m.id=channel_id
+			left join cy_mobile_news_type p on m.parent_id=p.id
+			LEFT OUTER JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+			LEFT JOIN cy_approve ap ON cyn.newsid = ap.buss_id
+			LEFT JOIN cy_user cu ON ap.user_id = cu.userId
+			WHERE
+				newsId = #{newsId}
+			ORDER BY ap.handle_date ASC
+		) t1
+	</select>
+	<select id="selectById" parameterType="long" resultMap="newsResultMap">
+		<!--
+		select *
+		from cy_news where newsId=#{newsId}
+		-->
+		SELECT
+			t1.*, GROUP_CONCAT(
+				concat(
+					userName,
+					' : ',
+					handle_opinion,
+					'(',
+					handle_date,
+					')--=-'
+				)
+			) opinions
+		FROM
+		(
+			SELECT
+				newsId,
+				title,
+				content,
+				cyn.pic,
+				cyn.introduction,
+				cyn.createTime,
+				cyn.create_date,
+				cyn.update_date,
+				cyn.type,
+				channelName,
+				newsUrl,
+				cyn.cityName,
+				cyn.dept_id,
+				cyn.approve_dept_id,
+				alu.alumniName dept_name,
+				cyn.channel,
+				mtype.origin AS origin,
+				pmtype.origin AS originP,
+				wtype.origin AS originWeb,
+				pwtype.origin AS originWebP,
+				category,
+				mtype.name AS categoryName,
+				topnews,
+				mtype.parent_id AS pCategory,
+				pmtype.`name` AS pCategoryName,
+				categoryWeb,
+				wtype.name AS categoryWebName,
+				topnewsWeb,
+				wtype.parent_id AS pCategoryWeb,
+				pwtype.`name` AS pCategoryWebName,
+				profession,
+				cyn.alumniid,
+				categoryWechat,
+				wxtype.`name` AS categoryWechatName,
+				CASE cyn. STATUS
+					WHEN '10' THEN
+					'审核中'
+					WHEN '15' THEN
+					'重新审核'
+					WHEN '20' THEN
+					'审核通过'
+					WHEN '30' THEN
+					'审核不通过'
+					WHEN '40' THEN
+					'下线'
+				END STATUS,
+				ap.handle_opinion,
+				ap.handle_date,
+				cu.userName
+			FROM
+			cy_news cyn
+			LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+			LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+			LEFT OUTER JOIN cy_web_news_type wtype ON cyn.categoryWeb = wtype.id
+			LEFT OUTER JOIN cy_web_news_type pwtype ON wtype.parent_id = pwtype.id
+			LEFT OUTER JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+			LEFT JOIN cy_wechat_news_type wxtype ON cyn.categoryWechat = wxtype.id
+			LEFT JOIN cy_approve ap ON cyn.newsid = ap.buss_id
+			LEFT JOIN cy_user cu ON ap.user_id = cu.userId
+			WHERE
+				newsId = #{newsId}
+			ORDER BY ap.handle_date ASC
+		) t1
+
+	</select>
+	<!-- 新闻添加 lixun 改-->
+	<insert id="save" useGeneratedKeys="true" keyProperty="newsId" parameterType="com.cy.core.news.entity.News">
+		insert into
+		cy_news(title,content,pic,createTime,introduction,type,channelName,newsUrl,category,cityName,categoryWechat,categoryWeb,dept_id,profession,
+			alumniid,status,approve_dept_id,channel,create_date,update_date,create_by,update_by,browse_num)
+		values(#{title},#{content},#{picUrl},now(),#{introduction},#{type},#{channelName},#{newNewsUrl},#{category},#{cityName},#{categoryWechat},#{categoryWeb},
+			#{dept_id},#{profession},#{alumniid},#{status},#{approveDeptId},#{channel},now(),now(),#{createBy},#{updateBy},#{clickRate})
+	</insert>
+	<!-- 新闻添加,返回新闻对象 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="newsId" parameterType="com.cy.core.news.entity.News">
+		insert into
+		cy_news(title,content,pic,createTime,introduction,type,channelName,newsUrl,category,cityName,categoryWechat,categoryWeb,dept_id,profession,alumniid,approve_dept_id,channel, create_date,update_date,create_by,update_by,browse_num)
+		values(#{title},#{content},#{picUrl},now(),#{introduction},#{type},#{channelName},#{newNewsUrl},#{category},#{cityName},#{categoryWechat},#{categoryWeb},
+		#{dept_id},#{profession},#{alumniid},#{approveDeptId},#{channel},now(),now(),#{createBy},#{updateBy},#{clickRate})
+	</insert>
+	
+	
+	<update id="update" parameterType="com.cy.core.news.entity.News">
+		update cy_news set
+		<if test="approveDeptId != null and approveDeptId != ''">
+			approve_dept_id = #{approveDeptId},
+		</if>
+		<if test="updateDate != null">
+			update_date = #{updateDate},
+		</if>
+		<if test="updateBy != null and updateBy != ''">
+			update_by = #{updateBy},
+		</if>
+		title=#{title},content=#{content},pic=#{picUrl},introduction=#{introduction},type=#{type},channelName=#{channelName},
+		newsUrl=#{newNewsUrl},category=#{category},cityName=#{cityName},categoryWeb=#{categoryWeb},create_date=#{createDate},dept_id=#{dept_id},
+		profession=#{profession},alumniid=#{alumniid},categoryWechat=#{categoryWechat},status=#{status},channel=#{channel},
+		update_date=now(),update_by=#{updateBy}
+		where
+		newsId=#{newsId}
+	</update>
+	<delete id="delete" parameterType="list">
+		delete from cy_news where newsId in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!-- 删除中间表信息 -->
+	<delete id="deleteMiddle" parameterType="list">
+		delete from cy_news_types where news_id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<select id="selectForMicro" parameterType="map" resultMap="newsResultMap">
+		select * from cy_news
+		<where>
+			<if test="type!=null and type!=''">
+				type=#{type}
+			</if>
+		</where>
+		ORDER BY create_date DESC limit #{start},#{rows}
+	</select>
+	<select id="selectAllForWebApi" parameterType="string" resultMap="newsResultMap">
+		<!-- select n.* from cy_news n -->
+		SELECT n.*,nt.channel_id channelId
+		FROM cy_news n
+		JOIN cy_news_types nt ON nt.channel = '20' AND n.newsId = nt.news_id
+		WHERE  n.status = '20' AND n.approve_dept_id = #{approveDeptId}
+	</select>
+	<select id="selectByIds" parameterType="list" resultMap="newsResultMap">
+		select * from cy_news where newsId in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+		order by newsId desc
+	</select>
+	
+	<select id="getAllCategorys" parameterType="map" resultMap="dictResultMap">
+
+		select * from cy_dict where dict_type_id in
+		(select dict_type_id
+		from cy_dict_type 
+		
+		<where>
+			<if test="cateNameList!=null">
+				and dict_type_name in
+				<foreach collection="cateNameList" open="(" close=")" item="cateName" separator=",">
+					#{cateName}
+				</foreach>
+			</if>
+		</where>
+		)
+		
+	</select>
+	
+	<update id="setMobTypeList" parameterType="map">
+		update cy_news set
+		topnews=#{controlStr}
+		where
+		newsId in 
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</update>
+	<update id="setWebTypeList" parameterType="map">
+		update cy_news set
+		topnewsWeb=#{controlStr}
+		where
+		newsId in 
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</update>
+	
+	<select id="listMobTopNews" parameterType="map" resultMap="newsResultMap">
+		select * from cy_news
+		<where>
+			<if test="category==0">
+				and category is not null
+			</if>
+			<if test="category!=0">
+				and category=#{category}
+			</if>
+			
+			<if test="topnews!=null">
+				and topnews=#{topnews}
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName=#{cityName}
+			</if>
+		</where>
+		
+	</select>
+
+	<select id="findMobNews" parameterType="String" resultMap="newsNoContentResultMap">
+		select newsId, title, content, cyn.pic, introduction, createTime AS fDateTime, cyn.type, channelName,
+		newsUrl, category, mtype.name AS categoryName,topnews,cyn.cityName,mtype.parent_id as pCategory,pmtype.`name` as pCategoryName,
+		cyn.profession,cyn.alumniid ,cyn.approve_dept_id, cyn.channel,createTime,cyn.browse_num,
+		create_date AS createDate,update_date AS updateDate
+		from cy_news cyn
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		where newsId=#{newsId}
+	</select>
+
+	<select id="findWebNews" parameterType="map" resultMap="newsNoContentResultMap">
+		SELECT
+		newsId ,
+		title ,
+		content ,
+		pic ,
+		introduction ,
+		createTime AS fDateTime ,
+		cyn.type ,
+		channelName ,
+		newsUrl ,
+		topnews ,
+		cyn.cityName ,
+		CASE WHEN cyn.category IS NULL OR cyn.category = '' OR cyn.category = 0 THEN mnt.id ELSE cmnt.id END category ,
+		CASE WHEN cyn.category IS NULL OR cyn.category = '' OR cyn.category = 0 THEN mnt.`name` ELSE cmnt.`name` END categoryName ,
+		CASE WHEN cyn.category IS NULL OR cyn.category = '' OR cyn.category = 0 THEN pmnt.id ELSE pcmnt.id END pCategory ,
+		CASE WHEN cyn.category IS NULL OR cyn.category = '' OR cyn.category = 0 THEN pmnt.`name` ELSE pcmnt.`name` END pCategoryName ,
+		CASE WHEN cyn.category IS NULL OR cyn.category = '' OR cyn.category = 0 THEN mnt.type ELSE cmnt.type END categoryType,
+		cyn.profession ,
+		cyn.alumniid ,
+		cyn.approve_dept_id ,
+		cyn.channel ,
+		createTime ,
+		cyn.browse_num ,
+		create_date AS createDate ,
+		update_date AS updateDate
+		FROM
+		cy_news cyn
+		LEFT JOIN cy_news_types np ON np.news_id = cyn.newsId
+		LEFT JOIN cy_mobile_news_type mnt ON np.channel_id = mnt.id
+		LEFT JOIN cy_mobile_news_type pmnt ON pmnt.id = mnt.parent_id
+		LEFT JOIN cy_mobile_news_type cmnt ON cmnt.id = cyn.category
+		LEFT JOIN cy_mobile_news_type pcmnt ON pcmnt.id = cmnt.parent_id
+		WHERE
+		newsId=#{id}
+		<if test="channel != null and channel != ''">
+			AND (np.channel=#{channel} OR (cyn.category IS NOT NULL AND cyn.category != '' AND cyn.category != 0))
+		</if>
+		GROUP BY
+		(newsId)
+	</select>
+	<!-- 查询新闻列表，列表不需要显示content -->
+	<select id="listMobNews" parameterType="map" resultMap="newsNoContentResultMap">
+		<!--
+		select newsId, title,pic,introduction,type,channelName,newsUrl,category,date_format(createTime,'%Y-%m-%d') AS fDateTime,cityName from cy_news
+		-->
+		select newsId, title, content=null, cyn.pic, cyn.introduction, cyn.createTime AS fDateTime, cyn.type, channelName,
+		newsUrl, category, mtype.name AS categoryName,topnews,cyn.cityName,mtype.parent_id as pCategory,pmtype.`name` as pCategoryName,
+		cyn.profession,cyn.alumniid ,cyn.approve_dept_id, cyn.channel,cyn.createTime, cyn.browse_num,
+		create_date AS createDate,update_date AS updateDate
+		from cy_news cyn
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			cyn.status='20' AND find_in_set('10',cyn.channel)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+			<if test="category!=null and category!=0">
+				<!-- and category=#{category} -->
+				AND newsId IN (
+					SELECT
+						news_id
+					FROM
+						cy_news_types nt
+					WHERE
+						nt.channel = '10'
+						AND (
+							nt.channel_id = #{category}
+							OR nt.channel_id IN (
+								SELECT id
+								FROM cy_mobile_news_type
+								WHERE parent_id = #{category}
+							)
+						)
+				)
+			</if>
+			
+			<if test="butNew!=null">
+				and newsId not in (#{butNew})
+			</if>
+			<if test="topnews!=null and topnews!='' and topnews==100">
+				and topnews = #{topnews}
+			</if>
+			<if test="topnews!=null and topnews!='' and topnews==0 ">
+				and (cyn.topnews is null or topnews = '')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cyn.cityName=#{cityName}
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>	
+		</where>
+		order by cyn.create_date desc
+		<if test="start!=null and start>=0 and rows!=null and rows>0 ">
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- 查询新闻的数量 -->
+	<select id="listMobNewsCount" parameterType="map" resultType="int">
+		select count(newsId)
+		from cy_news cyn
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON cyn.category = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			cyn.status='20' AND find_in_set('10',cyn.channel)
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+			<!-- <if test="category!=null and category!=0">
+				and category=#{category}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+				and topnews = #{topnews}
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName=#{cityName}
+			</if>
+			<if test="topnews==null or topnews==''  ">
+				and (topnews is null or topnews = '')
+			</if>	
+			 -->
+			<if test=" category!=null and category!=0">
+				<!-- and category=#{category} -->
+				AND newsId IN (
+					SELECT
+						news_id
+					FROM
+						cy_news_types nt
+					WHERE
+						nt.channel = '10'
+					AND (
+							nt.channel_id = #{category}
+							OR nt.channel_id IN (
+							SELECT id
+							FROM cy_mobile_news_type
+							WHERE parent_id = #{category}
+						)
+					)
+				)
+			</if>
+			
+			<if test="butNew!=null">
+				and newsId not in (#{butNew})
+			</if>
+			<if test="topnews!=null and topnews!='' and topnews==100">
+				and topnews = #{topnews}
+			</if>
+			<if test="topnews!=null and topnews!='' and topnews==0 ">
+				and (cyn.topnews is null or topnews = '')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cyn.cityName=#{cityName}
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>
+		</where>
+	</select>
+
+	<!--获取网页新闻数量-->
+	<select id="listWebNewsCount" parameterType="map" resultType="int">
+		select count(DISTINCT newsId)
+		from cy_news cyn
+		LEFT JOIN cy_news_types nt ON cyn.newsId = nt.news_id
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON nt.channel_id = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT OUTER JOIN cy_newschannel cnc ON cnc.channelName = cyn.channelName
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			<if test="channelId != null and channelId !=''">
+				cyn. STATUS = '20' AND find_in_set( #{channelId}, cyn.channel)
+				<if test=" category!=null and category!=0">
+					AND newsId IN (
+					SELECT news_id
+					FROM cy_news_types nt
+					WHERE nt.channel =  #{channelId}
+					AND (
+					nt.channel_id = #{category}
+					OR nt.channel_id IN (
+					SELECT id
+					FROM cy_mobile_news_type
+					WHERE parent_id = #{category}
+					)
+					)
+					)
+				</if>
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>
+			<if test="channel !=null and channel !='' ">
+				and cnc.channelId = #{channel}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+
+				<choose>
+					<when test='channelId == "10"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnews = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnews is null or cyn.topnews != '100')
+							</when>
+						</choose>
+					</when>
+					<when test='channelId == "20"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</when>
+					<otherwise>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</otherwise>
+				</choose>
+
+			</if>
+
+			<if test="code !=null and code != ''">
+				and mtype.code = #{code}
+			</if>
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+		</where>
+	</select>
+
+	<!--获取网页新闻列表-->
+	<select id="listWebNews" parameterType="map" resultMap="newsNoContentResultMap">
+		SELECT DISTINCT
+			cyn.newsId,
+			cyn.title,
+			cyn.content = NULL,
+			cyn.pic,
+			cyn.introduction,
+			cyn.createTime AS fDateTime,
+			cyn.type,
+			cyn.channelName,
+			cyn.newsUrl,
+			cyn.category,
+			cyn.topnews,
+			cyn.cityName,
+			cyn.profession,
+			cyn.alumniid,
+			cyn.approve_dept_id,
+			cyn.channel,
+			cyn.createTime,
+			cyn.browse_num,
+			create_date AS createDate,
+			update_date AS updateDate,
+			GROUP_CONCAT(mtype.CODE) AS CODE
+			<!-- mtype. NAME AS categoryName, -->
+			<!-- mtype. CODE AS CODE, -->
+			<!-- mtype.parent_id AS pCategory, -->
+			<!-- pmtype.`name` AS pCategoryName -->
+		FROM cy_news cyn
+		LEFT JOIN cy_news_types nt ON cyn.newsId = nt.news_id
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON nt.channel_id = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT OUTER JOIN cy_newschannel cnc ON cnc.channelName = cyn.channelName
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			<if test="channelId != null and channelId !=''">
+				cyn. STATUS = '20' AND find_in_set( #{channelId}, cyn.channel)
+				<if test=" category!=null and category!=0">
+					AND newsId IN (
+					SELECT news_id
+					FROM cy_news_types nt
+					WHERE nt.channel =  #{channelId}
+					AND (
+					nt.channel_id = #{category}
+					OR nt.channel_id IN (
+					SELECT id
+					FROM cy_mobile_news_type
+					WHERE parent_id = #{category}
+					)
+					)
+					)
+				</if>
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>
+			<if test="channel !=null and channel !='' ">
+				and cnc.channelId = #{channel}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+
+				<choose>
+					<when test='channelId == "10"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnews = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnews is null or cyn.topnews != '100')
+							</when>
+						</choose>
+					</when>
+					<when test='channelId == "20"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</when>
+					<otherwise>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</otherwise>
+				</choose>
+
+			</if>
+
+			<if test="code !=null and code != ''">
+				and mtype.code = #{code}
+			</if>
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+		</where>
+		GROUP BY cyn.newsId
+		order by create_date desc
+		<if test="start!=null and start>=0 and rows!=null and rows>0 ">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	
+	<!-- 微信类别 -->
+	<select id="selectWechatTypeList" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		<!-- lixun combotree展示 -->
+		select * from (
+		select * from cy_wechat_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+		</where>
+		UNION select * from cy_wechat_news_type where parent_id in ( select id from cy_wechat_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+		</where>)) t1
+		order by orderNum
+		<if test="start!=null and rows!=null">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!--App端手机新闻栏目列表-->
+	<select id="selectTypeListforMobile" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		select * from cy_mobile_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="deptId!=null  and deptId!='' ">
+				and dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+		</where>
+		order by orderNum
+	</select>
+	<!-- 查询新闻类别并分页 -->
+	<select id="selectTypeList" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		<!-- lixun combotree展示 -->
+		select * from (
+		select * from cy_mobile_news_type
+		<where> 1=1
+			<if test="channel != null and channel != ''">
+				AND find_in_set(channel,#{channel})
+			</if>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="deptId!=null  and deptId!='' ">
+				and dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+
+		</where>
+		UNION select * from cy_mobile_news_type where parent_id in ( select id from cy_mobile_news_type
+		<where> 1=1
+			<if test="channel != null and channel != ''">
+				AND find_in_set(channel,#{channel})
+			</if>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="deptId!=null  and deptId!='' ">
+				and dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+
+		</where>)) t1
+		order by (orderNum+0)
+		<if test="start!=null and rows!=null">
+		  limit #{start},#{rows}
+		</if>
+	</select>
+	<select id="selectWebTypeList" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		<!-- lixun combotree展示 -->
+		select * from (
+		select * from cy_web_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+		</where>
+		UNION select * from cy_web_news_type where parent_id in ( select id from cy_web_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+		</where>)) t1
+		order by orderNum 
+		<if test="start!=null and rows!=null">
+		  limit #{start},#{rows}
+		</if>
+	</select>
+	
+	<select id="selectWebNewFromWebType" parameterType="com.cy.core.news.entity.NewsType" resultType="com.cy.core.news.entity.News">
+			SELECT * from cy_news ta
+			INNER JOIN cy_mobile_news_type tb
+			ON ta.category=tb.id
+			<where>
+			    
+				AND ta.category=#{id}    
+			    
+			</where>    
+			limit 0,1
+			
+	</select>
+
+	<insert id="saveCheck" parameterType="com.cy.core.news.entity.NewsCheck">
+		INSERT INTO cy_approve(
+		id,
+		buss_id,
+		buss_type,
+		buss_dept_id,
+		status,
+		user_id,
+		handle_date,
+		handle_opinion,
+		create_date,
+		create_by,
+		update_date,
+		update_by,
+		remarks,
+		del_flag
+		)VALUE(
+		#{id},
+		#{bussId},
+		#{bussType},
+		#{bussDeptId},
+		#{status},
+		#{userId},
+		#{handleDate},
+		#{handleOpinion},
+		 now(),
+        #{createBy},
+         now(),
+        #{updateBy},
+        #{remarks},
+        #{delFlag}
+		)
+	</insert>
+
+	<select id="queryNewsType" parameterType="map" resultType="com.cy.core.news.entity.NewsType" >
+		select * from cy_mobile_news_type
+		<where>
+			<if test="parent_id!=null">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="deptId!=null  and deptId!='' ">
+				and dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=0">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=0">
+				and origin = #{origin}
+			</if>
+			<if test="channel!=null and channel!=''">
+				and channel = #{channel}
+			</if>
+			<if test="origin!=null and origin==2 and alumniId!=null">
+				and cityName = (select region from cy_alumni where alumniId = #{alumniId})
+			</if>
+			<if test="isNavigation!=null">
+				and isNavigation = #{isNavigation}
+			</if>
+			<if test="accountNum != null and accountNum != ''">
+				AND
+
+				FIND_IN_SET(
+				dept_id,
+				(
+				SELECT
+				GROUP_CONCAT(alumniId)
+				FROM
+				cy_alumni
+				WHERE
+				main != '0'
+				AND alumniId != '1'
+				AND (
+				FIND_IN_SET(
+				alumniId,
+				(
+				SELECT
+				GROUP_CONCAT(alumni_id)
+				FROM
+				cy_user_alumni
+				WHERE
+				FIND_IN_SET(
+				user_id,
+				(
+				SELECT
+				u.baseInfoId
+				FROM
+				cy_userprofile u
+				WHERE
+				accountNum = #{accountNum}
+				)
+				)
+				)
+				)
+				OR FIND_IN_SET(
+				alumniId,
+				(
+				SELECT
+				GROUP_CONCAT(alumniId)
+				FROM
+				cy_alumni
+				WHERE
+				FIND_IN_SET(
+				academyid,
+				(
+				SELECT
+				GROUP_CONCAT(d.dept_id)
+				FROM
+				cy_dept_info d
+				WHERE
+				(
+				(
+				FIND_IN_SET(
+				d.dept_id,
+				(
+				SELECT
+				GROUP_CONCAT(LEFT(u.user_id, 10))
+				FROM
+				cy_user_info u
+				WHERE
+				FIND_IN_SET(
+				u.user_id,
+				(
+				SELECT
+				up.baseInfoId
+				FROM
+				cy_userprofile up
+				WHERE
+				up.accountNum = #{accountNum}
+				)
+				)
+				)
+				)
+				AND d.is_current = '1'
+				)
+				OR (
+					FIND_IN_SET(
+						d.dept_id,
+						(
+							SELECT
+							GROUP_CONCAT(di.belong_dept_id)
+							FROM
+							cy_dept_info di
+							WHERE
+								FIND_IN_SET(
+									di.dept_id,
+									(
+										SELECT
+										GROUP_CONCAT(LEFT(u.user_id, 10))
+										FROM
+										cy_user_info u
+										WHERE
+											FIND_IN_SET(
+												u.user_id,
+												(
+													SELECT
+													up.baseInfoId
+													FROM
+													cy_userprofile up
+													WHERE
+													up.accountNum = #{accountNum}
+												)
+											)
+									)
+								)
+								AND di.is_current = '0'
+						)
+					)
+				)
+				)
+				)
+				)
+				)
+				)
+				)
+				)
+				)
+			</if>
+		</where>
+		ORDER BY (orderNum+0)
+	</select>
+
+	<update id="updateStatus" parameterType="map">
+		UPDATE cy_news SET status = #{status} WHERE newsId=#{id}
+	</update>
+
+	<!-- lixun system setting的是否开通分会栏目-->
+	<select id="selectNewTypeOpen" resultType="java.lang.String">
+		select is_new_type_open from cy_system_setting order by systemId desc limit 1
+	</select>
+	<insert id="insertNewsTypes" parameterType="map">
+		insert into cy_news_types(news_id,channel,channel_id)
+		select #{newsid},channel,id from cy_mobile_news_type where id in
+		<foreach collection="channels" open="(" close=")" item="ids" separator=",">
+			<if test="ids!=''">
+				#{ids}
+			</if>
+		</foreach>
+	</insert>
+	<delete id="deleteNewsTypes" parameterType="long">
+		delete from cy_news_types where news_id=#{newsid}
+	</delete>
+
+	<update id="updateClickRate" parameterType="map">
+		UPDATE cy_news SET browse_num=#{clickRate} WHERE newsId=#{id}
+	</update>
+
+	<select id="selectNewsForNew" parameterType="map" resultMap="newsResultMap">
+		SELECT
+			n.*
+		FROM
+			cy_news n
+		LEFT JOIN cy_news_types nt ON n.newsId = nt.news_id
+		LEFT JOIN cy_mobile_news_type mnt ON mnt.id = nt.channel_id
+		WHERE n.del_flag = '0'
+		<if test="channel!=null and channel!=''">
+			AND nt.channel =  = #{channel}
+		</if>
+		<if test="channelNames != null">
+			<foreach collection="channelNames" open="(" separator="or" close=")" item="channelName">
+				n.channelNames LIKE CONCAT('%', #{channelName}, '%')
+			</foreach>
+		</if>
+		<if test="types != null">
+			<foreach collection="types" open="(" separator="or" close=")" item="type">
+				n.type LIKE CONCAT('%', #{type}, '%')
+			</foreach>
+		</if>
+		<if test="category!=null and category!='' ">
+			AND (
+				mnt.id = #{category}
+				OR mnt.parent_id = #{category}
+			)
+		</if>
+		<if test="channel != null and channel != '' and topnews != null and topnews != '' and topnews = '1' ">
+			<if test=" channel = '10'">
+				AND n.topnews = '100'
+			</if>
+			<if test=" channel = '20'">
+				AND n.topnewsWeb = '100'
+			</if>
+		</if>
+		<if test="alumniId != null and alumniId != ''">
+			AND mnt.dept_id = #{alumniId}
+		</if>
+		<if test="start!=null and rows!=null ">
+			ORDER BY  n.update_date DESC LIMIT #{start},#{rows}
+		</if>
+		GROUP BY n.newsId
+	</select>
+</mapper>

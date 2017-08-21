@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>校友会</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+	    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+	    <meta content="校友会" name="description"/>
+	    <meta content="校友会" name="author"/>
+		<!--引入css文件-->
+		<link href="../css/style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/user.css" type="text/css" />
+
+		<!--引入js文件-->
+		<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../js/B.js" type="text/javascript"></script>
+		<script src="../js/common.js" type="text/javascript"></script>
+		<script src="../js/interfacepath.js" type="text/javascript"></script>
+
+		<script language="javascript">
+			// 接收参数
+			var newsId = B.getUrlParamByName("newsId");
+
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+			
+			$(function() {
+				B.ready(function() {
+					// 获取网站所有栏目（包括子栏目和不在导航上显示的校友服务）
+					$.ajax({
+						type: 'post',
+//						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//						data: {
+//							jsonStr: '{"command": "235","content": {}}'
+//						},
+						url: B.serverUrl + interface.loaderNav.url,
+						data: {
+							jsonStr: JSON.stringify(interface.loaderNav.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log("------" + JSON.stringify(data));
+							
+							if(data && data.obj && data.obj.length > 0) {
+								categoryTreeData = data.obj;
+								
+								// 初始化网站顶部导航
+//								for(var i in categoryTreeData) {
+//									if(categoryTreeData[i].checked){
+//										$("#nav").append('<li><a href=' + categoryTreeData[i].id + '"list.html?categoryId=">' + categoryTreeData[i].text + '</a></li>');
+//									}
+//								}
+							}
+							//頂部導航欄添加校友分會列表
+							//$("#nav").append('<li><a href="../alumni/xyh.html">校友组织</a></li>');
+						},
+						error: function(xhr, type) {
+
+						}
+					});
+					interface.contentDet.jsonData.content.id=newsId.toString();
+					// 初始化页面
+					$.ajax({
+						type: 'post',
+//						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//						data: {
+//							jsonStr: '{"command": "237","content": {"id":"' + newsId + '"}}'
+//						},
+						url: B.serverUrl + interface.contentDet.url,
+						data: {
+							jsonStr: JSON.stringify(interface.contentDet.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log(JSON.stringify(data.obj));
+							// 父级栏目名
+							var pCategoryName = data.obj.pCategoryName;
+							// 父级栏目id
+							var pCategory = data.obj.pCategory;
+							// 栏目名
+							var categoryName = data.obj.categoryName;
+							// 栏目id
+							var category = data.obj.category;
+
+							// 所在位置
+							$(".news_view h2").append('<a href="../index.html" >首页</a>');
+							if(pCategoryName) {
+								$(".news_view h2").append('&gt;&gt;<a href="'+B.clientUrl+'news/list.html?categoryId=' + pCategory + '" >' + pCategoryName + '</a>');
+							}
+							if(categoryName) {
+								$(".news_view h2").append('&gt;&gt;<a href="'+B.clientUrl+'news/list.html?categoryId=' + category + '" >' + categoryName + '</a>');
+							}
+							$(".news_view h2").append('&gt;&gt;<span class="title">' + data.obj.title + '</span>');
+
+							$(".title").html(data.obj.title);
+							$(".createDate").text(data.obj.createDate.substr(0, 10));
+							$(".clickRate").text(data.obj.clickRate);
+							$(".content1").html(data.obj.content);
+							$(".news_view h2").css("color",contentStyle.contentXiangqing.fontColor);
+							$(".news_view h2 a").css("color",contentStyle.contentXiangqing.fontColor);
+							$(".news h1").css("color",contentStyle.contentXiangqing.titleColor);
+							$(".news .top").css("color",contentStyle.contentXiangqing.xinxiColor);
+
+						},
+						error: function(xhr, type) {
+
+						}
+					});
+				});
+				
+				initFoot();
+			});
+			
+			window.onresize = function () {
+				initFoot();
+			}
+			function initFoot(){
+				var windowHeight = $(window).height() ;
+				if(windowHeight > 200) {
+					$(".news_view").css("min-height",windowHeight-227);
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+
+	<!--这是顶部::start-->
+	<div id="head">
+
+		<div class="lines">
+		</div>
+
+		<div class="header_nav">
+		</div>
+
+		<div class="header_content">
+		</div>
+
+	</div>
+	<!--这是顶部::end-->
+	<div class="dengluTankuang"></div>
+	<!--退出登录框-->
+	<div class="logoutTankuaung"></div>
+		<!--新闻栏目::start-->
+		<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="695" align="left" valign="top">
+					<div id="bodyer">
+						<div id="main">
+							<div class="news_view">
+								<h2>当前位置：</h2>
+								<div class="content">
+									<div class="news">
+										<h1 class="title"></h1>
+										<div class="top">
+											发布时间：<span class="createDate"></span>&nbsp;&nbsp;&nbsp; 查看次数：
+											<span class="clickRate"></span>
+										</div>
+										<div class="content1">
+
+										</div>
+									</div>
+								</div>
+								<!--
+								<div class="bottom">
+									<a href="javascript:window.opener=null;window.close();">
+										<input type="button" class="clickBtn" style="padding: 8px 30px;" value="关闭"/>
+									</a>
+								</div>
+								-->
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<!--新闻栏目::end-->
+
+		<!--顶部线条::start-->
+		<div id="footer_line"></div>
+		<!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>

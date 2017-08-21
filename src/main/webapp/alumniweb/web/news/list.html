@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>校友会</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<meta content="校友会" name="description" />
+		<meta content="校友会" name="author" />
+		<!--引入css文件-->
+		<link href="../css/style.css" type="text/css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/user.css" type="text/css" />
+		<style type="text/css"></style>
+
+		<!--引入js文件-->
+		<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../js/jquery.page.js" type="text/javascript"></script>
+		<script src="../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../js/B.js" type="text/javascript"></script>
+		<script src="../js/common.js" type="text/javascript"></script>
+		<script src="../js/interfacepath.js"></script>
+
+		<script type="text/javascript">
+			// 接收的参数
+			var categoryId = B.getUrlParamByName("categoryId");
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+
+			var categoryName = "";
+			
+			var currentCategoryId = 0;
+			var currentCategoryName = "";
+			
+			// 分页参数
+			var pageSize = 6;
+			var pageTotal = 0;
+			var pageCount = 1;
+			var pageCurrent = 1;
+
+			// 初始化页面
+			$(function() {
+				B.ready(function() {
+					// 获取网站所有栏目（包括子栏目和校友服务）
+					$.ajax({
+						type: 'post',
+//						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//						data: {
+//							jsonStr: '{"command": "235","content": {}}'
+//						},
+						url: B.serverUrl + interface.loaderNav.url,
+						data: {
+							jsonStr: JSON.stringify(interface.loaderNav.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+//							console.log("---1111---" + JSON.stringify(data));
+
+							if(data && data.obj && data.obj.length > 0) {
+								categoryTreeData = data.obj;
+
+								var serviceList = '';
+								var serviceCategoryIndex = 0;
+
+								for(var i =0; i < categoryTreeData.length; i++) {
+
+
+									if(categoryTreeData[i].checked){
+										// 初始化顶部导航
+//										$("#nav").append('<li><a href="list.html?categoryId=' + categoryTreeData[i].id + '">' + categoryTreeData[i].text + '</a></li>');
+									}
+									/*
+									else {
+										//初始化校友服务
+										if(categoryTreeData[i].text == "校友服务" && categoryTreeData[i].children && categoryTreeData[i].children.length > 0){
+											var serviceCategorys = categoryTreeData[i].children;
+											var len = serviceCategorys.length;
+											var index = 2;
+											
+											//偶数个
+											if(len%2 == 0) {
+												for(var k=0; k<len/index; k++){
+													serviceList += 
+																'<ul class="service-row">';
+																for(var j=0; j<index; j++){
+																	serviceList += 
+																'	<li>'	+
+																'		<a href="list.html?categoryId='+serviceCategorys[k*index+j].id+ '">' +
+																'			<img src=" '+serviceCategorys[k*index+j].iconCls+' " class="fl"/>'	+ 
+																'			<p class="fl">'+serviceCategorys[k*index+j].text+'</p>'	+ 
+																'		</a>' +
+																'	</li>';
+																}
+													
+													serviceList += 
+																'</ul>';
+												}
+												
+											}
+											//奇数个
+											else{
+												for(var k=0; k<len/index+1; k++){
+													serviceList += 
+																'<ul class="service-row">';
+																for(var j=0; j<index-1; j++){
+																	serviceList += 
+																'	<li>'	+ 
+																'		<img src=" '+serviceCategorys[i*index+j].iconCls+' " class="fl"/>'	+ 
+																'		<p class="fl">'+serviceCategorys[i*index+j].text+'</p>'	+ 
+																'	</li>';
+																}
+													
+													serviceList += 
+																'</ul>';
+												}
+												
+											}
+											
+										}
+										//初始化在线捐赠
+										else if(categoryTreeData[i].text == "在线捐赠"){
+											$("#donateOnline").html('<a href='+categoryTreeData[i].id+'"donateListAll.html?categoryId=">
+											<img src="'+categoryTreeData[i].iconCls+'" width="289" height="142" /></a>');
+										}
+
+									}
+									 */
+
+									// 初始化页面数据
+									if(categoryTreeData[i].id == categoryId){
+										
+										// 当前栏目是一级栏目
+										if(categoryTreeData[i].children && categoryTreeData[i].children.length > 0){
+											// 当前一级栏目有子栏目
+											// 设置左侧导航标题
+											categoryName = categoryTreeData[i].text;
+											$("#parentCategory").text(categoryName);
+											
+											// 初始化左侧导航
+											var len = categoryTreeData[i].children.length;
+											for(var j = 0; j < len; j++) {
+												$("#categoryList").append(
+													'<tr><td width="165" height="30" bgcolor='+listStyle.listContent.lisrLeftBgcolor+' align="center" style="font-size:14px; " valign="top">' +
+													'<a name="'+categoryTreeData[i].children[j].id+'" ' +
+													'onclick="loadNewsList(1,\'' + categoryTreeData[i].children[j].id + '\',\'' + categoryTreeData[i].children[j].text + '\')">' +
+													categoryTreeData[i].children[j].text +
+													'</a></td></tr>');
+											}
+											
+											// 默认加载第一个子栏目的列表数据
+											currentCategoryId = categoryTreeData[i].children[0].id;
+											currentCategoryName = categoryTreeData[i].children[0].text;
+										}
+										else {
+											// 当前一级栏目无子栏目
+											// 初始化左侧导航
+											$("#categoryList").append('<tr><td width="165" height="30" bgcolor='+listStyle.listContent.lisrLeftBgcolor+' align="center" style="font-size:14px; " valign="top">' +
+													'<a name="'+categoryTreeData[i].id+'" ' +
+													'onclick="loadNewsList(1,\'' + categoryTreeData[i].id + '\',\'' + categoryTreeData[i].text + '\')">' +
+													categoryTreeData[i].text + '</a></td></tr>');
+											// 加载第一页列表数据
+											currentCategoryId = categoryTreeData[i].id;
+											currentCategoryName = categoryTreeData[i].text;
+										}
+										
+										loadNewsList(1, currentCategoryId, currentCategoryName);
+									}
+									else{
+										if(categoryTreeData[i].children && categoryTreeData[i].children.length > 0){
+											console.log("-------"+JSON.stringify(categoryTreeData[i].children));
+											// 初始化左侧导航
+											var len = categoryTreeData[i].children.length;
+											for(var j = 0; j < len; j++) {
+												if(categoryTreeData[i].children[j].id == categoryId){
+													$("#categoryList").append('<tr><td width="165" height="30" bgcolor="#FFFFFF" align="center" style="font-size:14px; " valign="top"><a id="'+categoryTreeData[i].children[j].id+'" onclick="loadNewsList(1,\'' + categoryTreeData[i].children[j].id + '\',\'' + categoryTreeData[i].children[j].text + '\')">' + categoryTreeData[i].children[j].text + '</a></td></tr>');
+													
+													// 初始化列表数据
+													currentCategoryId = categoryTreeData[i].children[j].id;
+													currentCategoryName = categoryTreeData[i].children[j].text;
+													loadNewsList(1, currentCategoryId, currentCategoryName);
+													break;
+												}
+											}
+										}
+									}
+								}
+								
+								$("#serviceCategoryList").append(serviceList);
+							}
+							//頂部導航欄添加校友分會列表
+							//$("#nav").append('<li><a href="../alumni/xyh.html">校友组织</a></li>');
+						},
+						error: function(xhr, type) {}
+					});
+				});
+//				alert($.cookie('the_cookie'));
+			});
+
+
+			function loadNewsList(page, id, name) {
+				
+				//点击后，重置栏目id
+				currentCategoryId = id;
+				currentCategoryName = name;
+				//刷新左側導航欄
+				currentCategory(headColor);
+
+				$("#position").empty();
+				$("#position").append('您现在的位置：<a href="../index.html">首页</a>');
+				if(categoryName && categoryName != '') {
+					$("#position").append('&gt;&gt;<a href="list.html?categoryId=' + categoryId + '">' + categoryName + '</a> ');
+				}
+				$("#position").append('&gt;&gt;<a href="javascript:void(0);" onclick="loadNewsList(1, \''+currentCategoryId+'\',\''+currentCategoryName+'\')">' + name + '</a> ');
+				$("#position a").css("color",listStyle.listContent.fontColor);
+				// 加载子栏目下的新闻列表
+				$("#newsTppl").html("");
+
+				interface.loadNewsList.jsonData.content.page= page.toString();
+				interface.loadNewsList.jsonData.content.rows= pageSize.toString();
+				interface.loadNewsList.jsonData.content.category= id.toString();
+//				console.log(JSON.stringify(interface.loadNewsList.jsonData))
+//				console.log('{"command": "236","content": {"page": "' + page + '","rows": "' + pageSize + '","category": "' + id + '"}}')
+				$.ajax({
+					type: 'post',
+//					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//					data: {
+//						jsonStr: '{"command":"236","content":{"page":"'+page+'","rows":"'+pageSize + '","category":"'+id +'"}}'
+//					},
+					url: B.serverUrl + interface.loadNewsList.url,
+					data: {
+						jsonStr: JSON.stringify(interface.loadNewsList.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						console.log(JSON.stringify(data));
+						if(data.obj) {
+							var newsObj = data.obj;
+							var newsList = newsObj.rows;
+							
+							if(newsList.length > 0) {
+								for(var key =0 ; key < newsList.length; key++) {
+									var tpplStr =
+										'<table width="510" border="0" cellpadding="0" cellspacing="0" style="margin-top:5px;">' +
+										'	<tr>' +
+										'		<td width="160" height="127" align="center" valign="middle" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+'>' +
+										'			<a href="content.html?newsId=' + newsList[key].newsId + '" title="' + newsList[key].title + '" target="_blank">' +
+										'				<img src="' + newsList[key].pic + '" width="150" height="120" />' +
+										'			</a>' +
+										'		</td>' +
+										'		<td width="350" height="127" align="center" valign="top" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+'>' +
+										'			<table width="340" border="0" cellpadding="0" cellspacing="0">' +
+										'			<tr>' +
+										'				<td height="34" align="left" valign="middle" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+' style="font-size:14px; font-weight:bold; color:#444444">' +
+										'					<a class="listTitle" style="width: 288px; display: inline-block ; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" href="content.html?newsId=' + newsList[key].newsId + '" title="' + newsList[key].title + '" target="_blank">' + newsList[key].title + '</a>' +
+										'				</td>' +
+										'			</tr>' +
+										'			<tr>' +
+										'				<td width="340" height="90" align="left" valign="top" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+' style="color:#333333">' +
+										'				<a class="listContainer" style="height: 90px;display: inline-block; overflow: hidden;font-size: 13px; line-height: 18px; " href="content.html?newsId=' + newsList[key].newsId + '" title="' + newsList[key].title + '" target="_blank" class="text-show-row-6">' + newsList[key].introduction + '</a>' +
+										'				</td>' +
+										'			</tr>' +
+										'			</table>' +
+										'		</td>' +
+										'	</tr>' +
+										'	<tr>' +
+										'		<td height="15" colspan="2" align="center" valign="middle" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+'> <img src='+listStyle.listContent.list_lines+' width="350" height="2" /> </td>' +
+										'	</tr>' +
+										'</table>';
+									$("#newsTppl").append(tpplStr);
+									$(".listTitle").css("color",listStyle.listContent.listTitleColor);
+									$(".listContainer").css("color",listStyle.listContent.listContainer);
+
+								}
+
+								//显示页面新闻栏目条数
+								$(".count font").text(newsObj.total);
+							}
+
+							pageTotal = newsObj.total;
+							pageCount = Math.ceil(pageTotal / pageSize);
+							
+							$(".pagerbar").createPage({
+						    		pageTotal:pageTotal,
+						        pageCount:pageCount,
+						        current:page,
+						        backFn:function(p){
+						            loadNewsList(p, currentCategoryId, currentCategoryName);
+						        }
+						    });
+						}
+						$(".pagerbar span.disabled").css({"background":positionStyle.userStyle.fenyeDisBgColor,"color":positionStyle.userStyle.fenyeDisBgFontColor});
+						$(".prevPage").css({"background":positionStyle.userStyle.fenyeAbleBgColor,"color":positionStyle.userStyle.fenyeAbleBgFontColor});
+						$(".nextPage").css({"background":positionStyle.userStyle.fenyeAbleBgColor,"color":positionStyle.userStyle.fenyeAbleBgFontColor});
+						$(".pagerbar a").css({"background":positionStyle.userStyle.fenyeBorBgColor,"color":positionStyle.userStyle.fenyeBorwenzColor,"border":"1px solid "+positionStyle.userStyle.fenyeBorBgFontColor});
+
+						$(".pagerbar span.current").css({"background":positionStyle.userStyle.fenyeClickColorH,"color":positionStyle.userStyle.fenyeClickColorHz,"border":"1px solid "+positionStyle.userStyle.fenyeClickColorHk});
+						$(".pagerbar a").hover(function(){
+							$(this).css("border","1px solid "+positionStyle.userStyle.fenyeBorBgFontColorH)
+						},function(){
+							$(this).css("border","1px solid "+positionStyle.userStyle.fenyeBorBgFontColor);
+						})
+						$(".pagerbar a").click(function () {
+							$(this).css({"background":positionStyle.userStyle.fenyeClickColorH,"color":positionStyle.userStyle.fenyeClickColorHz,"border":"1px solid "+positionStyle.userStyle.fenyeClickColorHk});
+						})
+					},
+					error: function(xhr, type) {
+						console.log(xhr+"----"+type);
+					}
+				});
+
+			}
+			
+			//導航欄當前欄目
+			//颜色-----------！！！！！
+			function currentCategory(headColor){
+				var categoryTitleList = $('#categoryList').find('a');
+				for(var i =0 ; i<categoryTitleList.length; i++){
+					$("a[name='"+categoryTitleList[i].name+"']").css("color","#000");
+					if(categoryTitleList[i].name == currentCategoryId){
+						// change the element color
+						$("a[name='"+categoryTitleList[i].name+"']").css("color",headColor);
+					}
+				}
+			}
+
+
+		</script>
+
+	</head>
+
+
+	<body>
+
+
+		<!--这是顶部::start-->
+		<div id="head">
+
+			<div class="lines">
+			</div>
+
+			<div class="header_nav">
+			</div>
+
+			<div class="header_content">
+			</div>
+
+		</div>
+		<!--这是顶部::end-->
+		<div class="dengluTankuang"></div>
+
+		<div class="logoutTankuaung"></div>
+		<!--新闻栏目::start-->
+		<table width="1006" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:20px;">
+			<tr>
+				<td width="695" align="left" valign="top">
+					<table width="685" border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width="165" height="175" valign="top">
+								<table id="categoryList" width="165" border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td id="parentCategory" width="165" height="35" bgcolor="#005ABF" align="center"
+											style="color: #fff; font-size:15px; font-weight:bold" valign="middle">导 航</td>
+									</tr>
+									<tr>
+										<td class="lisrLeftBgcolor" width="165" height="15" bgcolor='+listStyle.listContent.lisrZhongBlockgcolor+' align="center" valign="top"></td>
+									</tr>
+								</table>
+							</td>
+							<td width="10" height="10" align="center" valign="middle"></td>
+							<td width="510" height="500" valign="top">
+								<table width="510" border="0" cellpadding="0" cellspacing="0">
+									<tr>
+										<td id="position" width="510" height="35"  style="padding-left:10px; font-size:14px">
+										</td>
+									</tr>
+									<tr><td class="position_border"></td></tr>
+									<tr>
+										<td width="510" height="5" align="center" valign="top"></td>
+									</tr>
+									<tr>
+										<td id="newsTppl" width="510" height="830" bgcolor="#FFFFFF" valign="top">
+										</td>
+									</tr>
+									<tr>
+										<td width="510" height="30" valign="top">
+											<div class="page_box">
+												<div class="pagerbar"></div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+					</table>
+				</td>
+				<td width="285" valign="top" class="right-wrap">
+					<ul>
+						<li>
+							<img class="rightImg" src="../image/listrighttop.jpg" />
+						</li>
+						<li>
+							<table class="wenxinLanMu" width="289" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F2F8FF" style="font-size: 14px">
+								<tr height="10"></tr>
+								<tr>
+									<td align="center">
+										<img class="erweimaLeftTp" height="85px" src="../image/cy_qr.png" />
+									</td>
+									<td align="center">
+										<img class="erweimaCenterTp" height="85px" src="../image/cy_qr.png" />
+									</td>
+									<td align="center">
+										<img class="erweimaRightTp" height="85px" src="../image/qrcode_jmiwxh.jpg"/>
+									</td>
+								</tr>
+								<tr height="5"></tr>
+								<tr>
+									<td class="erweimaLeft" align="center">窗友 APP</td>
+									<td class="erweimaCenter" align="center">窗友 APP</td>
+									<td class="erweimaRight" align="center">科贸校友服务</td>
+								</tr>
+								<tr height="10"></tr>
+							</table>
+						</li>
+						<!--校友服务-->
+						<!--
+						<li>
+							<span class="right-title">校友服务</span>
+						</li>
+						<li id="serviceCategoryList">
+						</li>
+						-->
+						<!--在线捐赠-->
+						<li>
+							<span class="right-title">在线捐赠</span>
+						</li>
+						<li id="donateOnline">
+							<a href="../service/donate/donateList.html?flag=1">
+								<img src="../image/img_donation.png" width="289" height="142" />
+							</a>
+						</li>
+						<li>
+							<span class="right-title">联系我们</span>
+						</li>
+						<li>
+							<table width="100%" border="0" cellpadding="0" cellspacing="0">
+								<tr class="callMe1">
+									<td width="25%" height="33" align="center" style="border-bottom:#EDF3E9 solid 1px;">
+										<img src="../image/icon_phone.png" width="22" height="22" /></td>
+									<td width="75%" style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+								</tr>
+								<tr class="callMe2">
+									<td height="36" align="center" style="border-bottom:#EDF3E9 solid 1px;">
+										<img src="../image/icon_fax.png" width="22" height="22" /></td>
+									<td style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+								</tr>
+								<tr class="callMe3">
+									<td height="34" align="center">
+										<img src="../image/icon_email.png" width="22" height="22" /></td>
+									<td>gzkmuxy@163.com</td>
+								</tr>
+
+								<tr class="callMe4">
+									<td height="34" align="center">
+										<img src="../image/icon_email.png" width="22" height="22" /></td>
+									<td>gzkmuxy@163.com</td>
+								</tr>
+								<tr class="callMe5">
+									<td height="34" align="center">
+										<img src="../image/icon_email.png" width="22" height="22" /></td>
+									<td>gzkmuxy@163.com</td>
+								</tr>
+							</table>
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</table>
+		<!--新闻栏目::end-->
+		<!--顶部线条::start-->
+		<div id="footer_line"></div>
+		<!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="../js/G.js"></script>
+<script src="../js/public.js"></script>

@@ -1,0 +1,119 @@
+<style>
+    .join_centers{
+        display: flex;
+        width: 100%;
+        height:100%;
+        flex-direction: column;
+        color: #333333;
+    }
+
+    .all_zhiwei{
+        font-size: 14px;
+        color: #555555;
+        height:0.9rem;
+        line-height:0.9rem;
+        padding-left: 10px;
+    }
+    .join_div{
+        position: relative;
+        flex: 1;
+    }
+    .pane{
+        background: #f4f5f9;
+    }
+    .join_list{
+        background: #fff;
+    }
+
+    .join_list li{
+        display: block;
+        padding: 10px;
+        border-bottom: 2px solid #f4f5f9;
+    }
+    .join_shang{
+        display: flex;
+    }
+    .join_xia{
+        display: flex;
+        margin-top: 10px;
+    }
+    .jo_left{
+        flex:1;
+        font-size: 15px;
+        color: #333333;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .jo_right{
+        font-size: 15px;
+        color: #F15B4B;
+        padding-right: 5px;
+    }
+    .jo_left_x{
+        flex: 1;
+        font-size: 13px;
+        color: #888888;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .jo_right_x{
+        font-size: 11px;
+        color: #888888;
+        padding-right: 5px;
+    }
+
+
+</style>
+<div class="join_centers">
+    <div class="all_zhiwei">
+        该公司在招的所有职位（4）
+    </div>
+
+    <div class="join_div">
+        <ion-view>
+            <ion-content class="">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+
+                <div class="join_list">
+                    <ul class="">
+                        <li>
+                            <div class="join_shang">
+                                <div class="jo_left">工业设计师</div>
+                                <div class="jo_right">2k-3k</div>
+                            </div>
+                            <div class="join_xia">
+                                <div class="jo_left_x">武汉-武昌／经验不限／本科／2人</div>
+                                <div class="jo_right_x">刚刚</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="join_shang">
+                                <div class="jo_left">工业设计师</div>
+                                <div class="jo_right">2k-3k</div>
+                            </div>
+                            <div class="join_xia">
+                                <div class="jo_left_x">武汉-武昌／经验不限／本科／2人</div>
+                                <div class="jo_right_x">刚刚</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="join_shang">
+                                <div class="jo_left">工业设计师</div>
+                                <div class="jo_right">2k-3k</div>
+                            </div>
+                            <div class="join_xia">
+                                <div class="jo_left_x">武汉-武昌／经验不限／本科／2人</div>
+                                <div class="jo_right_x">刚刚</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nodata" ng-if="dataNull">没有更多了!</div>
+                <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+                <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" >没有更多了</ion-infinite-scroll>
+            </ion-content>
+        </ion-view>
+    </div>
+</div>

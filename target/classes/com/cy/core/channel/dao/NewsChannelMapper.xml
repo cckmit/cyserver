@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.channel.dao.NewsChannelMapper">
+	<resultMap type="com.cy.core.channel.entity.NewsChannel" id="newsChannelResultMap">
+		<id column="channelId" property="channelId" />
+		<result column="channelName" property="channelName" />
+		<result column="channelIcon" property="channelIcon" />
+		<result column="channelRemark" property="channelRemark" />
+	</resultMap>
+	<select id="countNewsChannel" parameterType="map" resultType="long">
+		select count(channelId) from cy_newschannel
+		<where>
+			<if test="channelName!=null and channelName!=''">
+				channelName like concat('%',#{channelName},'%')
+			</if>
+			and channelName != '阅读兴趣'
+		</where>
+	</select>
+	<select id="selectById" parameterType="long" resultMap="newsChannelResultMap">
+		select *
+		from cy_newschannel where channelId=#{channelId} and channelName != '阅读兴趣'
+	</select>
+	<update id="update" parameterType="com.cy.core.channel.entity.NewsChannel">
+		update cy_newschannel set
+		channelName=#{channelName},channelIcon=#{channelIcon},channelRemark=#{channelRemark}
+		where channelId=#{channelId}
+	</update>
+	<select id="selectNewsChannelList" parameterType="map" resultMap="newsChannelResultMap">
+		select * from cy_newschannel
+		<where>
+			<if test="channelName!=null and channelName!=''">
+				channelName like concat('%',#{channelName},'%')
+			</if>
+			and channelName != '阅读兴趣'
+		</where>
+	</select>
+	<select id="selectAll" resultMap="newsChannelResultMap">
+		select * from cy_newschannel where channelName != '阅读兴趣'
+	</select>
+	<insert id="save" parameterType="com.cy.core.channel.entity.NewsChannel">
+		insert into cy_newschannel(channelName,channelIcon,channelRemark) values(#{channelName},#{channelIcon},#{channelRemark})
+	</insert>
+	<delete id="delete" parameterType="list">
+		delete from cy_newschannel where channelId in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 得到所有的标签 -->
+	<select id="getALLLabel" resultType="com.cy.core.dict.entity.Dict">
+		select DISTINCT dict_name as dictName from cy_dict where dict_type_id = (select dict_type_id from cy_dict_type where dict_type_name = '新闻标签')
+	</select>
+	<!--修改我的订阅-->
+    <update id="updateMyChannel" parameterType="com.cy.core.userProfile.entity.UserProfile" >
+         update cy_userprofile set
+        channels=#{channelId}
+        where accountNum=#{accountNum}
+    </update>
+    <select id="selectNewsChannel" parameterType="map" resultMap="newsChannelResultMap">
+        select n.channelId , n.channelName from cy_newschannel n,cy_userprofile p
+        <where>
+            <if test="channelName!=null and channelName!=''">
+                channelName like concat('%',#{channelName},'%')
+            </if>
+            and channelName != '阅读兴趣'
+        </where>
+    </select>
+	<select id="selectMyChannel" parameterType="map" resultMap="newsChannelResultMap">
+		select * from cy_newschannel
+		<where>1=1
+			AND  channelId  IN
+			<foreach collection="channelId" item="id"  open="(" close=")" separator="," >
+				#{id}
+			</foreach>
+			AND  channelName != '阅读兴趣'
+		</where>
+	</select>
+	<select id="selectOther" parameterType="map" resultMap="newsChannelResultMap">
+		select * from cy_newschannel
+		<where>1=1
+			<if test="channelId != null and channelId != ''">
+				AND  channelId NOT IN
+				<foreach collection="channelId" item="id"  open="(" close=")" separator="," >
+					#{id}
+				</foreach>
+			</if>
+			AND  channelName != '阅读兴趣'
+		</where>
+	</select>
+	<select id="selectByChannelName" parameterType="map" resultMap="newsChannelResultMap">
+		select * from cy_newschannel
+		<where>
+			<if test="channelName!=null and channelName!=''">
+				channelName =#{channelName}
+			</if>
+			AND  channelName != '阅读兴趣'
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>通讯录</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        body { -webkit-user-select: none; user-select: none; }
+        .current-index { font-size: 4.8rem; height: 80px; width: 80px; left: 50%; top: 50%; margin-left: -40px; margin-top: -90px; background: rgba(0,0,0,0.5); font-family: Arial; display: none; text-align: center; line-height: 80px; }
+
+        .contact-index span{
+            line-height: 12px;
+        }
+        .num{
+            float:right;
+            font-size: 14px;
+            color: #fff;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3498DB;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+
+<!--当前显示字母-->
+<div class="current-index H-position-absolute H-z-index-100000 H-border-radius-5 H-theme-font-color-white"></div>
+<!--字母索引-->
+<div class="contact-index H-flexbox-vertical H-position-absolute H-z-index-10000 H-overflow-hidden" style="width: 13px; right: 0px; top: 50%;margin-top: -200px; bottom: 0px; height: 400px;">
+    <!--<span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="top"><i class="H-iconfont H-icon-arrow-scrolltop H-font-size-14"></i></span>-->
+    <!--<span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="star"><i class="H-iconfont H-icon-star H-font-size-13"></i></span>-->
+
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="A">A</span>
+
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="B">B</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="C">C</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="D">D</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="E">E</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="F">F</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="G">G</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="H">H</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="I">I</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="J">J</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="K">K</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="L">L</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="M">M</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="N">N</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="O">O</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="P">P</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="Q">Q</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="R">R</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="S">S</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="T">T</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="U">U</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="V">V</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="W">W</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="X">X</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="Y">Y</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="Z">Z</span>
+    <span class="H-flex-item H-display-block H-font-size-12 H-center-all" data-index-name="HASH">#</span>
+</div>
+
+
+
+<!--联系人列表-->
+<div class="contact-scroll-area H-overflow-y-auto H-box-sizing-border-box H-position-relative H-z-index-10" style="height: 692px;">
+    <div class="contact-list">
+
+        <!--搜索-->
+        <div class="input_wai">
+            <form action="" onsubmit="return false;" class=" H-position-relative">
+                <div id="ser" class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle H-text-align-center H-theme-font-color-999  H-border-radius-15"  style="">
+                <span class="H-display-block H-width-100-percent H-font-size-14">
+                    <i id="ss_brn" class="H-iconfont H-icon-search H-font-size-14"></i>
+                    <span id="ss_title">请输入名称</span>
+                </span>
+                </div>
+                <input onsearch="sousuo()" type="search" class="top-input" id="sousuo_byn" placeholder=""/>
+                <div class="sanchu" style="display: none;position: absolute;top: 5px;right: 5px;background: #999999;color:#fff;width: 20px;height: 20px;line-height: 20px;font-size:12px;text-align: center;border-radius: 50%">×</div>
+            </form>
+        </div>
+
+        <div class="group-name" data-group-name="top"></div>
+        <div class="people-item" onclick='newsfriend()' style="margin-bottom: 10px;">
+            <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-vertical-middle H-touch-active">
+                <span class="H-icon H-center-all H-display-block H-margin-horizontal-left-10 H-theme-font-color-white H-theme-background-color1 H-border-radius-circle" style="height: 40px; width: 40px;"><i class="H-iconfont H-icon-add-user H-font-size-14 H-vertical-middle"></i></span>
+                <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-15" style="line-height: 20px;overflow:hidden">新朋友
+                    <!--<span class="num"></span>-->
+                </div>
+                <span class="H-icon H-padding-horizontal-right-10 H-display-block"><i class="H-iconfont H-icon-arrow-right H-theme-font-color-999 H-font-size-14 H-vertical-middle"></i></span>
+            </div>
+        </div>
+
+        <div class="H-channel-title H-flexbox-horizontal H-theme-background-color-white H-vertical-middle H-border-vertical-bottom-after">
+            <div class="H-channel-line H-padding-vertical-top-15 H-padding-horizontal-left-3  H-margin-horizontal-left-10" style="background: #3498db"></div>
+            <div class="H-channel-text H-theme-font-color-black H-flex-item H-font-size-14 H-theme-font-color-black H-padding-10 H-margin-horizontal-right-10 H-text-show-row-1">我的好友</div>
+            <span onclick='addfriend()' class="H-icon H-margin-horizontal-right-10 H-display-block" style="background: #3498DB;padding: 0px 4px;font-size: 12px;height: 25px;line-height: 25px; color: #fff;border-radius: 3px">
+                添加好友
+            </span>
+        </div>
+
+    </div>
+</div>
+
+</body>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+
+            H.openWin("登陆页面", "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + B.encrypt('../wechat/tongxunlu/address_list.html'));
+           /* H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("tongxunlu/address_list.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');*/
+        }
+        var shareData = {
+            title: '通訊錄',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+
+    //判断用户是否被认证
+    var isVerified;
+
+    //判断是否被认证
+    function checkVerify(){
+
+        B.ready(function(){
+            $.ajax({
+                    type: "post",
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{
+                        jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+                    },
+                    dataType: "json",
+                    success: function(data){
+//                console.log(JSON.stringify(data));
+
+                        if (data && data.success) {
+                            var userObj = data.obj;
+
+                            //判断用户是否已经认证
+                            if(userObj && userObj.baseInfoId && userObj.baseInfoId !='null') {
+                                //被认证
+                               isVerified = '1';
+                                findFriendList('');
+
+                            }else{
+                                //未被认证
+                                isVerified = '0';
+
+                                H.openWin("申请班级进行信息认证","../verify/class_list.html?ts=" + B.getRandomInt(4));
+
+                            }
+                        }
+
+                }
+            });
+
+        });
+
+    }
+
+
+
+    var _clientHeight = window.innerHeight;
+    var indexObj = H.D(".contact-index");
+    var currentIndexObj = H.D(".current-index");
+    var contactListObj = H.D(".contact-list");
+    var scrollArea = H.D('.contact-scroll-area');
+
+    //indexObj.style.height = _clientHeight + "px";
+    scrollArea.style.height = _clientHeight + "px";
+
+    // 索引字母个数
+    var indexSize = 27;
+    // 索引列表高度
+    var indexObj_height = indexObj.offsetHeight;
+
+    var dq_top=$(".contact-index").offset().top;
+    var adx=Math.round(dq_top/14.81);
+    //alert(adx)
+    // 滚动到指定字母位置
+    function scrollToWord(word) {
+        if (word) {
+            var scrollObj = H.D(".group-name[data-group-name=" + word + "]");
+            if (scrollObj) {
+                scrollArea.scrollTop = scrollObj.offsetTop + document.documentElement.scrollTop;
+            }
+        }
+    }
+    // 计算字母对应位置
+    function calcWordToOffset(event) {
+        var touch = event.targetTouches[0];
+        var clientY = touch.clientY > 0 ? touch.clientY : 0;
+
+        var _index = Math.floor(clientY / (indexObj_height / indexSize)) + 97-adx;
+        var word = "";
+        // A-Z
+        if (_index >= (97-adx) && _index <= 122) {
+            currentIndexObj.innerHTML = String.fromCharCode(_index).toUpperCase();
+            word = String.fromCharCode(_index).toUpperCase();
+        }
+
+        // #
+        else if (_index == 123) {
+            currentIndexObj.innerHTML = "#";
+            word = "HASH";
+        }
+        else {
+        }
+        scrollToWord(word);
+    }
+
+    // 1.0 为字母索引绑定touch事件
+    // 1.1 一触摸触发
+    indexObj.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            // 显示当前字母
+            H.cssText(currentIndexObj, "display:block;");
+            // 高亮索引区域
+            indexObj.classList.add("H-theme-background-color-eee");
+
+            calcWordToOffset(event);
+        }
+    }, false);
+    // 1.2 触摸过程
+    indexObj.addEventListener("touchmove", function (event) {
+        //console.log(event.targetTouches[0].clientY +'--'+Math.round(dq_top))
+        if (event.targetTouches.length == 1 && event.targetTouches[0].clientY > Math.round(dq_top)+5) {
+            event.preventDefault();
+            calcWordToOffset(event);
+        }
+    }, false);
+
+    // 1.3 离开触摸
+    indexObj.addEventListener("touchend", function (event) {
+        //console.log(event)
+        // 显示当前字母
+        H.cssText(currentIndexObj, "display:none;");
+        // 高亮索引区域
+        indexObj.classList.remove("H-theme-background-color-eee");
+    }, false);
+
+
+
+    $(function(){
+
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        B.ready(function(){
+            //判断是否被认证
+            checkVerify();
+
+            newFriendsNum();
+
+
+        });
+    });
+
+    //新朋友请求数量
+    function newFriendsNum(){
+//        console.log('{"command": "241","content": {"userId": "'+accountNum+'", "status": "0"} }')
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "241","content": {"userId": "'+accountNum+'", "status": "0"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+//                    console.log(data.obj.length);
+                    if(data.success){
+                        if(data.obj.length>0){
+                            $('.num').html('<span class="num">'+data.obj.length+'</span>');
+                        }else{
+
+                        }
+
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+    }
+
+
+    function addfriend(){
+        var commonParams = "?ts=" + B.getRandomInt(4) + "&accountNum="+accountNum;
+        H.openWin("添加好友", "add_friend.html?commonParams="+commonParams);
+    }
+    function newsfriend(){
+        var commonParams = "?ts=" + B.getRandomInt(4) + "&accountNum="+accountNum;
+        H.openWin("新朋友", "news_friend.html?commonParams="+commonParams);
+    }
+
+
+
+    //搜索框
+    $('.top-input').val('')
+    H.D("#ser").addEventListener("touchend", function (e) {
+        $("#ser").css('width','30px');
+        $('#ss_title').hide();
+        $('.top-input').css('text-align','left');
+        $('.top-input').attr("placeholder", "请输入名称");
+
+    });
+    $('.top-input').focus(function(){
+        $('.sanchu').show();
+    })
+    $('.top-input').blur(function(){
+        if($('.top-input').val()==''){
+            $("#ser").css('width','100%');
+            $('#ss_title').show();
+            $('.top-input').css('text-align','center').val('');
+            $('.top-input').attr("placeholder", " ");
+            $('.sanchu').hide();
+            sousuo();
+        }
+    })
+
+    $('.sanchu').click(function(){
+        $("#ser").css('width','100%');
+        $('#ss_title').show();
+        $('.top-input').css('text-align','center').val('');
+        $('.top-input').attr("placeholder", " ");
+        sousuo();
+        $('.sanchu').hide();
+    })
+
+
+
+    function sousuo() {
+        var inputName = $('#sousuo_byn').val();
+        findFriendList(inputName);
+    }
+
+    //删除好友
+    function delItem(obj,contactId) {
+//        console.log("contactId=="+contactId);
+
+        H.confirm(function(ret){
+            if(ret.buttonIndex==1){
+                //删除确定
+                B.ready(function(){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data: {
+                            jsonStr: '{"command": "44","content": {"userId": \"'+accountNum+'\","contactId": \"'+contactId+'\"}}'
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+//                            console.log(JSON.stringify(data));
+                            if(data.success==true){
+                                $(obj).parent().parent().parent().hide();
+                            }else {
+
+                            }
+
+                        },
+                        error: function(xhr, type) {
+                            alert("调用失败");
+                        }
+                    });
+                })
+            }
+
+
+        },'确认提示：', '您真的要删除好友吗?删除后,对方也将会删除您.');
+
+
+    }
+
+    //好友列表
+    function findFriendList(inputName) {
+        $('.list-char').remove();
+        $('.list-people').remove();
+
+//        console.log('{"command": "241","content": {"userId": "'+accountNum+'","status": "1","orderByPinYin":"1","friendName":"'+inputName+'"} }')
+
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "241","content": {"userId": "'+accountNum+'","status": "1","orderByPinYin":"1","friendName":"'+inputName+'"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+
+
+//                    console.log("获取好友列表=="+JSON.stringify(data))
+                    var abc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+                    if(data.obj.length > 0){
+                        for(var i in abc){
+                            var code = 0;
+                            var listStr = '<div class="list-char group-name H-font-size-14 H-padding-horizontal-both-10 H-padding-vertical-both-2 H-theme-background-color-eee" data-group-name="'+abc[i]+'">'+abc[i]+'</div>'
+                                            +'<div class="list-people people-item">';
+                            for(var j in data.obj){
+//                                console.log("pinyin---"+data.obj[0].pinyin.substring(0, 1))
+                                if(abc[i] == data.obj[j].pinyin.substring(0, 1)){
+                                    var name = data.obj[j].name;
+                                    var pic = B.getImageAbsoluteUrl(data.obj[j].pictureRT); //picture   pictureRT
+                                    var studyPath = '';
+                                    if(data.obj[j].departName){
+                                        studyPath = data.obj[j].departName;
+                                        var studyArray=studyPath.split('_');
+                                        studyPath = studyArray[0];
+                                        studyArray = studyPath.split(',');
+                                        if(studyArray.length == 4){
+                                            studyPath = studyArray[1]+' '+studyArray[2]+' '+studyArray[3]+' ['+studyArray[0]+']';
+                                        }
+                                    }
+                                    var userId = data.obj[j].accountNum;
+                                    listStr += ' <div class=""><div class="list_dianji">' +
+                                            '<div class="H-qq-item H-vertical-middle H-overflow-hidden H-margin-vertical-top-5">' +
+                                            '<div onclick="goDetail(\''+userId+'\')" class="H-text-list H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active H-padding-vertical-both-10">'+
+
+                                        '<img onerror=\'javascript:this.src="../static/img/default_profile.png" ;\' src="'+pic+'" class="H-border-radius-circle H-display-block H-margin-horizontal-left-10" style="width:40px;height:40px;">';
+
+                                    //判断是否被认证
+                                    if(studyPath && studyPath!=='') {
+                                        //已经认证
+                                        listStr +=
+                                                '<div style="position:relative">'+
+                                                '<img src="../static/img/verify_flag.png" class="verify_icon_small">'+
+                                                '</div>';
+
+                                    }else{
+                                        //未认证
+                                        listStr +=
+                                                '<div style="position:relative">'+
+                                                '<img src="../static/img/unverified@3x.png" class="verify_icon_small">'+
+                                                '</div>';
+                                    }
+
+
+                                    listStr += '<div class="H-flex-item H-padding-horizontal-both-10 H-vertical-middle H-overflow-hidden">'+
+                                        '<div class="H-width-100-percent">'+
+                                        '<strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-14 H-text-show-row-1">'+name;
+                                    if(data.obj[j].sex == 0){
+                                        listStr += '<span class="H-icon H-display-inline-block H-padding-horizontal-both-5"><i class="H-iconfont H-icon-man H-vertical-middle H-font-size-14" style="color:#4e7cfd"></i></span>';
+                                    }else if(data.obj[j].sex == 1){
+                                        listStr += '<span class="H-icon H-display-inline-block H-padding-horizontal-both-5"><i class="H-iconfont H-icon-woman H-vertical-middle H-font-size-14" style="color:#ff9a7c"></i></span>';
+                                    }
+                                    listStr += '</strong>'+
+                                            '<div class="study_path H-theme-font-color-999 H-font-size-12 H-text-show-row-1">'+studyPath+'</div>'+
+                                            '</div></div></div>' +
+                                            '<div class="H-qq-menu H-vertical-middle H-position-relative H-overflow-hidden">'+
+                                                '<div onclick="delItem(this,'+userId+')" class="H-font-size-16 H-padding-horizontal-both-20 H-theme-background-color-red H-display-block H-theme-font-color-white white-space-nowrap">'+'删除'+'</div>'+
+                                                '</div>'+
+                                            '</div></div></div>';
+                                    code++;
+                                }
+                            }
+                            listStr += '</div>';
+                            if(code > 0){
+                                $('.contact-list').append(listStr);
+                            }
+                        }
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+
+
+
+    function goDetail(userId) {
+        H.openWin("好友详情", "friend_detail.html?accountNum="+accountNum+"&userId="+userId);
+    }
+
+
+
+//    //ios返回刷新页面
+//    var rnumber = Math.floor(Math.random()*1000)
+//    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&mod='+rnumber);
+//    window.onpopstate = function(event) {
+//        location.reload();
+//        //alert("location: " + document.location);
+//    };
+
+
+    //################## 侧滑全部代码
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
+        }
+
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
+    }
+
+    var _startX = 0;
+    var _startY = 0;
+    var scrollHeight = 0;
+    var scrollWidth = 0;
+    var currentRange = 0;
+    var parentEle = null;
+    var direction = 1;
+
+    // 设置侧滑动画
+    function setScroll(parentElement, value, time) {
+        parentElement.firstElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+        parentElement.lastElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+    }
+
+    // 触摸开始
+    window.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            parentEle = H.getParents(event.target, "H-qq-item");
+            if (H.isElement(parentEle)) {
+
+                // 其他兄弟隐藏
+                var siblings = H.siblings(parentEle);
+                for (var i = 0; i < siblings.length; i++) {
+                    var _siblingObj = siblings[i];
+                    setScroll(_siblingObj, 0, 0);
+                }
+
+                scrollHeight = parentEle.firstElementChild.clientHeight;
+                scrollWidth = H.D(".H-qq-menu", parentEle).clientWidth;
+
+                for (var j = 0; j < parentEle.lastElementChild.childNodes.length; j++) {
+                    var child = parentEle.lastElementChild.childNodes[j];
+                    if (H.isElement(child)) {
+                        child.style.cssText = "height:" + scrollHeight + "px;line-height:" + scrollHeight + "px;";
+                    }
+                }
+
+                currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+                _startX = touch.pageX;
+                _startY = touch.pageY;
+            }
+        }
+    }, false);
+    // 触摸过程
+    window.addEventListener("touchmove", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            direction = GetSlideDirection(_startX, _startY, touch.pageX, touch.pageY);
+            if (direction == 3 || direction == 4) {
+                event.preventDefault();
+                if (H.isElement(parentEle)) {
+                    var range = touch.pageX - _startX;
+                    if (range <= 0) {
+                        if (range - currentRange >= -scrollWidth && range - currentRange <= 0) {
+                            setScroll(parentEle, (range - currentRange), 0);
+                        }
+                    }
+                    else {
+                        if (range + currentRange <= 0) {
+                            setScroll(parentEle, (range + currentRange), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }, false);
+    // 触摸接触
+    window.addEventListener("touchend", function (event) {
+        var touch = event.targetTouches[0];
+        if (H.isElement(parentEle)) {
+            currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+            if (direction == 3 && (currentRange < 0)) {
+                setScroll(parentEle, -scrollWidth, 0.4);
+            }
+            else if (direction == 4 && currentRange < 80) {
+                setScroll(parentEle, 0, 0.4);
+            }
+            else {
+                setScroll(parentEle, 0, 0.4);
+            }
+        }
+    }, false);
+    // 点击
+    window.addEventListener("click", function (event) {
+        var parentEle = H.getParents(event.target, "H-qq-item");
+        if (H.isElement(parentEle)) {
+            setScroll(parentEle, 0, 0.4);
+        }
+    }, false);
+
+    //点击显示隐藏效果
+    $('.list_study').on('click','.list_dianji',function(){
+        $(this).siblings('.study_center').toggle();
+        $(this).parent().siblings().children('.study_center').hide();
+    });
+
+
+
+
+</script>
+
+
+</html>

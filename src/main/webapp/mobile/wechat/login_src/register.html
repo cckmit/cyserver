@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>用户注册</title>
+
+    <!--css-->
+    <link href="static/layer/need/layer.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/font/iconfont.css" rel="stylesheet" type="text/css">
+    <style>
+        .B-login-bg{
+            background-image: url(static/img/background@3x.png);
+            background-size:100%;
+            min-height: 100%;
+        }
+        .validate-code {
+            font-size: 1.2rem;position: absolute;right: 10px; border-radius: 5px;padding: 2px 5px;height: 20px;margin-top: 10px;word-break: keep-all;
+        }
+        .disabled_button {
+            border: 1px solid dimgrey;color: dimgrey;
+        }
+        .active_button {
+            border: 1px solid #52ace5;color: #52ace5;
+        }
+    </style>
+</head>
+
+<body class="B-login-bg H-box-sizing-border-box H-overflow-hidden">
+    <div class="H-padding-horizontal-both-20 H-overflow-hidden" style="padding-top: 60px;">
+        <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+                <i class="H-iconfont H-icon-user H-font-size-22 H-vertical-middle H-theme-font-color11"></i>
+            </span>
+            <input type="text" id="username" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent H-theme-font-color17"
+                   placeholder="真实姓名">
+        </div>
+
+        <div class="H-flexbox-horizontal H-padding-vertical-top-15 H-border-vertical-bottom-margin-both-10-after">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+                <i class="H-iconfont H-icon-phone H-font-size-22 H-vertical-middle H-theme-font-color13"></i>
+            </span>
+            <input type="text" id="phone" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent" placeholder="手机号码">
+        </div>
+
+        <div class="H-flexbox-horizontal H-padding-vertical-top-15 H-border-vertical-bottom-margin-both-10-after">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+                <i class="H-iconfont H-icon-star-null H-font-size-20 H-vertical-middle H-theme-font-color12"></i>
+            </span>
+            <input type="text" id="code"
+                   class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box
+                   H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent" placeholder="验证码">
+            <span id="getCode" class="validate-code active_button">获取验证码</span>
+        </div>
+
+        <div class="H-flexbox-horizontal H-padding-vertical-top-15 H-border-vertical-bottom-margin-both-10-after">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+                <i class="H-iconfont H-icon-lock H-font-size-22 H-vertical-middle H-theme-font-color10"></i>
+            </span>
+            <input type="password" id="password" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent" placeholder="登录密码">
+        </div>
+
+        <div class="H-flexbox-horizontal H-padding-vertical-top-15 H-border-vertical-bottom-margin-both-10-after">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+                <i class="H-iconfont H-icon-safe H-font-size-22 H-vertical-middle H-theme-font-color13"></i>
+            </span>
+            <input type="password" id="password2" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent" placeholder="请再次输入密码">
+        </div>
+
+        <div class="H-padding-10 H-margin-vertical-top-10" style="margin-top: 50px;">
+            <button id="registerBtn" class="H-button H-width-100-percent  H-font-size-16 H-outline-none H-padding-vertical-both-5 H-padding-horizontal-both-20
+            H-theme-background-color16 H-theme-font-color-white
+            H-theme-border-color16 H-theme-border-color16-click H-theme-background-color16-click H-theme-font-color16-click H-border-radius-3">立即注册</button>
+        </div>
+
+        <div class="H-margin-horizontal-both-15 H-overflow-hidden H-margin-vertical-both-25 H-horizontal-center">
+            <span class="H-theme-font-color1 H-float-left H-font-size-14">
+                <input type="checkbox" id="cyServices"
+                       class="H-checkbox H-checkbox-null H-vertical-align-middle H-font-size-18 H-theme-font-color1" style="-webkit-transform: scale(0.6); -webkit-transform-origin: 0 38%;">
+                <label style="position:relative;" id="licenceServiceLink">同意并接受《窗友软件许可及服务》</label>
+            </span>
+        </div>
+    </div>
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="static/layer/layer.js" type="text/javascript"></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+<script>
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        var shareData = {
+            title: '註冊',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+    $(function(){
+        // 页面初始化
+        B.ready(function(){
+            // 获取验证码
+            $("#getCode").click(function () {
+
+                if (!$("#getCode").hasClass("disabled_button")) {
+
+
+
+                    var phone = $("#phone").val();
+                    if (phone == "") {
+                        layer.open({ content: "手机号码不能为空！", skin: "msg", time: 2});
+                        return false;
+                    }
+                    times($("#getCode"));
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "3","content": {"phoneNum": "' + phone + '","secretKey": "getRegisterCode123"}}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+
+                            if (data && data.success) {
+//                                times($("#getCode"));
+                                layer.open({ content: "验证码发送成功！", skin: "msg", time: 2});
+                            }
+                            else{
+                                layer.open({ content: "验证码发送失败，请稍后再试！", skin: "msg", time: 2});
+                                $("#getCode").removeAttr("disabled");
+                                $("#getCode").addClass("active_button");
+                                $("#getCode").removeClass("disabled_button");
+                            }
+                        }
+                    });
+                }
+            });
+
+            // 提交注册
+            $("#registerBtn").click(function () {
+                if (validateForm()) {
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "4","content": {"phoneNum": "' + $("#phone").val() + '","password": "' + $("#password").val() + '","name":"' + $("#username").val() + '","checkCode":"' +$("#code").val() + '"}}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data && data.success) {
+                                localStorage.setItem("accountNum", data.obj);
+                                // 绑定用户的openId，修改绑定 或 新增微信用户account
+                                bindAccountOpenId(function(result){
+                                    if (result.success){
+                                        layer.open({ content:"提交注册成功！", skin:"msg", time:2 });
+                                        window.location.href = "login.html?ts=" + B.getRandomInt(4);
+                                    }
+                                    else{
+                                        layer.open({ content:result.msg, skin:"msg", time:2 });
+                                    }
+                                });
+                            }
+                            else{
+                                layer.open({ content:data.msg, skin:"msg", time:2 });
+                            }
+                        }
+                    });
+                }
+            });
+            // 查看服务条款
+            $("#licenceServiceLink").click(function(){
+               window.location.href = "licenceService.html?ts=" + B.getRandomInt(4);
+            });
+        });
+
+        // 验证表单数据
+        function validateForm() {
+            var username = $("#username").val();
+            var phone = $("#phone").val();
+            var code = $("#code").val();
+            var password = $("#password").val();
+            var password2 = $("#password2").val();
+
+            if (username == "") {
+                layer.open({ content: "真实姓名不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (phone == "") {
+                layer.open({ content: "手机号码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (code == "") {
+                layer.open({ content: "验证码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (password == "") {
+                layer.open({ content: "密码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (password2 != password) {
+                layer.open({ content: "两次密码输入不一致！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (!$("#cyServices").is(":checked")) {
+                layer.open({ content: "请勾选同意并接受窗友软件许可及服务协议！",skin: "msg",time: 2 });
+                return false;
+            }
+            return true;
+        }
+
+        // 验证码获取后60s倒计时
+        var wait = 60;
+        function times(val){
+            if(wait == 0){
+                val.text("重新获取验证码");
+                val.removeAttr("disabled");
+                val.removeClass("disabled_button");
+                val.addClass("active_button");
+                wait = 60;
+            }else{
+                val.attr("disabled","disabled");
+                val.removeClass("active_button");
+                val.addClass("disabled_button");
+                setTimeout(function(){
+                    times(val);
+                },1000);
+                val.text(wait+" 重新获取验证码");
+                wait--;
+            }
+        }
+
+        // 绑定用户的openId
+        function bindAccountOpenId(callback) {
+            var params = {"command":"601","content":{}};
+            params.content.openid = localStorage.getItem("openId");
+            params.content.accountAppId = localStorage.getItem("appId");
+            params.content.accountNum = localStorage.getItem("accountNum");
+
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: JSON.stringify(params)
+                },
+                dataType: "json",
+                success: function(data){
+                    if ($.isFunction(callback)) {
+                        callback(data);
+                    }
+                }
+            });
+        }
+    });
+</script>

@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.donation.dao.DonationMapper">
+	<resultMap type="com.cy.core.donation.entity.Donation" id="donationResultMap">
+		<id column="donationId" property="donationId" />
+		<result column="user_id" property="userId" />
+		<result column="orderNo" property="orderNo" />
+		<result column="projectId" property="projectId" />
+		<result column="donation_type" property="donationType" />
+		<result column="donation_courier" property="donationCourier" />
+		<result column="donation_courier_number" property="donationCourierNumber" />
+		<result column="need_invoice" property="needInvoice" />
+		<result column="money" property="money" />
+		<result column="donationTime" property="donationTime" />
+		<result column="payMoney" property="payMoney" />
+		<result column="payTime" property="payTime" />
+		<result column="payStatus" property="payStatus" />
+		<result column="payMode" property="payMode" />
+		<result column="payDetail" property="payDetail" />
+		<result column="confirmStatus" property="confirmStatus" />
+		<result column="confirmTime" property="confirmTime" />
+		<result column="confirmId" property="confirmId" />
+		<result column="confirmerName" property="confirmerName"/>
+		<result column="remark" property="remark" />
+		<result column="message" property="message" />
+		<result column="totalPeople" property="totalPeople" />
+		<result column="totalMoney" property="totalMoney" />
+		<result column="totalDonationMoney" property="totalDonationMoney" />
+		<result column="flag" property="flag" />
+		<result column="picture" property="picture" />
+		<result column="payType" property="payType" />
+		<result column="credentials_courier" property="credentialsCourier" />
+		<result column="credentials_courier_number" property="credentialsCourierNumber" />
+		<result column="delivery_address" property="deliveryAddress"/>
+		<result column="certificate_pic" property="certificatePicUrl"/>
+		<result column="weixin_user_id" property="weixinUserId"/>
+		<result column="message_is_open" property="messageIsOpen"/>
+
+		<result column="donor_type" property="donorType" />
+		<result column="donorName" property="donorName" />
+		<result column="item_type" property="itemType" />
+		<result column="item_name" property="itemName" />
+		<result column="item_num" property="itemNum" />
+
+		<result column="x_name" property="x_name" />
+		<result column="x_phone" property="x_phone" />
+		<result column="x_email" property="x_email" />
+		<result column="x_address" property="x_address" />
+		<result column="x_school" property="x_school" />
+		<result column="x_depart" property="x_depart" />
+		<result column="x_grade" property="x_grade" />
+		<result column="x_clazz" property="x_clazz" />
+		<result column="x_sex" property="x_sex" />
+		<result column="x_post_code" property="x_post_code" />
+		<result column="x_workunit" property="x_workunit" />
+		<result column="x_position" property="x_position" />
+		<result column="x_major" property="x_major" />
+		<result column="x_fullname" property="x_fullname"/>
+		<result column="alipayNumber" property="alipayNumber" />
+		<result column="accountNum" property="accountNum" />
+		<result column="payMethod" property="payMethod" />
+		<result column="anonymous" property="anonymous"/>
+		<result column="groupName" property="groupName"/>
+		<result column="incomeId" property="incomeId"/>
+		<result column="input_class_info" property="inputClassInfo"/>
+		<association property="project" column="projectId"
+					 javaType="com.cy.core.project.entity.Project">
+			<id column="projectId" property="projectId" />
+			<result column="projectName" property="projectName" />
+			<result column="content" property="content" />
+			<result column="projectPic" property="projectPic"/>
+		</association>
+		<association property="user" column="confirmId"
+					 javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</association>
+	</resultMap>
+	<select id="countDonationForCount" parameterType="map"
+			resultType="long">
+		select count(*) from (select count(d.x_name) as
+		totalPeople,sum(d.payMoney) as totalMoney,sum(d.money) as
+		totalDonationMoney
+		from
+		cy_donation d
+		left join cy_user_info u on
+		d.user_id = u.user_id
+		left join cy_project p on d.projectId =
+		p.projectId
+		<where>(p.projectId IS NOT NULL or p.foun_project IS NOT NULL)
+			<if test="projectId!=null and projectId!=0">
+				and p.projectId=#{projectId}
+			</if>
+			<if test="sex!=null and sex!=''">
+				and x_sex=#{sex}
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and u.studentType=#{studentType}
+			</if>
+			<if test="entranceTime!=null">
+				and u.entranceTime=#{entranceTime}
+			</if>
+			<!-- 按学校查询 -->
+			<if test="deptId!=null and deptId!=''">
+				and d.user_id like CONCAT(#{deptId},'%')
+			</if>
+			<if test="majorId!=null and majorId!= 0">
+				and u.majorId = #{majorId}
+			</if>
+		</where>
+		<if test="countMethod==1">
+			group by x_depart
+		</if>
+		<if test="countMethod==2">
+			group by x_grade
+		</if>
+		<if test="countMethod==3">
+			group by x_clazz
+		</if>
+		<if test="countMethod==4">
+			group by x_school
+		</if>
+		<if test="countMethod==5">
+			group by x_major
+		</if>
+		) as t
+	</select>
+
+	<!-- 捐赠统计列表数据查询 -->
+	<select id="selectDonationForCountList" parameterType="map"
+			resultMap="donationResultMap">
+		select d.*,count(d.x_name) as totalPeople,
+		sum(CONVERT(d.money,DECIMAL(18,2))) AS totalDonationMoney,
+		CASE WHEN d.donor_name IS NOT NULL AND d.donor_name !='' THEN d.donor_name ELSE d.x_name END AS donorName
+		from
+		cy_donation d
+		LEFT
+		JOIN cy_user_info u on d.user_id = u.user_id
+		LEFT JOIN cy_project p on
+		d.projectId = p.projectId
+		<where>(p.projectId IS NOT NULL or p.foun_project IS NOT NULL) AND d.confirmStatus = '30'
+			<if test="projectId!=null and projectId!=0">
+				and p.projectId=#{projectId}
+			</if>
+			<if test="sex!=null and sex!=''">
+				and x_sex=#{sex}
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and u.studentType=#{studentType}
+			</if>
+			<if test="entranceTime!=null">
+				and u.entranceTime=#{entranceTime}
+			</if>
+			<!-- 按学校查询 -->
+			<if test="deptId!=null and deptId!=''">
+				and d.user_id like CONCAT(#{deptId},'%')
+			</if>
+			<if test="majorId!=null and majorId!= 0">
+				and u.majorId = #{majorId}
+			</if>
+		</where>
+		<if test="countMethod==1">
+			group by x_depart
+		</if>
+		<if test="countMethod==2">
+			group by x_grade
+		</if>
+		<if test="countMethod==3">
+			group by x_clazz
+		</if>
+		<if test="countMethod==4">
+			group by x_school
+		</if>
+		<if test="countMethod==5">
+			group by x_major
+		</if>
+		limit #{start},#{rows}
+	</select>
+
+	<select id="countDonation" parameterType="map" resultType="long">
+		select count(donationId) from cy_donation d
+		LEFT JOIN cy_userprofile u on d.user_id = u.accountNum
+		LEFT JOIN cy_project p on d.projectId = p.projectId
+		<where>(p.projectId IS NOT NULL or p.foun_project IS NOT NULL)
+			<if test="userName!=null and userName!=''">
+				and x_name like concat('%',#{userName},'%')
+			</if>
+			<if test="projectId!=null and projectId!=0">
+				and p.projectId=#{projectId}
+			</if>
+			<if test="confirmStatus!=null and confirmStatus!=''">
+				and find_in_set(d.confirmStatus,#{confirmStatus})
+			</if>
+			<if test="payStatus!=null and payStatus!=''">
+				and d.payStatus=#{payStatus}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and d.user_id like CONCAT(#{deptId},'%')
+			</if>
+			<if test="startMoney!=null and startMoney!=0.0">
+				and <![CDATA[money>=#{startMoney}]]>
+			</if>
+			<if test="endMoney!=null and endMoney!=0.0">
+				and <![CDATA[money<= #{endMoney}]]>
+			</if>
+			<if test="startTime!=null">
+				and <![CDATA[donationTime>= #{startTime}]]>
+			</if>
+			<if test="endTime!=null">
+				and <![CDATA[donationTime<= #{endTime}]]>
+			</if>
+			<if test="needInvoice != null and needInvoice != ''">
+				and d.need_invoice = #{needInvoice}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				and p.projectName like concat('%',#{projectName},'%')
+			</if>
+			<if test="donorName != null and donorName != ''">
+				and d.donor_name like concat('%',#{donorName},'%')
+			</if>
+			<if test="donorType != null and donorType != ''">
+				and d.donor_type = #{donorType}
+			</if>
+			<if test="donationType != null and donationType != ''">
+				and d.donation_type = #{donationType}
+			</if>
+			<if test="itemType != null and itemType != ''">
+				and d.item_type = #{itemType}
+			</if>
+			<if test="flag != null and flag != ''">
+				and d.flag = #{flag}
+			</if>
+			<if test='messageIsNotEmpty != null and messageIsNotEmpty != "" '>
+				<choose>
+					<when test='messageIsNotEmpty == "1" '>
+						and (d.message IS NOT NULL AND TRIM(d.message) != '')
+					</when>
+					<otherwise>
+						and (d.message IS NULL OR TRIM(d.message) = '')
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+	</select>
+
+	<!-- 捐赠管理分页列表数据查询 -->
+	<select id="selectDonationList" parameterType="map"
+			resultMap="donationResultMap">
+		SELECT
+		d.*, p.*, u.groupName AS x_fullname, CASE WHEN cu.userName IS NOT NULL THEN cu.userName ELSE '系统' END confirmerName,
+		CASE WHEN d.donor_name IS NOT NULL AND d.donor_name !='' THEN d.donor_name ELSE d.x_name END AS donorName
+		FROM cy_donation d
+		LEFT JOIN cy_userprofile u on d.user_id = u.accountNum
+		LEFT JOIN cy_project p on d.projectId = p.projectId
+		LEFT JOIN cy_user cu ON d.confirmId = cu.userId
+		<where>(p.projectId IS NOT NULL or p.foun_project IS NOT NULL)
+			<if test="userName!=null and userName!=''">
+				and x_name like concat('%',#{userName},'%')
+			</if>
+			<if test="projectId!=null and projectId!=0">
+				and p.projectId=#{projectId}
+			</if>
+			<if test="confirmStatus!=null and confirmStatus!=''">
+				and find_in_set(d.confirmStatus,#{confirmStatus})
+			</if>
+			<if test="payStatus!=null and payStatus!=''">
+				and d.payStatus=#{payStatus}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and d.user_id like CONCAT(#{deptId},'%')
+			</if>
+			<if test="startMoney!=null and startMoney!=0.0">
+				and <![CDATA[money>=#{startMoney}]]>
+			</if>
+			<if test="endMoney!=null and endMoney!=0.0">
+				and <![CDATA[money<= #{endMoney}]]>
+			</if>
+			<if test="startTime!=null">
+				and <![CDATA[donationTime>= #{startTime}]]>
+			</if>
+			<if test="endTime!=null">
+				and <![CDATA[donationTime<= #{endTime}]]>
+			</if>
+			<if test="needInvoice != null and needInvoice != ''">
+				and d.need_invoice = #{needInvoice}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				and p.projectName like concat('%',#{projectName},'%')
+			</if>
+			<if test="donorName != null and donorName != ''">
+				and d.donor_name like concat('%',#{donorName},'%')
+			</if>
+			<if test="donorType != null and donorType != ''">
+				and d.donor_type = #{donorType}
+			</if>
+			<if test="donationType != null and donationType != ''">
+				and d.donation_type = #{donationType}
+			</if>
+			<if test="itemType != null and itemType != ''">
+				and d.item_type = #{itemType}
+			</if>
+			<if test="flag != null and flag != ''">
+				and d.flag = #{flag}
+			</if>
+			<if test='messageIsNotEmpty != null and messageIsNotEmpty != "" '>
+				<choose>
+					<when test='messageIsNotEmpty == "1" '>
+						and (d.message IS NOT NULL AND TRIM(d.message) != '')
+					</when>
+					<otherwise>
+						and (d.message IS NULL OR TRIM(d.message) = '')
+					</otherwise>
+				</choose>
+			</if>
+		</where>
+		ORDER BY d.payTime DESC
+		limit #{start},#{rows}
+	</select>
+
+
+	<insert id="save" parameterType="com.cy.core.donation.entity.Donation"
+			useGeneratedKeys="true" keyProperty="donationId">
+		insert into
+		cy_donation(user_id,orderNo,projectId,donation_type,donation_courier,donation_courier_number,need_invoice,credentials_courier,credentials_courier_number,money,donationTime,remark,message,x_name,x_phone,x_email,x_address,x_school,x_depart,x_grade,x_clazz,x_sex,x_post_code,x_workunit,x_position,x_major,flag,accountNum,payMethod,anonymous,delivery_address,certificate_pic,weixin_user_id,foun_project,confirmTime,confirmId,payMoney,payTime,confirmStatus,donor_type,donor_name,item_type,item_name,item_num,payMode,payType,payStatus,incomeId,message_is_open,input_class_info)
+		values(#{userId},#{orderNo},#{projectId},#{donationType},#{donationCourier},#{donationCourierNumber},#{needInvoice},#{credentialsCourier},#{credentialsCourierNumber},#{money},#{donationTime},#{remark},#{message},#{x_name},#{x_phone},#{x_email},#{x_address},#{x_school},#{x_depart},#{x_grade},#{x_clazz},#{x_sex},#{x_post_code},#{x_workunit},#{x_position},#{x_major},#{flag},#{accountNum},#{payMethod},#{anonymous},#{deliveryAddress},#{certificatePicUrl},#{weixinUserId},#{founProject},#{confirmTime},#{confirmId},#{payMoney},#{payTime},#{confirmStatus},#{donorType},#{donorName},#{itemType},#{itemName},#{itemNum},#{payMode},#{payType},#{payStatus},#{incomeId},#{messageIsOpen},#{inputClassInfo})
+	</insert>
+
+	<delete id="deleteByIncomeId" parameterType="String">
+		delete from cy_donation where incomeId =  #{incomeId}
+	</delete>
+
+	<delete id="delete" parameterType="list">
+		delete from cy_donation where donationId in
+		<foreach collection="list" open="(" separator="," close=")"
+				 item="donationId">
+			#{donationId}
+		</foreach>
+	</delete>
+	<select id="selectById" parameterType="long" resultMap="donationResultMap">
+		select
+		d.*, p.*, u.groupName AS x_fullname, CASE WHEN cu.userName IS NOT NULL THEN cu.userName ELSE '系统' END confirmerName,
+		CASE WHEN d.donor_name IS NOT NULL AND d.donor_name !='' THEN d.donor_name ELSE d.x_name END AS donorName
+		from cy_donation d
+		left join cy_project p on d.projectId = p.projectId
+		LEFT JOIN cy_userprofile u on d.user_id = u.accountNum
+		LEFT JOIN cy_user cu ON d.confirmId = cu.userId
+		where
+		donationId=#{donationId}
+	</select>
+	<select id="selectByOrderNo" parameterType="string" resultMap="donationResultMap">
+		select *,CASE WHEN donor_name IS NOT NULL AND donor_name !='' THEN donor_name ELSE x_name END AS donorName from cy_donation
+		where
+		orderNo=#{orderNo}
+	</select>
+	<select id="selectRandom50" resultMap="donationResultMap">
+		SELECT t1.*,CASE WHEN t1.donor_name IS NOT NULL AND t1.donor_name !=''THEN t1.donor_name ELSE t1.x_name END AS donorName,p.*
+		FROM
+		cy_donation AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(donationId)
+		FROM cy_donation)-(SELECT MIN(donationId) FROM cy_donation))+(SELECT
+		MIN(donationId) FROM cy_donation)) AS donationId) AS t2
+		LEFT JOIN
+		cy_project p on t1.projectId = p.projectId
+		WHERE t1.donationId >=
+		t2.donationId
+		ORDER BY t1.donationId LIMIT 100;
+	</select>
+	<update id="update" parameterType="com.cy.core.donation.entity.Donation">
+		update cy_donation set
+
+		<if test='donationCourier != null and donationCourier != ""'>
+			donation_courier = #{donationCourier},
+		</if>
+		<if test='donationCourierNumber != null and donationCourierNumber != ""'>
+			donation_courier_number = #{donationCourierNumber},
+		</if>
+		<if test='credentialsCourier != null and credentialsCourier != ""'>
+			credentials_courier = #{credentialsCourier},
+		</if>
+		<if test='credentialsCourierNumber != null and credentialsCourierNumber != ""'>
+			credentials_courier_number = #{credentialsCourierNumber},
+		</if>
+		<if test="certificatePicUrl != null and certificatePicUrl != ''">
+			certificate_pic = #{certificatePicUrl},
+		</if>
+		<if test="deliveryAddress != null and deliveryAddress != ''">
+			delivery_address = #{deliveryAddress},
+		</if>
+		<if test="payTime != null and payTime != ''">
+			payTime=#{payTime},
+		</if>
+		<if test="payStatus != null and payStatus != ''">
+			payStatus=#{payStatus},
+		</if>
+		<if test="payType != null and payType != ''">
+			payType=#{payType},
+		</if>
+		<if test="payMode != null and payMode != ''">
+			payMode=#{payMode},
+		</if>
+		<if test="payMethod != null and payMethod != ''">
+			payMethod=#{payMethod},
+		</if>
+		<if test="alipayNumber != null and alipayNumber != ''">
+			alipayNumber=#{alipayNumber},
+		</if>
+		<if test="payMoney != null and payMoney != ''">
+			payMoney=#{payMoney},
+		</if>
+		<if test="messageIsOpen != null and messageIsOpen != ''">
+			message_is_open=#{messageIsOpen},
+		</if>
+		<if test="confirmStatus != null and confirmStatus != ''">
+			confirmStatus=#{confirmStatus},
+		</if>
+		<if test="confirmTime != null and confirmTime != ''">
+			confirmTime=#{confirmTime},
+		</if>
+		<if test="confirmId != null and confirmId != ''">
+			confirmId=#{confirmId},
+		</if>
+		<if test="message != null and message != ''">
+			message = #{message},
+		</if>
+		<if test="anonymous != null and anonymous != ''">
+			anonymous=#{anonymous},
+		</if>
+		<if test="needInvoice != null and needInvoice != ''">
+			need_invoice=#{needInvoice},
+		</if>
+		<if test="x_name != null and x_name != ''">
+			x_name=#{x_name},
+		</if>
+		<if test="x_phone != null and x_phone != ''">
+			x_phone=#{x_phone},
+		</if>
+		<if test="donationTime != null and donationTime != ''">
+			donationTime = #{donationTime},
+		</if>
+		<if test="itemName != null and itemName != ''">
+			item_name = #{itemName},
+		</if>
+		<if test="inputClassInfo != null and inputClassInfo != ''">
+			input_class_info = #{inputClassInfo},
+		</if>
+		donationId=#{donationId}
+		where
+		donationId=#{donationId}
+	</update>
+	<update id="updateFromShouXin" parameterType="com.cy.core.donation.entity.Donation">
+		update cy_donation
+		set
+		payMoney=#{payMoney},payTime=#{payTime},
+		payStatus=#{payStatus},
+		payMode=#{payMode},
+		alipayNumber=#{alipayNumber}
+		where
+		orderNo=#{orderNo}
+	</update>
+	<!--更新捐赠支付类型-->
+	<update id="updatePayType" parameterType="com.cy.core.donation.entity.Donation">
+		update cy_donation
+		set
+		payType = #{payType},
+		<if test="payMethod != '' and payMethod !='null'">
+			payMethod = #{payMethod},
+		</if>
+		payStatus = #{payStatus}
+		where
+		orderNo = #{orderNo}
+	</update>
+	<select id="selectByNameAndPhone" parameterType="com.cy.core.donation.entity.Donation"
+			resultMap="donationResultMap">
+		select d.*,CASE WHEN d.donor_name IS NOT NULL AND d.donor_name !='' THEN d.donor_name ELSE d.x_name END AS donorName,p.projectName content from cy_donation d left join
+		cy_project p on
+		d.projectId = p.projectId
+		where d.x_name=#{x_name} and
+		d.x_phone=#{x_phone}
+		order by donationTime desc
+	</select>
+	<select id="countDonationForMobile" parameterType="map"
+			resultType="long">
+		select count(donationId) from cy_donation d left join
+		cy_project p on d.projectId =
+		p.projectId
+		where p.projectId IS NOT NULL
+		<if test='accountNum != null and accountNum != "" and weixinUserId != null and weixinUserId != ""'>
+			AND (d.accountNum=#{accountNum} OR d.weixin_user_id=#{weixinUserId})
+		</if>
+		<if test='accountNum!=null and accountNum!="" and (weixinUserId == null or weixinUserId == "")'>
+			AND d.accountNum=#{accountNum}
+		</if>
+		<if test='weixinUserId!=null and weixinUserId!="" and (accountNum==null or accountNum=="")'>
+			AND d.weixin_user_id=#{weixinUserId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND x_name=#{userName}
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			AND p.projectName like concat('%',#{projectName},'%')
+		</if>
+		<if test="payStatus != null and payStatus != ''">
+			<if test='payStatus == "1"'>
+				AND d.payStatus = #{payStatus}
+			</if>
+			<if test='payStatus == "0"'>
+				AND(d.payStatus IS NULL OR d.payStatus = '' OR d.payStatus='0')
+			</if>
+		</if>
+		<if test="money!=null and money>0">
+			and <![CDATA[money>=#{money}]]>
+		</if>
+	</select>
+	<select id="selectDonationForCountMobile" parameterType="map"
+			resultMap="donationResultMap">
+		select d.*,CASE WHEN d.donor_name IS NOT NULL AND d.donor_name !='' THEN d.donor_name ELSE d.x_name END AS donorName,p.* from
+		cy_donation d
+		LEFT JOIN cy_project p on
+		d.projectId = p.projectId
+		where p.projectId IS NOT NULL
+		<if test='accountNum != null and accountNum != "" and weixinUserId != null and weixinUserId != ""'>
+			AND (d.accountNum=#{accountNum} OR d.weixin_user_id=#{weixinUserId})
+		</if>
+		<if test='accountNum!=null and accountNum!="" and (weixinUserId == null or weixinUserId == "")'>
+			AND d.accountNum=#{accountNum}
+		</if>
+		<if test='weixinUserId!=null and weixinUserId!="" and (accountNum==null or accountNum=="")'>
+			AND d.weixin_user_id=#{weixinUserId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND x_name=#{userName}
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			AND p.projectName like concat('%',#{projectName},'%')
+		</if>
+		<if test="payStatus != null and payStatus != ''">
+			<if test='payStatus == "1"'>
+				AND d.payStatus = #{payStatus}
+			</if>
+			<if test='payStatus == "0"'>
+				AND(d.payStatus IS NULL OR d.payStatus = '' OR d.payStatus='0')
+			</if>
+		</if>
+		<if test="money!=null and money > 0">
+			and <![CDATA[money>=#{money}]]>
+		</if>
+		order by donationId desc
+		<if test='isNotLimni !="1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<select id="countDonationForMobileNew" parameterType="map"
+			resultType="long">
+		select count(donationId)
+		FROM cy_donation d LEFT JOIN
+		cy_project p ON d.projectId =p.projectId
+		WHERE d.confirmStatus IS NOT NULL AND d.confirmStatus != '' AND d.confirmStatus!='10' AND d.confirmStatus != '20' AND p.projectId IS NOT NULL
+		<if test="projectId != null and projectId != ''">
+			AND d.projectId = #{projectId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND x_name=#{userName}
+		</if>
+		<if test="donorName!=null and donorName!=''">
+			AND d.donor_name LIKE CONCAT('%',#{donorName},'%')
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			AND p.projectName like concat('%',#{projectName},'%')
+		</if>
+		<if test='accountNum != null and accountNum != "" and weixinUserId != null and weixinUserId != ""'>
+			AND (d.accountNum=#{accountNum} OR d.weixin_user_id=#{weixinUserId})
+		</if>
+		<if test='accountNum!=null and accountNum!="" and (weixinUserId == null or weixinUserId == "")'>
+			AND d.accountNum=#{accountNum}
+		</if>
+		<if test='weixinUserId!=null and weixinUserId!="" and (accountNum==null or accountNum=="")'>
+			AND d.weixin_user_id=#{weixinUserId}
+		</if>
+		<if test="payTypes !=null and payTypes !=''">
+			AND find_in_set(d.payType,#{payTypes})
+		</if>
+		<if test="donationType !=null and donationType !=''">
+			AND d.donation_type = #{donationType}
+		</if>
+		<if test="money!=null and money>0">
+			and <![CDATA[money>=#{money}]]>
+		</if>
+	</select>
+	<select id="selectDonationForCountMobileNew" parameterType="map"
+			resultMap="donationResultMap">
+		SELECT
+		d.*,p.*,
+		CASE WHEN d.donor_name IS NOT NULL AND d.donor_name != '' AND d.donor_name != '' THEN d.donor_name ELSE d.x_name END AS donorName,
+		CASE WHEN u.picture IS NOT NULL AND u.picture != '' THEN u.picture WHEN wu.headimgurl IS NOT NULL AND wu.headimgurl != '' THEN wu.headimgurl END AS picture
+		FROM
+		cy_donation d
+		LEFT JOIN cy_project p ON d.projectId = p.projectId
+		LEFT JOIN cy_userprofile u ON d.accountNum = u.accountNum
+		LEFT JOIN weixin_user wu ON d.weixin_user_id = wu.id
+		WHERE d.confirmStatus IS NOT NULL AND d.confirmStatus != '' AND d.confirmStatus!='10' AND d.confirmStatus != '20' AND p.projectId IS NOT NULL
+		<if test="projectId != null and projectId != ''">
+			AND d.projectId = #{projectId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND x_name=#{userName}
+		</if>
+		<if test="donorName!=null and donorName!=''">
+			AND d.donor_name LIKE CONCAT('%',#{donorName},'%')
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			AND p.projectName like concat('%',#{projectName},'%')
+		</if>
+		<if test='accountNum != null and accountNum != "" and weixinUserId != null and weixinUserId != ""'>
+			AND (d.accountNum=#{accountNum} OR d.weixin_user_id=#{weixinUserId})
+		</if>
+		<if test='accountNum!=null and accountNum!="" and (weixinUserId == null or weixinUserId == "")'>
+			AND d.accountNum=#{accountNum}
+		</if>
+		<if test='weixinUserId!=null and weixinUserId!="" and (accountNum==null or accountNum=="")'>
+			AND d.weixin_user_id=#{weixinUserId}
+		</if>
+		<if test="payTypes !=null and payTypes !=''">
+			AND find_in_set(d.payType,#{payTypes})
+		</if>
+		<if test="donationType !=null and donationType !=''">
+			AND d.donation_type = #{donationType}
+		</if>
+		<if test="money!=null and money>0">
+			and <![CDATA[money>=#{money}]]>
+		</if>
+		order by d.donationTime desc
+		<if test='isNoLimit !="1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="countDonationMoneyAndPeople" parameterType="map"
+			resultType="com.cy.core.donation.entity.CountPeopleAndMoney">
+		SELECT
+		CASE WHEN SUM(payMoney) IS NOT NULL THEN SUM(payMoney) ELSE 0 END  totalMoney,
+		COUNT(d.donationId) totalPeople
+		FROM
+		cy_donation d
+		LEFT JOIN cy_project p on d.projectId = p.projectId
+		WHERE
+		d.confirmStatus IS NOT NULL AND d.confirmStatus != '' AND d.confirmStatus!='10' AND d.confirmStatus != '20' AND p.projectId IS NOT NULL
+		<if test="projectId != null and projectId != ''">
+			AND d.projectId = #{projectId}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND x_name=#{userName}
+		</if>
+		<if test="projectName!=null and projectName!=''">
+			AND p.projectName like concat('%',#{projectName},'%')
+		</if>
+		<if test='accountNum != null and accountNum != "" and weixinUserId != null and weixinUserId != ""'>
+			AND (d.accountNum=#{accountNum} OR d.weixin_user_id=#{weixinUserId})
+		</if>
+		<if test='accountNum!=null and accountNum!="" and (weixinUserId == null or weixinUserId == "")'>
+			AND d.accountNum=#{accountNum}
+		</if>
+		<if test='weixinUserId!=null and weixinUserId!="" and (accountNum==null or accountNum=="")'>
+			AND d.weixin_user_id=#{weixinUserId}
+		</if>
+		<if test="payTypes !=null and payTypes !=''">
+			AND find_in_set(d.payType,#{payTypes})
+		</if>
+		<if test="donationType !=null and donationType !=''">
+			AND d.donation_type = #{donationType}
+		</if>
+		<if test="money!=null and money>0">
+			and <![CDATA[money>=#{money}]]>
+		</if>
+	</select>
+
+	<!-- 获取该校友最终班级信息 -->
+	<select id="selectClassInfo" parameterType="String" resultType="map">
+		SELECT
+			ui.user_id baseInfoId,
+			ui.studentType,
+			SUBSTR(ui.user_id,11,4) year,
+			(SELECT dept_name FROM cy_dept_info WHERE dept_id=LEFT(ui.user_id, 6)) school,
+			(SELECT dept_name FROM cy_dept_info WHERE dept_id=LEFT(ui.user_id, 10)) depart,
+			(SELECT dept_name FROM cy_dept_info WHERE dept_id=LEFT(ui.user_id, 14)) grade,
+			(SELECT dept_name FROM cy_dept_info WHERE dept_id=LEFT(ui.user_id, 16)) clazz,
+			(SELECT majorName FROM cy_major m WHERE ui.majorId = m.majorId) major
+		FROM
+			cy_user_info ui
+		JOIN cy_userbase_info ub ON ui.user_id = ub.user_id
+		WHERE
+			ui.accountNum = #{accountNum} AND ui.checkflag=1
+		ORDER BY
+			(year + 0) ,(grade+0),(clazz+0) DESC
+		LIMIT 1
+	</select>
+</mapper>

@@ -1,0 +1,412 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>值年返校</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/html" id="bannerTppl">
+        <div class="H-swiper H-position-relative H-width-100-percent H-box-sizing-border-box H-overflow-scrolling" style="height:150px;">
+            <div class="swiper-container  swiper-normal H-position-absolute H-width-100-percent H-height-100-percent">
+                <div class="swiper-wrapper">
+                    <%for(var key in bannerList){%>
+                    <div onclick="lookDetail('<%=bannerList[key].title%>','<%=bannerList[key].newsId%>');" class="swiper-slide">
+                        <div class="H-background-color-transparent-5 H-theme-font-color-white H-font-size-12 H-padding-horizontal-left-5 H-text-show-row-1" style="position: absolute;left: 0;top: 0;width: 100%; height: 22px;line-height: 22px;">
+                            <%=bannerList[key].title%>
+                        </div>
+                        <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="<%=B.getImageAbsoluteUrl(bannerList[key].picUrl)%>" class="H-width-100-percent H-height-100-percent" />
+                    </div>
+                    <%}%>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>`
+        </div>
+    </script>
+
+    <script type="text/html" id="tppl">
+        <%for(var key in list){%>
+        <div onclick="lookDetail('<%=list[key].title%>','<%=list[key].newsId%>');" class="H-flex-item H-text-show-row-1 H-box-sizing-border-box H-padding-horizontal-both-10 H-padding-vertical-both-5 H-theme-background-color-white H-border-vertical-bottom-after">
+            <div class="H-text-show-row-1 H-font-size-14  H-padding-vertical-both-5">
+                <%=list[key].title%>
+            </div>
+            <div class="H-flexbox-horizontal H-max-width-100-percent H-theme-font-color-999 H-font-size-12 H-padding-vertical-both-5">
+                <div class="H-flex-item H-text-show-row-1"><%=list[key].createDate.substring(0,19)%></div>
+                <div class="H-vertical-middle">
+                    <%
+                    if (list[key].clickRate && list[key].clickRate.length > 0){
+                    %>
+                    <%=list[key].clickRate%>
+                    <%
+                    }else {
+                    %>
+                    0
+                    <%
+                    }
+                    %>
+                    <img class="H-display-inline-block" src="../static/img/icons/icon_eye_small.png"/>
+                </div>
+            </div>
+        </div>
+        <%}%>
+    </script>
+</head>
+
+<body class="H-flexbox-vertical">
+<header class="H-header H-theme-background-color9" id="header">
+    <!-- Tab -->
+    <div class="H-flexbox-horizontal H-theme-background-color-white" id="tag">
+        <div onclick="setPage(0);" style="border-width: 0 0 2px  0"
+             class="H-flex-item H-center-all H-padding-vertical-both-10 H-theme-border-color-white
+             H-font-size-16 H-theme-font-color1" >
+            <span style="border-bottom: 2px solid #52ace5; display: block">返校动态</span>
+        </div>
+        <div onclick="setPage(1);" style="border-width: 0 0 2px  0"
+             class="H-flex-item H-center-all H-theme-font-color15 H-padding-vertical-both-10 H-theme-border-color-white  H-font-size-16" >
+            <span style="border-bottom: 2px solid #fff; display: block">计划列表</span>
+        </div>
+        <div onclick="setPage(2);" style="border-width: 0 0 2px  0"
+             class="H-flex-item H-center-all H-theme-font-color15 H-padding-vertical-both-10 H-theme-border-color-white  H-font-size-16" >
+            <span style="border-bottom: 2px solid #fff; display: block">我的计划</span>
+        </div>
+    </div>
+</header>
+<div class="H-padding-vertical-bottom-2"></div>
+
+<!-- slide image -->
+<div id="bannerList"></div>
+
+<!-- news list -->
+<div class="content list-wraper">
+    <div class="list"></div>
+</div>
+</body>
+
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '秩年返校',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+    var backUrl = B.encrypt("../services/backSchool/list_index.html?ts=" + B.getRandomInt(4));
+
+    // 设置页签集合
+    var tabs = [{
+        name:"返校动态",
+        url:"list_index.html"
+    },{
+        name:"计划列表",
+        url:"list_plan.html"
+    },{
+        name:"我的计划",
+        url:"my_jihua.html"
+    }];
+
+    // 切换页签
+    function setPage(index) {
+        if(index==2){
+
+            if(accountNum=='null' || !accountNum){
+                $('.list div').css('pointer-events', 'none');
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        window.location.href = "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl;
+
+                        setTimeout(function(){
+                            $('.list div').css('pointer-events', 'auto');
+                        }, 400);
+                    }else{
+                        //setTimeout(function(){
+                            $('.list div').css('pointer-events', 'auto');
+                        //}, 400);
+                    };
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+            }else if( userrz!=1 ){
+                $('.list div').css('pointer-events', 'none');
+                //认证提示区分微信端和APP端
+                if (openId && openId != '' && openId != 'null') {
+                    H.confirm(function (ret) {
+                        if (ret.buttonIndex == 1) {
+                            H.openWin("认证页面", "../../wechat/verify/class_list.html?ts=" + B.getRandomInt(4) + "&accountNum=" + accountNum + "&backUrl=" + backUrl);
+                            setTimeout(function () {
+                                $('.list div').css('pointer-events', 'auto');
+                            }, 400);
+                        } else {
+                            setTimeout(function () {
+                                $('.list div').css('pointer-events', 'auto');
+                            }, 400);
+                        }
+                        ;
+                    }, '确认提示：', '尚未认证，是否去认证？');
+                }else {
+                    H.alert('亲，您还未认证，请先去认证吧');
+                    $('.list div').css('pointer-events', '');
+                }
+            }else{
+                H.openWin(tabs[index].name, tabs[index].url + "?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum, "#header");
+            }
+        }else{
+            H.openWin(tabs[index].name, tabs[index].url + "?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum, "#header");
+
+        }
+    }
+
+    //判断是否已认证
+    var userrz='';
+    function renzhenguser(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj && data.obj.baseInfoId){
+                    userrz = 1;
+                }else{
+                    userrz = 0;
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    // 初始化页面
+    $(function(){
+
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+
+
+
+		console.log('{"command": "221","content": {"page": "1","rows": "3","category": "13","topnews": "100"}}');
+        B.ready(function(){
+
+            //判断用户认证
+            renzhenguser();
+
+            // 初始化banner轮播图
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "221","content": {"page": "1","rows": "3","category": "13","topnews": "100"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.obj.rows.length > 0){
+                        var render = H.tppl(H.D("#bannerTppl").innerHTML);
+                        var result = render({bannerList:data.obj.rows});
+
+                        $('#bannerList').append(result);
+
+                        // 初始化分页圆点
+                        var swiper = new Swiper('.swiper-normal', {
+                            pagination: '.swiper-pagination',
+                            mode:'horizontal',
+                            autoplayDisableOninteraction: false,
+                            loop: true,
+                            autoplay: 2000
+                        });
+                    }
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+            // 下拉刷新上拉加载
+            var page=1;
+            $('.dropload-up').remove();
+            $('.dropload-down').remove();
+            $('.list').empty();
+
+//            console.log('{"command": "221","content": {"page": "'+page+'","rows": "5","category": "13"}}') ;
+
+            $('.content').dropload({
+                scrollArea : window,
+                domUp : {
+                    domClass   : 'dropload-up',
+                    domRefresh : '<div class="dropload-refresh">↓下拉刷新-返校动态</div>',
+                    domUpdate  : '<div class="dropload-update">↑释放更新-返校动态</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                },
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-返校动态</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+               loadUpFn : function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "221","content": {"page": "1","rows": "8","category": "13"}}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            if(data.obj.rows.length == 0){
+                                me.noData(true);
+                            }else{
+//				                	console.log("下拉刷新："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.list').html(result);
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            me.unlock();
+                            me.noData(false);
+                            page=2;
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+
+                            // me.resetload();
+
+                        }
+                    });
+                },
+                loadDownFn : function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "221","content": {"page": "'+page+'","rows": "5","category": "13"}}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            if(data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                            }else{
+//				                	console.log("上拉加载："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.list').append(result);
+
+                                page++;
+                            }
+
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            me.unlock();
+                            me.noData(false);
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                            me.noData(true);
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+    });
+
+    // 单击跳转动态详情
+    function lookDetail(title, newsId) {
+        H.openWin(title, "detail_index.html?ts="+B.getRandomInt(4)+"&id=" + newsId + "&accountNum=" + accountNum);
+    }
+
+//    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+
+    //返回
+    var jsonStrBut = {
+        "title":"值年返校",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+
+    function fallback() {
+        window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+    }
+    $(function(){
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+</script>
+</html>

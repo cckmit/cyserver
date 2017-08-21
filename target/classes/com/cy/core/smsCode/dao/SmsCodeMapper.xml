@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.smsCode.dao.SmsCodeMapper">
+	<resultMap type="com.cy.core.smsCode.entity.SmsCode" id="smsCodeResultMap">
+		<id column="code_id" property="codeId" />
+		<result column="tel_id" property="telId" />
+		<result column="sms_code" property="smsCode" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+	<insert id="addSmsCode" parameterType="com.cy.core.smsCode.entity.SmsCode">
+		insert into cy_sms_code(code_id,sms_code,tel_id,create_time) values(#{codeId},#{smsCode},#{telId},#{createTime})
+	</insert>
+	<select id="selectByTelId" parameterType="String" resultMap="smsCodeResultMap">
+		select code_id,tel_id,sms_code,create_time from cy_sms_code where tel_id=#{telId} order by create_time desc limit 0,1
+	</select>
+</mapper>

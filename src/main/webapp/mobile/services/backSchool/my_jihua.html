@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <title>我的计划</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/backSchool.css" rel="stylesheet" type="text/css" />
+    <link href="font/iconfont.css" rel="stylesheet" type="text/css" />
+
+
+    <!--提取表单-->
+    <style type="text/css">
+        #project .cy-label {
+            min-width: 60px;
+        }
+    </style>
+
+    <!--置于底部的"发起"按钮 样式-->
+    <style type="text/css">
+        #float-menu{
+            position:fixed;
+            z-index: 5;
+            bottom:50px;
+            left:10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+<!--浮动的"发起"按钮-->
+<span id="float-menu"  onclick="msgConfirm(0);"
+      class="H-icon H-center-all H-theme-background-color3
+      H-border-radius-circle H-margin-horizontal-auto H-text-decoration-none"
+      style="height: 42px; width: 42px;line-height: 45px; position: fixed;right: 10px;bottom: 50px;left: inherit;background: rgba(1,1,1,0.5);display: none">
+        <i class="H-iconfont H-icon-add H-font-size-22 H-theme-font-color-white"></i>
+</span>
+
+<!--top img-->
+<!--avatar+name+prise-->
+<div class="H-horizontal-center H-theme-background-color-black H-overflow-hidden H-padding-vertical-bottom-10 plan-banner-box">
+    <div class="H-overflow-hidden H-max-width-100-percent H-padding-horizontal-both-10 H-box-sizing-border-box" style="margin:30px auto;">
+    <div class="picture H-margin-horizontal-auto " style="width: 96px; height: 96px;">
+        <img id="userAvatar" onerror="javascript:this.src='../static/img/icons/default_profile.png';" src="" class="H-display-block H-border-radius-circle" alt="" title=""
+             style="width: 90px; height: 90px; border:3px solid rgba(255,255,255,0.3);">
+    </div>
+    <div class="H-display-block H-font-weight-normal H-font-weight-500 H-font-size-16 H-theme-font-color-white
+        H-text-align-center H-margin-vertical-top-5" style="margin-bottom:20px;">
+        <span id="userName"></span>
+        <span class="">
+            <i id="sex_flag" class="H-iconfont H-icon-woman H-font-size-18 H-theme-font-color11"></i>
+        </span>
+    </div>
+
+
+</div>
+
+
+    <!--发起 参与 我的 tab-->
+    <div class="tab-group H-tabs-channel H-overflow-scrolling" style="background: rgba(1,1,1,.5)">
+        <ul class="H-width-100-percent H-auto-height H-flexbox-horizontal H-clear-both H-theme-background-color-transparent H-padding-5
+        H-box-sizing-border-box H-theme-font-color-999 H-font-size-16">
+            <li tapmode="" id="plan0"
+                class="H-channel-item H-flex-item H-tabs-active H-theme-font-color1 H-text-align-center H-margin-horizontal-right-5">参与
+            </li>|
+            <li tapmode="" id="plan1"
+                class="H-channel-item H-flex-item H-margin-horizontal-right-5 H-text-align-center">我的
+            </li>|
+            <li tapmode="" id="plan2"
+                class="H-channel-item H-flex-item H-text-align-center">收藏
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+<!--发起+参与+我的 content -->
+<div class="content">
+ <div class="H-tabs-items">
+
+     <!--参与-->
+     <div class="attend_content">
+         <div class="attend_list H-tabs-item">
+
+
+
+         </div>
+     </div>
+
+     <!--我的-->
+     <div class="myList_content">
+         <div class="my_list H-tabs-item">
+
+
+
+         </div>
+     </div>
+
+     <!--收藏-->
+     <div class="collect_content">
+        <div class="collect_list H-tabs-item">
+
+        </div>
+     </div>
+
+</div>
+
+</div>
+
+
+
+
+<!--<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>-->
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/jquery.min.js" type="text/javascript"  ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<!--<script src="../static/js/zepto.min.js" type="text/javascript" ></script>-->
+<script src="../../js/B.js" type="text/javascript" ></script>
+<!--<script src="../static/js/lrz.mobile.min.js"></script>-->
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+
+<!--"计划"列表单条 模板-->
+<script type="text/html" id="planTppl">
+    <%for(var key in list){%>
+    <div class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after"
+         onclick="detailPlan('<%=list[key].id%>')">
+        <div class="H-padding-vertical-both-10">
+
+                <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="<%=B.getImageAbsoluteUrl(list[key].posterUrl)%>" alt="" title=""
+                     class="H-display-block H-margin-horizontal-left-10"
+                     style="width: 75px; height: 80px;">
+        </div>
+        <div class="H-flex-item H-padding-8">
+            <strong class="H-font-weight-normal font-weight-500 H-font-size-15 H-display-block H-padding-vertical-top-3"><%=list[key].topic%></strong>
+            <div class="H-theme-font-color-999 H-font-size-12">
+                <span><%=list[key].time%></span>
+                <span>|</span>
+                <span>报名:<%=list[key].number%></span>
+            </div>
+            <div class="H-font-size-13 H-theme-font-color-999 H-text-show-row-2 H-margin-vertical-top-3">
+                <%=list[key].other%>
+            </div>
+        </div>
+    </div>
+
+    <%}%>
+</script>
+
+
+<!--我的计划 模板-->
+<script type="text/html" id="myPlanTppl">
+    <%for(var key in list){%>
+    <div tapmode=""
+         class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after active_liebiao">
+        <div class="H-padding-vertical-both-10 delshang1" tapmode="" onclick="detailPlan('<%=list[key].id%>')">
+
+            <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="<%=B.getImageAbsoluteUrl(list[key].posterUrl)%>" alt="" title=""
+                 class="H-display-block H-margin-horizontal-left-10"
+                 style="width: 75px; height: 80px;">
+        </div>
+
+        <div class="H-flex-item H-padding-8 delshang2">
+            <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box" style="margin-top:1px;">
+                <span class="H-display-block H-flex-item H-text-align-left H-font-size-14 "
+                      tapmode="" onclick="detailPlan('<%=list[key].id%>')">
+                    <span class="plan_topic H-theme-font-color1 H-font-size-15"><%=list[key].topic%></span>
+                </span>
+
+                <span class="H-display-block H-margin-vertical-top-2">
+                <%if(!list[key].status || list[key].status == '') {%>
+                <label tapmode=""
+                       class="H-display-inline-block H-vertical-middle H-theme-background-color2 H-theme-font-color-white H-font-size-10"
+                       style="padding:0 10px">
+                    审核状态未知
+                </label>
+                <%}else{%>
+
+                    <%if(list[key].status==10){%>
+                        <label tapmode=""
+                               class="H-display-inline-block H-vertical-middle H-theme-background-color4 H-theme-font-color-white H-font-size-10"
+                               style="padding:0 10px; padding: 1px 10px; border-radius: 9px; -webkit-border-radius: 9px;">
+                            待审核
+                        </label>
+                    <%}else if(list[key].status==20){%>
+                     <label tapmode=""
+                            class="H-display-inline-block H-vertical-middle H-theme-background-color9 H-theme-font-color-white H-font-size-10"
+                            style=" padding: 1px 10px; border-radius: 9px; -webkit-border-radius: 9px;">
+                            审核通过
+                        </label>
+                    <%}else if(list[key].status==30){%>
+                     <label tapmode="" onclick="msgConfirm('<%=list[key].id%>')"
+                            class="H-display-inline-block H-vertical-middle H-theme-background-color7 H-theme-font-color-white H-font-size-10"
+                            style=" padding: 1px 10px; border-radius: 9px; -webkit-border-radius: 9px;">
+                           审核不通过
+                        </label>
+                    <%}else if(list[key].status==40){%>
+                     <label tapmode="" onclick="msgConfirm('<%=list[key].id%>')"
+                            class="H-display-inline-block H-vertical-middle H-theme-background-color-999 H-theme-font-color-white H-font-size-10"
+                            style=" padding: 1px 10px; border-radius: 9px; -webkit-border-radius: 9px;">
+                           下线
+                        </label>
+                    <%}else if(list[key].status==50){%>
+                     <label tapmode=""
+                            class="H-display-inline-block H-vertical-middle H-theme-background-color-999 H-theme-font-color-white H-font-size-10"
+                            style=" padding: 1px 10px; border-radius: 9px; -webkit-border-radius: 9px;">
+                           已取消
+                        </label>
+                    <%}%>
+                    </span>
+                <%}%>
+            </div>
+            <div class="H-theme-font-color-999 H-font-size-12" onclick="detailPlan('<%=list[key].id%>')">
+                <span class="back_date"><%=list[key].time%></span>
+                <span>|</span>
+                报名:<span class="register_num"><%=list[key].number%></span>
+            </div>
+            <div class="plan_other H-font-size-13 H-theme-font-color-999 H-text-show-row-2 H-margin-vertical-top-3">
+                <%=list[key].other%>
+            </div>
+        </div>
+
+        <div class="delete" onclick="delactive(this)">
+            删除
+            <span style="display: none"><%=list[key].id%></span>
+        </div>
+
+    </div>
+
+    <%}%>
+</script>
+
+
+<!--样式变更 : 点击tab, 显示其中的页面-->
+<script type="text/javascript">
+
+</script>
+
+<!--动态获取数据-->
+<script type="text/javascript">
+    // 接收URL中的参数
+    var categoryId = B.getUrlParamByName("categoryId"); //判断是跳转至发起计划还是编辑计划
+    var flag = B.getUrlParamByName("flag");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if (!accountNum || accountNum == "null") {
+            var backUrl = B.encrypt("../services/backSchool/my_jihua.html?ts=" + B.getRandomInt(4)) + "&categoryId=" + categoryId + "&flag=" + flag;
+            window.location.href = "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl;
+        }
+        $("title").html("我的计划");
+        var shareData = {
+            title: '我的计划',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }else{
+        $("title").html('{"title":"我的计划","backUrl":"/mobile/services/backSchool/list_index.html?accountNum=' + accountNum + '","backTitle":"返回"}');
+    }
+
+    // 初始化页面
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+
+//        //移动 "+", 显示"发起"计划表单tab
+//        H.D('#float-menu').style.left='0px';
+//        H.D('#float-menu').style.top=$(window).height()/2+'px';
+//        H.D("#float-menu").addEventListener("touchmove",function(event){
+////            console.log("window.width="+$(window).width()+"px"+"| window.height="+$(window).height()+"px");
+//            event.preventDefault();//阻止其他事件
+//            if(event.targetTouches.length==1) {
+//                var touch = event.targetTouches[0];  // 把元素放在手指所在的位置
+////                console.log("touch=="+touch+"| touch-event=="+event);
+//                H.D('#float-menu').style.left = (touch.clientX-30) + 'px';
+//                H.D('#float-menu').style.top = (touch.clientY-30) + 'px';
+//                if(parseInt(H.D('#float-menu').style.left)<0){
+//                    H.D('#float-menu').style.left = '0px';
+//                }
+//                if(parseInt(H.D('#float-menu').style.top)<0){
+//                    H.D('#float-menu').style.top = '0px';
+//                }
+//                if(parseInt(H.D('#float-menu').style.left)>(parseInt($(window).width())-42)){
+//                    H.D('#float-menu').style.left=(parseInt($(window).width())-42)+'px';
+//                }
+//                if(parseInt(H.D('#float-menu').style.top)>(parseInt($(window).height())-42)){
+//                    H.D('#float-menu').style.top=(parseInt($(window).height())-42)+'px';
+//                }
+//            }
+//        });
+
+        B.ready(function(){
+
+            //获取 上层 用户个人信息和收藏数量
+            getUserInfo();
+            
+            // 获取班级列表
+            getClassList();
+            $('#float-menu').show();
+            if (openId && openId !=''&& openId !='null'){
+                $('#float-menu').show();
+            }else {
+                $('#float-menu').hide();
+            }
+
+
+            //根据 传递的flag不同, 展示不同的选项卡和相关内容
+            if(flag){
+                var plan_tab_0 = H.D('#plan0');
+                var plan_tab_1 = H.D('#plan1');
+                var plan_tab_2 = H.D('#plan2');
+
+                /*if(flag == '0'){
+
+                }*/
+                if(flag == '1'){
+                    //我的
+                    H.addClass(plan_tab_1, "H-tabs-active H-theme-font-color1");
+                    H.removeClass(plan_tab_0, "H-tabs-active H-theme-font-color1");
+                    H.addClass(plan_tab_0, "H-theme-font-color-999");
+
+                    //显示 "我的"内容
+                    getPlanList('.myList_content',1);
+                }else if(flag == '2'){
+                    //收藏
+                    H.addClass(plan_tab_2, "H-tabs-active H-theme-font-color1");
+                    H.removeClass(plan_tab_0, "H-tabs-active H-theme-font-color1");
+                    H.addClass(plan_tab_0, "H-theme-font-color-999");
+                    //收藏channel-->内容:.collect_content
+                    //显示 "收藏的"内容
+                    getPlanList('.collect_content',3);
+                }else{
+                   getPlanList('.attend_content',2)
+                }
+            }else{
+                getPlanList('.attend_content',2)
+            }
+            // 获取"参与"列表
+
+        });
+
+    });
+
+
+    H.on(H.Ds(".H-tabs-channel ul li"), "touchend", function (event) {
+
+        var channelItem, tabContent;
+        channelItem = H.getParents(event.target, "H-channel-item");
+
+        var index = H.getIndex(channelItem);// 参与:index=0; 我的:index=1; 收藏:index=2
+        H.addClass(channelItem, "H-tabs-active H-theme-font-color1");
+        H.removeClass(H.siblings(channelItem), "H-tabs-active H-theme-font-color1");
+        H.addClass(H.siblings(channelItem), "H-theme-font-color-999");
+
+        var attendContent = H.D(".attend_content");
+        var myListContent = H.D(".myList_content");
+        var collectContent = H.D(".collect_content");
+
+        //点击"参与",显示"参与"的计划列表
+        if(index==0) {
+            //显示 "参与"内容
+            H.removeClass(attendContent, "H-display-none-important");
+            H.addClass(H.siblings(attendContent), "H-display-none-important");
+            getPlanList('.attend_content',2);
+
+        } //点击"我的", 展示"我创建"的计划列表
+        else if(index==1){
+            //显示 "我的"内容
+            H.removeClass(myListContent, "H-display-none-important");
+            H.addClass(H.siblings(myListContent), "H-display-none-important");
+            getPlanList('.myList_content',1);
+
+        }
+        //点击"收藏的"
+        else if(index==2){
+            //收藏channel-->内容:.collect_content
+            //显示 "收藏的"内容
+            H.removeClass(collectContent, "H-display-none-important");
+            H.addClass(H.siblings(collectContent), "H-display-none-important");
+            getPlanList('.collect_content',3);
+
+        }
+
+    });
+
+    //点击"修改",弹出提示框,点击"修改",跳转至form_plan进行编辑
+    function msgConfirm(planId){
+        if(planId == 0){
+            H.openWin("form_plan", "form_plan.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&categoryId=" + planId);
+        }
+        else{
+            H.confirm(function(ret){
+                if(ret.buttonIndex==1){
+
+                //直接跳转到 "from_plan",进行编辑计划
+                H.openWin("form_plan", "form_plan.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&categoryId=" + planId);
+                };
+
+            },'提示信息', '您的计划没有通过审核,请重新编辑');
+        }
+
+
+    }
+
+
+    //获取顶部用户信息
+    function getUserInfo() {
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{ "command": "27", "content": { "accountNum": "'+accountNum+'" } }'
+            },
+            dataType: 'json',
+            success: function(data){
+
+                console.log("用户信息=="+JSON.stringify(data))
+                console.log('{ "command": "27", "content": { "accountNum": "'+accountNum+'" } }')
+
+                if(data.obj) {
+                    $('#userAvatar').attr('src',B.getImageAbsoluteUrl(data.obj.picture_xd));
+                    $('#userName').text(data.obj.name);
+                    if(data.obj.sex==0){
+                        $('#sex_flag').addClass('H-icon-man').removeClass('H-icon-woman').css('color','#51bfff');
+                    }
+                }
+
+            },
+            error: function(xhr, type){
+
+            }
+        });
+        
+    }
+
+    //在发起计划和编辑计划是,用于获取用户的学习经历,从中得到"班级"信息
+    function getClassList() {
+
+        B.ready(function () {
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "101",  "content": { "accountNum": "'+accountNum+'"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    var classList = new Array();
+                    var classItemList = new Array();
+
+                    if(data && data.obj) {
+                        if(data.obj.length > 0){
+                            classList = data.obj;
+                            //将每个班级放入array中
+                            for(var i=0; i<classList.length; i++){
+                                classItemList[i]=classList[i].strClass;
+                            }
+                            $('#classItem').click(function () {
+                                H.selectTip(this, classItemList);
+                            });
+
+
+                        }
+
+                    }else{
+                       // H.alert("该用户不存在");
+                    }
+
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+        })
+    }
+
+    //获取"计划"列表-type:0-全部; 1-我创建的; 2-我参与的; 3-我收藏的
+    function getPlanList(content,type) {
+//        console.log("content="+content+"| type="+type);
+
+        var $content = $(content);
+
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+        $('.attend_list').empty();
+        $('.collect_list').empty();
+        $('.my_list').empty();
+
+        B.ready(function () {
+            var page = 1;
+
+            //下拉刷新 + 上拉菜单
+            $content.dropload({
+                scrollArea : window,
+                domUp : {
+                    domClass: 'dropload-up',
+                    domRefresh: '<div class="dropload-refresh">↓下拉刷新-我的计划</div>',
+                    domUpdate: '<div class="dropload-update">↑释放更新-我的计划</div>',
+                    domLoad: '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                },
+                domDown:{
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-我的计划</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+
+                },
+                loadDownFn:function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "83", "content": { "page": \"'+page+'\","rows": "5", "type": "'+type+'", "userId": "'+accountNum+'"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            //console.log(page)
+                            if(!data.success || data.obj.length==0){
+                                console.log("我的计划列表="+JSON.stringify(data));
+                                me.lock();
+                                me.noData(true);
+//                                if(!data.success){
+//                                    H.alert(data.msg);
+//                                }
+                            }else{
+                                //console.log("getPlanList===上拉加载："+JSON.stringify(data));
+                                var list,result;
+
+                                if(content == '.myList_content') {                            // 我的列表
+                                    list = '.my_list';
+                                    var myRender = H.tppl(H.D("#myPlanTppl").innerHTML);
+                                    result = myRender({list:data.obj});
+
+                                }else{
+                                    if(content == '.attend_content'){                                                      // 参与和收藏
+                                        list = '.attend_list';
+                                    }else{
+                                        list = '.collect_list';
+                                    }
+                                    var render = H.tppl(H.D("#planTppl").innerHTML);
+
+                                    result = render({list:data.obj});
+                                }
+
+
+                                $(list).append(result);
+
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            me.unlock();
+                            me.noData(false);
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            //me.resetload();
+                            me.noData(true);
+                        }
+                    });
+                },
+            })
+        })
+    }
+
+    //创建计划 / 编辑计划
+    function createPlan() {
+
+
+        //获得button[id="pId"]的name属性值
+        var planId = $(".pId").attr("name");
+
+        // 获取表单数据
+        var topic = $("#topic").val();  //组织主题
+        var plannedPeopleNum = $("#plannedPeopleNum").val();  //计划人数
+
+        var backSchoolTime = $("#backSchoolTime").val(); //返校时间
+        var classItem = $("#classItem").val(); //班级
+        var describe = $("#describe").val();  //活动描述
+
+       console.log("createPlan/editPlan=="+"planId="+planId+" | topic="+topic+" | plannedPeopleNum="+plannedPeopleNum+" | backSchoolTime="+backSchoolTime+" |classItem="+classItem+" | descibe="+describe);
+
+        // 校验表单数据
+        if ($.trim(topic) == '') {
+            H.alert(function () {
+                $("#topic").focus();
+            }, "请输入组织主题！");
+            return false;
+        }
+        else if ($.trim(plannedPeopleNum) != '' && !(/^[1-9]+\d*$/.test(plannedPeopleNum))) {
+            H.alert(function () {
+                $("#plannedPeopleNum").focus();
+            }, '人数上限应为大于0的整数值或留空不设上限！');
+            return false;
+        }
+        else if ($.trim(backSchoolTime) == '') {
+            H.alert("请选择返校时间！");
+            return false;
+        }
+        else if ($.trim(classItem) == '') {
+            H.alert("请选择班级！");
+            return false;
+        }
+        else if ($.trim(describe) == '') {
+            H.alert(function () {
+                $("#describe").focus();
+            }, "请输入活动详情描述！");
+            return false;
+        }
+
+        var formData, ppId;
+
+        if(!planId || planId=='') {
+            //edit
+            ppId = '';
+        }else{
+            //create
+            ppId = planId;
+        }
+
+        formData = {
+            command: "82",
+            content: {
+                id: ppId,
+                topic: topic,
+                number: plannedPeopleNum,
+                time: backSchoolTime.replace(/T/, " ") + ":00",
+                classinfo: classItem,
+                other:describe,
+                userId: accountNum
+            }
+        };
+
+//        console.log("创建计划------------"+JSON.stringify(formData));
+
+        // 调用服务端接口，提交保存新建的活动
+        B.ready(function () {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: JSON.stringify(formData)
+                },
+                dataType: 'json',
+                success: function (data) {
+
+                    console.log("创建计划===="+JSON.stringify(data));
+
+
+                    //创建时正在加载, 加载样式
+                    var manban =
+                            $('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;">' +
+                                    '<div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box;' +
+                                    ' -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;">' +
+                                    '<img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif">' +
+                                    '<p style="margin: 0;">加载中...</p></div></div>');
+                    $("body").append(manban);
+
+                    // 保存成功
+                    //提示用户方式1: 使用 H.alert() ,是H.js中自带提示框
+/*                   H.alert(function () {
+
+                        //删除正在加载
+                        //获取div节点对象
+                        var divNode2 = document.getElementById("manban");
+                        //获取父节点
+                        var parentNode = divNode2.parentNode;
+                        parentNode.removeChild(divNode2);
+
+                       var myListDom = H.D(".myList_content");
+                       H.removeClass(myListDom, "H-display-none-important");
+                       H.addClass(H.siblings(myListDom), "H-display-none-important");
+                        //创建成功后, 调到"我的" tab
+                       //显示"+"btn
+                       var addBtn = H.D("#float-menu");
+                       H.removeClass(addBtn,"H-display-none-important");
+                       getPlanList('.myList_content',1);
+//                        H.openWin("我的", "my_plan.html?accountNum=" + accountNum);
+                    }, data.msg);*/
+
+                    //计划发起成功: 提示用户方式2: 使用 H.alertTipForCreatePlan() ,是H.js中自定义提示框
+                    H.alertTipForSuccuss(function(){
+
+                        //删除正在加载
+                        //获取div节点对象
+                        var divNode2 = document.getElementById("manban");
+                        //获取父节点
+                        var parentNode = divNode2.parentNode;
+                        parentNode.removeChild(divNode2);
+
+                        //创建计划成功后, 跳转到"我的"计划列表中,展示"我的计划"列表
+                        //显示发起计划的form内容
+                        var myListDom = H.D(".myList_content");
+                        H.removeClass(myListDom, "H-display-none-important");
+                        H.addClass(H.siblings(myListDom), "H-display-none-important");
+                        //改变 "我的"channel 的样式
+                        $(".H-tabs-channel ul li").eq(1).addClass("H-tabs-active H-theme-font-color1 H-theme-font-color-999").
+                        siblings().removeClass("H-tabs-active H-theme-font-color1");
+
+                        //显示"+"btn
+                        var addBtn = H.D("#float-menu");
+                        H.removeClass(addBtn,"H-display-none-important");
+
+                        $('.H-dialog-area').remove();
+                        //加载"我的计划"列表
+                        getPlanList('.myList_content',1);
+
+
+                    }," 计划审核通过");
+
+
+
+                },
+                error: function (xhr, type) {
+                    // 保存失败
+                }
+            });
+        })
+    }
+
+
+
+    //点击 某项计划, 进入 计划详情
+    function detailPlan(planId) {
+        H.openWin("计划详情", "detail_plan.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&sourceFlag=2&categoryId=" + planId);
+    }
+
+
+    //################## 侧滑全部代码: 不动
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
+        }
+
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
+    }
+
+    var _startX = 0;
+    var _startY = 0;
+    var scrollHeight = 0;
+    var scrollWidth = 0;
+    var currentRange = 0;
+    var parentEle = null;
+    var direction = 1;
+
+    // 设置侧滑动画
+    function setScroll(parentElement, value, time) {
+        parentElement.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+        parentElement.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+    }
+
+    // 触摸开始
+    window.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            parentEle = H.getParents(event.target, "active_liebiao");
+            if (H.isElement(parentEle)) {
+
+
+                scrollHeight = parentEle.clientHeight;
+                scrollWidth = H.D(".active_liebiao").clientWidth;
+
+
+                _startX = touch.pageX;
+                _startY = touch.pageY;
+            }
+        }
+    }, false);
+    // 触摸过程
+    window.addEventListener("touchmove", function (event) {
+
+
+
+        if (event.targetTouches.length == 1) {
+
+            var touch = event.targetTouches[0];
+            //alert(_startX+'--'+ _startY+'--'+ touch.pageX+'--'+ touch.pageY)
+            direction = GetSlideDirection(_startX, _startY, touch.pageX, touch.pageY);
+            //alert(direction)
+            if (direction == 3 || direction == 4) {
+                event.preventDefault();
+
+                if (H.isElement(parentEle)) {
+                    var range = touch.pageX - _startX;
+                    var dele=$(parentEle).children('.delete');
+                    var deles=dele[0];
+
+                    var s1=$(parentEle).children('.delshang1');
+                    var delshang1=s1[0];
+
+                    var s2=$(parentEle).children('.delshang2');
+                    var delshang2=s2[0];
+
+
+                    if (range <= 0) {
+                        //console.log(range - currentRange)
+                        if (range - currentRange >= -scrollWidth && range - currentRange <= 0) {
+                            if(range - currentRange>-54){
+                                setScroll(deles, (range - currentRange+54), 0.4);
+                                setScroll(delshang1, (range - currentRange-0), 0.4);
+                                setScroll(delshang2, (range - currentRange-0), 0.4);
+
+                                if(range - currentRange<=-32){
+                                    $('.delete').css({'transition':'transform 0.4s','transform':'translateX(54px)'})
+                                    $('.delshang1').css({'transition':'transform 0.4s','transform':'translateX(0px)'})
+                                    $('.delshang2').css({'transition':'transform 0.4s','transform':'translateX(0px)'})
+                                    setScroll(deles, 0, 0.4);
+                                    setScroll(delshang1, -54, 0.4);
+                                    setScroll(delshang2, -54, 0.4);
+                                }else{
+                                    setScroll(deles, 54, 0.4);
+                                    setScroll(delshang1, 0, 0.4);
+                                    setScroll(delshang2, 0, 0.4);
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        $('.delete').css({'transition':'transform 0.4s','transform':'translateX(54px)'})
+                        $('.delshang1').css({'transition':'transform 0.4s','transform':'translateX(0px)'})
+                        $('.delshang2').css({'transition':'transform 0.4s','transform':'translateX(0px)'})
+                        if($(parentEle).children('.delete').css('transform')=='translateX(0px)'){
+                            //console.log(range - currentRange)
+                            //setScroll(deles, (range - currentRange), 0.4);
+                            if(range - currentRange>=-32){
+                                setScroll(deles, 54, 0.4);
+                                setScroll(delshang1, 0, 0.4);
+                                setScroll(delshang2, 0, 0.4);
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }, false);
+
+
+    //删除我的计划中的该计划
+    function delactive(e){
+        H.confirm(function (ret) {
+            var ele=$(e).parent();
+            var backSchoolId=$(e).find('span').html();
+            if(ret.buttonIndex==1){
+                B.ready(function () {
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data: {
+                            jsonStr: '{"command": "260","content": {"backSchoolId": "'+backSchoolId+'","userId": "'+accountNum+'"}}'
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+//                            console.log(data)
+                            if(data.success){
+                                ele.remove();
+                            }
+                        },
+                        error: function (xhr, type) {
+                            // 保存失败
+                        }
+                    });
+                })
+            }
+
+            $('.H-dialog-area').remove();
+        }, '确认提示：', '您确定要删除此计划吗？');
+    }
+
+
+
+
+//    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+   /* if(!t || t=='null' || t!=1){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                if (openId && openId != "null") {
+                    var ua = navigator.userAgent.toLowerCase();
+                    if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                        WeixinJSBridge.call('closeWindow');
+                    } else if(ua.indexOf("alipay")!=-1){
+                        AlipayJSBridge.call('closeWebview');
+                    }else if(ua.indexOf("baidu")!=-1){
+                        BLightApp.closeWindow();
+                    }
+                    else{
+                        window.close();
+                    }
+                }else{
+                    window.location.href = B.serverUrl + "/mobile/services/backSchool/list_index.html?accountNum=" + accountNum;
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }*/
+
+    var jsonStrBut = {
+        "title":"我的计划",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        },
+        "btn2":{
+            "imgname":"icon_add@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAAXNSR0IArs4c6QAAAF5JREFUSA1jZCAR/AcCZC2MQIDMJ8RmIqSA2vKjFlI7RBlGg3Q0SEkOgeGfaBjRy0aSw4hEDcM/SOnuQ5LqMlB0ocf5aH2InojpHoejFqJHAcX80SClOAjRDRj+QQoAhRgMMrhPDrUAAAAASUVORK5CYII=",
+            "name":"添加",
+            "action":"added"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/backSchool/list_index.html?accountNum=" + accountNum;
+
+    }
+    function added() {
+//        window.location.href = B.serverUrl + "/mobile/services/backSchool/form_plan.html?accountNum=" + accountNum;
+        msgConfirm(0);
+    }
+</script>
+
+</body>
+</html>

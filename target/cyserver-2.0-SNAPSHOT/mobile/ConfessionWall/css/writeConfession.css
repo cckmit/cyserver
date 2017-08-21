@@ -1,0 +1,96 @@
+html {
+    background-color: #f3f3f3;
+}
+
+textarea{width: 100%;height: 12.5rem;border:.1rem solid #f3f3f3;border-bottom:none;box-sizing: border-box;resize:none;font-size: 1.2rem;padding: 1rem;color: #AAAAAA }
+
+
+.img-list{
+    padding: 1rem;
+    height: 6.5rem;
+    background: #ffffff;
+    border-bottom: 0.4rem solid #f3f3f3;
+}
+.limitImg{line-height: 6.5rem;color: #AAAAAA;font-size: 1.1rem}
+.list-li,.list-li1{float: left;margin-right: 1rem;margin-bottom: 1rem; }
+.list-li,.list-li img,.list-li1,.list-li1 img{width:6.5rem;height: 6.5rem; }
+
+.live-tit {
+    height: 4.5rem;
+    border-bottom: 0.2rem solid #f3f3f3;
+    padding-left: 1.4rem;
+    padding-right: 1rem;
+    background: #ffffff;
+    line-height:4.5rem;
+}
+
+.live-tit span {
+    font-size: 1.4rem;
+    color: #000000
+}
+
+.live-tit input {
+    text-indent: 1rem;
+    font-size: 1.3rem;
+    height: 1.4rem;
+    padding-top: 1rem;
+    color: #808080;
+    line-height: 1.6rem;
+    width: 20rem
+}
+.sub{
+    width: 80%;
+    height: 3.5rem;
+    background-color: #FA7878;
+    border-radius: 0.8rem;
+    margin: 3rem auto;
+    line-height: 3.5rem;
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+
+.list-li1{position: relative}
+.list-li1 .delimg{position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    top: -.8rem;
+    right: -.8rem;cursor:pointer;
+    z-index: 100
+}
+
+.delsure{
+    width: 70%;height:11rem; background: #ffffff;top:50%;left: 15%;border: .1rem solid #eee; border-radius:1.2rem;margin-top: -6rem;z-index: 20
+}
+.ds-p1{width: 100%;font-size: 1.6rem;color: #333333;text-align: center;line-height: 3rem;font-weight: bold;margin-top: 1rem;}
+.ds-p2{width: 100%;font-size: 1.3rem;color: #333333;text-align: center;line-height: 2rem;font-weight: bold;margin-bottom:1rem }
+.des-b{width: 100%}
+.des-b div{width: 50%;text-align: center;height:4rem;line-height: 4rem;color: #4a90e2;border-top: .1rem solid #eeeeee;font-size: 1.4rem ;box-sizing: border-box; }
+.des-b .divbr{border-right: .1rem solid #eeeeee;}
+.meng {
+    width: 100%;
+    height: 100%;
+    background: #484848;
+    z-index: 10;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+.live-int {
+    width: 20rem;
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    font-size: 1.4rem;
+    color: #ffffff;
+    background: #333333;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    top: 70%;
+    left: 50%;
+    z-index: 20;
+    border-radius: 1rem;
+    margin-left: -10rem
+}

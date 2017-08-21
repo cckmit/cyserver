@@ -1,0 +1,314 @@
+<style>
+    .main1_box{
+        width: 100%;
+        height:100%;
+    }
+    .main_centers{
+        width: 1000px;
+        height:760px;
+        position: absolute;
+        left:50%;
+        margin-left: -500px;
+        top:50%;
+        margin-top: -380px;
+        overflow: hidden;
+        text-align: center;
+    }
+    .wai_box{
+         width: 100%;
+         height:760px;
+         position: absolute;
+         top:50%;
+         margin-top: -380px;
+         overflow: hidden;
+         text-align: center;
+     }
+    .huangse{
+        position: absolute;
+        bottom:0;
+        width: 100%;
+        height:95px;
+        background: #ffb80a;
+    }
+    .hui{
+        position: absolute;
+        bottom:95px;
+        width: 100%;
+        height:25px;
+        background: rgba(1,1,1,0.1);
+    }
+    .bg_box{
+        width: 100%;
+        position: absolute;
+        top:0;
+        left:0;
+    }
+    .cjhd{
+        position: relative;
+        padding-top: 80px;
+    }
+    .titles{
+        font-size: 40px;
+        color: #fff;
+        text-align: center;
+        width: 280px;
+        height: 65px;
+        line-height: 65px;
+        border-radius: 32px;
+        background: #ffb80a;
+        box-shadow: 0px 2px 8px #950d1f;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+    .userpic{
+        width: 480px;
+        height: 480px;
+        background: #fff;
+        border: 8px solid #ffb80a;
+        border-radius: 50%;
+        margin: auto;
+        text-align: center;
+        position: relative;
+    }
+    .topxaing{
+        padding-top: 55px;
+    }
+    .topxaing img{
+        width: 140px;
+        height:140px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+    }
+    .wenzi{
+        font-size: 30px;
+        color: #333333;
+        line-height: 40px;
+    }
+    .ygquan{
+        width: 90px;
+        height:90px;
+        background: #fffd68;
+        border-radius: 50%;
+        position: absolute;
+        bottom:75px;
+        right:150px;
+    }
+
+    .jianglist{
+        position: relative;
+        width: 100%;
+        height:100%;
+    }
+    .bg_us{
+        width: 507px;
+        height: 150px;
+        background: #fff035;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        position: absolute;
+        z-index: 9;
+        top: -90px;
+        left: 50%;
+        margin-left: -253px
+    }
+
+    .list_box{
+        position: absolute;
+        z-index: 10;
+        top: -135px;
+        left: 241px;
+    }
+    .bg_jl{
+        float: left;
+        margin-left: 25px;
+        background: #e2073a;
+        width: 140px;
+        height:180px;
+
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        position: relative;
+        top: 0;
+    }
+    .bg_jl.hui{
+        background: #7d7d7d;
+    }
+    .jl_titles{
+        width: 90px;
+        height:40px;
+        text-align: center;
+        background: #f87b03;
+        line-height: 40px;
+        position: absolute;
+        top: -20px;
+        left: 24px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .jl_titles.hui{
+        background: #b4b4b4;
+    }
+    .jl_pic{
+        width: 90px;
+        height:110px;
+        margin: 35px 24px;
+        background: #fff;
+    }
+    .jl_pic img{
+        width: 100%;
+    }
+    .jl_nums{
+        position: absolute;
+        bottom: 6px;
+        right: 5px;
+        color: #fff;
+        font-size: 20px;
+    }
+    .kaishi1,.kaishi2,.kaishi3{
+        border-radius: 50%;
+        text-align: center;
+    }
+    .kaishi1{
+        color: #fff;
+        font-size: 30px;
+        font-weight: bold;
+        width: 100px;
+        height:100px;
+        background:#ffb80a;
+        line-height: 100px;
+        box-shadow: 0px 3px 7px #919191;
+        cursor: pointer;
+    }
+    .kaishi1.bghui{
+        background: #7d7d7d;
+    }
+    .kaishi2{
+        background: #fff;
+        padding: 15px;
+        width: 100px;
+        height:100px;
+    }
+    .kaishi3{
+        background: rgba(200,8,255,0.5);
+        padding: 15px;
+        width: 130px;
+        height: 130px;
+        position: absolute;
+        bottom: -113px;
+        right: 99px;
+        z-index: 11;
+    }
+
+    .erwma3{
+        width: 170px;
+        height:130px;
+        position: absolute;
+        background: #ffb80a;
+        text-align: center;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        top: 82px;
+        left: 64px;
+    }
+    .erwma3 img{
+        width: 110px;
+        height:110px;
+        margin-top: 10px;
+    }
+    .go_next {
+        position: absolute;
+        bottom: 32px;
+        left: 50%;
+        margin-left: -55px;
+        right: 0;
+        background: #fc4059;
+        z-index: 9;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        width: 110px;
+        border-radius: 6px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+    }
+</style>
+<div class="main1_box">
+    <div class="wai_box">
+
+        <div class="main_centers">
+            <img class="bg_box" src="img/main3_bg.png" alt="">
+
+            <div class="cjhd">
+                <div class="titles">
+                    抽奖活动
+                </div>
+                <div class="erwma3">
+                    <img src="img/erweima.png" alt="">
+                </div>
+                <div class="userpic">
+                    <div class="topxaing">
+                        <img onerror="javascript:this.src='img/liwu.png';" ng-src="{{dqUser.headSrc | filter_pic}}" alt="">
+                    </div>
+                    <div class="wenzi">
+                        <p>{{dqUser.telephone | phonenum}}</p>
+                        <p>{{dqUser.name}}</p>
+                        <!--<p>138****1231</p>-->
+                        <!--<p>名字</p>-->
+                    </div>
+                    <div class="ygquan"></div>
+                </div>
+
+                <div class="jianglist">
+                    <div class="bg_us"></div>
+                    <div class="list_box">
+                        <div class="bg_jl {{yideng?'hui':''}}">
+                            <div class="jl_titles {{yideng?'hui':''}}">{{prize1.name}}</div>
+                            <div class="jl_pic">
+                                <img onerror="javascript:this.src='img/liwu.png';" ng-src="{{prize1.prizeSrc | filter_pic}}" alt="">
+                            </div>
+                            <!--<div class="jl_nums">X2</div>-->
+                            <div class="jl_nums">X{{prize1.num}}</div>
+                        </div>
+                        <div class="bg_jl {{erdeng?'hui':''}}">
+                            <div class="jl_titles {{erdeng?'hui':''}}">{{prize2.name}}</div>
+                            <div class="jl_pic">
+                                <img onerror="javascript:this.src='img/liwu.png';" ng-src="{{prize2.prizeSrc | filter_pic}}" alt="">
+                            </div>
+                            <!--<div class="jl_nums">X2</div>-->
+                            <div class="jl_nums">X{{prize2.num}}</div>
+                        </div>
+                        <div class="bg_jl {{sandeng?'hui':''}}">
+                            <div class="jl_titles {{sandeng?'hui':''}}">{{prize3.name}}</div>
+                            <div class="jl_pic">
+                                <img onerror="javascript:this.src='img/liwu.png';" ng-src="{{prize3.prizeSrc | filter_pic}}" alt="">
+                            </div>
+                            <!--<div class="jl_nums">X2</div>-->
+                            <div class="jl_nums">X{{prize3.num}}</div>
+                        </div>
+                    </div>
+
+                    <div class="kaishi3" ng-show="yaojiang">
+                        <div class="kaishi2">
+                            <div class="kaishi1 {{bghuibtn?'bghui':''}}" ng-click="strat()">{{begif}}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="hui"></div>
+
+        <div class="go_next" ng-hide="yaojiang" ui-sref="main4">
+            下一页
+        </div>
+
+        <div class="huangse"></div>
+    </div>
+</div>
+

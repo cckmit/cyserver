@@ -1,0 +1,447 @@
+<style>
+    /* 设置文字显示多少行 */
+    .H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        word-wrap: break-word;
+        white-space: normal !important;
+        -webkit-box-orient: vertical; }
+
+    .H-text-show-row-1 {
+        line-clamp: 1;
+        -webkit-line-clamp: 1; }
+
+    .H-text-show-row-2 {
+        line-clamp: 2;
+        -webkit-line-clamp: 2; }
+
+    .H-text-show-row-3 {
+        line-clamp: 3;
+        -webkit-line-clamp: 3; }
+
+    .H-text-show-row-4 {
+        line-clamp: 4;
+        -webkit-line-clamp: 4; }
+
+    .H-text-show-row-5 {
+        line-clamp: 5;
+        -webkit-line-clamp: 5; }
+
+    .H-text-show-row-6 {
+        line-clamp: 6;
+        -webkit-line-clamp: 6; }
+
+
+
+
+    .bg{
+        height: 100%;
+        width:100%;
+        background-color:#f2f2f2;
+        box-sizing: border-box;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    .nav_tabs{
+        box-sizing: border-box;
+        width:100%;
+        background-color:#fff;
+        display: flex;
+        justify-content: center;
+        font-size:0.3rem;
+        line-height: 1rem;
+        padding:0 0.2rem;
+    }
+    .nav_item{
+        position:relative;
+        color:#333;
+        flex:1;
+        text-align: center;
+
+    }
+    .chk_item{
+        color:#0F88EB;
+        border-bottom:0.04rem solid #0F88EB;
+    }
+    .red_node{
+        display: inline-block;
+        position:absolute;
+        top: 0.2rem;
+        background-color: #F15B4B;
+        width:0.12rem;
+        height:0.12rem;
+        border-radius:50%;
+
+    }
+
+    /*list*/
+    .resume_list{
+        flex:1;
+    }
+    .resume_item{
+
+    }
+    .item_1{
+        display: flex;
+        justify-content: center;
+        background-color:#fff;
+        padding:0.2rem;
+        margin-bottom:0.02rem;
+
+    }
+    .item_1 .item_l{
+        width:1.6rem;
+        height:1.6rem;
+
+        margin-right: 0.2rem;
+    }
+    .item_1 .item_m{
+        flex:1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        white-space: nowrap;
+        box-sizing: border-box;
+        padding-right: 5px;
+    }
+    .item_1 .item_m .row1{
+        font-size: 0.3rem;
+        line-height: 2;
+        color:#333;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .item_1 .item_m .row2{
+        font-size: 0.26rem;
+        line-height: 2;
+        color:#576B95;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .item_1 .item_m .row3{
+        /*font-size: 0.24rem;*/
+        /*color:#555;*/
+        /*line-height: 2;*/
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .item_1 .item_m .row3>span{
+        display: inline-block;
+        font-size: 0.24rem;
+        color:#555;
+        line-height: 2;
+    }
+
+    .item_1 .item_r .row1{
+        font-size: 0.3rem;
+        line-height: 2;
+        color:#F15B4B;
+    }
+    .item_1 .item_r .row2{
+        font-size: 0.26rem;
+        line-height: 2;
+        color:#888;
+        text-align: right;
+    }
+    .item_1 .item_r .row3{
+        font-size: 0.24rem;
+        line-height: 2;
+        color:#0F88EB;
+    }
+
+    /*item_2*/
+    .item_2{
+        display: flex;
+        justify-content: center;
+        background-color:#fff;
+        padding:0.2rem;
+        margin-bottom:0.02rem;
+
+    }
+    .item_2 .item_l{
+        width:0.8rem;
+        height:0.8rem;
+        margin-right: 0.36rem;
+    }
+    .item_2 .item_r{
+        flex:1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .item_2 .item_r .row1{
+        display: flex;
+        line-height: 1.5;
+
+    }
+    .item_2 .item_r .row1 .row1_l{
+        flex:1;
+        font-size:0.26rem;
+        color:#333;
+    }
+    .item_2 .item_r .row1 .row1_r{
+        font-size:0.22rem;
+        color:#888;
+    }
+
+    .item_2 .item_r .row2{
+        font-size:0.22rem;
+        color:#888;
+        line-height: 1.5;
+    }
+
+    .give_interview{
+        color:#0F88EB;
+    }
+
+
+    /*面试通知*/
+    .wai_divbix{
+        position: fixed;
+        z-index: 6;
+        top:0;
+        left:0;
+        width: 100%;
+        height:100%;
+        background: rgba(1,1,1,0.1);
+    }
+    .interview_confirm{
+        width:6rem;
+        height:4.92rem;
+        margin:0 auto;
+        background-color:#ffffff;
+
+        position:absolute;
+        bottom:35%;
+        left:10%;
+        border-radius:5px;
+        border:1px solid #ccc;
+
+        flex-direction: column;
+        display: flex;
+        overflow: hidden;
+
+    }
+    .row_m{
+        flex:1;
+    }
+    .row_t{
+        background-color:#fff;
+        font-size:0.28rem;
+        color:#333;
+        line-height:0.8rem;
+        margin-bottom: 0.02rem;
+        text-align: center;
+        border-bottom: 1px solid #EEEEEE;
+    }
+
+    .row_b{
+        background-color:#fff;
+        font-size:0.28rem;
+        line-height: 0.8rem;
+        text-align: center;
+        border-top: 1px solid #EEEEEE;
+    }
+    .row_b a{
+        color:#0F88EB;
+    }
+    .row_b span{
+        color: #888888;
+    }
+    .row_m{
+        background-color:#fff;
+        margin-bottom: 0.02rem;
+        padding: 0.6rem 0.3rem;
+    }
+    .row_m .m_l{
+        font-size:0.26rem;
+        line-height: 1.5;
+        color:#888;
+        margin-right:0.01rem;
+    }
+    .row_m .m_r{
+        font-size:0.26rem;
+        line-height: 1.5;
+        color:#333;
+    }
+    .row_m .row2{
+        display: flex;
+    }
+    .row_m .row2 .m_l{
+
+    }
+    .row_m .row2 .m_r{
+        flex:1;
+    }
+
+    /*针对iphon5*/
+    @media (max-width: 360px) {
+        .item_1 .item_r .row3{
+            font-size: 0.20rem;
+            line-height: 2;
+            color:#0F88EB;
+        }
+
+    }
+
+
+
+    .wai_boxs{
+        display: flex;
+        flex-direction: column;
+    }
+    .center_divcs{
+        flex:1;
+        position: relative;
+    }
+
+    .nodata{
+        line-height: 30px;
+        text-align: center;
+        color: #333333;
+    }
+
+
+</style>
+
+<div class="bg wai_boxs" ng-click="handleClick($event)">
+
+    <div class="nav_tabs">
+        <div class="nav_item {{active_tabs=='1'?'chk_item':''}}" ng-click="chkItem('1')">全部</div>
+        <div class="nav_item {{active_tabs=='2'?'chk_item':''}}" ng-click="chkItem('2')">被查看
+            <span class="red_node"></span>
+        </div>
+        <div class="nav_item {{active_tabs=='3'?'chk_item':''}}" ng-click="chkItem('3')">感兴趣</div>
+        <div class="nav_item {{active_tabs=='4'?'chk_item':''}}" ng-click="chkItem('4')">邀面试</div>
+        <div class="nav_item {{active_tabs=='5'?'chk_item':''}}" ng-click="chkItem('5')">不合适</div>
+
+    </div>
+
+    <div class="center_divcs">
+        <ion-view>
+            <ion-content class="main1_center">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh2()"></ion-refresher>
+
+                <div class="resume_list">
+
+                    <div class="resume_item" ng-repeat="list in zpList">
+                        <div class="item_1">
+                            <div class="item_l">
+                                <img style="width:100%; height: 100%; " src="img/avatar.png"/>
+                            </div>
+                            <div class="item_m">
+                                <div class="row1 name">{{list.title}}</div>
+                                <div class="row2 firm">武汉金森医药科技有限公司</div>
+                                <div class="row3 require H-text-show-row-1">
+                                    <span class="city">武汉</span>
+                                    <span>-</span>
+                                    <span class="area">武昌区</span>
+                                    <span>／</span>
+                                    <span class="epx">经验不限</span>
+                                    <span>／</span>
+                                    <span class="aca">本科</span>
+                                </div>
+                            </div>
+                            <div class="item_r">
+                                <div class="row1 sal">
+                                    <span class="min_sal">2k</span>
+                                    <span>-</span>
+                                    <span class="max_sal">3k</span>
+                                </div>
+                                <div class="row2">刚刚</div>
+                                <div class="row3">[被查看]</div>
+                            </div>
+                        </div>
+
+                        <div class="item_2" ng-show="xianyin">
+                            <div class="item_l">
+                                <img style="width:100%; height: 100%; border-radius:50%;" src="img/avatar.png"/>
+                            </div>
+                            <div class="item_r">
+                                <div class="row1">
+                                    <span class="row1_l">
+                                       <span class="firm">武汉图图有限公司</span><span>-</span><span class="firm_man">HR</span>
+                                    </span>
+                                    <span class="row1_r update">5分钟前</span>
+                                </div>
+
+                                <!--switch-->
+                                <div ng-switch="sVar">
+                                    <div ng-switch-when="2">
+                                        <div class="row2 H-text-show-row-1 r_status read">查看了您</div>
+                                    </div>
+                                    <div ng-switch-when="3">
+                                        <div class="row2 H-text-show-row-1 r_status interest s2">获取了您的联系方式，应该会邀您面试，请保持电话畅通</div>
+                                    </div>
+                                    <div ng-switch-when="4">
+                                        <div class="row2 H-text-show-row-1 r_status invite s3">给您发了<span class="give_interview" ng-click="mianshititle($index)">面试通知</span></div>
+                                    </div>
+                                    <div ng-switch-when="5">
+                                        <div class="row2 H-text-show-row-1 r_status reject s4">感谢您的投递</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="nodata" ng-if="dataNull">没有更多了!</div>
+                <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+                <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore2()" distance="1%" >没有更多了</ion-infinite-scroll>
+            </ion-content>
+        </ion-view>
+    </div>
+
+
+
+    <!--点击"面试通知" 弹出对话框-->
+    <div class="wai_divbix" ng-show="dqmianshi">
+        <div class="interview_confirm">
+            <div class="row_t title">面试通知</div>
+            <div class="row_m inf">
+                <div class="row1">
+                    <span class="m_l">面试时间:</span>&nbsp;
+                <span class="m_r">
+                    <span class="date">05-27</span>&nbsp;<span class="time">10:00 {{mianshi.id}}</span>
+                </span>
+                </div>
+                <div class="row2">
+                    <span class="m_l">面试地点:</span>&nbsp;&nbsp;
+                <span class="m_r">
+                    <span class="add">武汉市洪山区光谷一路龙悦大厦a座11楼</span>
+                </span>
+                </div>
+                <div class="row3">
+                    <span class="m_l">联&ensp;系&ensp;人:</span>&nbsp;
+                <span class="m_r">
+                    <span class="contact_man">张曦女士</span>
+                </span>
+                </div>
+                <div class="row4">
+                    <span class="m_l">联系方式:</span>&nbsp;
+                <span class="m_r">
+                    <span class="contact_tel">13869598475</span>
+                </span>
+                </div>
+            </div>
+            <div class="row_b btn" ng-click="jieshou()">
+                <a href="javascript:;" ng-show="jieshowx">接受</a>
+                <span ng-show="yjieshowx">已接受</span>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+
+</script>

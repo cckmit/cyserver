@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>捐赠成功</title>
+    <link href="../../../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+
+        .myDiv {
+            position: absolute;
+            background: #f2f2f2;
+            width: 100px;
+            height: 100px;
+            top: 100px;
+            left:50%;
+            margin-left: -50px;
+            border-radius: 50%;
+        }
+        .img_div{
+            margin: auto;
+            margin-top: 10px;
+            width: 80px;
+            height: 80px;
+            background: #fa9641;
+            border-radius: 50%;
+            text-align: center;
+        }
+        .img_div img{
+            width: 50px;
+            margin-top: 15px;
+        }
+        .wenzi{
+            margin-top: 215px;
+            font-size: 14px;
+            color: #666666;
+            text-align: center;
+        }
+        .secound{
+            position: absolute;
+            width: 100%;
+            bottom: 100px;
+            height: 40px;
+            z-index: 999;
+            text-align: center;
+            font-size: 14px;
+            color: #a1a1a1;
+            font-family: "微软雅黑",Arial, "宋体"
+        }
+
+        .cover {
+            background: rgba(0, 0, 0, .7);
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 4;
+            display: none;
+        }
+        .share_btn {
+            position: absolute;
+            height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: none;
+            z-index: 99;
+        }
+        .share_btn_img {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            width: 70%;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover" style="display: none;"></div>
+    <div class="share_btn" style="display: none;">
+        <img class="share_btn_img" src="img/share_btn.png">
+    </div>
+    <div class="dabox" style="display: none">
+        <div class="myDiv">
+            <div class="img_div">
+                <img src="img/aixin@2x.png" />
+            </div>
+        </div>
+        <div class="wenzi">捐赠成功，感谢您的爱心捐赠</div>
+    </div>
+    <div class="secound"></div>
+</body>
+
+<script src="../../../jslib/hui/script/H.js" type="text/javascript"></script>
+<script src="../../../jslib/zepto/zepto.min.js" type="text/javascript" ></script>
+<script src="../../../jslib/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../js/jbase64.js" type="text/javascript"></script>
+<script src="../../js/wechat.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var accountNum = '';
+    var openId = localStorage.getItem("openId");
+    var projectId = '';
+    var donateId = B.getUrlParamByName("donateId");
+
+
+    H.ready(function () {
+        H.alertTipForPaySuccess(function(){
+            shareCeng();
+        },"感谢您为此次活动捐赠爱心","","",function () {
+            jian();
+        });
+    });
+
+    $(function () {
+        B.ready(function() {
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "229","content": {"id": "' + donateId + '"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.obj){
+                        projectId = data.obj.projectId;
+                        var money = data.obj.money;
+                        var title = data.obj.project.projectName;
+                        var org = data.obj.project.organization;
+                        var desc = '我为'+org+'捐赠了'+money +'元';
+                        var pic = B.getImageAbsoluteUrl(data.obj.project.projectPic_xd);
+                        var shareLink = location.href.split('?')[0].replace(location.href.split('?')[0].split('/')[location.href.split('?')[0].split('/').length-1], '')+'donate_detail.html?projectId='+projectId;
+                        var shareData = {
+                            title: title,
+                            desc: desc,
+                            link: shareLink,
+                            imgUrl: pic,
+                            success: function () {
+                                jian();
+                            },
+                            cancel: function () {
+                                jian();
+                            }
+                        };
+                        mkShareInfo(location.href.split('#')[0], shareData, 0);
+                    }
+                }
+            });
+        });
+    });
+    var s=3;
+    function jian() {
+//        $('.dabox').show();
+        $('.cover').hide();
+        $('.share_btn').hide();
+        H.alertTipForPaySuccess(function(){
+            shareCeng();
+        },"感谢您为此次活动捐赠爱心","","",function () {
+            back();
+        });
+
+        /*$('.secound').html(s+'秒后<span onclick="back()" style="color:#3598db">返回</span>');
+        if(s == 0){
+            back();
+        }
+        s--;
+        window.setTimeout(jian,1000);*/
+    }
+    function back() {
+        H.openWin('项目详情', 'donate_detail.html?projectId='+projectId);
+    }
+
+    function shareCeng() {
+        $('.cover').show();
+        $('.share_btn').show();
+        $('.share_btn').on("click", function () {
+            jian();
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>基金会_登录</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../../../jslib/layer/need/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../../../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .B-login-bg{
+            background-image: url(img/login_bg.png);
+            background-size:100%;
+            min-height: 100%;
+        }
+        .logo_bg {
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+        .B-font-color1 {
+            color:#00c9f2;
+        }
+        .B-find-pwd {
+            position: absolute;right: 5px;padding: 2px 5px;height: 20px;margin-top: 10px;word-break: keep-all;
+        }
+
+        .logo_box{
+            background-color: rgba(255,255,255,0.5);
+            width: 130px;
+            height: 130px;
+        }
+        .logo_img{
+            background-color: rgba(255,255,255,0.3);
+            background-image: url(img/cy_logo@3x.png);
+            background-size: 100%;
+            border: 1px solid #fa9641;
+            width: 104px;
+            height: 104px;
+
+        }
+
+        .logo_title{
+            text-align: center;
+            padding-top: 25px;
+
+        }
+        .title_img{
+            width: 90px;
+            height: 30px;
+
+        }
+        /*username+pwd*/
+        .name_box,.pwd_box{
+            border: 1px solid #fefefe;
+            color:#fefefe;
+            background-color: rgba(255,255,255,0.2);
+
+        }
+        .name_input, .pwd_input{
+            color:#fefefe;
+            padding:5px 10px;
+        }
+
+        .left_border{
+            padding-right: 10px;
+            border-right:2px solid #fff;
+        }
+
+        .login_btn{
+            border:none;
+            color: #fefefe;
+            background-color: #fa9641;
+        }
+        .link_box{
+            color: #fefefe; padding: 40px 0;
+        }
+        .link_box a{
+            text-decoration: none;
+            color: #fefefe;
+        }
+
+    </style>
+</head>
+
+<body class="B-login-bg H-box-sizing-border-box H-overflow-hidden">
+<div class="H-overflow-hidden" style="padding-right: 40px;padding-left: 40px;">
+    <!--logo-->
+    <div class="H-flexbox-vertical logo_bg">
+        <div class="H-center-all">
+            <div class="logo_box H-center-all">
+                <div class="H-center-all logo_img"></div>
+            </div>
+        </div>
+        <div class="logo_title">
+            <img class="title_img" src="img/title.png" />
+        </div>
+    </div>
+    <!--username-->
+    <div class="name_box H-flexbox-horizontal">
+        <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+            <i class="H-iconfont H-icon-user H-font-size-22 H-vertical-middle"></i>
+            <span class="left_border"></span>
+        </span>
+        <input type="text" id="username"
+               class="name_input H-textbox H-flex-item H-vertical-align-middle H-vertical-middle H-font-size-16
+                H-box-sizing-border-box H-border-none H-outline-none H-theme-background-color-transparent"
+               placeholder="手机号">
+    </div>
+    <!--pwd-->
+    <div class="pwd_box H-flexbox-horizontal H-margin-vertical-top-20">
+        <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+            <i class="H-iconfont H-icon-lock H-font-size-20 H-vertical-middle"></i>
+            <span class="left_border"></span>
+        </span>
+        <input type="password" id="password"
+               class="pwd_input H-textbox H-flex-item H-vertical-align-middle H-vertical-middle H-font-size-16
+               H-box-sizing-border-box H-border-none H-outline-none H-theme-background-color-transparent"
+               placeholder="请输入登录密码">
+    </div>
+
+    <!--btn-->
+    <div class="H-padding-horizontal-both-0" style="margin-top: 50px;">
+        <button id="submitBtn" class="login_btn H-button H-width-100-percent H-font-size-16 H-outline-none
+        H-padding-vertical-both-5 H-padding-horizontal-both-20 H-border-radius-3">确&nbsp;&nbsp;定</button>
+    </div>
+
+    <div class="link_box H-text-align-center H-padding-horizontal-both-10">
+        <a href="findPwd.html" id="findPwdBtn" class="H-font-size-16">忘记密码</a>
+        <span style="color:#fff;border-width:2px">|</span>
+        <a href="register.html" id="registerLink" class=" H-font-size-16">注册账号</a>
+    </div>
+</div>
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../../../jslib/zepto/zepto.min.js" type="text/javascript" ></script>
+<script src="../../../jslib/layer/layer.js" type="text/javascript"></script>
+<script src="../../../jslib/xdomain.min.js" type="text/javascript"></script>
+<script src="../../../jslib/hui/script/H.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+
+<script type="text/javascript">
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    $(function(){
+        // 接收参数
+        var backUrl = B.getUrlParamByName("backUrl");
+
+        // 判断是否存在accountNum
+        var accountNum = localStorage.getItem("accountNum");
+
+        if (accountNum && accountNum != "null"){
+            // 存在，重定向至 我的捐赠
+            window.location.href = "my_donates.html?accountNum="+accountNum+"&ts=" + B.getRandomInt(4);
+            return;
+        }
+
+        // 页面初始化
+        B.ready(function(){
+            // 登录
+            $("#submitBtn").click(function(){
+                if(validateForm()){
+                    // 验证通过后，提交登录
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "10","content": {"accountNum": "' + $("#username").val() + '","password": "' + $("#password").val() + '", "openId":"'+openId+'", "accountAppId":"'+appId+'"}}'
+                        },
+                        dataType: "json",
+                        success: function(data){
+                            if (data && data.success && data.obj){
+                                var userObj = data.obj;
+                                localStorage.setItem("accountNum", userObj.accountNum);
+
+//                                localStorage.setItem("openId", "o9pZWwbh_xKRq8qDQWXJTWjYpZuQ");
+//                                localStorage.setItem("appId", "wx8416dd0fba114edb");
+
+                                // 绑定用户的openId，修改绑定 或 新增微信用户account
+
+                                layer.open({ content: "登录成功！" });
+
+                                if (backUrl && backUrl != "null") {
+                                    window.location.href = B.decrypt(backUrl);
+                                }
+                                else{
+                                    window.location.href = "my_donates.html?ts=" + B.getRandomInt(4);
+                                }
+
+                            }
+                            else{
+                                layer.open({ content: data.msg, skin: "msg", time: 2 })
+                            }
+                        }
+                    });
+                }
+            });
+
+           /* // 注册
+            $("#registerLink").click(function(){
+                window.location.href = "register.html?ts=" + B.getRandomInt(4);
+            });
+
+            // 找回密码
+            $("#findPwdBtn").click(function(){
+                window.location.href = "findPwd.html?ts=" + B.getRandomInt(4);
+            });*/
+        });
+
+        // 验证表单
+        function validateForm() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username == "") {
+                layer.open({ content:"登录账号不能为空！", skin:"msg", time:2 });
+                return false;
+            }
+            if (password == "") {
+                layer.open({ content:"登录密码不能为空！", skin:"msg", time:2 });
+                return false;
+            }
+            return true;
+        }
+
+        // 绑定用户的openId
+       /* function bindAccountOpenId(callback) {
+            var params = {"command":"601","content":{}};
+            params.content.openid = localStorage.getItem("openId");
+            params.content.accountAppId = localStorage.getItem("appId");
+            params.content.accountNum = localStorage.getItem("accountNum");
+
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: JSON.stringify(params)
+                },
+                dataType: "json",
+                success: function(data){
+                    if ($.isFunction(callback)) {
+                        callback(data);
+                    }
+                }
+            });
+        }*/
+    });
+
+    // 返回上一页
+    $(function(){
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+</script>

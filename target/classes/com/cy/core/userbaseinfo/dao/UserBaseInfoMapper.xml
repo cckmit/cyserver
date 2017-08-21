@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.userbaseinfo.dao.UserBaseInfoMapper">
+	<resultMap type="com.cy.core.userbaseinfo.entity.UserBaseInfo" id="userInfoResult">
+		<id column="USER_ID" property="userId" />
+		<result column="USER_NAME" property="userName" />
+		<result column="TEL_ID" property="telId" />
+		<result column="pic_url" property="picUrl" />
+		<result column="SEX" property="sex" />
+		<result column="remarks" property="remarks" />
+		<result column="aliasname" property="aliasname" />
+		<result column="studentnumber" property="studentnumber" />
+		<result column="card" property="card" />
+		<result column="accountNum" property="accountNum" />
+		<result column="nation" property="nation" />
+		<result column="political" property="political" />
+		<result column="nationality" property="nationality" />
+		<result column="birthday" property="birthday" />
+		<result column="entranceTime" property="entranceTime" />
+		<result column="graduationTime" property="graduationTime" />
+		<result column="email" property="email" />
+		<result column="qq" property="qq" />
+		<result column="weibo" property="weibo" />
+		<result column="personalWebsite" property="personalWebsite" />
+		<result column="mailingAddress" property="mailingAddress" />
+		<result column="residentialArea" property="residentialArea" />
+		<result column="workUnit" property="workUnit" />
+		<result column="name_pinyin" property="namePinyin" />
+		<result column="position" property="position" />
+		<result column="industryType" property="industryType" />
+		<result column="enterprise" property="enterprise" />
+		<result column="workTel" property="workTel" />
+		<result column="workAddress" property="workAddress" />
+		<result column="resume" property="resume" />
+		<result column="create_time" property="createTime" />
+		<result column="full_name" property="fullName" />
+		<result column="cardType" property="cardType" />
+		<result column="status" property="status" />
+		<result column="resourceArea" property="resourceArea" />
+		<result column="studentType" property="studentType" />
+		<result column="use_time" property="useTime"/>
+		<result column="departName" property="departName"/>
+		<result column="departAliasName" property="departAliasName"/>
+		<result column="gradeName" property="gradeName"/>
+		<result column="className" property="className"/>
+		<result column="isimport" property="isimport"/>
+		<result column="majorName" property="majorName"/>
+		<result column="majorId" property="majorId"/>
+		<result column="schoolName" property="schoolName"/>
+		<result column="schoolId" property="schoolId" />
+		<result column="departId" property="departId" />
+		<result column="gradeId" property="gradeId" />
+		<result column="classId" property="classId" />
+		<result column="residentialTel" property="residentialTel"/>
+		<result column="is_class_admin" property="isClassAdmin" />
+	</resultMap>
+	<select id="countByDeptId" parameterType="map" resultType="long">
+		select count(u.user_id) from cy_userbase_info u
+		LEFT JOIN cy_mobile mob ON mob.mobileNumber = LEFT (u.tel_id, 7)
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and u.tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and u.user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and u.user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and u.studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and u.studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				AND (
+					residentialArea LIKE CONCAT('%', #{residentialArea}, '%' )
+					OR mob.mobileArea LIKE CONCAT('%', #{residentialArea}, '%' )
+					OR resourceArea LIKE CONCAT('%',#{residentialArea}, '%' )
+				)
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and u.workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and u.mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="isimport!=null">
+				and u.isimport=#{isimport}
+			</if>
+		</where>
+	</select>
+	<select id="selectByDeptId" parameterType="map" resultMap="userInfoResult">
+		select u.*,
+		mob.mobileArea mobile_local,
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		<!--  
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName, 
+		-->
+		m.majorName as majorName
+		from cy_userbase_info u
+		LEFT JOIN cy_mobile mob ON mob.mobileNumber = LEFT(u.tel_id,7)
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on m.majorId=u.majorId
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				AND (
+				residentialArea LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR mob.mobileArea LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR resourceArea LIKE CONCAT('%',#{residentialArea}, '%' )
+				)
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="isimport!=null">
+				and isimport=#{isimport}
+			</if>
+		</where>
+		 order by ${sort} ${order}
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="countByDeptIdForImport" parameterType="map" resultType="long">
+		select count(user_id) from cy_userbase_info
+		where not exists(select user_id from cy_user_info where user_id = cy_userbase_info.user_id)
+			<if test="deptList!=null and deptList.size()>0">
+				and
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and residentialArea like concat('%',#{residentialArea},'%')
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="isimport!=null">
+				and isimport=#{isimport}
+			</if>
+		
+	</select>
+	<select id="selectByDeptIdForImport" parameterType="map" resultMap="userInfoResult">
+		select u.*,
+		<!--  by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName, -->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		m.majorName as majorName
+		from cy_userbase_info u 
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on m.majorId=u.majorId
+		where not exists(select user_id from cy_user_info where user_id = u.user_id)
+			<if test="deptList!=null and deptList.size()>0">
+				and
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="isimport!=null">
+				and isimport=#{isimport}
+			</if>
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="selectByDeptIdForImportAll" parameterType="map" resultMap="userInfoResult">
+		select u.*,
+		<!--  by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName,
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		m.majorName as majorName
+		from cy_userbase_info u	
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on m.majorId=u.majorId
+		where not exists(select user_id from cy_user_info where user_id = u.user_id)
+			<if test="deptList!=null and deptList.size()>0">
+				and
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+	</select>
+	
+	<select id="selectByDeptIdAll" parameterType="map" resultMap="userInfoResult">
+		select u.*,d.full_name from cy_userbase_info u left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectAllByDeptId" parameterType="string" resultMap="userInfoResult">
+		select * from cy_userbase_info where user_id like concat(#{deptId},'%')
+	</select>
+	<delete id="delete" parameterType="list">
+		delete from cy_userbase_info where user_id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	<delete id="deleteById" parameterType="string">
+		delete from cy_userbase_info where user_id = #{userId}
+	</delete>
+	<insert id="save" parameterType="com.cy.core.userbaseinfo.entity.UserBaseInfo">
+		insert into
+		cy_userbase_info(USER_ID,USER_NAME,TEL_ID,SEX,remarks,aliasname,studentnumber,card,accountNum,nation,political,nationality,birthday,entranceTime,graduationTime,email,qq,weibo,personalWebsite,mailingAddress,residentialArea,workUnit,name_pinyin,position,industryType,enterprise,workTel,workAddress,resume,create_time,cardType,status,resourceArea,studentType,programLength,majorId,residentialTel,is_class_admin)
+		values(#{userId},#{userName},#{telId},#{sex},#{remarks},#{aliasname},#{studentnumber},#{card},#{accountNum},#{nation},#{political},#{nationality},#{birthday},#{entranceTime},#{graduationTime},#{email},#{qq},#{weibo},#{personalWebsite},#{mailingAddress},#{residentialArea},#{workUnit},#{namePinyin},#{position},#{industryType},#{enterprise},#{workTel},#{workAddress},#{resume},#{createTime},#{cardType},#{status},#{resourceArea},#{studentType},#{programLength},#{majorId},#{residentialTel},#{isClassAdmin})
+	</insert>
+	<!--Lixun 2017-5-12 多条插入提高效率-->
+	<insert id="multisave" parameterType="list">
+		insert into
+		cy_userbase_info(USER_ID,USER_NAME,TEL_ID,SEX,remarks,aliasname,studentnumber,card,accountNum,nation,political,nationality,birthday,entranceTime,graduationTime,email,qq,weibo,personalWebsite,mailingAddress,residentialArea,workUnit,name_pinyin,position,industryType,enterprise,workTel,workAddress,resume,create_time,cardType,status,resourceArea,studentType,programLength,majorId,residentialTel,is_class_admin)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.userId},#{item.userName},#{item.telId},#{item.sex},#{item.remarks},#{item.aliasname},#{item.studentnumber},#{item.card},#{item.accountNum},#{item.nation},
+			#{item.political},#{item.nationality},#{item.birthday},#{item.entranceTime},#{item.graduationTime},#{item.email},#{item.qq},#{item.weibo},#{item.personalWebsite},
+			#{item.mailingAddress},#{item.residentialArea},#{item.workUnit},#{item.namePinyin},#{item.position},#{item.industryType},#{item.enterprise},#{item.workTel},
+			#{item.workAddress},#{item.resume},#{item.createTime},#{item.cardType},#{item.status},#{item.resourceArea},#{item.studentType},#{item.programLength},#{item.majorId},
+			#{item.residentialTel},#{item.isClassAdmin})
+		</foreach>
+
+	</insert>
+
+
+
+	<update id="update" parameterType="com.cy.core.userbaseinfo.entity.UserBaseInfo">
+		update cy_userbase_info set
+		aliasname=#{aliasname},sex=#{sex},birthday=#{birthday},tel_id=#{telId},email=#{email},qq=#{qq},
+		USER_NAME=#{userName},remarks=#{remarks},studentnumber=#{studentnumber},nation=#{nation},political=#{political},nationality=#{nationality},
+		birthday=#{birthday},entranceTime=#{entranceTime},graduationTime=#{graduationTime},weibo=#{weibo},personalWebsite=#{personalWebsite},
+		mailingAddress=#{mailingAddress},residentialArea=#{residentialArea},workUnit=#{workUnit},name_pinyin=#{namePinyin},position=#{position},
+		industryType=#{industryType},enterprise=#{enterprise},workTel=#{workTel},workAddress=#{workAddress},status=#{status},
+		resourceArea=#{resourceArea},studentType=#{studentType},programLength=#{programLength},residentialTel=#{residentialTel}
+		<if test="majorId!=0">
+			,majorId=#{majorId}
+		</if>
+		<if test='accountNum=="0"'>
+			,accountNum=''
+		</if>
+		<if test="newUserId!=null and newUserId!=''">
+			,user_id=#{newUserId}
+		</if>
+		<if test="isClassAdmin!=null and isClassAdmin!=''">
+			,is_class_admin=#{isClassAdmin}
+		</if>
+		where user_id=#{userId}
+	</update>
+	<update id="updateOthers" parameterType="com.cy.core.userbaseinfo.entity.UserBaseInfo">
+		update cy_userbase_info set
+		<if test="majorId!=0">
+			majorId=#{majorId},
+		</if>
+		<if test="userName != null and userName != ''">
+			user_name = #{userName},
+		</if>
+		<if test="sex != null and sex != ''">
+			sex = #{sex},
+		</if>
+		<if test="studentType != null and studentType != ''">
+			studentType = #{studentType},
+		</if>
+		<if test="programLength != null and programLength != ''">
+			programLength = #{programLength},
+		</if>
+		<if test="studentnumber != null and studentnumber !=''">
+			studentnumber = #{studentnumber},
+		</if>
+		<if test="resourceArea != null and resourceArea != ''">
+			resourceArea = #{resourceArea},
+		</if>
+		<if test="entranceTime != null and entranceTime != ''">
+			entranceTime = #{entranceTime},
+		</if>
+		<if test="graduationTime != null and graduationTime != ''">
+			graduationTime = #{graduationTime},
+		</if>
+		<if test='accountNum=="0"'>
+			accountNum='',
+		</if>
+		aliasname=#{aliasname},tel_id=#{telId},email=#{email},qq=#{qq},
+		remarks=#{remarks},nation=#{nation},political=#{political},nationality=#{nationality},
+		birthday=#{birthday},weibo=#{weibo},personalWebsite=#{personalWebsite},card=#{card},cardType=#{cardType},
+		mailingAddress=#{mailingAddress},residentialArea=#{residentialArea},workUnit=#{workUnit},position=#{position},
+		industryType=#{industryType},enterprise=#{enterprise},workTel=#{workTel},workAddress=#{workAddress},status=#{status},residentialTel=#{residentialTel}
+		where user_id=#{userId}
+	</update>
+	<select id="selectByUserId" parameterType="string" resultMap="userInfoResult">
+		select u.*,
+		d.full_name,
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+		d.dept_id as classId,
+        trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+		LEFT(u.user_id,14) as gradeId,
+		trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+		LEFT(u.user_id,10) as departId,
+		 trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		LEFT(u.user_id,6) as schoolId,
+		<!-- by sky 2017-7-6
+		d.dept_name as className,
+		d.dept_id as classId,
+		d1.dept_name as gradeName,
+		d1.dept_id as gradeId,
+		d2.dept_name as departName,
+		d2.dept_id as departId,
+		d3.dept_name as schoolName, 
+		d3.dept_id as schoolId,
+		 -->
+		m.majorName as majorName
+		from cy_userbase_info u 
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on m.majorId=u.majorId
+		where user_id=#{userId}
+	</select>
+	<select id="selectUserToGetTel" resultMap="userInfoResult">
+		select u.*,d.full_name from cy_userbase_info u left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id where tel_id is not null and tel_id!=''
+	</select>
+	<select id="selectUserByClassIdAndName" parameterType="map" resultMap="userInfoResult">
+		select user_id,card,accountNum,sex from cy_userbase_info where user_id like concat(#{classId},'%') and user_name=#{userName}
+	</select>
+	<update id="updateUserAccountNum" parameterType="map">
+		update cy_userbase_info set accountNum=#{accountNum} where user_id=#{userId}
+	</update>
+	<select id="selectAllProByUserId" parameterType="map" resultMap="userInfoResult">
+		select * from cy_userbase_info where user_id=#{userId}
+	</select>
+	<select id="selectAllUserByClassId" parameterType="map" resultMap="userInfoResult">
+		select * from cy_userbase_info where user_id like
+		concat(#{classId},'%')
+	</select>
+	<select id="selectCard" parameterType="map" resultMap="userInfoResult">
+		select user_id,user_name,tel_id,telpic_url,studentnumber,sex,card from cy_userbase_info where user_id in
+		<foreach collection="list" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="selectByUserName" parameterType="map" resultMap="userInfoResult">
+		select user_id,user_name,tel_id,telpic_url,studentnumber,sex,card,accountNum from cy_userbase_info where user_name=#{userName}
+	</select>
+	<select id="selectUserInClass" parameterType="map" resultType="long">
+		select count(user_id) from cy_userbase_info where user_id like concat(#{classId},'%') and user_name in
+		<foreach collection="list" item="userName" open="(" separator="," close=")">
+			#{userName}
+		</foreach>
+	</select>
+	<select id="selectUserInfo" parameterType="map" resultMap="userInfoResult">
+		select * from cy_userbase_info where user_id like concat(#{gmid},'%') and user_name=#{name}
+	</select>
+	<update id="updateTelId" parameterType="map" flushCache="true">
+		update cy_userbase_info set tel_id=#{telId},use_time=#{useTime} where user_id=#{userId}
+	</update>
+	<select id="selectAll" resultMap="userInfoResult">
+		select u.*,
+		<!-- by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName, 
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,         
+		m.majorName as majorName
+		from cy_userbase_info u 
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on m.majorId=u.majorId
+	</select>
+	<select id="countFor" parameterType="map" resultType="long">
+		select count(user_id) from cy_userbase_info
+		<where>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectListFor" parameterType="map" resultMap="userInfoResult">
+		select u.*,d.full_name,
+		<!-- 
+		d1.dept_name as className,
+		d2.dept_name as gradeName,
+		d3.dept_name as departName 
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName         
+		from cy_userbase_info u 
+		left join cy_dept_info d 	on LEFT(u.user_id,16)=d.dept_id
+		<!--  
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID = LEFT(u.user_id,16)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,14)
+		-->
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=CONCAT(LEFT(u.user_id,5),'0',substring(u.user_id,7,3),'0')
+		<where>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+	<select id="selectByUserIds" parameterType="map" resultMap="userInfoResult">
+		select * from cy_userbase_info where user_id in
+		<foreach collection="list" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	<update id="updateImport" parameterType="com.cy.core.userbaseinfo.entity.UserBaseInfo">
+		update cy_userbase_info set isimport=1 where user_id=#{userId}
+	</update>
+	<delete id="deleteByDeptIdAll" parameterType="string">
+		delete from cy_userbase_info 
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+		</where>
+	</delete>
+	<select id="selectByDeptIdForExport" parameterType="map" resultMap="userInfoResult">
+		select u.*,
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		<!--  by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName, 
+		-->
+		m.majorName as majorName
+		from cy_userbase_info u 
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!--  
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		-->
+		left join cy_major m on m.majorId=u.majorId
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectByMobile" resultMap="userInfoResult">
+		select * from cy_userbase_info where tel_id is not null and tel_id!=''
+	</select>
+	<update id="updateMobile" parameterType="com.cy.core.userbaseinfo.entity.UserBaseInfo">
+		update cy_userbase_info set tel_id=#{telId} where user_id=#{userId}
+	</update>
+
+
+	<!-- start liuzhen -->
+
+	<!-- 设置班级管理员 -->
+	<update id="updateClassAdmin" parameterType="map">
+		update cy_user_info set
+		is_class_admin=#{isClassAdmin} where
+
+		<choose>
+			<when test="userIds != null and userIds != ''">
+				find_in_set(user_id,#{userIds})
+			</when>
+			<otherwise>
+				user_id = #{userId}
+			</otherwise>
+		</choose>
+	</update>
+
+	<!-- end liuzhen -->
+
+	<!-- 修改数据编号 -->
+	<update id="updateUserId" parameterType="map">
+		UPDATE cy_userbase_info SET user_id = #{newUserId} WHERE user_id = #{oldUserId}
+	</update>
+</mapper>

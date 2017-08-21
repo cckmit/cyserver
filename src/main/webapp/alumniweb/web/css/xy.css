@@ -1,0 +1,99 @@
+ /*body*/
+#body{ width: 930px; background: #FFF; margin:0 auto; padding: 10px 10px 50px 10px;_margin-top:-3px; font-family: "微软雅黑",tahoma, verdana, arial, helvetica, sans-serif}
+.title{font-size:14px; color: #005ABF; font-weight: bold}
+form,ul,p{ margin: 0; padding: 0}
+li{ list-style:none}
+a img{ border-width:0}
+.clear{ clear: both}
+/*tab*/
+.blue_tab{ border-bottom: 1px solid #CEE1EE; height: 26px; position: relative}
+.blue_tab ul{ position: absolute; top: 0; left: 20px;}
+.blue_tab li{float: left;  margin-right: 10px;text-align:center;}
+.blue_tab a{ display: inline-block;  height:25px; line-height: 25px; padding: 0 18px; color: #ffffff; border-bottom: 1px solid #CEE1EE;}
+/*.blue_tab a:hover{ background: #EDF5FA}*/
+.blue_tab a.cur{ background: #fff; border: 1px solid #CEE1EE; border-bottom: 2px solid #fff; color: #333}
+
+.title{ font-size: 14px; font-weight: bold; color: #005ABF; margin: 20px 0 10px 0}
+.aa_district{ background:url(../image/dotted_line_bg.gif) repeat-x bottom;  padding: 10px 0; }
+.aa_district .name{ width: 80px; float: left; color: #005ABF; font-weight: bold; text-align: right}
+.aa_district .city{ width: 800px; float: left}
+.aa_district .city a:link,.aa_district .city a:visited{display: block; width:80px; height:18px;padding:4px 5px; float: left; text-align: center}
+.aa_district .city a:hover{ background: #f3f3f3}
+.aa_district .city span{ color: #f30}
+.aa_district .city2{ width: 800px; float: left}
+.aa_district .city2 a:link,.aa_district .city2 a:visited{display: block; width:60px; height:18px;padding:4px 5px; float: left; text-align: center}
+.aa_district .city2 a:hover{ background: #f3f3f3}
+.tab_content{margin: 0 20px; padding-bottom: 50px}
+
+.bar{border-bottom:1px dotted #005ABF;font-size:12px; font-weight: bold; padding-bottom: 5px; color: #005ABF}
+#aa_info{ margin: 5px 0}
+#aa_info li{ height: 20px; background: url(../image/dot1.gif) no-repeat 0 6px; line-height: 20px; padding-left: 10px; overflow: hidden}
+#aa_info li a.cur:link,#aa_info li a.cur:visited{ color: #fff; background: #005ABF;padding:2px}
+
+.aa_conlist li{ padding-left: 10px; background: url(../image/dot1.gif) no-repeat 0 6px; margin-bottom: 2px}
+
+/*aa_home*/
+#aa_top{padding:10px 20px 5px 20px; background: #fff;}
+#aa_top .left{ float: left; width: 650px; }
+#aa_top .right{float:right; width: 200px; text-align: left }
+
+#aa_admin_top{padding:20px 20px 0 20px; background: #fff;}
+
+#banner_pics{}
+#banner_pics_title{ display: none}
+
+#aa_home_nav{ height: 30px; width: 100%; background: #F7F7F7; margin: 10px 0}
+#aa_home_nav a:link,#aa_home_nav a:visited{display: block; float: left; line-height: 30px; padding: 0 20px; text-decoration: none; color: #444}
+#aa_home_nav a:hover{text-decoration:underline; color: #333;background: #eee}
+#aa_home_nav a.cur{color: #333;background: #E3EEF8}
+
+#aa_home_left{width: 650px; float: left;padding:0 10px 50px 20px}
+#aa_home_right{ width: 250px; float: right;padding-bottom: 100px;}
+#aa_home_right .column_tt{color: #005ABF; font-size: 14px; font-weight: bold;margin:10px 0}
+
+.aa_home_title{position: relative;height:50px;line-height:50px}
+.aa_home_title .title_name{ color: #005ABF; font-size: 16px; font-weight: bold}
+.aa_home_title .more_link{ position: absolute; right:0;color:#999}
+.aa_home_title .more_link a{color:#666}
+
+.con_list{ padding: 0;margin: 0}
+.con_list li{height:26px; color: #999; border-bottom: 1px dotted #eee; line-height: 26px; background-image: none }
+.con_list li:hover{background: #f7f7f7}
+.con_list li .date{ padding-right: 4px; color: #666}
+
+.main_content{padding:10px 15px 50px 15px}
+.ubox{ float: left; text-align: center; margin: 0 10px 5px 0;color: #999}
+.aa_block{ margin-bottom: 20px}
+.aa_block ul{}
+
+.center{ text-align: center}
+.aa_table th{border-bottom: 1px solid #eee; height: 30px; background: #f8f8f8;padding: 0 3px}
+.aa_table td{border-bottom: 1px solid #eee; height: 30px}
+.aa_table .cat{color: #999}
+.aa_table .cat a:link,.aa_table .cat a:visited{color: #999}
+.aa_table a:link,.aa_table a:visited{font-size: 12px}
+
+.unit_table th{border-bottom: 1px solid #eee; height: 30px; background: #f8f8f8;padding: 0 3px}
+.unit_table td{border-bottom: 1px solid #eee; height: 30px}
+
+.event_table th{border-bottom: 1px solid #eee; height: 30px; background: #f8f8f8;padding: 0 3px}
+.event_table td{border-bottom: 1px solid #eee; height: 30px;padding:10px 0}
+.event_table .title:link,.event_table .title:visited{font-size:12px; font-weight: bold}
+
+.photo_list{}
+.pbox{ float: left;text-align: center; padding: 2px; border: 1px solid #f8f8f8; margin:0 15px 10px 0}
+
+.aa_institution {margin-left: 20px;}
+.aa_institution li{ color: #999 ; width: 230px; height: 20px; line-height: 20px; float: left; margin-bottom: 5px}
+.aa_club li{ color: #999 ; width: 130px; height: 25px; line-height: 25px; float: left; margin-bottom: 10px}
+
+#memorabilia .title{ background: url(../image/ico_arrow.gif) no-repeat 0 8px;padding-left:12px; line-height: 24px; font-weight: normal; height: 25px; margin: 0; }
+#memorabilia .title span{color: #999; }
+#memorabilia .mem_con{ background: #F7F2D8; padding: 10px; line-height: 1.6em; margin: 5px 0}
+
+.title_div{top:0; left:0; position:absolute; z-index:100; visibility:hidden; text-align: left}
+.title_sug{font:normal 12px/16px "宋体"; white-space:nowrap; color:#666666; padding:3px; position:absolute; left:0; top:0; z-index:10; background:#F2F7FA; border:1px solid #AFCBE5}
+.title_div{top:0; left:0; position:absolute; z-index:100; visibility:hidden}
+.title_text{position:absolute; top:3px; left:3px; background:#AFCBE5; filter:alpha(opacity=50); opacity:0.5; z-index:9}
+.title_ifr{position:absolute; left:0; top:0; z-index:8; filter:alpha(opacity=0); opacity:0}
+

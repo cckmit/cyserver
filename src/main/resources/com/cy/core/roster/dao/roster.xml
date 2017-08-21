@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.roster.dao.RosterMapper">
+
+	<!-- select部分 -->
+    <sql id="select">
+    	<if test="type==1">
+		SELECT a.id,a.ref_id,a.dict_id,d.dict_name,a.create_time FROM cy_black_list a
+		LEFT JOIN cy_dict d ON a.dict_id = d.dict_id
+		</if>
+		<if test="type==2">
+		SELECT a.id,a.ref_id,a.dict_id,d.dict_name,a.create_time FROM cy_white_list a
+		LEFT JOIN  cy_dict d ON a.dict_id = d.dict_id
+		</if>
+	</sql>
+	
+	<!-- count部分 -->
+	<sql id="select_count">
+		<if test="type==1">
+		SELECT COUNT(a.id) FROM cy_black_list a
+		LEFT JOIN cy_dict d ON a.dict_id = d.dict_id
+		</if>
+		<if test="type==2">
+		SELECT COUNT(a.id) FROM cy_white_list a
+		LEFT JOIN cy_dict d ON a.dict_id = d.dict_id
+		</if>
+	</sql>
+	
+	<!-- 条件部分 -->
+	<sql id="where">
+		<where>
+			<if test="ref_id!=null and ref_id!=''">
+				and a.ref_id like CONCAT(#{ref_id},'%')
+			</if>
+			<if test="dict_id>0 ">
+				and a.dict_id = #{dict_id}
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 查询列表集合并分页 -->
+	<select id="query" parameterType="map" resultType="com.cy.core.roster.entity.Roster">
+		<include refid="select"/>
+        <include refid="where"/>
+		order by a.create_time desc
+		limit #{start},#{rows}
+	</select>
+	
+	<!-- 查询数据行数 -->
+	<select id="count" parameterType="map" resultType="long">
+		<include refid="select_count"/>
+        <include refid="where"/>
+	</select>
+	
+	<!-- 条件查询 -->
+	<select id="getRoster" parameterType="com.cy.core.roster.entity.Roster" resultType="com.cy.core.roster.entity.Roster">
+		<include refid="select"/>
+        <include refid="where"/>
+	</select>
+
+	<!-- 添加 -->
+	<insert id="add" parameterType="map">
+		<if test="type==1">
+		insert into cy_black_list (id,ref_id,dict_id,create_time)
+		values(#{id},#{ref_id},#{dict_id},#{create_time});
+		</if>
+		<if test="type==2">
+		insert into cy_white_list (id,ref_id,dict_id,create_time)
+		values(#{id},#{ref_id},#{dict_id},#{create_time});
+		</if>
+	</insert>
+
+	<!-- 根据id删除 -->
+	<delete id="deleteById" parameterType="map">
+		<if test="type==1">
+		delete from cy_black_list where id = #{id}
+		</if>
+		<if test="type==2">
+		delete from cy_white_list where id = #{id}
+		</if>
+	</delete>
+	
+	<!-- 批量删除 -->
+	<delete id="delete" parameterType="map">	
+		<if test="type==1">
+		delete from cy_black_list
+		</if>
+		<if test="type==2">
+		delete from cy_white_list
+		</if>
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<!-- 根据字典名称查询字典 -->
+	<select id="getDictByName" parameterType="String" resultType="map">
+		select * from cy_dict where dict_name=#{dictName}
+	</select>
+	
+	
+</mapper>

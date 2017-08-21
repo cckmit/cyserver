@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的捐赠</title>
+    <!--css-->
+    <link rel="stylesheet" href="../../css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../../css/user.css" type="text/css" />
+    <link rel="stylesheet" href="../../css/levelList.css" type="text/css" />
+    <link rel="stylesheet" href="../../css/user.css" type="text/css" />
+    <!--js-->
+    <script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
+    <script src="../../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../../js/jquery.page.js" type="text/javascript"></script>
+    <script src="../../js/B.js" type="text/javascript"></script>
+    <script src="../../js/levelList.js" type="text/javascript"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/interfacepath.js"></script>
+
+    <!--动态加载-->
+    <script type="text/javascript">
+        var accountNum = '';
+        var donationId = '';
+        var phoneNum = '';
+        var password = '';
+        var picture = '';
+        var pageStatus = '';
+
+        // 分页参数
+        var pageSize = 5;
+        var pageTotal = 0;
+        var pageCount = 1;
+        var pageCurrent = 1;
+
+
+        $(function() {
+
+            accountNum = getCookie("accountNum");
+            phoneNum = getCookie("phoneNum");
+            password = getCookie("password");
+            picture = getCookie("picture");
+
+
+            setLeftNavDate();
+
+            loadMyDonate(pageCurrent);
+
+
+            initFoot();
+
+
+        });
+
+        //左侧导航头像
+        function setLeftNavDate() {
+            //从cookie中获取个人头像
+            if(!(picture && picture != '' && is_website(picture)))
+                picture = '../../image/user-avatar.png';
+            var avatarStr =
+                    '<a href="#" class="img-box">' +
+                    '   <img src= "'+picture+'" />'+
+                    '</a>';
+            $(".avatar-box").html(avatarStr);
+
+        }
+
+        //获取我的捐赠
+        function loadMyDonate(pageCurrent) {
+            B.ready(function() {
+//                alert('{"command": "72","content": {"accountNum": "'+accountNum+'" ,"page":"'+pageCurrent+'","rows":"5"} }');
+                interface.userMyDonation.jsonData.content.accountNum = accountNum.toString();
+                interface.userMyDonation.jsonData.content.page = pageCurrent.toString();
+                $.ajax({
+                    type:'post',
+                    url: B.serverUrl + interface.userMyDonation.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userMyDonation.jsonData)
+
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+//                        console.log("我的捐赠列表-72："+JSON.stringify(data));
+                        var donateStr = '';
+
+                        $(".donate_data").remove() ; //清楚上页内容
+                        if(data && data.obj) {
+
+                            if(data.obj.rows && data.obj.rows.length>0) {
+                                var donateList = new Array();
+                                donateList = data.obj.rows;
+                                //console.log(donateList)
+                                for(var key=0; key<donateList.length; key++ ) {
+
+                                    if(donateList[key].payStatus==1) {
+                                        donateStr =
+                                                '<tr class="donate_data"  onclick= goDonateOrder("'+donateList[key].donationId+'",1);>' +
+                                                '   <td>'+donateList[key].project.projectName+'</td> ' +
+                                                '   <td>'+donateList[key].donationTime+'</td> ' +
+                                                '   <td>'+
+                                                '￥'+donateList[key].money+'</td>'+
+                                                '   <td>'+'已支付'+'</td>' +
+                                                '</tr>';
+
+
+                                    }else if(donateList[key].payStatus==0) {
+                                        donateStr =
+                                                '<tr class="donate_data"  onclick= goDonateOrder("'+donateList[key].donationId+'",0);>' +
+                                                '   <td>'+donateList[key].project.projectName+'</td> ' +
+                                                '   <td>'+donateList[key].donationTime+'</td> ' +
+                                                '   <td>'+
+                                                '￥'+donateList[key].money+'</td>'+
+                                                '   <td style="color:red">'+'未付款'+'</td>'+
+                                                '</tr>';
+                                    }
+
+                                    $('.myDonate').append(donateStr);
+
+                                    $(".donate_data").hover(function(){
+                                        $(this).css("background",juanzeng);
+                                    },function(){
+                                        $(this).css("background","none");
+                                    })
+                                }
+                                //alert(donateList.length)
+                                if(donateList.length<1){
+                                    $(".title-jzxx").show();
+                                }
+
+
+
+                            }else{
+                                $(".title-jzxx").show();
+                            }
+
+                            pageTotal = data.obj.total;
+
+                            pageCount = Math.ceil(pageTotal / pageSize);
+
+                            $(".pagerbar").createPage({
+                                pageTotal:pageTotal,
+                                pageCount:pageCount,
+                                current:pageCurrent,
+                                backFn:function(p){
+                                    loadMyDonate(p);
+                                }
+                            });
+
+                        }
+
+
+                    },
+                    error: function(xhr, type) {}
+
+                });
+
+            });
+
+        }
+
+
+        //点击每条捐赠项目，跳转到捐赠详情：已支付，不显示支付方式； 未支付：显示支付方式
+        function goDonateOrder(dId,flag) {
+
+            if(flag==1) {
+                //已支付
+                window.location.href="donateOrder.html?donationId="+dId+"&pageStatus="+flag;
+            }else if(flag==0) {
+                window.location.href="donateOrder.html?donationId="+dId+"&pageStatus="+flag;
+            }
+
+        }
+
+
+        window.onresize = function () {
+            initFoot();
+        }
+
+        function initFoot(){
+            var windowHeight = $(window).height() ;
+            if(windowHeight > 200) {
+                $(".u-tab-content").css("min-height",windowHeight-287);
+            }
+        }
+
+    </script>
+</head>
+<body>
+<!--这是顶部::start-->
+<!--
+    <div id="head">
+        <div id="top_line"></div>
+        <div id="top_bg" align="center">
+            <img src="image/top_bg.png" />
+        </div>
+        <div id="top_nav_bg">
+            <div id="top_nav">
+                <ul id="nav">
+                    <li>
+                        <a href="index.html">首页</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>-->
+<!--这是顶部::end-->
+
+<!--这是顶部::start-->
+<div id="head">
+
+    <div class="lines">
+    </div>
+
+    <div class="header_nav">
+    </div>
+
+    <div class="header_content">
+    </div>
+
+</div>
+<!--这是顶部::end-->
+<div class="dengluTankuang"></div>
+<!--退出登录框-->
+<div class="logoutTankuaung"></div>
+<!--新闻栏目::start-->
+<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+    <tr>
+        <td  align="left" valign="top">
+            <div class="section clearfix">
+                <div class="line30"></div>
+
+                <div class="info-wrap">
+                    <!--左侧导航-->
+                    <div class="info-box">
+                        <div class="avatar-box">
+                        </div>
+                        <ul class="side-nav">
+                            <li>
+                                <a href="../../users/user_personal.html">个人资料</a>
+                            </li>
+                            <li>
+                                <a href="../../users/user_studyPath.html">学习经历</a>
+                            </li>
+                            <li>
+                                <a href="../../users/user_rzclass.html">班级认证</a>
+                            </li>
+                            <li>
+                                <a href="../../users/user_branch.html">所属分会</a>
+                            </li>
+                            <li>
+                                <a href="../../users/user_friends.html">我的好友</a>
+                            </li>
+                            <li>
+                                <a class="side-nav-style" href="myDonate.html">我的捐赠</a>
+                            </li>
+                            <li>
+                                <a href="../../users/user_changePwd.html">修改密码</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" onclick="logoutConfirm()">退出登录</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/左侧导航-->
+
+                    <!--右侧内容-->
+                    <div class="home-box">
+
+                        <!--中间主体-->
+                        <div class="u-tab-content">
+                            <div class="iner_box" style="background: #FFFFFF">
+                                <table class="myDonateTable">
+                                    <thead >
+                                        <tr >
+                                            <th>订单名称</th>
+                                            <th>捐赠时间</th>
+                                            <th>捐赠金额</th>
+                                            <th>订单状态</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="myDonate">
+                                    </tbody>
+                                </table>
+                                <p class="title-jzxx" style=" display: none ; font-size: 14px; color: #6e6e6e; padding: 20px 50px; text-align: center">暂未有捐赠信息</p>
+                            <div width="100%" height="30">
+                                <div class="page_box">
+                                    <div class="pagerbar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--中间主体/-->
+                </div>
+                <!--/右侧内容-->
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<div class="theme-pop">
+    <div class="theme-poptit">
+        <a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+        <h3>警告</h3>
+    </div>
+    <div class="theme-popbod dform">
+        <p style="margin-top: 18px; font-size: 13px;">确认退出登录？</p>
+        <div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+            <input style="width: 70px; float:left;" class="confirmBtn" onclick="logout()" value=" 确认退出 " />
+            <input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+        </div>
+    </div>
+</div>
+<div class="theme-pop-mask"></div>
+<script type="text/javascript">
+    function logoutConfirm(){
+        $('.theme-pop-mask').fadeIn(100);
+        $('.theme-pop').slideDown(200);
+    }
+
+    function closeConfirm() {
+        $('.theme-pop-mask').fadeOut(100);
+        $('.theme-pop').slideUp(200);
+    }
+</script>
+
+<div id="footer_line"></div>
+<!--顶部线条::end-->
+
+</body>
+</html>
+<script src="../../js/public.js"></script>
+<script src="../../js/G.js"></script>

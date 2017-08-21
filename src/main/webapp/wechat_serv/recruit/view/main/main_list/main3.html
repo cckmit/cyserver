@@ -1,0 +1,42 @@
+
+<div class="seach_box">
+    <div class="seach_zhong">
+        <div class="qiyede">
+            <div class="sousuo_box">
+                <from action="" onsubmit="return false;">
+                    <i class="fa fa-search iconss"></i>
+                    <input type="search" placeholder="输入关键字" ng-keypress="shousuoLists($event)" ng-model="searchs">
+                    <a class="clear_seach" href="javascript:;" ng-hide="clearSearch" ng-click="clearInput()"><i class="fa fa-close"></i></a>
+                </from>
+            </div>
+            <button class="btn_sea">仅显示线上宣讲</button>
+        </div>
+    </div>
+</div>
+<div class="list_container">
+    <ion-view>
+        <ion-content class="main1_center">
+            <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+
+            <ul class="xj_list">
+                <li>
+                    <div class="xj_left_pic">
+                        <div>3月</div>
+                        <div>22</div>
+                        <div>2017年</div>
+                    </div>
+                    <div class="xj_right_xx">
+                        <div class="xj_title">杭州银行股份有限公司</div>
+                        <div class="xj_xinxi">
+                            <p class="xj_time"><i class="fa fa-clock-o"></i><span>2017/04/27 09:00 至 2017/04/28 17:00</span></p>
+                            <p><i class="fa fa-map-marker"></i><span>武汉市洪山区关山大道456号创意大厦4楼</span></p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+            <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" ></ion-infinite-scroll>
+        </ion-content>
+    </ion-view>
+</div>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>校友组织</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+	    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+	    <meta content="校友会" name="description"/>
+	    <meta content="校友会" name="author"/>
+		<!--引入css文件-->
+		<link href="../css/style.css" type="text/css" rel="stylesheet" />
+		<link href="../css/xy.css" type="text/css" rel="stylesheet" />
+        <link href="../css/xyhi.css" type="text/css" rel="stylesheet" />
+        <link rel="stylesheet" href="../css/user.css" type="text/css" />
+		<!--引入js文件-->
+		<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../js/B.js" type="text/javascript"></script>
+        <script src="../js/common.js" type="text/javascript"></script>
+        <script src="../js/interfacepath.js" type="text/javascript"></script>
+
+		<script type="text/javascript" src="../js/title_style.js"></script>
+		<script language="javascript">
+			
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+			
+			$(function() {
+				B.ready(function() {
+					// 获取网站所有栏目（包括子栏目和不在导航上显示的校友服务）
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + interface.loaderNav.url,
+						data: {
+							jsonStr: JSON.stringify(interface.loaderNav.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log("------" + JSON.stringify(data));
+							
+							if(data && data.obj && data.obj.length > 0) {
+								categoryTreeData = data.obj;
+								
+								// 初始化网站顶部导航
+//								for(var i in categoryTreeData) {
+//									if(categoryTreeData[i].checked){
+//										$("#nav").append('<li><a href=' + categoryTreeData[i].id + '"../news/list.html?categoryId=">' + categoryTreeData[i].text + '</a></li>');
+//									}
+//								}
+							}
+                            //頂部導航欄添加校友分會列表
+                            //$("#nav").append('<li><a href="xyh.html">校友组织</a></li>');
+						},
+						error: function(xhr, type) {
+
+						}
+					});
+
+					//獲取分會信息
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + interface.alumniNews.url,
+						data: {
+                            jsonStr: JSON.stringify(interface.alumniNews.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log(JSON.stringify(data.obj));
+                            if(data.obj && data.obj.length > 0){
+                                var a = 0, b = 0, c = 0;
+                                var strA = '', strB = '', strC = '';
+                                for(var i in data.obj){
+
+                                    var id = '',name = '',fullName = '', presidentName = '', phone = '', address = '', email = '', memberCount = '';
+                                    //分會id
+                                    if(data.obj[i].id && data.obj[i].id != '')
+                                        id = data.obj[i].id;
+                                    else
+                                        id = '0';
+
+                                    //分會名
+                                    if(data.obj[i].name && data.obj[i].name != '')
+                                        fullName = data.obj[i].name;
+                                    else
+                                        fullName = '-';
+
+                                    if(fullName.length > 6)
+                                        name = fullName.substring(0, 5) + '..';
+                                    else
+                                        name = fullName;
+
+                                    //聯繫人姓名
+                                    if(data.obj[i].presidentName && data.obj[i].presidentName != '')
+                                        presidentName = data.obj[i].presidentName;
+                                    else
+                                        presidentName = '-';
+                                    //聯繫電話
+                                    if(data.obj[i].telephone && data.obj[i].telephone != '')
+                                        phone = data.obj[i].telephone;
+                                    else
+                                        phone = '-';
+                                    //地址
+                                    if(data.obj[i].address && data.obj[i].address != '')
+                                        address = data.obj[i].address;
+                                    else
+                                        address = '-';
+                                    //郵箱
+                                    if(data.obj[i].email && data.obj[i].email != '')
+                                        email = data.obj[i].email;
+                                    else
+                                        email = '-';
+                                    //成員數
+                                    if(data.obj[i].memberCount && data.obj[i].memberCount != '')
+                                        memberCount = data.obj[i].memberCount;
+                                    else
+                                        memberCount = '-';
+
+                                    //var appStr = '<li><a href="javascript:;" onclick="showDetails();" onmouseover="wsug(event, \''+ fullName + '<br>联系人：'+ presidentName + '<br>电话：' + phone + '<br>邮件：' + email +'<br>地址：' + address + '<br>成員數：'+ memberCount +'\')" onmouseout="wsug(event,0)">'+fullName+'</a></li>';
+                                    var appStr;
+                                    if(data.obj[i].hasCategory && data.obj[i].hasCategory == '1')
+                                        appStr = '<li><a href="'+B.clientUrl+'fenhui/funhui_index.html?alumniId='+ id +'">'+ fullName +'</a></li>';
+                                    else
+                                        appStr = '<li><a href="xyhi.html?alumniId='+id+'">'+ fullName +'</a></li>';                                    switch (data.obj[i].main){
+                                        case 1:
+                                            a++;
+                                            strA += appStr;
+                                            break;
+                                        case 2:
+                                            b++;
+                                            strB += appStr;
+                                            break;
+                                        case 3:
+                                            c++;
+                                            strC += appStr;
+                                    }
+                                }
+                                if(a > 0){
+                                    $('#aa').show();
+                                    $('#aaa').show();
+                                    $('#department').append(strA);
+                                    $('#departmentTab').append(strA);
+                                }
+                                if(b > 0){
+                                    $('#bb').show();
+                                    $('#bbb').show();
+                                    $('#locality').append(strB);
+                                    $('#localityTab').append(strB);
+                                }
+                                if(c > 0){
+                                    $('#cc').show();
+                                    $('#ccc').show();
+                                    $('#industry').append(strC);
+                                    $('#industryTab').append(strC);
+                                }
+                            }
+						},
+						error: function(xhr, type) {}
+					});
+
+				});
+
+				initFoot();
+			});
+			
+			window.onresize = function () {
+				initFoot();
+			}
+			function initFoot(){
+				var windowHeight = $(window).height() ;
+				if(windowHeight > 200) {
+					$("#body").css("min-height",windowHeight-200);
+				}
+			}
+			
+		    function setTab(name,cursel,n){
+		        for(i=1;i<=n;i++){
+		            var menu=document.getElementById(name+i);
+		            var con=document.getElementById("con_"+name+"_"+i);
+		            menu.className=i==cursel?"cur":"";
+		            con.style.display=i==cursel?"block":"none";
+		        }
+		    }
+
+		    function showDetails() {
+                $('.theme-popover-mask').fadeIn(100);
+                $('.theme-popover').slideDown(200);
+            }
+            function closeDetails() {
+                $('.theme-popover-mask').fadeOut(100);
+                $('.theme-popover').slideUp(200);
+            }
+
+		</script>
+	</head>
+
+	<body>
+
+    <!--这是顶部::start-->
+    <div id="head">
+
+        <div class="lines">
+        </div>
+
+        <div class="header_nav">
+        </div>
+
+        <div class="header_content">
+        </div>
+
+    </div>
+    <!--这是顶部::end-->
+    <div class="dengluTankuang"></div>
+    <!--退出登录框-->
+    <div class="logoutTankuaung"></div>
+        <!--分會列表::start-->
+        <div id="body" style="text-align: left; margin-top: 0px; padding-top: 0px; width: 980px">
+            <div id="main">
+                <div style="width:988px;;overflow:hidden;">
+                    <p class="xiaoyou-title" style="color:#005ABF; font-size:26px;font-weight: bold; margin:15px">校友组织</p>
+                    <div class="blue_tab" style="margin: 15px 20px">
+                        <ul id="tab_li">
+                            <li style="margin-bottom: -1px"><a href="javascript:void(0);" id="one1" onclick="setTab('one',1,4);" class="cur">全部分会</a></li>
+                            <li style="margin-bottom: -1px" id="aaa" style = "display: none"><a href="javascript:void(0);" id="one2" onclick="setTab('one',2,4);">院系分会</a></li>
+                            <li style="margin-bottom: -1px" id="bbb" style = "display: none"><a href="javascript:void(0);" id="one3" onclick="setTab('one',3,4);">地方分会</a></li>
+                            <li style="margin-bottom: -1px" id="ccc" style = "display: none"><a href="javascript:void(0);" id="one4" onclick="setTab('one',4,4);">行业分会</a></li>
+                        </ul>
+                    </div>
+                    <div id="con_one_1" class="tab_content" style="height: 450px;">
+
+                        <div id="aa" style="display: none">
+                            <div class="title" >院系分会</div>
+                            <div class="aa_district">
+                                <ul class="aa_institution" id="department">
+
+                                </ul>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+
+                        <div id="bb"  style="display: none">
+                            <div class="title">地方分会</div>
+
+                            <div class="aa_district">
+                                <ul class="aa_institution" id="locality">
+
+                                </ul>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+
+                        <div id="cc" style="display: none">
+                            <div class="title">行业分会</div>
+
+                            <div class="aa_district">
+                                <ul class="aa_institution" id="industry">
+
+                                </ul>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="con_one_2" class="tab_content" style="height: 450px; display:none">
+                        <div class="city" >
+                            <ul class="aa_institution" id="departmentTab">
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div id="con_one_3" class="tab_content" style="height: 450px; display:none">
+                        <ul class="aa_institution" id="localityTab">
+
+                        </ul>
+                    </div>
+
+                    <div id="con_one_4" class="tab_content" style="height: 450px; display:none">
+                        <ul class="aa_institution" id="industryTab">
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--分會列表::end-->
+        <!--顶部线条::start-->
+        <div id="footer_line"></div>
+        <!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>

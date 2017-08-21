@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.association.dao.AssociationMemberMapper">
+    <resultMap id="associationMemberResultMap" type="com.cy.core.association.entity.AssociationMember">
+        <id column="id" property="id"/>
+        <result column="association_id" property="associationId"/>
+        <result column="status" property="status" />
+        <result column="account_num" property="accountNum" />
+        <result column="join_time" property="joinTime" />
+        <result column="quit_time" property="quitTime"/>
+        <result column="telephone" property="telephone" />
+        <result column="position" property="position" />
+        <result column="invite_account_num" property="inviteAccountNum"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="name" property="name" />
+        <result column="positionName" property="positionName" />
+        <result column="picture" property="pictureUrl"/>
+        <result column="address" property="address" />
+        <result column="sign" property="sign"/>
+        <result column="hobby" property="hobby"/>
+        <result column="groupName" property="groupName" />
+        <result column="sex" property="sex" />
+        <result column="birthday" property="birthday" />
+        <result column="allPath" property="allPath" />
+        <result column="isCurrent" property="isCurrent" />
+    </resultMap>
+
+    <select id="selectAssociationMember" parameterType="map" resultMap="associationMemberResultMap">
+        SELECT
+            cam.*, cu.`name` ,
+            cu.picture,
+            cu.address ,
+            cu.sign ,
+            cu.hobby ,
+            cu.groupName ,
+            cu.sex ,
+            cu.birthday ,
+            <if test="currentUserId != null and currentUserId != ''">
+                CASE WHEN cam.account_num = #{currentUserId} THEN '1' ELSE '0' END AS isCurrent,
+            </if>
+            GROUP_CONCAT(cd.dict_name) AS positionName,
+            GROUP_CONCAT(ca.`name` ) AS associationName,
+            GROUP_CONCAT(CONCAT(ca.`name`,"(",cd.dict_name,")") )  AS allPath
+        FROM
+        cy_association_member cam
+        LEFT JOIN cy_association ca ON ca.id=cam.association_id
+        LEFT JOIN cy_userprofile cu ON cam.account_num = cu.accountNum
+        LEFT JOIN cy_alumni a ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict cd ON cd.dict_type_id = '24' AND cam.position = cd.dict_value
+        WHERE
+        cam.del_flag = 0 AND ca.id IS NOT NULL
+        AND CASE WHEN a.main=1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="id !=null and id != '' ">
+            AND cam.id = #{id}
+        </if>
+        <if test="associationId !=null and associationId != '' ">
+            AND cam.association_id = #{associationId}
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            AND cam.account_num = #{accountNum}
+        </if>
+        <if test="alumniId !=null and alumniId != '' ">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+        <if test="name !=null and name != '' ">
+            AND cu.name LIKE CONCAT('%',#{name},'%')
+        </if>
+        <if test="associationName !=null and associationName != '' ">
+            AND ca.name LIKE CONCAT('%',#{associationName},'%')
+        </if>
+        <if test="position != null and position != '' ">
+            AND cam.position = #{position}
+        </if>
+        <if test="status !=null and status != '' ">
+            <choose>
+                <when test="status == '20'">
+                    AND (cam.status='20' OR cam.status='25')
+                </when>
+                <otherwise>
+                    AND cam.status = #{status}
+                </otherwise>
+            </choose>
+        </if>
+        GROUP BY cam.account_num
+        ORDER BY cam.update_date DESC
+        <if test='isNoLimit != "1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT COUNT(cam.id) FROM
+        cy_association_member cam
+        LEFT JOIN cy_association ca ON ca.id=cam.association_id
+        LEFT JOIN cy_userprofile cu ON cam.account_num = cu.accountNum
+        LEFT JOIN cy_alumni a ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict cd ON cd.dict_type_id = '24' AND cam.position = cd.dict_value
+        WHERE cam.del_flag = 0 AND ca.id IS NOT NULL
+        AND CASE WHEN a.main=1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="id !=null and id != '' ">
+            AND cam.id = #{id}
+        </if>
+        <if test="associationId !=null and associationId != '' ">
+            AND cam.association_id = #{associationId}
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            AND cam.account_num = #{accountNum}
+        </if>
+        <if test="alumniId !=null and alumniId != '' ">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+        <if test="status !=null and status != '' ">
+            <choose>
+                <when test="status == '20'">
+                    AND (cam.status='20' OR cam.status='25')
+                </when>
+                <otherwise>
+                    AND cam.status = #{status}
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <insert id="save"  parameterType="com.cy.core.association.entity.AssociationMember">
+        INSERT INTO
+        cy_association_member(
+        id,
+        association_id,
+        status,
+        account_num,
+        join_time,
+        quit_time,
+        telephone,
+        `position`,
+        invite_account_num,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        values(
+        #{id},
+        #{associationId},
+        #{status},
+        #{accountNum},
+        #{joinTime},
+        #{quitTime},
+        #{telephone},
+        #{position},
+        #{inviteAccountNum},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks} )
+    </insert>
+    <update id="update" parameterType="com.cy.core.association.entity.AssociationMember">
+        update cy_association_member set
+        association_id=#{associationId},
+        status=#{status},
+        account_num=#{accountNum},
+        join_time=#{joinTime},
+        quit_time=#{quitTime},
+        telephone=#{telephone},
+        `position`=#{position},
+        invite_account_num=#{inviteAccountNum},
+        del_flag=#{delFlag},
+        update_by=#{updateBy},
+        remarks=#{remarks},
+        update_date=#{updateDate}
+        WHERE
+        id=#{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_association_member SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

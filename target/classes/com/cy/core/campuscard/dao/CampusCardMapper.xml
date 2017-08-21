@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.campuscard.dao.CampusCardMapper">
+
+	<select id="list" parameterType="map" resultType="com.cy.core.campuscard.entity.CampusCard">
+		select * from cy_campus_card
+		<where>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="industry!=null and industry!=''">
+				and industry like concat('%',#{industry},'%')
+			</if>
+			<if test="location!=null and location!=''">
+				and location like concat(#{location},'%')
+			</if>
+			<if test="status!=null and status!=-1">
+				and status=#{status}
+			</if>
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">
+				and businessLicenseNo = #{businessLicenseNo}
+			</if>
+		</where>
+		order by id desc limit #{start},#{rows}
+	</select>
+	
+	
+	<select id="count" parameterType="map" resultType="long">
+		select count(id) from cy_campus_card
+		<where>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="industry!=null and industry!=''">
+				and industry like concat('%',#{industry},'%')
+			</if>
+			<if test="location!=null and location!=''">
+				and location like concat('%',#{location},'%')
+			</if>
+			<if test="status!=null and status!=-1">
+				and status=#{status}
+			</if>
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">
+				and businessLicenseNo = #{businessLicenseNo}
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.campuscard.entity.CampusCard">
+		insert into cy_campus_card(
+			`name`,
+			businessScope,
+			location,
+			industry,
+			legal,
+			unitTel,
+			unitAddress,
+			registrationAuthority,
+			businessLicenseNo,
+			applyTime,
+			discountPreferential,
+			giftPreferential,
+			otherPreferential,
+			vipPreferential,
+			contact,
+			contactTel,
+			fax,
+			emailBox,
+			personalPic,
+			credentialsPic,
+			status,
+			createDate,
+			card_number
+			) 
+			value(
+			#{name},
+			#{businessScope},
+			#{location},
+			#{industry},
+			#{legal},
+			#{unitTel},
+			#{unitAddress},
+			#{registrationAuthority},
+			#{businessLicenseNo},
+			#{applyTime},
+			#{discountPreferential},
+			#{giftPreferential},
+			#{otherPreferential},
+			#{vipPreferential},
+			#{contact},
+			#{contactTel},
+			#{fax},
+			#{emailBox},
+			#{personalPic},
+			#{credentialsPic},
+			#{status},
+			now(),
+			#{cardNumber}
+			)
+	</insert>
+	
+	
+	<delete id="delete" parameterType="list">
+		delete from cy_campus_card where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+	
+	<update id="deletion" parameterType="list">
+		update cy_campus_card set deletion=1 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+	
+	
+	<update id="checkToPass" parameterType="list">
+		update cy_campus_card set status=1 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+	
+	
+	<update id="checkToNotPass" parameterType="list">
+		update cy_campus_card set status=2 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+	
+	
+	
+	<update id="update" parameterType="com.cy.core.campuscard.entity.CampusCard">
+		update cy_campus_card 
+		set
+		`check`=#{check},
+		checkTime=#{checkTime},
+		opinion=#{opinion},
+		status=#{status}
+		where id=#{id}
+	</update>
+	
+	<select id="selectById" parameterType="long" resultType="com.cy.core.campuscard.entity.CampusCard">
+		select * from cy_campus_card where id = #{id}
+	</select>
+	
+	<select id="statisticalList" parameterType="map" resultType="map">
+		select 
+			campusCard.location as itemName,
+			campusCard.industry as industry,
+			count(campusCard.industry) as results
+		from 
+			cy_campus_card campusCard
+		<where>
+			<if test="location!=null and location!=''">
+				and campusCard.location like concat('%',#{location},'%')
+			</if>
+			<if test="industry!=null and industry!=''">
+				and campusCard.industry like concat('%',#{industry},'%')
+			</if>
+			
+			and campusCard.deletion = 0
+		</where>
+		group by campusCard.location, campusCard.industry
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="statisticalCount" parameterType="map" resultType="long">
+		select count(itemName) from (
+		
+		select 
+			campusCard.location as itemName,
+			campusCard.industry as industry,
+			count(campusCard.industry) as results
+		from 
+			cy_campus_card campusCard
+		<where>
+			<if test="location!=null and location!=''">
+				and campusCard.location like concat('%',#{location},'%')
+			</if>
+			<if test="industry!=null and industry!=''">
+				and campusCard.industry like concat('%',#{industry},'%')
+			</if>
+			
+			and campusCard.deletion = 0
+		</where>
+		
+		) as statisticalCount
+		
+	</select>
+	
+</mapper>

@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.user.dao.UserMapper">
+	<resultMap type="com.cy.core.user.entity.User" id="userResultMap">
+		<id column="userId" property="userId" />
+		<result column="userName" property="userName" />
+		<result column="userAccount" property="userAccount" />
+		<result column="userPassword" property="userPassword" />
+		<result column="email" property="email" />
+		<result column="telephone" property="telephone" />
+		<result column="dept_id" property="deptId" />
+		<result column="flag" property="flag" />
+		<result column="deptShit" property="deptShit" />
+		<result column="is_first_login" property="isFirstLogin" />
+		<result column="last_Login_Time" property="lastLoginTime"/>
+		<result column="roleNames" property="roleNames" />
+		<result column="association_id" property="associationId"/>
+		<!--
+		<result column="roleId" property="roleId" />
+		<association property="role" column="roleId"
+			javaType="com.cy.core.role.entity.Role">
+			<id column="roleId" property="roleId" />
+			<result column="roleName" property="roleName" />
+			<result column="systemAdmin" property="systemAdmin" />
+			<result column="flag" property="flag" />
+		</association>
+		 -->
+		<association property="alumni" column="dept_id"
+					 javaType="com.cy.core.alumni.entity.Alumni">
+			<id column="alumniId" property="alumniId" />
+			<result column="alumniName" property="alumniName" />
+			<result column="region" property="region" />
+			<result column="industry" property="industry" />
+			<result column="hobby" property="hobby" />
+			<result column="introduction" property="introduction" />
+			<result column="status" property="status" />
+			<result column="createById" property="createById" />
+			<result column="accountNum" property="accountNum" />
+			<result column="createTime" property="createTime" />
+			<result column="checkFlag" property="checkFlag" />
+		</association>
+		<collection property="depts" ofType="com.cy.core.dept.entity.Dept">
+			<id column="dept_id1" property="deptId" />
+			<result column="dept_name" property="deptName" />
+			<result column="parent_id" property="parentId" />
+			<result column="full_name" property="fullName" />
+			<result column="level" property="level" />
+		</collection>
+		<collection property="deptInfos" ofType="com.cy.core.deptInfo.entity.DeptInfo">
+			<id column="dept_id1" property="deptId" />
+			<result column="dept_name" property="deptName" />
+			<result column="parent_id" property="parentId" />
+			<result column="full_name" property="fullName" />
+			<result column="level" property="level" />
+		</collection>
+		<collection property="userRoles" ofType="com.cy.core.user.entity.UserRole">
+			<result column="userId" property="userId" />
+			<result column="roleId" property="roleId" />
+			<association property="role" column="roleId"
+						 javaType="com.cy.core.role.entity.Role">
+				<id column="roleId" property="roleId" />
+				<result column="roleName" property="roleName" />
+				<result column="systemAdmin" property="systemAdmin" />
+				<result column="roleFlag" property="flag" />
+			</association>
+		</collection>
+		<collection property="roles" ofType="com.cy.core.role.entity.Role">
+			<id column="roleId" property="roleId" />
+			<result column="roleName" property="roleName" />
+			<result column="systemAdmin" property="systemAdmin" />
+			<result column="roleFlag" property="flag" />
+		</collection>
+	</resultMap>
+	<select id="countUser" parameterType="map" resultType="long">
+		select count(userId) from cy_user
+		<where>
+			<if test="userAccount!=null and userAccount!=''">
+				and userAccount like concat('%',#{userAccount},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 通过分页获取用户列表 -->
+	<select id="selectUserList" parameterType="map" resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.email,
+		us.telephone,
+		us.dept_id,
+		us.flag,
+		us.is_first_login,
+		us.last_login_time,
+		us.association_id,
+		ur.id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON ur.roleId = re.roleId
+		<where>
+			<if test="userAccount!=null and userAccount!=''">
+				and us.userAccount like concat('%',#{userAccount},'%')
+			</if>
+			<if test="telephone!=null and telephone!=''">
+				and us.telephone = #{telephone}
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+
+	<!-- 通过分页获取用户列表 -->
+	<select id="selectUserListx" parameterType="map" resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.email,
+		us.telephone,
+		us.dept_id,
+		us.flag,
+		us.is_first_login,
+		us.last_login_time,
+		us.association_id,
+		GROUP_CONCAT(re.roleName) AS roleNames
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON ur.roleId = re.roleId
+		<where>
+			<if test="userAccount!=null and userAccount!=''">
+				and us.userAccount like concat('%',#{userAccount},'%')
+			</if>
+			<if test="telephone!=null and telephone!=''">
+				and us.telephone = #{telephone}
+			</if>
+		</where>
+		GROUP BY us.userId
+		limit #{start},#{rows}
+	</select>
+	<!-- 获取用户满足条件的用户列表 -->
+	<select id="queryUserList" parameterType="map" resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.email,
+		us.telephone,
+		us.dept_id,
+		us.is_first_login,
+		us.last_login_time,
+		us.flag,
+		us.association_id,
+		ur.id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag,
+		ca.alumniName as deptShit
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON ur.roleId = re.roleId
+		LEFT JOIN cy_alumni ca ON us.dept_id = ca.alumniId
+		WHERE 1=1
+		AND CASE WHEN ca.alumniId > 1 AND ca.main = 1 THEN ca.academyid IS NOT NULL AND ca.academyid != '' ELSE TRUE END
+		<if test="userAccount!=null and userAccount!=''">
+			and us.userAccount like concat('%',#{userAccount},'%')
+		</if>
+		<if test="telephone!=null and telephone!=''">
+			and us.telephone = #{telephone}
+		</if>
+		<if test="isNotAccount!=null and isNotAccount!=''">
+			and us.userAccount != #{isNotAccount}
+		</if>
+		<if test="userId!=null and userId!=''">
+			and us.userId != #{userId}
+		</if>
+		group by us.userName
+	</select>
+
+	<!-- 获取用户满足条件的用户列表 -->
+	<select id="queryChoiceUserList" parameterType="map" resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.email,
+		us.telephone,
+		us.dept_id,
+		us.is_first_login,
+		us.last_login_time,
+		us.flag,
+		us.association_id,
+		ur.id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag,
+		ca.alumniName as deptShit
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON ur.roleId = re.roleId
+		LEFT JOIN cy_alumni ca ON us.dept_id = ca.alumniId
+		WHERE 1=1
+		AND CASE WHEN ca.alumniId > 1 AND ca.main = 1 THEN ca.academyid IS NOT NULL AND ca.academyid != '' ELSE TRUE END
+		<if test="userAccount!=null and userAccount!=''">
+			and us.userAccount like concat('%',#{userAccount},'%')
+		</if>
+		<if test="telephone!=null and telephone!=''">
+			and us.telephone = #{telephone}
+		</if>
+		<if test="isNotAccount!=null and isNotAccount!=''">
+			and us.userAccount != #{isNotAccount}
+		</if>
+		<if test="userId!=null and userId!=''">
+			and us.userId = #{userId}
+		</if>
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.user.entity.User"
+			useGeneratedKeys="true" keyProperty="userId">
+		insert into
+		cy_user(userName,userAccount,userPassword,telephone,email,dept_id,roleId,association_id,flag)
+		values(#{userName},#{userAccount},#{userPassword},#{telephone},#{email},#{deptId},#{roleId},#{associationId},#{flag})
+	</insert>
+	<select id="countByUserAccount" parameterType="map" resultType="long">
+		select count(userId) from cy_user
+		<where>
+			<if test="userAccount!=null and userAccount!=''">
+				userAccount=#{userAccount}
+			</if>
+			<if test="userId!=0">
+				and userId!=#{userId}
+			</if>
+		</where>
+	</select>
+	<select id="countByTelphone" parameterType="map" resultType="long">
+		select count(1) from cy_user where telephone=#{telephone} AND userId!=#{userId}
+	</select>
+	<select id="selectByUserAccountNoSys" parameterType="string"
+			resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.telephone,
+		us.is_first_login,
+		us.email,
+		us.dept_id,
+		us.flag,
+		us.association_id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		LEFT JOIN cy_alumni ca ON ca.alumniId = us.dept_id
+		WHERE
+		us.userAccount = #{userAccount}
+		AND CASE WHEN ca.alumniId > 1 AND ca.main = 1 THEN ca.academyid IS NOT NULL AND ca.academyid != '' ELSE TRUE END
+	</select>
+
+	<select id="selectByUserAccount" parameterType="string"
+			resultMap="userResultMap">
+		SELECT
+			us.userId,
+			us.userName,
+			us.userAccount,
+			us.userPassword,
+			us.telephone,
+			us.email,
+			us.dept_id,
+			us.flag,
+			us.is_first_login,
+			us.association_id,
+			re.roleId,
+			re.roleName,
+			re.systemAdmin,
+			re.flag as roleFlag,
+			d.dept_id AS dept_id1,
+			d.dept_name,
+			d.parent_id,
+			d.full_name,
+			d. LEVEL
+		FROM
+			cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		LEFT JOIN cy_user_dept ud ON us.userId = ud.userId
+		LEFT JOIN cy_dept_info d ON ud.deptId = d.dept_id
+		WHERE
+			us.userAccount = #{userAccount}
+	</select>
+
+	<select id="selectByUserId" parameterType="java.lang.String"
+			resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.telephone,
+		us.email,
+		us.dept_id,
+		us.flag,
+		us.is_first_login,
+		us.association_id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		WHERE
+		us.userId = #{userId}
+	</select>
+	
+	<select id="selectByTelephone" parameterType="java.lang.String"	resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.userAccount,
+		us.userPassword,
+		us.telephone,
+		us.email,
+		us.dept_id,
+		us.flag,
+		us.is_first_login,
+		us.association_id,
+		re.roleId,
+		re.roleName,
+		re.systemAdmin,
+		re.flag as roleFlag
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		WHERE
+		us.telephone = #{telephone}
+	</select>
+		
+	<select id="selectByTelephoneForApp" parameterType="java.lang.String"	resultMap="userResultMap">
+		SELECT
+		us.userId,
+		us.userName,
+		us.telephone,
+		us.email,
+		us.dept_id,
+		ra.`alumniName`,
+		us.flag,		
+		re.roleId,
+		re.roleName	
+		FROM
+		cy_user us
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		LEFT JOIN cy_alumni ra ON us.`dept_id`=ra.alumniid
+		WHERE re.roleid='2' AND us.telephone = #{telephone}
+	</select>
+	
+	<update id="update" parameterType="com.cy.core.user.entity.User">
+		update cy_user set
+		<if test="userName != null and userName != ''">
+			userName=#{userName},
+		</if>
+		<if test="userPassword != null and userPassword != ''">
+			userPassword=#{userPassword},
+		</if>
+		<if test="deptId != null and deptId != ''">
+			dept_id=#{deptId},
+		</if>
+		<if test="roleId != null and roleId != ''">
+			roleId=#{roleId},
+		</if>
+		<if test="isFirstLogin != null and isFirstLogin != ''">
+			is_first_login=#{isFirstLogin},
+		</if>
+		<if test="lastLoginTime !=null and lastLoginTime != ''">
+			last_login_time=#{lastLoginTime},
+		</if>
+		<if test="associationId !=null and associationId != ''">
+			association_id=#{associationId},
+		</if>
+		telephone=#{telephone},
+		email=#{email}
+		where userId=#{userId}
+	</update>
+	<update id="updatePassword" parameterType="com.cy.core.user.entity.User">
+		update cy_user set
+		userPassword=#{userPassword}
+		where userId=#{userId}
+	</update>
+	<delete id="delete" parameterType="long">
+		delete from cy_user where
+		userId=#{userId}
+	</delete>
+	<select id="selectRole" parameterType="long" resultMap="userResultMap">
+		select
+		us.*,ro.* from cy_user us left join cy_role ro on us.roleId=ro.roleId
+		where
+		us.userId=#{userId}
+	</select>
+	<select id="selectAdminUser" resultMap="userResultMap">
+		select us.* from cy_user
+		us
+		left join cy_role ro
+		on us.roleId=ro.roleId
+		where ro.systemAdmin=1
+	</select>
+
+	<!-- 角色用户映射表 -->
+	<insert id="insertUserAndRole" parameterType="com.cy.core.user.entity.UserRole" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		cy_user_role(userId,roleId) values(#{userId},#{roleId});
+	</insert>
+	<!-- 通过用户Id删除 -->
+	<delete id="deleteUserAndRoleByUserId" parameterType="long">
+		delete from
+		cy_user_role where userId=#{userId}
+	</delete>
+	<!-- 通过角色Id删除 -->
+	<delete id="deleteUserAndRoleByRoleId" parameterType="long">
+		delete from
+		cy_user_role where roleId=#{roleId}
+	</delete>
+
+	<select id="getUserRoleIdsByUserId" parameterType="long" resultType="com.cy.core.user.entity.UserRole">
+		SELECT
+			ur.*
+		FROM
+			cy_user_role ur
+		WHERE
+			ur.userId = #{userId}
+	</select>
+	<!-- lixun 根据alumniId获取DeptId -->
+	<select id="selectDeptIdByAlumniId" parameterType="long" resultType="java.lang.String" >
+		<if test="_parameter==1">
+			select GROUP_CONCAT(dept_id) from cy_dept_info where is_current=1 and LENGTH(dept_id)=10
+		</if>
+		<if test="_parameter!=1">
+			select academyid from cy_alumni where sequence=(select substring_index(sequence,'.',3) from cy_alumni where alumniId=#{id}) and level=3 and main=1 limit 1
+		</if>
+	</select>
+	<select id="selectAcademyid" parameterType="long" resultType="java.lang.String" >
+		select academyid from cy_alumni where sequence=SUBSTRING_INDEX(
+		(select sequence from cy_alumni where alumniId=
+		(select dept_id from cy_user where userId=#{userid})),'.',3)
+	</select>
+	<!-- 新建用户时初始化权限 -->
+	<insert id="saveUserDept" parameterType="map" >
+		insert into cy_user_dept (userid,deptid)
+		<if test="type==1">
+			values(#{userid},#{deptid})
+		</if>
+		<if test="type==2">
+			select #{userid},dept_id from cy_dept_info where is_current=1 and LENGTH(dept_id)=10
+		</if>
+
+	</insert>
+
+	<!-- lixun -->
+</mapper>

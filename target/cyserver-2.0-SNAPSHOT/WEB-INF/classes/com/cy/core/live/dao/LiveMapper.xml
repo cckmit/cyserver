@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.live.dao.LiveMapper">
+	<!--是否已经创建过直播间-->
+	<select id="getLiveRoom" parameterType="String" resultType="String">
+		select
+		liveRoomId
+		from
+		cy_live_room
+		<where>
+			liveRoomUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--创建直播间-->
+	<insert id="liveRoomCreate" parameterType="com.cy.core.live.entity.LiveRoom">
+		insert into
+		cy_live_room (liveRoomUserId,liveRoomName,liveRoomPic,liveRoomWallPhoto,liveRoomDescription,liveRoomCreateTime)
+		values(#{liveRoomUserId},#{liveRoomName},#{liveRoomPic},#{liveRoomWallPhoto},#{liveRoomDescription},now())
+	</insert>
+
+	<!--修改直播间-->
+	<update id="liveRoomUpdate" parameterType="com.cy.core.live.entity.LiveRoom">
+		update cy_live_room set
+		<if test="liveRoomName!=null and liveRoomName!=''">
+			liveRoomName = #{liveRoomName}
+		</if>
+		<if test="liveRoomPic!=null and liveRoomPic!=''">
+			,liveRoomPic = #{liveRoomPic}
+		</if>
+		<if test="liveRoomWallPhoto!=null and liveRoomWallPhoto!=''">
+			,liveRoomWallPhoto = #{liveRoomWallPhoto}
+		</if>
+		<if test="liveRoomDescription!=null and liveRoomDescription!=''">
+			,liveRoomDescription = #{liveRoomDescription}
+		</if>
+		<where>
+			liveRoomId =  #{liveRoomId}
+		</where>
+	</update>
+
+	<!--创建话题-->
+	<insert id="liveTopicCreate" parameterType="com.cy.core.live.entity.LiveTopic">
+		insert into
+		cy_live_topic (liveRoomId,liveTopicUserId,liveTopicName,liveTopicPersonName,liveTopicWallPhoto,
+		liveTopicDescription,liveTopicPhoto,liveTopicCreateTime)
+		values(#{liveRoomId},#{liveTopicUserId},#{liveTopicName},#{liveTopicPersonName},#{liveTopicWallPhoto},
+		#{liveTopicDescription},#{liveTopicPhoto},now())
+	</insert>
+
+	<!--修改话题-->
+	<update id="liveTopicUpdate" parameterType="com.cy.core.live.entity.LiveTopic">
+		update cy_live_topic set
+		<if test="liveTopicName!=null and liveTopicName!=''">
+			liveTopicName = #{liveTopicName}
+		</if>
+		<if test="liveTopicPersonName!=null and liveTopicPersonName!=''">
+			,liveTopicPersonName = #{liveTopicPersonName}
+		</if>
+		<if test="liveTopicWallPhoto!=null and liveTopicWallPhoto!=''">
+			,liveTopicWallPhoto = #{liveTopicWallPhoto}
+		</if>
+		<if test="liveTopicPhoto!=null and liveTopicPhoto!=''">
+			,liveTopicPhoto = #{liveTopicPhoto}
+		</if>
+		<if test="liveTopicDescription!=null and liveTopicDescription!=''">
+			,liveTopicDescription = #{liveTopicDescription}
+		</if>
+		<where>
+			liveTopicId = #{liveTopicId}
+		</where>
+	</update>
+
+	<!--获取当前直播间ID-->
+	<select id="getCurrentLiveRoomId" parameterType="com.cy.core.live.entity.LiveRoom" resultType="String">
+		select
+		max(liveRoomId)
+		from
+		cy_live_room
+		<where>
+		liveRoomUserId = #{liveRoomUserId}
+		</where>
+	</select>
+
+	<!--获取当前直播间信息-->
+	<select id="getCurrentLiveRoomInfo" parameterType="String" resultType="com.cy.core.live.entity.LiveRoom">
+		select
+		liveRoomId,
+		liveRoomUserId,
+		liveRoomName,
+		liveRoomPic,
+		liveRoomWallPhoto,
+		liveRoomDescription,
+		liveRoomCreateTime
+		from
+		cy_live_room
+		<where>
+		liveRoomId = #{currentLiveRoomId}
+		</where>
+	</select>
+
+	<!--直播间展示-->
+	<select id="showLiveRoomList" parameterType="map" resultType="com.cy.core.live.entity.LiveRoomTopic">
+		SELECT
+		lr.liveRoomId,
+		lr.liveRoomUserId,
+		lr.liveRoomName,
+		lr.liveRoomPic,
+		lr.liveRoomWallPhoto,
+		lr.liveRoomDescription,
+		lr.liveRoomCreateTime,
+		lt.liveTopicId,
+		lt.liveTopicUserId,
+		lt.liveTopicName,
+		lt.liveTopicPersonName,
+		lt.liveTopicWallPhoto,
+		lt.liveTopicDescription,
+		lt.liveTopicNumOfPeople,
+		lt.liveTopicPhoto,
+		lt.liveIn,
+		lt.liveTopicCreateTime
+		FROM
+		cy_live_room lr
+		INNER JOIN cy_live_topic lt
+		ON lr.liveRoomId = lt.liveRoomId
+		ORDER BY
+		<if test='flag == "1"'>
+			liveTopicNumOfPeople DESC,liveTopicCreateTime DESC
+		</if>
+		<if test='flag == "2"'>
+			liveTopicCreateTime DESC
+		</if>
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--直播间总数-->
+	<select id="showLiveRoomListCount"  resultType="long">
+		SELECT
+		count(lt.liveTopicId)
+		FROM
+		cy_live_room lr
+		INNER JOIN cy_live_topic lt
+		ON lr.liveRoomId = lt.liveRoomId
+	</select>
+
+	<!--个人直播间展示-->
+	<select id="showLiveRoom" parameterType="map" resultType="com.cy.core.live.entity.LiveRoomTopic">
+		SELECT
+		lr.liveRoomId,
+		lr.liveRoomUserId,
+		lr.liveRoomName,
+		lr.liveRoomPic,
+		lr.liveRoomWallPhoto,
+		lr.liveRoomDescription,
+		lr.liveRoomCreateTime,
+		cu.name
+		FROM
+		cy_live_room lr
+		INNER JOIN cy_userprofile cu ON lr.liveRoomUserId = cu.accountNum
+		<where>
+			lr.liveRoomId = #{liveRoomId}
+		</where>
+	</select>
+
+	<!--个人直播间话题展示-->
+	<select id="showLiveRoomTopic" parameterType="map" resultType="com.cy.core.live.entity.LiveTopic">
+		SELECT
+		lt.liveTopicId,
+		lt.liveTopicUserId,
+		lt.liveTopicName,
+		lt.liveTopicPersonName,
+		lt.liveTopicWallPhoto,
+		lt.liveTopicDescription,
+		lt.liveTopicNumOfPeople,
+		lt.liveTopicPhoto,
+		lt.liveIn,
+		lt.liveTopicCreateTime
+		FROM
+		cy_live_topic lt
+		<where>
+			lt.liveRoomId = #{liveRoomId}
+		</where>
+		ORDER BY
+		lt.liveTopicCreateTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--直播间关注人数-->
+	<select id="getLiveRoomAttentionNum"  resultType="long">
+		SELECT
+		count(liveRoomAttentionId)
+		FROM
+		cy_live_room_attention
+		<where>
+			liveRoomId = #{liveRoomId}
+		</where>
+	</select>
+
+	<!--是否关注-->
+	<select id="getAttentionExist" parameterType="map" resultType="Long">
+		SELECT count(liveRoomAttentionId) FROM cy_live_room_attention
+		<where>
+			liveRoomAttentionUserId = #{accountNum} and
+			liveUserId = #{userId} and
+			liveRoomId = #{liveRoomId}
+		</where>
+	</select>
+
+	<!--个人话题总数-->
+	<select id="showLiveTopicCount"  resultType="long">
+		SELECT
+		count(liveTopicId)
+		FROM
+		cy_live_topic
+		<where>
+			liveRoomId = #{liveRoomId}
+		</where>
+	</select>
+
+	<!--直播间关注-->
+	<insert id="liveRoomAttention" parameterType="map">
+		insert into
+		cy_live_room_attention (liveRoomAttentionUserId,liveUserId,liveRoomId,liveRoomAttentionCreateTime)
+		values(#{accountNum},#{userId},#{liveRoomId},now())
+	</insert>
+
+	<!--取消直播间关注-->
+	<delete id="liveRoomAttentionCancel" parameterType="map">
+		delete from
+		cy_live_room_attention
+		<where>
+			liveRoomAttentionUserId = #{accountNum} and
+			liveUserId = #{userId}
+		</where>
+	</delete>
+
+	<!--参与话题-->
+	<insert id="liveTopicAttention" parameterType="map">
+		insert into
+		cy_live_topic_attention (liveTopicAttentionUserId,liveUserId,liveTopicId,liveRoomId,liveTopicAttentionCreateTime)
+		values(#{accountNum},#{liveUserId},#{liveTopicId},#{liveRoomId},now())
+	</insert>
+
+	<!--参与话题人数更新-->
+	<update id="updateLiveTopicNumOfPeople">
+		update cy_live_topic set liveTopicNumOfPeople = liveTopicNumOfPeople + 1
+		<where>liveTopicId = #{liveTopicId}</where>
+	</update>
+
+	<!--直播间话题详情-->
+	<select id="showLiveTopicInfo" parameterType="map" resultType="com.cy.core.live.entity.LiveTopic">
+		SELECT
+		lt.liveTopicId,
+		lt.liveRoomId,
+		lt.liveTopicUserId,
+		lt.liveTopicName,
+		lt.liveTopicPersonName,
+		lt.liveTopicWallPhoto,
+		lt.liveTopicDescription,
+		lt.liveTopicNumOfPeople,
+		lt.liveTopicPhoto,
+		lt.liveIn,
+		lt.liveTopicCreateTime,
+		cr.liveRoomName as liveRoomName,
+		cr.liveRoomPic as liveRoomPic
+		FROM
+		cy_live_topic lt
+		LEFT JOIN cy_live_room cr ON lt.liveTopicUserId = cr.liveRoomUserId
+		<where>
+			lt.liveTopicId = #{liveTopicId}
+		</where>
+	</select>
+
+	<!--直播间留言-->
+	<insert id="insertLiveRoomComment" parameterType="map">
+		insert into
+		cy_live_comment (liveCommentUserId,liveUserId,liveRoomId,liveComment,liveCommentCreateTime)
+		values(#{accountNum},#{liveUserId},#{liveRoomId},#{liveComment},now())
+	</insert>
+
+	<!--获取当前留言ID-->
+	<select id="getCurrentLiveCommentId" parameterType="map" resultType="String">
+		select
+		max(liveCommentId)
+		from
+		cy_live_comment
+		<where>
+			liveCommentUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--获取当前留言内容-->
+	<select id="getCurrentLiveComment" parameterType="String" resultType="com.cy.core.live.entity.LiveComment">
+		select
+		cc.liveCommentId,
+		cc.liveCommentUserId,
+		cc.liveUserId,
+		cc.liveComment,
+		cc.liveRoomId,
+		cc.liveCommentCreateTime,
+		cu.picture,
+		cu.name
+		from
+		cy_live_comment cc
+		INNER JOIN cy_userprofile cu ON cc.liveCommentUserId = cu.accountNum
+		<where>
+			cc.liveCommentId = #{currentLiveCommentId}
+		</where>
+	</select>
+
+	<!--删除直播间留言-->
+	<delete id="deleteLiveRoomComment" parameterType="map">
+		delete from
+		cy_live_comment
+		<where>
+			liveCommentId = #{liveCommentId}
+		</where>
+	</delete>
+
+	<!--直播间留言板展示-->
+	<select id="showLiveCommentList" parameterType="map" resultType="com.cy.core.live.entity.LiveComment">
+		SELECT
+		cc.liveCommentId,
+		cc.liveRoomId,
+		cc.liveCommentUserId,
+		cc.liveUserId,
+		cc.liveComment,
+		cc.liveCommentCreateTime,
+		cu.picture,
+		cu.name
+		FROM
+		cy_live_comment cc
+		INNER JOIN cy_userprofile cu ON cc.liveCommentUserId = cu.accountNum
+		<where>
+			cc.liveRoomId = #{liveRoomId}
+		</where>
+		order by cc.liveCommentCreateTime desc
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--直播间留言板总数-->
+	<select id="showLiveCommentListCount"  resultType="long">
+		SELECT
+		count(liveCommentId)
+		FROM
+		cy_live_comment
+		<where>
+			liveRoomId = #{liveRoomId}
+		</where>
+	</select>
+
+	<!--直播间回复-->
+	<insert id="insertLiveRoomReply" parameterType="map">
+		insert into
+		cy_live_reply (liveCommentId,liveRoomId,liveReplyUserId,liveReply,liveReplyCreateTime)
+		values(#{liveCommentId},#{liveRoomId},#{accountNum},#{liveReply},now())
+	</insert>
+
+	<!--获取当前回复ID-->
+	<select id="getCurrentLiveReplyId" parameterType="map" resultType="String">
+		select
+		max(liveReplyId)
+		from
+		cy_live_reply
+		<where>
+			liveReplyUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--获取当前回复内容-->
+	<select id="getCurrentLiveReply" parameterType="String" resultType="com.cy.core.live.entity.LiveReply">
+		select
+		cr.liveReplyId,
+		cr.liveCommentId,
+		cr.liveReplyUserId,
+		cr.liveReply,
+		cr.liveRoomId,
+		cr.liveReplyCreateTime,
+		cu.picture,
+		cu.name
+		from
+		cy_live_reply cr
+		INNER JOIN cy_userprofile cu ON cr.liveReplyUserId = cu.accountNum
+		<where>
+			cr.liveReplyId = #{currentLiveReplyId}
+		</where>
+	</select>
+
+	<!--删除直播间回复-->
+	<delete id="deleteLiveRoomReply" parameterType="map">
+		delete from
+		cy_live_reply
+		<where>
+			liveReplyId = #{liveReplyId}
+		</where>
+	</delete>
+
+	<!--当前留言信息-->
+	<select id="showLiveComment" parameterType="map" resultType="com.cy.core.live.entity.LiveComment">
+		SELECT
+		cc.liveCommentId,
+		cc.liveRoomId,
+		cc.liveCommentUserId,
+		cc.liveUserId,
+		cc.liveComment,
+		cc.liveCommentCreateTime,
+		cu.picture,
+		cu.name
+		FROM
+		cy_live_comment cc
+		INNER JOIN cy_userprofile cu ON cc.liveCommentUserId = cu.accountNum
+		<where>
+			cc.liveCommentId = #{liveCommentId}
+		</where>
+	</select>
+
+	<!--获取留言回复列表-->
+	<select id="getLiveReplyList" parameterType="String" resultType="com.cy.core.live.entity.LiveReply">
+		select
+		cr.liveReplyId,
+		cr.liveCommentId,
+		cr.liveReplyUserId,
+		cr.liveReply,
+		cr.liveRoomId,
+		cr.liveReplyCreateTime,
+		cu.picture,
+		cu.name
+		from
+		cy_live_reply cr
+		INNER JOIN cy_userprofile cu ON cr.liveReplyUserId = cu.accountNum
+		<where>
+			cr.liveCommentId = #{liveCommentId}
+		</where>
+		ORDER BY cr.liveReplyCreateTime ASC
+	</select>
+
+	<!--我关注的直播间列表-->
+	<select id="getLiveRoomAttentionList" parameterType="map" resultType="com.cy.core.live.entity.LiveRoomAttention">
+		SELECT
+		liveRoomAttentionId,
+		liveRoomAttentionUserId,
+		liveUserId,
+		liveRoomId,
+		liveRoomAttentionCreateTime
+		FROM
+		cy_live_room_attention
+		<where>
+			liveRoomAttentionUserId = #{accountNum}
+		</where>
+		ORDER BY liveRoomAttentionCreateTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--我关注的直播间列表个数-->
+	<select id="getLiveRoomAttentionCount" parameterType="map" resultType="long">
+		SELECT
+		count(liveRoomAttentionId)
+		FROM
+		cy_live_room_attention
+		<where>
+			liveRoomAttentionUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--我参与的话题列表-->
+	<select id="getLiveTopicAttentionList" parameterType="map" resultType="com.cy.core.live.entity.LiveTopicAttention">
+		SELECT
+		liveTopicAttentionId,
+		liveTopicId,
+		liveTopicAttentionUserId,
+		liveUserId,
+		liveRoomId,
+		liveTopicAttentionCreateTime
+		FROM
+		cy_live_topic_attention
+		<where>
+			liveTopicAttentionUserId = #{accountNum}
+		</where>
+		ORDER BY liveTopicAttentionCreateTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--我参与的话题列表个数-->
+	<select id="getLiveTopicAttentionCount" parameterType="map" resultType="long">
+		SELECT
+		count(liveTopicAttentionId)
+		FROM
+		cy_live_topic_attention
+		<where>
+			liveTopicAttentionUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--直播状态变更-->
+	<update id="updateLiveIn">
+		update cy_live_topic set liveIn = '0'
+		<where>liveTopicId = #{liveTopicId}</where>
+	</update>
+
+	<!--直播间内容保存-->
+	<insert id="insertLiveRoomContent" parameterType="map">
+		insert into
+		cy_live_content (liveRoomId,liveTopicId,liveContent,liveContentType,liveContentUserId,liveContentCreateTime)
+		values(#{liveRoomId},#{liveTopicId},#{liveContent},#{liveContentType},#{accountNum},now())
+	</insert>
+
+	<!--直播间内容获取-->
+	<select id="getLiveRoomContent" parameterType="map" resultType="com.cy.core.live.entity.LiveRoomContent">
+		SELECT
+		cc.liveContentId,
+		cc.liveRoomId,
+		cc.liveTopicId,
+		cc.liveContent,
+		cc.liveContentType,
+		cc.liveContentUserId,
+		cc.liveContentCreateTime,
+		cr.liveRoomPic as picture,
+		cr.liveRoomName as name
+		FROM
+		cy_live_content cc
+		LEFT JOIN cy_live_room cr ON cc.liveContentUserId = cr.liveRoomUserId
+		<where>
+			cc.liveTopicId = #{liveTopicId}
+		</where>
+		order by cc.liveContentCreateTime asc
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--当前直播间内容总数获取-->
+	<select id="getLiveRoomContentCount" parameterType="map" resultType="long">
+		SELECT
+		count(liveContentId)
+		FROM
+		cy_live_content
+		<where>
+			liveTopicId = #{liveTopicId}
+		</where>
+	</select>
+
+	<!--当前用户是否参与该直播间-->
+	<select id="getLiveTopicAttentionExist" parameterType="map" resultType="long">
+		SELECT
+		count(liveTopicAttentionId)
+		FROM
+		cy_live_topic_attention
+		<where>
+			liveTopicId = #{liveTopicId}
+			and
+			liveTopicAttentionUserId =  #{accountNum}
+		</where>
+	</select>
+
+</mapper>

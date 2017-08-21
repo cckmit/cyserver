@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>校友产品</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/font/iconfont.css" type="text/css" rel="stylesheet" />
+    <link href="../static/css/product.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #wrapper {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            height: 35px;
+            left: 0;
+            width: 100%;
+            background: #f4f5f9;
+            overflow: hidden;
+        }
+        #scroller {
+            position: absolute;
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            /*width: 752px;*/
+            height: 100%;
+            background-color: #ffffff;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+        #scroller ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+        #scroller li {
+            display: block;
+            float: left;
+            width: 94px;
+            height: 100%;
+            line-height: 35px;
+            background-color: #fff;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        #scroller .dqa{
+            color: #3498db;
+        }
+
+        input[type=search]::-webkit-search-cancel-button{
+            -webkit-appearance: none;
+        }
+        input[type="search"]::-webkit-search-cancel-button{
+            display: none;
+        }
+        /*input[type=search]::-webkit-search-cancel-button{*/
+            /*-webkit-appearance: none;*/
+
+            /*position: relative;*/
+            /*height: 20px;*/
+            /*width: 20px;*/
+            /*border-radius: 50%;*/
+            /*background-color: #EBEBEB;*/
+        /*}*/
+
+        /*input[type=search]::-webkit-search-cancel-button:after{*/
+            /*position: absolute;*/
+            /*content: 'x';*/
+            /*left: 25%;*/
+            /*top: -12%;*/
+            /*font-size: 20px;*/
+            /*color: #fff;*/
+        /*}*/
+
+
+        input[type=search]{
+            border-radius: 5px;
+            border: 1px solid #ebebeb;//必须对默认的border:2px inset覆盖，要不然下面的样式也是白搭
+        width: 98%;
+            height: 30px;
+            outline: none;
+        }
+
+        .box-shadow-1{
+            -webkit-box-shadow: 1px 1px 1px #666;
+            -moz-box-shadow: 1px 1px 1px #666;
+            box-shadow: 1px 1px 1px #666;
+            width: 90%;
+            height: 200px;
+            font-size: 14px;
+        }
+        .list_pic{
+            height: 160px;
+        }
+    </style>
+    <script type="text/html" id="tppl">
+
+        <%for(var key in list){%>
+        <li class="list_row ">
+                <div onclick="go_pro_detail('<%=list[key].id%>')" class="product_item H-padding-10 H-theme-background-color-white H-border-radius-9 box-shadow-1">
+                    
+                    <img onerror="javascript:this.src='../static/img/nothing.jpg';" src="<%=B.getImageAbsoluteUrl(list[key].posterPicUrl)%>" class="list_pic H-width-100-percent H-display-block" alt="" title="">
+
+                    <div class="H-flexbox-horizontal H-font-size-14 H-padding-vertical-top-20 H-padding-vertical-bottom-10">
+                        <span class="H-flex-item H-font-size-14" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"><%=list[key].name%></span>
+                        <span class="H-flex-item H-text-align-right H-font-size-14 H-theme-font-color-999"><i class="H-icon iconfont H-icon-find "></i><%=list[key].clickNumber%></span>
+                    </div>
+                </div>
+        </li>
+        <%}%>
+    </script>
+
+    <script  type="text/html" id="tablist">
+        <ul id="tab_listbox">
+            <li name="">
+                全部
+            </li>
+            <%
+            for(var i in tablist){
+            %>
+            <li name="<%=tablist[i].dictValue%>">
+                <%=tablist[i].dictName%>
+            </li>
+            <%
+            }
+            %>
+
+        </ul>
+    </script>
+</head>
+<body>
+<div class="H-theme-background-color-white" style="box-shadow:0 0 10px #afafaf;">
+
+    <div class="input_wai">
+        <form action="" onsubmit="return false;" class=" H-position-relative">
+            <div id="ser" class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle H-text-align-center H-theme-font-color-999  H-border-radius-15"  style="">
+                <span class="H-display-block H-width-100-percent H-font-size-14">
+                    <i id="ss_brn" class="H-iconfont H-icon-search H-font-size-14"></i>
+                    <span id="ss_title">请输入产品名称</span>
+                </span>
+            </div>
+            <input onsearch="suosou()" type="search" class="top-input" id="sousuo_byn" placeholder=""/>
+
+            <div class="sanchu" style="display: none;position: absolute;top: 5px;right: 5px;width: 60px;height: 22px;line-height: 22px;font-size:12px;text-align: center">
+                <span class="H-display-block H-font-size-13 H-vertical-middle H-theme-font-color-999 H-padding-horizontal-both-10 H-icon H-display-block H-horizontal-center">
+                    <i class="H-iconfont H-icon-search H-vertical-middle" onclick="suosou()"></i>
+                    <i class="H-iconfont H-vertical-middle">&emsp;</i>
+                    <i class="H-iconfont H-icon-close H-vertical-middle" onclick="quxiao()"></i>
+                </span>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="H-clear-both H-width-100-percent H-display-table H-box-sizing-border-box H-padding-horizontal-left-10 H-theme-font-color-666">
+        <div onclick="gopro_list()" class="H-display-table-cell H-float-left  H-box-sizing-border-box H-width-avg-2 H-padding-horizontal-right-10 H-margin-vertical-bottom-10">
+            <div class="H-border-radius-3 H-overflow-hidden H-position-relative">
+                <img src="../static/img/youcetupian@2x.png" class="H-width-100-percent H-display-block" alt="" title="">
+                <div class="H-position-absolute H-theme-font-color-white" style="display: block;width:100%; text-align:center;top:50%;margin-top: -12px">
+                    <span style="display: inline-block;width: 100px;height: 24px;font-size: 18px;padding-bottom: 5px;">校友企业</span>
+                </div>
+            </div>
+        </div>
+        <div class="H-display-table-cell H-float-left  H-box-sizing-border-box H-width-avg-2 H-padding-horizontal-right-10 H-margin-vertical-bottom-10">
+            <div class="H-border-radius-3 H-overflow-hidden H-position-relative">
+                <img src="../static/img/zuocetupian-@2x.png" class="H-width-100-percent H-display-block" alt="" title="">
+                <div class="H-position-absolute H-theme-font-color-white" style="display: block;width:100%; text-align:center;top:50%;margin-top: -12px">
+                    <span style="display: inline-block;width: 100px;height: 24px;font-size: 18px;padding-bottom: 5px;border-bottom: 1px solid #fff;">校友产品</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="H-flexbox-horizontal H-theme-background-color-white H-position-relative" style="height:36px;border-bottom: 1px solid #3498db">
+        <div id="wrapper">
+            <div id="scroller">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mq_conter_box">
+    <ul class="product_list">
+    </ul>
+</div>
+
+</body>
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script src="../static/js/iscroll.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '校友产品',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 0);
+    }
+
+    var type='';
+
+    // 页面初始化
+    $(function(){
+        // 定义模板标签符
+        H.tppl_flag = ["<%", "%>"];
+        loadtab();
+        $('#wrapper').on('click','li',function(){
+            $(this).addClass('dqa').siblings().removeClass('dqa');
+            type = $(this).attr("name");
+            loadList();
+        });
+    });
+
+
+
+    function loadList () {
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+        $('.product_list').empty();
+
+        B.ready(function(){
+
+            // 下拉刷新上拉加载
+            var page=1;
+
+            $('.mq_conter_box').dropload({
+
+                scrollArea : window,
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-返校动态</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadDownFn : function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "264","content": {"page": \"'+page+'\", "rows": "4","accountNum": \"'+accountNum+'\","type":\"'+type+'\" }}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data);
+                            //H.alert(data.obj.rows.length+'---------------'+data.obj.total);
+                            if(!data.success || data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                                if(!data.success){
+                                    //H.alert(data.msg);
+                                }
+                            }else{
+                                console.log("上拉加载："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.product_list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+    }
+
+    //加载tab字典
+    function loadtab(){
+        B.ready(function(){
+            // 下拉刷新上拉加载
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "267","content": {"dictTypeId":"26"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+
+                    var V_width=window.screen.width/4;
+
+                    if(data.obj && data.obj.length>0) {
+                        var render = H.tppl(H.D("#tablist").innerHTML);
+                        var result = render({tablist: data.obj});
+                        $('#scroller').append(result);
+                        $('#tab_listbox li').eq(0).addClass('dqa');
+                        $('#tab_listbox li').css('width',V_width);
+
+
+                        loadList();
+
+                        $('#scroller').css("width",$('#tab_listbox li').length*V_width+"px");
+                        //出发iscrol的横向滚动
+                        var myScroll;
+                        loaded ();
+                        function loaded () {
+                            myScroll = new IScroll('#wrapper', { scrollX: true, scrollY: false, mouseWheel: true ,preventDefault:false});
+                        }
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+    // 单击跳转校友企业
+    function gopro_list() {
+        H.openWin("校友企业", "alumni_enterprise.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum);
+    }
+
+    // 单机跳转产品详情
+    function go_pro_detail(productId){
+        H.openWin("产品详情", "product_detail.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&productId="+productId);
+    }
+    function suosou(){
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+        $('.product_list').empty();
+        var names = $("#sousuo_byn").val();
+
+        B.ready(function(){
+            var page=1;
+            $('.mq_conter_box').dropload({
+
+                scrollArea : window,
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-返校动态</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadDownFn : function(me){
+
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "264","content": {"page": \"'+page+'\", "rows": "4","accountNum": \"'+accountNum+'\","name":\"'+names+'\", "type":\"'+type+'\" }}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data);
+                            if(!data.success || data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                                if(!data.success){
+                                    //H.alert(data.msg);
+                                }
+                            }else{
+                                console.log("上拉加载："+JSON.stringify(data));
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.product_list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+
+        })
+
+    }
+
+    //搜索框
+    $('.top-input').val('')
+    H.D("#ser").addEventListener("touchend", function (e) {
+        $("#ser").css('width','30px');
+        $('#ss_title').hide();
+        $('.top-input').css('text-align','left');
+        $('.top-input').attr("placeholder", "请输入产品名称");
+    });
+    $('.top-input').focus(function(){
+        $('.sanchu').show();
+        $('.top-input').css("width", ($('form').width()-70) + "px");
+    })
+    function quxiao(){
+        $("#ser").css('width','100%');
+        $('#ss_title').show();
+        $('.top-input').css("width", "100%");
+        $('.top-input').css('text-align','center').val('');
+        $('.top-input').attr("placeholder", " ");
+        suosou();
+        $('.sanchu').hide();
+    }
+
+
+    //验证是否为网址,因为有些图片地址在数据库中并不是一个有效地址
+    function is_website(site_value){
+        var site_value = site_value;
+        var strRegex = "^((https|http)?://)";
+        var re=new RegExp(strRegex);
+        if (re.test(site_value)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function CheckImgExists(imgurl) {
+        var ImgObj = new Image(); //判断图片是否存在
+        ImgObj.src = imgurl;
+        //没有图片，则返回-1
+        if (ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+   // var t = B.getUrlParamByName("t");
+
+
+   /* //ios跳转
+    var rnumber = Math.floor(Math.random()*1000)
+    history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+    window.onpopstate = function(event) {
+        location.reload();
+    };
+    */
+
+    if(!t || t=='null' || t!=1){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                    WeixinJSBridge.call('closeWindow');
+                } else if(ua.indexOf("alipay")!=-1){
+                    AlipayJSBridge.call('closeWebview');
+                }else if(ua.indexOf("baidu")!=-1){
+                    BLightApp.closeWindow();
+                }
+                else{
+                    window.close();
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }
+
+    //ios返回刷新
+    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+    //返回
+    var jsonStr = {
+        "title":"校友产品",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/product/alumni_enterprise.html?accountNum=" + accountNum;
+
+    }
+</script>
+</html>

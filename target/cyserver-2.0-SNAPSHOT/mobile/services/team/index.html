@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>社团列表</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/team.css" rel="stylesheet" type="text/css" />
+
+    <!--bannerTppl-->
+    <script type="text/html" id="bannerTppl">
+        <div class="H-swiper H-width-100-percent H-box-sizing-border-box H-overflow-scrolling" style="height:20.5rem;">
+            <div class="swiper-container  swiper-normal H-position-relative H-width-100-percent H-height-100-percent">
+                <div class="swiper-wrapper">
+                    <%
+                    for(var key in bannerList){
+                    %>
+
+                    <div onclick="lookDetail('<%=bannerList[key].id%>');" class="swiper-slide">
+                        <div style="position: absolute;top:7%;left: 12%;text-align: center; width: 76%;background-color: rgba(0,0,0,0.3);color: #f5f5f3;font-size: 13px;">
+                            <div style="position: absolute;left:0.5%;top:15%; height: 70%; width: 4px; background-color: #00a5e0"></div>
+                            <%=bannerList[key].name%>
+                        </div>
+                        <img class="H-width-100-percent H-height-100-percent"  src="<%=B.getImageAbsoluteUrl(bannerList[key].posterUrl)%>" onerror="javascript:this.src='../static/img/banner@3x.png';">
+                    </div>
+                    <%}%>
+                </div>
+                <div class="swiper-pagination weizhi"></div>
+            </div>
+        </div>
+    </script>
+
+    <!--teamTppl-->
+    <script type="text/html" id="teamTppl">
+        <%
+        for(var key in list){
+        %>
+        <div class="lsit_jihua">
+
+            <img onerror="javascript:this.src='../static/img/banner@3x.png';" onclick="lookDetail('<%=list[key].id%>');" src="<%=B.getImageAbsoluteUrl(list[key].posterUrl)%>">
+
+            <div class="jihua_box H-text-show-row-2">
+                <div class="jihua_wj">
+                    <p onclick="lookDetail('<%=list[key].id%>');" class=""><%=list[key].name%></p>
+                    <%
+                    if(list[key].memberStatus && list[key].memberStatus==10 || list[key].memberStatus && list[key].memberStatus==55){
+                    %>
+                        <div class="listin_btn" style="background: darkgray;border-top:1px solid darkgray;">
+                            待审核
+                        </div>
+                    <%
+                    }else if(list[key].memberStatus && list[key].memberStatus==15){
+                    %>
+                        <div class="listin_btn" onclick="addTeam(this,'<%=list[key].id%>',4)">
+                            接受邀请
+                        </div>
+                    <%
+                    }else if(list[key].memberStatus && list[key].memberStatus==20){
+                    %>
+                        <div class="listin_btn" style="background: darkgray;border-top:1px solid darkgray;">
+                            已加入
+                        </div>
+                    <%
+                    }else{
+                    %>
+                        <div class="listin_btn" onclick="addTeam(this,'<%=list[key].id%>',1,'<%=list[key].memberStatus%>')">
+                            立即加入
+                        </div>
+                    <%
+                    }
+                    %>
+                </div>
+            </div>
+        </div>
+
+
+        <%
+        }
+        %>
+    </script>
+
+</head>
+
+<body class="">
+<div class="H-padding-vertical-bottom-2"></div>
+
+<!-- slide image -->
+<div id="bannerList" style="position: relative;" >
+
+    <div class="qiehuan">
+        <a href="javascript:;" class="dq_shetuan">社团列表</a>
+        |
+        <!--<a href="my_team.html?accountNum='+accountNum+'">我的社团</a>-->
+        <a href="javascript:;" onclick="goMyTeam();">我的社团</a>
+
+    </div>
+</div>
+<!--社团列表-->
+<div class="content list-wraper">
+    <div class="team-list">
+
+        <!--
+        <div class="lsit_jihua">
+            <img src="http://p3.ifengimg.com/cmpp/2017/01/03/09/1da59f24-029e-4bc3-9035-0f0e7cb324c0_size38_w600_h431.jpg">
+            <div class="jihua_box H-text-show-row-2">
+                <div class="jihua_wj">
+                    <p class="">我的社团我的社</p>
+                    <div class="listin_btn">立即加入</div>
+                </div>
+            </div>
+        </div>
+        -->
+
+    </div>
+</div>
+
+
+</body>
+
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    //从社团列表进入详情
+    var detailFlag = 10;
+
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '社团列表',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 0);
+    }
+
+    // 初始化页面
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        B.ready(function(){
+            //判断认证
+            renzhenguser()
+
+            // 初始化banner轮播图
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "252","content": {"page": "1","rows": "3","top":"100","userAccount": "'+accountNum+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    if(data.obj.rows.length > 0){
+                        var render = H.tppl(H.D("#bannerTppl").innerHTML);
+                        var result = render({bannerList:data.obj.rows});
+                        $('#bannerList').append(result);
+                        console.log(data)
+                        // 初始化分页圆点
+                        var swiper = new Swiper('.swiper-normal', {
+                            pagination: '.swiper-pagination',
+                            mode:'horizontal',
+                            autoplayDisableOninteraction: false,
+                            loop: true,
+                            autoplay: 5000
+                        });
+                    }else {
+                        var empty ='<div class="H-swiper H-width-100-percent H-box-sizing-border-box H-overflow-scrolling" style="height:20.5rem;">'+
+                            '<div class="swiper-container  swiper-normal H-position-relative H-width-100-percent H-height-100-percent">'+
+                            '<div class="swiper-wrapper">'+
+                            '<div class="swiper-slide">'+
+                            '   <img class="H-width-100-percent H-height-100-percent"  src="../static/img/banner@3x.png">'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>';
+                        $('#bannerList').append(empty);
+                    }
+
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+            // 下拉刷新上拉加载
+            var page=1;
+            $('.content').dropload({
+                scrollArea : window,
+                domUp : {
+                    domClass   : 'dropload-up',
+                    domRefresh : '<div class="dropload-refresh">↓下拉刷新-社团列表</div>',
+                    domUpdate  : '<div class="dropload-update">↑释放更新-社团列表</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                },
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-返校动态</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadUpFn : function(me){
+                    page=2;
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "252","content": {"page": "1","rows": "5","userAccount": "'+accountNum+'"}}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            //.log("社团列表==="+JSON.stringify(data))
+                            if(data.obj.rows.length == 0){
+                                me.noData(true);
+                            }else{
+                                console.log("下拉刷新："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#teamTppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.team-list').html(result);
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            me.unlock();
+                            me.noData(false);
+
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            // me.resetload();
+
+                        }
+                    });
+                },
+                loadDownFn : function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "252","content": {"page": "'+page+'","rows": "3","userAccount": "'+accountNum+'"}}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(page)
+                            //console.log('{"command": "252","content": {"page": "'+page+'","rows": "3","userAccount": "'+accountNum+'"}}')
+                            if(data.obj.rows.length==0){
+
+                                me.lock();
+                                me.noData(true);
+                            }else{
+//                              alert(JSON.stringify(data.obj.rows[0]))
+                                //console.log("上拉加载："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#teamTppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.team-list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            // me.resetload();
+                            me.noData(true);
+                        }
+                    });
+                },
+                threshold : 50
+            });
+
+
+        });
+    });
+
+    //判断是否已认证
+    var userrz='';
+    function renzhenguser(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj && data.obj.baseInfoId){
+                    userrz = 1;
+                }else{
+                    userrz = 0;
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+
+    $('.listin_btn').click(function () {
+        stopBubble(e)
+    })
+    function stopBubble(e){
+        if(e&&e.stopPropagation){//非IE
+            e.stopPropagation();
+        }
+        else{//IE
+            window.event.cancelBubble=true;
+        }
+    }
+
+    //加入社团
+    function addTeam(ele,teamId,type,memberStatu){
+        if(accountNum=='null' || accountNum=='' || !accountNum){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    H.openWin("登陆页面", "../../wechat/login.html?backUrl="+B.encrypt('../services/team/my_team.html'));
+                };
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else if( userrz!=1 ){
+            //认证提示区分微信端和APP端
+            if (openId && openId != '' && openId != 'null') {
+                H.confirm(function (ret) {
+                    if (ret.buttonIndex == 1) {
+                        H.openWin("认证页面", "../../wechat/verify/class_list.html?accountNum=" + accountNum);
+                    }
+                    ;
+                }, '确认提示：', '尚未认证，是否去认证？');
+            }else {
+                H.alert('亲，您还未认证，请先去认证吧');
+            }
+        }else{
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    B.ready(function () {
+                        //alert('{"command": "251","content": {  "accountNum": "'+accountNum+'",  "associationId": "'+teamId+'", "type": "'+type+'"} }')
+                        $.ajax({
+                            type: 'post',
+                            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                            data:{
+                                jsonStr:'{"command": "251","content": {  "accountNum": "'+accountNum+'",  "associationId": "'+teamId+'", "type": "'+type+'"} }'
+                            },
+                            dataType: 'json',
+                            success: function(data){
+                                console.log(JSON.stringify(data))
+                                if(data.success){
+                                    $(ele).css("background","#a9a9a9");
+                                    //H.toast(null, data.msg, 2000);
+                                    if(type==1 && memberStatu!=25){
+                                        $(ele).html('待审核');
+                                        $(ele).removeAttr('onclick');
+                                    }else if(type==1 && memberStatu==25){
+                                        $(ele).html('已经加入');
+                                        $(ele).removeAttr('onclick');
+                                    }else if(type==4){
+                                        $(ele).html('已经加入');
+                                        $(ele).removeAttr('onclick');
+                                    }else{
+
+                                    }
+
+                                }else{
+
+                                }
+                            },
+                            error: function(xhr, type){
+
+                            }
+                        });
+
+                    })
+                }else{
+
+                }
+            }, '确认提示：', '是否申请加入该社团吗？');
+        }
+
+    }
+
+    // 单击跳转动态详情
+    function goMyTeam() {
+        if(accountNum=='null' || accountNum=='' || !accountNum){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    H.openWin("登陆页面", "../../wechat/login.html?backUrl="+B.encrypt('../services/team/my_team.html'));
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else if( userrz!=1 ){
+            //认证提示区分微信端和APP端
+            if (openId && openId != '' && openId != 'null') {
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        H.openWin("认证页面", "../../wechat/verify/class_list.html?accountNum=" + accountNum);
+                    }
+                }, '确认提示：', '尚未认证，是否去认证？');
+            }else {
+                H.alert('亲，您还未认证，请先去认证吧');
+            }
+        }else{
+            H.openWin("我的社团", "my_team.html?accountNum="+accountNum);
+        }
+    }
+
+    function lookDetail(teamId){
+        H.openWin("社团详情", "detail.html?accountNum="+accountNum+"&associationId="+teamId +"&detailFlag=10");
+    }
+
+
+//    var state = { //这里可以是你想给浏览器的一个State对象，为后面的StateEvent做准备。
+//        title : "HTML 5 History API simple demo",
+//        url : "123"
+//
+//    };
+  /*  var t = B.getUrlParamByName("t");
+    var rnumber = Math.floor(Math.random()*1000)
+    history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+    window.onpopstate = function(event) {
+        location.reload();
+        //alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
+        //alert("location: " + document.location);
+    };
+*/
+
+  /*  if(!t || t=='null' || t!=1){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                    WeixinJSBridge.call('closeWindow');
+                } else if(ua.indexOf("alipay")!=-1){
+                    AlipayJSBridge.call('closeWebview');
+                }else if(ua.indexOf("baidu")!=-1){
+                    BLightApp.closeWindow();
+                }
+                else{
+                    window.close();
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }*/
+
+    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+    //返回
+    var jsonStr = {
+        "title":"社团列表",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+
+    }
+
+</script>
+</html>
+

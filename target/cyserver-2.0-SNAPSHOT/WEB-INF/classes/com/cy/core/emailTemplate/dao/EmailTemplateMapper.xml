@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.emailTemplate.dao.EmailTemplateMapper">
+
+	<select id="list" parameterType="com.cy.core.emailTemplate.entity.EmailTemplate" resultType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		select * from cy_email_template
+		<where>
+			<if test="templateName!=null and templateName!=''">
+				templateName like concat('%',#{templateName},'%')
+			</if>
+			<if test="paramNum != null and paramNum != ''">
+				and templateType = (#{paramNum} + 0)
+			</if>
+		</where>
+		order by templateId desc limit #{start},#{rows}
+	</select>
+	
+	
+	<select id="count" parameterType="com.cy.core.emailTemplate.entity.EmailTemplate" resultType="long">
+		select count(templateId) from cy_email_template
+		<where>
+			<if test="templateName!=null and templateName!=''">
+				templateName like concat('%',#{templateName},'%')
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		insert into cy_email_template(
+			templateType,
+			templateName,
+			templateContent,
+			createDate
+			) 
+			value(
+			#{templateType},
+			#{templateName},
+			#{templateContent},
+			now()
+			)
+	</insert>
+	
+	
+	<delete id="delete" parameterType="list">
+		delete from cy_email_template where templateId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+	
+	
+	<update id="update" parameterType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		update cy_email_template 
+		<set>
+			<if test="templateType!=null and templateType!=''">
+				templateType = #{templateType},
+			</if>
+			<if test="paramNum != null and paramNum != ''">
+				templateType = #{paramNum},
+			</if>
+			<if test="templateName!=null and templateName!=''">
+				templateName = #{templateName},
+			</if>
+			<if test="templateContent!=null and templateContent!=''">
+				templateContent = #{templateContent},
+			</if>
+			
+		</set>
+		where templateId = #{templateId}
+	</update>
+	
+	<select id="selectById" parameterType="long" resultType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		select * from cy_email_template where templateId = #{id}
+	</select>
+	
+	<select id="getAllTemplate" resultType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		select * from cy_email_template order by templateId desc
+	</select>
+	
+	
+	<select id="getAllTemplateVariable" resultType="com.cy.core.dict.entity.Dict">
+		select dict_name as dictName, dict_value as dictValue from cy_dict where dict_type_id = (select dict_type_id from cy_dict_type where dict_type_value = '201') order by dict_value
+	</select>
+	
+	<select id="selectByTemplateName" resultType="com.cy.core.emailTemplate.entity.EmailTemplate" parameterType="com.cy.core.emailTemplate.entity.EmailTemplate">
+		select * from cy_email_template 
+		<where>
+			<if test="templateName!=null and templateName!=''">
+				templateName=#{templateName}
+			</if>
+			<if test="templateId!=0">
+				and templateId!=#{templateId}
+			</if>
+		</where>
+	</select>
+</mapper>

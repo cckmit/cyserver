@@ -1,0 +1,169 @@
+	
+	.meng{
+    top: 3.5rem;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #484848;
+    z-index: 10;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+
+}
+	.live-int {
+		width: 70%;
+		height: 3.4rem;
+		text-align: center;
+		line-height: 3.4rem;
+		font-size: 1.4rem;
+		color: #ffffff;
+		background: #333333;
+		opacity: 0.7;
+		filter: alpha(opacity=70);
+		top: 70%;
+		left: 15%;
+		z-index: 20;
+		border-radius: .5rem;
+	}
+	.nav{
+		width: 100%;
+		height: 3.4rem;
+		background: #ffffff;
+		border-bottom: .1rem solid #f8f8f8;
+		z-index: 11;
+		top: 0;
+		left: 0;
+
+	}
+	.nav div{
+		width: 33.333333%;
+		height: 3.4rem;
+		line-height: 3.4rem;
+		text-align: center;
+		font-size: 1.2rem;
+		color: #555555;
+		z-index: 11
+		 
+
+	}
+	.nav div img{
+		width: 1rem;
+		height: 0.6rem;
+		margin-left: .4rem;
+		 
+	}
+
+	.sort{
+		top:3.5rem;
+		left: 0;
+		width: 100%;
+		height: 6rem;
+		background: #ffffff;
+		z-index: 11
+	}
+	.sort p{
+		width: 100%;
+		height: 3rem;
+		line-height: 3rem;
+		padding-left: 2rem;
+		box-sizing: border-box;
+		font-size: 1.1rem;
+		color: #333333;
+		border-bottom: .1rem solid #f8f8f8;
+
+	}
+	.select{
+		width: 100%;
+		z-index: 11;
+		top:3.5rem;
+		left: 0;		
+
+	}
+
+	.checkboxFour {
+ 	margin-top: .8rem;
+	width: 1.4rem;
+	height: 1.4rem; 
+	border-radius: 100%;
+	position: relative;
+	margin-right: 1rem
+	 
+	}
+	.checkboxFour label {
+		display: block;
+		width: 1.4rem;
+		height: 1.4rem;
+		border-radius: 2px;
+	 
+		-webkit-transition: all .5s ease;
+		-moz-transition: all .5s ease;
+		-o-transition: all .5s ease;
+		-ms-transition: all .5s ease;
+		transition: all .5s ease; 
+		z-index: 11; 
+		background: #fff; 
+		-webkit-box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+		-moz-box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+		box-shadow:inset 0px 1px 3px rgba(0,0,0,0.5);
+	}
+	.checkboxFour input[type=radio]:checked + label {
+		background: url(../images/true.png) no-repeat center center;
+		background-size: 1rem 1rem;
+	}
+	.selist{
+		width: 100%;
+		height: 3rem;
+		padding-left: 2rem; 
+		font-size: 1.1rem;
+		color: #333333;
+		background: #ffffff;
+		box-sizing: border-box; 
+		border-bottom: .1rem solid #f8f8f8;
+		line-height: 3rem;
+
+	}
+	.selbtn {
+	    width: 100%;
+	    height: 4rem;
+	    line-height: 4rem;
+	    border-bottom: .1rem solid #f8f8f8;
+	    background: #ffffff
+	}
+	.selbtn span {
+	   width: 4rem;
+	   height: 2rem;
+	   line-height: 2rem;
+	   text-align: center;
+	   color: #ffffff;
+	   background: #d9544f;
+	   border-radius: .4rem;
+	   margin-top: 1rem
+	}
+		
+	.selbtn1{
+		margin-left: 5rem
+	}	
+	.selbtn2{
+		margin-right: 5rem
+	}
+
+	.org{
+		top: 1.3rem;
+		left: 1.3rem;
+		width: 3rem;
+		height: 1.6rem;
+		font-size: 1rem;
+		line-height:1.6rem;
+		text-align: center;
+		background: #0f88eb;
+		color: #ffffff;
+		z-index: 9;
+		border-radius: 0.3rem;
+	}
+
+	.box-content{
+		width: 100%;
+
+	}

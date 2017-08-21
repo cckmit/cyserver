@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>手动输入申请新班级</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+    </style>
+
+</head>
+<body class="H-theme-background-color-white">
+<div class="H-padding-10">
+    <ul class="main_form">
+
+        <!--待输入信息-->
+        <li class="text_item H-margin-vertical-bottom-10">输入信息</li>
+        <li class="input_item H-flexbox-horizontal H-margin-vertical-bottom-10">
+            <input type="text"
+                   class="school_name H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" placeholder="请输入您的学校">
+        </li>
+        <li class="input_item H-flexbox-horizontal H-margin-vertical-bottom-10">
+            <input type="text"
+                   class="depart_name H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" placeholder="请输入您的院系">
+        </li>
+        <li class="select_class select_item H-flexbox-horizontal H-margin-vertical-bottom-10 H-border-radius-9">
+            <select type="text"
+                    class="select_content_3 select_box H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" style="color:#2b2b2b;" >
+                <option value = "" class="H-theme-font-color-999">请选择您的年级</option>
+            </select>
+        </li>
+        <li class="input_item H-flexbox-horizontal H-margin-vertical-bottom-10">
+            <input type="text"
+                   class="class_name H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" placeholder="请输入您的班级">
+        </li>
+
+        <!--非手动输入-->
+        <li onclick="goVerifySelect()" class="text_item H-margin-vertical-bottom-10 H-text-align-right">非手动录入</li>
+
+        <!--btn-->
+        <div onclick="applyVerify()" class="H-padding-15 H-margin-vertical-top-10">
+            <button class="H-button H-width-100-percent H-font-size-16 H-outline-none H-padding-vertical-both-10
+                H-padding-horizontal-both-20  H-theme-border-color16 H-border-radius-3"
+                    style="background-color:#3498db;color:#fefefe">申请认证</button>
+        </div>
+
+
+
+    </ul>
+
+
+</div>
+
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    var accountNum = B.getUrlParamByName("accountNum");
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("verify/verify_hand.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '手動輸入',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        var currentYear = new Date().getFullYear();
+
+        for(var i = currentYear; i >= 1949; i--){
+            $(".select_content_3").append('<option class="item H-theme-font-color-999" value="' + i + '">' + i + '级</option>');
+        }
+    });
+
+
+    //"手动"/"选择"输入的页面,点击 "申请认证",提交表单,申请加入该班级
+    function applyVerify() {
+
+        //获取页面上的值
+        var schoolN = $(".school_name").val();  //获得学校的值
+        var departN = $(".depart_name").val(); //获得学院的值
+        var gradeN = $(".select_content_3 option:selected").text(); //获得年级的值
+        var classN = $(".class_name").val(); //获得班级的值
+
+        console.log("gradeN="+gradeN);
+
+
+        //校验 该值都不能为空,不为null
+        if(schoolN == null || $.trim(schoolN)=="") {
+            H.alert("请输入您的学校");
+        }else if(departN == null || $.trim(departN)=="") {
+            H.alert("请输入您的学院");
+        }else if(gradeN == null || $.trim(gradeN)=="") {
+            H.alert("请输入您的年级");
+        }else if(classN == null || $.trim(classN)=="") {
+            H.alert("请输入您的班级");
+        }
+
+
+        if(schoolN!="" && departN!="" && gradeN!=""&& classN!="") {
+
+            var gradeNum = gradeN.substring(0,4); //对年级进行处理, 取其中的数字
+
+            submitForm(schoolN, departN, gradeNum, classN);
+        }else{
+
+        }
+
+
+
+    }
+
+    function submitForm(schoolN, departN, gradeNum, classN) {
+
+
+        B.ready(function () {
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: '{"command":"212","content":{"schoolName":"'+schoolN+'","departName":"'+departN+'","gradeName":"'+gradeNum+'","className":"'+classN+'","accountNum":"'+accountNum+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    //请求成功后,提示用户 请求成功
+                    if(data && data.success) {
+                        H.alertTipForSuccuss(function () {
+                            //申请成功后 跳转至 申请中的列表
+                            H.openWin("申请中的列表","verify_list.html?ts="+B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+
+                        },data.msg)
+
+                    }else{
+                        H.alertTipForFail(function () {
+                            //申请未成功 跳转至 未通过的班级列表
+                            H.openWin("未通过的班级列表","verify_list.html?&ts="+B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+
+                        },data.msg)
+
+                    }
+
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                    alert("加载出错");
+                }
+            });
+        })
+    }
+
+    //点击"非手动输入", 进入"信息认证" 选择学习经历申请页面
+    function goVerifySelect(){
+        H.openWin("非手动输入申请新班级","verify_select.html?ts="+B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+    }
+</script>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>捐赠查询</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <link href="../jslib/hui/plugins/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        body{
+            background-color:#ebebeb;
+            color:#2b2b2b;
+        }
+
+        .txt{
+            margin: 0;
+            padding: 10px;
+            font-size:14px;
+        }
+        .item_wrap{
+            padding:20px 10px;
+
+
+        }
+        .item_box{
+            font-size:16px;
+            line-height: 16px;
+            margin-bottom:20px;
+        }
+
+        .img_bg{
+            border: 10px solid #ebebeb;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <p class="txt">捐赠信息</p>
+    <div class="item_wrap H-theme-background-color-white">
+        <div class="item_box H-flexbox-horizontal">
+            <div class="H-flex-item H-text-align-left">项目名称: </div>
+            <div class="H-flex-item H-text-align-right">武汉大学基金会</div>
+        </div>
+        <div class="item_box H-flexbox-horizontal">
+            <div class="H-flex-item H-text-align-left">捐赠单号: </div>
+            <div class="H-flex-item H-text-align-right">1201010</div>
+        </div>
+        <div class="item_box H-flexbox-horizontal">
+            <div class="H-flex-item H-text-align-left">收款单位: </div>
+            <div class="H-flex-item H-text-align-right">武汉大学基金会</div>
+        </div>
+        <div class="item_box H-flexbox-horizontal">
+            <div class="H-flex-item H-text-align-left">收款金额: </div>
+            <div class="H-flex-item H-text-align-right" style="color:#fa9641;">￥10.00元</div>
+        </div>
+    </div>
+    <p class="txt">支付方式</p>
+    <div class="H-theme-background-color-white H-text-align-center H-padding-vertical-both-10">
+        <img src="img/wechat.png" class="img_bg" style="height: 84px;width: 84px;"/>
+    </div>
+
+
+</body>
+
+<script type="text/javascript">
+    // 接收url中的参数
+    var id = B.getUrlParamByName("donationId");
+    var accountNum = B.getUrlParamByName("accountNum");
+    var openId = localStorage.getItem("openId");
+
+    if(openId && openId != 'null') {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        $("title").html("订单详情");
+    }else{
+        //app或网页
+        $("title").html('{"title":"订单详情","backUrl":"/foundation/donate_detail.html?accountNum=' + accountNum + '&id'+id+'","backTitle":"返回"}');
+    }
+
+
+    $(function(){
+        H.tppl_flag = ["<%", "%>"];
+
+        B.ready(function(){
+            //查询订单详情
+            dingdanXq();
+
+        });
+    });
+
+    //查询订单详情
+    function dingdanXq(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "229","content": {"id": "'+id+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                console.log(JSON.stringify(data));
+                if(data.obj){
+                    $('.xiangmu_name').html(data.obj.project.projectName);
+                    $('.xiangmu_danhao').html(data.obj.orderNo);
+                    $('.shoukuan_danwei').html('布吉岛');
+                    $('.shoukuan_jine').html('￥'+data.obj.money+'元');
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+</script>
+</html>

@@ -1,0 +1,12 @@
+
+<div class="find_qz" ng-show="gz_type">
+    <ul>
+        <ion-radio  ng-repeat="list in gongzuo"
+                    ng-value="list.value"
+                    ng-model="typedata.value"
+                    ng-change="gongzuoChange(list)"
+                    name="server-side">
+            {{list.text}}
+        </ion-radio>
+    </ul>
+</div>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.register.dao.RegisterMapper">
+
+	<resultMap type="com.cy.core.register.entity.Register" id="registerResultMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="gender" property="gender" />
+		<result column="birthday" property="birthday" />
+		<result column="provice" property="provice" />
+		<result column="city" property="city" />
+		<result column="industry" property="industry" />
+		<result column="work" property="work" />
+		<result column="post" property="post" />
+		<result column="degree" property="degree" />
+		<result column="in_year" property="inYear" />
+		<result column="leave_year" property="leaveYear" />
+		<result column="number" property="number" />
+		<result column="school" property="school" />
+		<result column="department" property="department" />
+		<result column="gradeName" property="gradeName" />
+		<result column="className" property="className" />
+		<result column="major" property="major" />
+		<result column="address" property="address" />
+		<result column="zip_code" property="zipCode" />
+		<result column="office_phone" property="officePhone" />
+		<result column="family_phone" property="familyPhone" />
+		<result column="mobile" property="mobile" />
+		<result column="email" property="email" />
+		<result column="visit_history_museum" property="visitHistoryMuseum" />
+		<result column="visit_money_museum" property="visitMoneyMuseum" />
+		<result column="visit_college" property="visitCollege" />
+		<result column="self_drive" property="selfDrive" />
+		<result column="license_plate" property="licensePlate" />
+		<result column="with_family" property="withFamily" />
+		<result column="adult_number" property="adultNumber" />
+		<result column="children_number" property="childrenNumber" />
+		<result column="user_id" property="userId" />
+
+		<result column="x_name" property="x_name" />
+		<result column="x_phone" property="x_phone" />
+		<result column="x_email" property="x_email" />
+		<result column="x_address" property="x_address" />
+		<result column="x_school" property="x_school" />
+		<result column="x_depart" property="x_depart" />
+		<result column="x_grade" property="x_grade" />
+		<result column="x_clazz" property="x_clazz" />
+		<result column="x_sex" property="x_sex" />
+		<result column="x_position" property="x_position" />
+		<result column="x_workUnit" property="x_workUnit" />
+		<result column="x_major" property="x_major" />
+
+	</resultMap>
+
+
+	<resultMap type="java.util.Map" id="registerMap">
+
+	</resultMap>
+
+
+	<!-- select部分 -->
+	<sql id="register_select">
+		select
+		r.*
+		from cy_register r
+		LEFT JOIN cy_user_info u on r.user_id = u.user_id
+	</sql>
+
+	<sql id="register_select_count">
+		select count(r.id)
+		from cy_register r
+		LEFT JOIN cy_user_info
+		u on r.user_id = u.user_id
+	</sql>
+
+
+	<!-- 条件部分 -->
+	<sql id="register_where">
+		<where>
+			<if test="name!=null and name!=''"><!-- 姓名 -->
+				and x_name like concat('%',#{name},'%')
+			</if>
+			<if test="gender!=null and gender!=''"><!-- 性别 -->
+				and x_sex = #{gender}
+			</if>
+			<if test="city!=null and city!=''"><!-- 城市 -->
+				and x_address like concat('%',#{city},'%')
+			</if>
+			<if test="deptId!=null and deptId!=''"><!-- 根据学校查询 -->
+				and r.user_id like concat('%',#{deptId},'%')
+			</if>
+			<if test="majorId!=null and majorId!=0"><!-- 根据专业查询 -->
+				and u.majorId = #{majorId}
+			</if>
+		</where>
+	</sql>
+
+
+	<!-- 查询返校报名列表分页数据 -->
+	<select id="query" parameterType="map" resultMap="registerResultMap">
+		<include refid="register_select" />
+		<include refid="register_where" />
+		limit #{start},#{rows}
+	</select>
+
+	<!-- 查询返校报名数量 -->
+	<select id="count" parameterType="map" resultType="long">
+		<include refid="register_select_count" />
+		<include refid="register_where" />
+	</select>
+
+	<select id="queryAll" resultMap="registerResultMap">
+		SELECT * FROM cy_register
+	</select>
+
+	<select id="getById" parameterType="long" resultMap="registerResultMap">
+		<include refid="register_select" />
+		where id=#{id}
+	</select>
+
+	<insert id="add" parameterType="com.cy.core.register.entity.Register">
+		INSERT INTO cy_register ( visit_history_museum, visit_money_museum,
+		visit_college, self_drive, license_plate, with_family, adult_number,
+		children_number,
+		user_id,x_name,x_phone,x_email,x_address,x_school,x_depart,x_grade,x_clazz,x_sex,x_major,x_workUnit,x_position)
+		VALUES ( #{visitHistoryMuseum}, #{visitMoneyMuseum}, #{visitCollege},
+		#{selfDrive}, #{licensePlate}, #{withFamily}, #{adultNumber},
+		#{childrenNumber},
+		#{userId},#{x_name},#{x_phone},#{x_email},#{x_address},#{x_school},#{x_depart},#{x_grade},#{x_clazz},#{x_sex},#{x_major},#{x_workUnit},#{x_position});
+	</insert>
+
+	<update id="update" parameterType="com.cy.core.register.entity.Register">
+		update cy_register
+		<set>
+			<if test="visitHistoryMuseum!=null">
+				visit_history_museum=#{visitHistoryMuseum},
+			</if>
+
+			<if test="visitMoneyMuseum!=null">
+				visit_money_museum=#{visitMoneyMuseum},
+			</if>
+
+			<if test="visitCollege!=null">
+				visit_college=#{visitCollege},
+			</if>
+
+			<if test="selfDrive!=null">
+				self_drive=#{selfDrive},
+			</if>
+
+			<if test="licensePlate!=null and licensePlate!=''">
+				license_plate=#{licensePlate},
+			</if>
+
+			<if test="withFamily!=null">
+				with_family=#{withFamily},
+			</if>
+
+			<if test="adultNumber!=null">
+				adult_number=#{adultNumber},
+			</if>
+
+			<if test="childrenNumber!=null">
+				children_number=#{childrenNumber},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<delete id="delete" parameterType="list">
+		delete from cy_register where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+</mapper>

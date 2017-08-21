@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+
+    
+    <title></title>
+
+	<style type="text/css">
+		body{font-size:12px}
+		@media screen and (min-width:321px) and (max-width:375px){body{font-size:14px}}
+		@media screen and (min-width:376px) and (max-width:414px){body{font-size:16px}}
+		@media screen and (min-width:415px) and (max-width:639px){body{font-size:18px}}
+		@media screen and (min-width:640px) and (max-width:719px){body{font-size:20px}}
+		@media screen and (min-width:720px) and (max-width:749px){body{font-size:22.5px}}
+		@media screen and (min-width:750px) and (max-width:799px){body{font-size:23.5px}}
+		@media screen and (min-width:800px){body{font-size:25px}}
+
+
+		body{
+			background: #ece8e8;
+		}
+
+		.cd_box{
+			/*padding: 0.2rem 0.1rem;*/
+			/*margin-top: 4.3rem;*/
+			padding: 20px;
+			margin-top: 200px;
+		}
+		.cg_wenz{
+			/*font-size: 0.75rem;*/
+			font-size:35px;
+			text-align: center;
+			color: #f52525;
+			font-weight: bold;
+		}
+		.cg_ty{
+			/*font-size: 0.3rem;*/
+			font-size: 16px;
+			color: #333333;
+			text-decoration: none;
+		}
+		.cg_ty:hover{
+			text-align: center;
+			color: #333333;
+		}
+		.time{
+			color: #f52525;
+		}
+	</style>
+</head>
+<body>
+	<div class="cd_box">
+		<p class="cg_wenz">抱歉,支付失败</p>
+		<!--<p style="text-align: center;">
+			<a href="javascript:;" class="cg_ty">
+				<span class="time">3</span>秒后自动跳转到首页
+			</a>
+		</p>-->
+	</div>
+</body>
+<script src="../../js/jquery.min.js" type="text/javascript"></script>
+<script>
+	//动态设置html跟字体大小！ 当前屏幕宽度/7.5(假设750px的设计稿跟字体100，设计稿最大宽度7.5rem,
+	//7.5！  css中：375px/字体大小=7.5
+	document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+	
+	var wait = 3;
+	function times(){
+		if(wait=="0"){
+			location.href="false.html";
+			
+		}
+		var val=$(".time")
+		val.text(wait);
+		wait--;
+		setTimeout(function(){
+			times();
+		},1000)
+	}
+	$(function(){
+		    //自动跳转
+			//times();
+	})
+
+	//ios返回刷新
+//	var t = B.getUrlParamByName("t");
+//	$(function () {
+//		var u = navigator.userAgent, app = navigator.appVersion;
+//		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//		var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//		if (isAndroid) {
+//
+//		}
+//		if (isIOS) {
+//			var rnumber = Math.floor(Math.random()*1000)
+//			history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//			window.onpopstate = function(event) {
+//				location.reload();
+//			};
+//		}
+//	});
+</script>
+</html>

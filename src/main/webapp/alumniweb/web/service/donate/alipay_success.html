@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>支付成功</title>
+		<style>
+			body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td { margin:0; padding:0; }
+			body { font-size:12px; color:#666; font-family:Verdana, Microsoft YaHei, Simsun; background:#fff; line-height:24px; }
+			fieldset, img { border:0; }
+			ol, ul { list-style:none; }
+			h1, h2, h3, h4, h5, h6{ font-size:100%; }
+			em { font-style:normal; }
+			a{ color: #666; text-decoration:none; }
+			a:hover { color: #f60; text-decoration:none; }
+			input, button, select, textarea { outline:none; }
+			
+			body{
+				background: #fafafa;
+			}
+			.fyes{
+			    margin-top: 200px;
+			    font-size: 25px;
+			    text-align: center;
+			    color: #4752e2;
+			}
+			.clickYm{
+				text-align: center;
+				margin-top: 15px;
+				font-size: 16px;
+			}
+			.lianjie{
+				color: #4094ff;
+			}
+			.time{
+				color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<p class="fyes">
+			恭喜您支付成功
+		</p>
+		<p class="clickYm"><a class="lianjie" href="myDonate.html">点击跳转页面,</a><span class="time"> </span>后自动跳转</p>
+	</body>
+	<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
+	<script>
+		$(function(){
+			times(5);
+		})
+		function times(t){
+			$('.time').html(t+'秒');
+			setTimeout(function(){
+				if(t==1){
+					window.location.href='myDonate.html'
+				}
+				times(t-1);
+			},1000);
+		}
+	</script>
+</html>

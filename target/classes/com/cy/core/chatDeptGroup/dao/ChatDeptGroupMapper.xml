@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.chatDeptGroup.dao.ChatDeptGroupMapper">
+
+    <resultMap type="com.cy.core.chatDeptGroup.entity.ChatDeptGroup" id="chatDeptGroupResultMap">
+        <id column="id" property="id"/>
+        <result column="dept_id" property="deptId"/>
+		<result column="group_id" property="groupId"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <select id="query" parameterType="com.cy.core.chatDeptGroup.entity.ChatDeptGroup" resultMap="chatDeptGroupResultMap">
+        select c.*
+       	from cy_chat_dept_group c
+        WHERE c.del_flag = '0'
+			<if test="deptId != null and deptId != ''">
+				and c.dept_id= #{deptId}
+			</if>
+			<if test="groupId!= null and groupId!= ''">
+				and c.group_id= #{groupId}
+			</if>
+        order by c.update_date desc
+		<!-- if test="start != null and start != '' and rows != null and rows != ''">
+			limit #{start},#{rows}
+		</if -->
+    </select>
+
+
+    <select id="count" parameterType="com.cy.core.chatDeptGroup.entity.ChatDeptGroup" resultType="long">
+        select count(c.id) from cy_chat_dept_group c
+        WHERE c.del_flag = '0'
+		<if test="deptId != null and deptId != ''">
+			and c.dept_id= #{deptId}
+		</if>
+		<if test="groupId!= null and groupId!= ''">
+			and c.group_id= #{groupId}
+		</if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="chatDeptGroupResultMap">
+        select c.*
+        from cy_chat_dept_group c 
+       	where c.id=#{id}
+    </select>
+
+	<insert id="insert">
+		INSERT INTO cy_chat_dept_group(
+			id,
+			dept_id,
+			group_id,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{deptId},
+			#{groupId},
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.cy.core.chatDeptGroup.entity.ChatDeptGroup">
+        update cy_chat_dept_group set 
+		<if test="deptId! = null and deptId! = ''">
+			dept_id = #{deptId} ,
+		</if>
+		<if test="groupId! = null and groupId! = ''">
+			group_id = #{groupId} ,
+		</if>
+		<if test="updateBy! = null and updateBy! = ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks! = null and remarks! = ''">
+			remarks = #{remarks} ,
+		</if>
+			update_date = now()
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="list">
+        update cy_chat_dept_group
+		set
+			del_flag=1,
+			update_date = now()
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+    <delete id="delete" parameterType="com.cy.core.chatDeptGroup.entity.ChatDeptGroup">
+        update cy_chat_dept_group 
+        set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+        where id = #{id}
+    </delete>
+
+</mapper>

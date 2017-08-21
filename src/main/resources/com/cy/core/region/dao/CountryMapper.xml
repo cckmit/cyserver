@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.region.dao.CountryMapper">
+	<resultMap type="com.cy.core.region.entity.Country" id="countryResultMap">
+		<id column="id" property="id" />
+		<result column="countryName" property="countryName" />
+		<result column="orderId" property="orderId" />
+		<result column="level" property="level" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+		<result column="delstate" property="delstate" />
+	</resultMap>
+	<select id="selectAll" resultMap="countryResultMap">
+		select * from cy_country
+	</select>
+	
+	<insert id="save" parameterType="com.cy.core.region.entity.Country"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		cy_country(countryName,orderId,level,createuser,createtime)
+		values(#{countryName},#{orderId},#{level},#{createuser},#{createtime})
+	</insert>
+
+	<update id="update" parameterType="com.cy.core.region.entity.Country">
+		update cy_country
+		<set>
+			<if test="countryName !=null and countryName !=''">
+				countryName = #{countryName},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				orderId = #{orderId},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+			<if test="createuser !=null and createuser !=''">
+				createuser = #{createuser},
+			</if>
+			<if test="createtime !=null and createtime !=''">
+				createtime = #{createtime},
+			</if>
+			<if test="updateuser !=null and updateuser !=''">
+				updateuser = #{updateuser},
+			</if>
+			<if test="updatetime !=null and updatetime !=''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="delstate !=null and delstate !=''">
+				delstate = #{delstate}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="countByCountryName" parameterType="com.cy.core.region.entity.Country" resultType="int">
+		select count(id) from cy_country
+		<where>
+			<if test="id !=null and id !=''">
+				and id != #{id}
+			</if>
+			<if test="countryName !=null and countryName !=''">
+				and countryName = #{countryName}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectCountryList" parameterType="map" resultMap="countryResultMap">
+		SELECT
+			c.id,
+			c.countryName,
+			c.orderId,
+			c.level as 'level',
+			c.createuser,
+			c.createtime,
+			c.updateuser,
+			c.updatetime,
+			c.delstate
+		FROM
+			cy_country c
+		<where>
+			<if test="id!=null and id!=''">
+				and c.id = #{id}
+			</if>
+			<if test="countryName!=null and countryName!=''">
+				and c.countryName = #{countryName}
+			</if>
+			<if test="orderId!=null and orderId!=''">
+				and c.orderId = #{orderId}
+			</if>
+			<if test="level!=null and level!=''">
+				and c.level = #{level}
+			</if>
+			<if test="createuser!=null and createuser!=''">
+				and c.createuser = #{createuser}
+			</if>
+			<if test="createtime!=null and createtime!=''">
+				and c.createtime = #{createtime}
+			</if>
+			<if test="updateuser!=null and updateuser!=''">
+				and c.updateuser = #{updateuser}
+			</if>
+			<if test="updatetime!=null and updatetime!=''">
+				and c.updatetime = #{updatetime}
+			</if>
+			<if test="delstate!=null and delstate!=''">
+				and c.delstate = #{delstate}
+			</if>
+			<if test="delstate ==null or delstate ==''">
+				and c.delstate = '0'
+			</if>
+		</where>
+	</select>
+	
+	<update id="delete" parameterType="com.cy.core.region.entity.Country">
+		update cy_country set delstate = '1' where id = #{id}
+	</update>
+
+	<select id="selectByCountryId" parameterType="com.cy.core.region.entity.Country" resultMap="countryResultMap">
+		select * from cy_country where id = #{id}
+	</select>
+
+</mapper>

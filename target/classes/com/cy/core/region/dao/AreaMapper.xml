@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.region.dao.AreaMapper">
+	<resultMap type="com.cy.core.region.entity.Area" id="areaResultMap">
+		<id column="id" property="id" />
+		<result column="areaName" property="areaName" />
+		<result column="postCode" property="postCode" />
+		<result column="cityId" property="cityId" />
+		<result column="level" property="level" />
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+		<result column="delstate" property="delstate" />
+	</resultMap>
+	<select id="selectByCityId" parameterType="int" resultMap="areaResultMap">
+		select * from cy_area where cityId=#{cityId}
+	</select>
+	
+	<insert id="save" parameterType="com.cy.core.region.entity.Area"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		cy_area(cityId,areaName,postCode,level,createuser,createtime)
+		values(#{cityId},#{areaName},#{postCode},#{level},#{createuser},#{createtime})
+	</insert>
+	
+	<update id="update" parameterType="com.cy.core.region.entity.Area">
+		update cy_area
+		<set>
+			<if test="cityId !=null and cityId !=''">
+				cityId = #{cityId},
+			</if>
+			<if test="areaName !=null and areaName !=''">
+				areaName = #{areaName},
+			</if>
+			<if test="postCode !=null and postCode !=''">
+				postCode = #{postCode},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+			<if test="createuser !=null and createuser !=''">
+				createuser = #{createuser},
+			</if>
+			<if test="createtime !=null and createtime !=''">
+				createtime = #{createtime},
+			</if>
+			<if test="updateuser !=null and updateuser !=''">
+				updateuser = #{updateuser},
+			</if>
+			<if test="updatetime !=null and updatetime !=''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="delstate !=null and delstate !=''">
+				delstate = #{delstate}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<select id="countByAreaName" parameterType="com.cy.core.region.entity.Area" resultType="int">
+		select count(id) from cy_area
+		<where>
+			<if test="id !=null and id !=''">
+				and id != #{id}
+			</if>
+			<if test="areaName !=null and areaName !=''">
+				and areaName = #{areaName}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectAreaList" parameterType="map" resultMap="areaResultMap">
+		SELECT
+			a.id,
+			a.cityId,
+			a.areaName,
+			a.postCode,
+			a.level as 'level',
+			a.createuser,
+			a.createtime,
+			a.updateuser,
+			a.updatetime,
+			a.delstate
+		FROM
+			cy_area c
+		<where>
+			<if test="id !=null and id !=''">
+				and a.id = #{id}
+			</if>
+			<if test="cityId !=null and cityId !=''">
+				and a.cityId = #{cityId}
+			</if>
+			<if test="areaName !=null and areaName !=''">
+				and a.areaName = #{areaName}
+			</if>
+			<if test="postCode !=null and postCode !=''">
+				and a.postCode = #{postCode}
+			</if>
+			<if test="level !=null and level !=''">
+				and a.level = #{level}
+			</if>
+			<if test="createuser !=null and createuser !=''">
+				and a.createuser = #{createuser}
+			</if>
+			<if test="createtime !=null and createtime !=''">
+				and a.createtime = #{createtime}
+			</if>
+			<if test="updateuser !=null and updateuser !=''">
+				and a.updateuser = #{updateuser}
+			</if>
+			<if test="updatetime !=null and updatetime !=''">
+				and a.updatetime = #{updatetime}
+			</if>
+			<if test="delstate !=null and delstate !=''">
+				and a.delstate = #{delstate}
+			</if>
+			<if test="delstate ==null or delstate ==''">
+				and i.delstate = '0'
+			</if>
+		</where>
+	</select>
+	
+	<update id="delete" parameterType="com.cy.core.region.entity.Area">
+		update cy_area set delstate = '1' where id = #{id}
+	</update>
+</mapper>

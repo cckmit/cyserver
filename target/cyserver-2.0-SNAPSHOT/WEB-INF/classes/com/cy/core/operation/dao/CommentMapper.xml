@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.operation.dao.CommentMapper">
+    <resultMap id="commentResultMap" type="com.cy.core.operation.entity.Comment">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="goal_user_id" property="goalUserId"/>
+        <result column="buss_id" property="bussId"/>
+        <result column="content" property="content"/>
+        <result column="star" property="star"/>
+        <result column="praise" property="praise"/>
+        <result column="buss_type" property="bussType"/>
+        <result column="type" property="type"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_pic" property="userPic"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="is_own" property="isOwn"/>
+        <result column="has_praised" property="hasPraised"/>
+    </resultMap>
+    <insert id="save" parameterType="com.cy.core.operation.entity.Comment">
+        INSERT INTO cy_comment(
+            id,
+			user_id,
+			goal_user_id,
+			buss_id,
+			content,
+			star,
+			praise,
+			buss_type,
+			`type`,
+			del_flag ,
+			create_by ,
+			create_date,
+			update_by ,
+			update_date,
+			remarks
+        )VALUES (
+            #{id},
+			#{userId} ,
+			#{goalUserId},
+			#{bussId} ,
+			#{content},
+			#{star},
+			#{praise},
+			#{bussType} ,
+			#{type},
+			#{delFlag} ,
+			#{createBy} ,
+			#{createDate},
+			#{updateBy} ,
+			#{updateDate},
+			#{remarks}
+        )
+    </insert>
+
+    <update id="delete" parameterType="com.cy.core.operation.entity.Comment">
+        UPDATE cy_comment SET
+            del_flag = #{delFlag},
+            update_date = #{updateDate}
+        WHERE id=#{id}
+    </update>
+
+    <select id="getCommentList" parameterType="map" resultMap="commentResultMap">
+        SELECT
+            cu.picture AS user_pic ,
+            cu.`name` AS user_name ,
+            <if test="currentUserId != null and currentUserId != '' ">
+                CASE WHEN cc.user_id = #{currentUserId} THEN '1' ELSE '0' END is_own,
+                CASE WHEN ccc.id IS NULL THEN '0' ELSE '1' END has_praised,
+            </if>
+            cc.*
+        FROM
+            cy_comment cc
+        LEFT JOIN cy_userprofile cu ON cu.accountNum = cc.user_id
+        <if test="currentUserId != null and currentUserId != '' ">
+            LEFT JOIN cy_comment ccc ON cc.id=ccc.buss_id AND ccc.del_flag='0' AND ccc.type='40' AND ccc.user_id = #{currentUserId}
+        </if>
+        WHERE
+            cc.del_flag = '0'
+            <if test="userId != null and userId != ''">
+                AND cc.user_id = #{userId}
+            </if>
+            <if test="bussId != null and bussId != ''">
+                AND cc.buss_id = #{bussId}
+            </if>
+            <if test="type != null and type != ''">
+                AND cc.`type` = #{type}
+            </if>
+        ORDER BY cc.update_date
+        <if test='orderType != "1"'>
+            DESC
+        </if>
+        <if test='isNoLimit != "1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT
+          COUNT(cc.id)
+        FROM
+          cy_comment cc
+        LEFT JOIN cy_userprofile cu ON cu.accountNum = cc.user_id
+        WHERE
+        cc.del_flag = '0'
+        <if test="userId != null and userId != ''">
+            AND cc.user_id = #{userId}
+        </if>
+        <if test="bussId != null and bussId != ''">
+            AND cc.buss_id = #{bussId}
+        </if>
+        <if test="type != null and type != ''">
+            AND cc.`type` = #{type}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="commentResultMap">
+        SELECT
+            cu.picture AS user_pic ,
+            cu.`name` AS user_name ,
+            cc.*
+        FROM
+            cy_comment cc
+        LEFT JOIN cy_userprofile cu ON cu.accountNum = cc.user_id
+        WHERE
+            cc.del_flag = '0' AND cc.id=#{id} AND `type` IN (10,20)
+    </select>
+</mapper>

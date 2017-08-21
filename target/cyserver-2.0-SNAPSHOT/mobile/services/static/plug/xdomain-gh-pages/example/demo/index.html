@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="../../dist/xdomain.min.js" slave="http://localhost:8080/cy/jslib/proxy.html"></script>
+		<script type="text/javascript" src="../../../../../../js/jquery.min.js" ></script>
+		<script type="text/javascript">
+			
+			$(function(){
+				$.get("http://localhost:8080/cy/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action",function(data){
+					console.log(data);
+				});
+			});
+		</script>
+	</body>
+</html>

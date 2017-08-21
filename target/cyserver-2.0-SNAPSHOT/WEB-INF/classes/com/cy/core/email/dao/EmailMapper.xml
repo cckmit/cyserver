@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.email.dao.EmailMapper">
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+	<select id="list" parameterType="com.cy.core.email.entity.Email" resultType="com.cy.core.email.entity.Email">
+		select *,u.userAccount from cy_email left join cy_user u on staffId = u.userId
+		<where>
+			<if test="emailSubject!=null and emailSubject!=''">
+				emailSubject like concat('%',#{emailSubject},'%')
+			</if>
+			<if test="sentStatus!=null and sentStatus!=''">
+				and sent = (#{sentStatus} + 0)
+			</if>
+			<if test="sentStartTime != null and sentStartTime != ''">
+				and createDateTime >= #{sentStartTime}
+			</if>
+			<if test="sentEndTime != null and sentEndTime != ''">
+				and <![CDATA[createDateTime <= #{sentEndTime}]]>
+			</if>
+			<if test="staffId!=null">
+				and staffId=#{staffId}
+			</if>
+		</where>
+		order by emailId desc limit #{start},#{rows}
+	</select>
+	
+	
+	<select id="count" parameterType="com.cy.core.email.entity.Email" resultType="long">
+		select count(emailId) from cy_email
+		<where>
+			<if test="emailSubject!=null and emailSubject!=''">
+				emailSubject like concat('%',#{emailSubject},'%')
+			</if>
+			<if test="sentStatus!=null and sentStatus!=''">
+				and sent = (#{sentStatus} + 0)
+			</if>
+			<if test="sentStartTime != null and sentStartTime != ''">
+				and createDateTime >= #{sentStartTime}
+			</if>
+			<if test="sentEndTime != null and sentEndTime != ''">
+				and <![CDATA[createDateTime <= #{sentEndTime}]]>
+			</if>
+			<if test="staffId!=null">
+				and staffId=#{staffId}
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.email.entity.Email">
+		insert into cy_email(
+			fromAddress,
+			toAddress,
+			emailSubject,
+			emailTemplateId,
+			emailText,
+			immediate,
+			sent,
+			sendDateTime,
+			createDateTime,
+			ccAddress,
+			bccAddress,
+			staffId
+			) 
+			value(
+			#{fromAddress},
+			#{toAddress},
+			#{emailSubject},
+			#{emailTemplateId},
+			#{emailText},
+			#{immediate},
+			#{sent},
+			#{sendDateTime},
+			now(),
+			#{ccAddress},
+			#{bccAddress},
+			#{staffId}
+			)
+	</insert>
+	
+	
+	<delete id="delete" parameterType="list">
+		delete from cy_email where emailId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+	
+	
+	<update id="update" parameterType="com.cy.core.email.entity.Email">
+		update cy_email 
+		<set>
+			<if test="fromAddress!=null and fromAddress!=''">
+				fromAddress = #{fromAddress},
+			</if>
+			<if test="toAddress!=null and toAddress!=''">
+				toAddress = #{toAddress},
+			</if>
+			<if test="emailSubject!=null and emailSubject!=''">
+				emailSubject = #{emailSubject},
+			</if>
+			<if test="emailTemplateId!=null and emailTemplateId!=''">
+				emailTemplateId = #{emailTemplateId},
+			</if>
+			<if test="emailText!=null and emailText!=''">
+				emailText = #{emailText},
+			</if>
+			<if test="immediate!=null and immediate!=''">
+				immediate = #{immediate},
+			</if>
+			<if test="sent!=null and sent!=''">
+				sent = #{sent},
+			</if>
+			<if test="sendDateTime!=null and sendDateTime!=''">
+				sendDateTime = #{sendDateTime},
+			</if>
+			<if test="createDateTime!=null and createDateTime!=''">
+				createDateTime = #{createDateTime},
+			</if>
+		</set>
+		where emailId = #{emailId}
+	</update>
+	
+	<select id="selectById" parameterType="long" resultType="com.cy.core.email.entity.Email">
+		select * from cy_email where emailId = #{id}
+	</select>
+	
+	<select id="selectNotSendMail" resultType="com.cy.core.email.entity.Email">
+		select * from cy_email where NOW() > sendDateTime and sent = 0
+	</select>
+	
+	<select id="selectAllUserList" resultType="map">
+		select 
+			userInfo.user_id, 
+			userInfo.user_name, 
+			userInfo.email, 
+			date_format(userInfo.birthday,'%Y年%m月%d日') as birthday, 
+			deptInfo.full_name 
+		from  
+
+		cy_user_info userInfo LEFT JOIN cy_dept_info deptInfo 
+				on 
+					SUBSTR(userInfo.user_id, 1, 16) = deptInfo.dept_id 
+		
+		where 
+				(
+					select userInfo.email regexp '^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$'
+				) = 1 order by userInfo.user_id
+	</select>
+	
+	
+	<select id="selectAllUsersList" parameterType="map"  resultType="com.cy.core.email.entity.EmailRecipient">
+		select 
+			userInfo.user_id, 
+			userInfo.user_name, 
+			userInfo.email, 
+			date_format(userInfo.birthday,'%Y年%m月%d日') as birthday, 
+			deptInfo.full_name 
+		from  
+
+		cy_user_info userInfo LEFT JOIN cy_dept_info deptInfo 
+				on 
+					SUBSTR(userInfo.user_id, 1, 16) = deptInfo.dept_id 
+		
+		where 
+				(
+					select userInfo.email regexp '^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$'
+				) = 1 order by userInfo.user_id  limit #{start},#{rows}
+	</select>
+	
+	
+	<select id="countForUsersList" parameterType="map" resultType="long">
+		select 
+			count(userInfo.user_id)
+		from  
+
+		cy_user_info userInfo LEFT JOIN cy_dept_info deptInfo 
+				on 
+					SUBSTR(userInfo.user_id, 1, 16) = deptInfo.dept_id 
+		
+		where 
+				(
+					select userInfo.email regexp '^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$'
+				) = 1 order by userInfo.user_id
+	</select>
+	
+	
+	<select id="selectPersonalInfo" parameterType="com.cy.core.email.entity.Email" resultType="map">
+		select 
+			userInfo.user_name,
+			userInfo.sex,
+			userprofile.phoneNum,
+			userInfo.email,
+			date_format(userInfo.birthday,'%Y年%m月%d日') as birthday,
+			deptInfo.dept_abb,
+			deptInfo.dept_name,
+			userInfo.graduationTime
+		from  
+		
+				cy_user_info userInfo 
+				
+				LEFT JOIN cy_dept_info deptInfo
+						on 
+							SUBSTR(userInfo.user_id, 1, 16) = deptInfo.dept_id
+				LEFT JOIN cy_userprofile userprofile
+						on
+							userInfo.user_id = userprofile.baseInfoId
+				
+				where 
+						(
+							select userInfo.email regexp '^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$'
+						) = 1 and userInfo.email = #{toAddress} limit 1
+	</select>
+	
+</mapper>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.cloudEnterprise.dao.CloudEnterpriseTeamMapper">
+    <resultMap id="enterpriseTeamResultMap" type="com.cy.core.cloudEnterprise.entity.CloudEnterpriseTeam">
+        <id column="id" property="id" />
+        <result column="full_name" property="fullName" />
+        <result column="enterprise_id" property="enterpriseId" />
+        <result column="pic" property="pic" />
+        <result column="is_alumni" property="isAlumni" />
+        <result column="classinfo	" property="classinfo" />
+        <result column="position" property="position" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag"	property="delFlag" />
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="description"	property="description" />
+        <result column="is_show" property="isShow"/>
+        <result column="cloud_team_id" property="cloudTeamId"/>
+        <result column="user_id" property="userId"/>
+        <result column="type" property="type"/>
+        <result column="status" property="status"/>
+
+    </resultMap>
+
+    <insert id="save" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterpriseTeam">
+      INSERT INTO cloud_enterprise_team(
+        id,
+        `full_name`,
+        enterprise_id,
+        pic,
+        is_alumni,
+        classinfo,
+        `position`,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag,
+        description,
+        is_show,
+        cloud_team_id,
+        user_id
+      )VALUES(
+        #{id},
+        #{fullName},
+        #{enterpriseId},
+        #{pic},
+        #{isAlumni},
+        #{classinfo},
+        #{position},
+        #{createBy},
+        #{createDate},
+        #{updateBy},
+        #{updateDate},
+        #{remarks},
+        #{delFlag},
+        #{description},
+        #{isShow},
+        #{cloudTeamId},
+        #{userId}
+      )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterpriseTeam">
+        UPDATE cloud_enterprise_team SET
+            <if test="fullName != null and fullName != ''">
+                `full_name`= #{fullName},
+            </if>
+            <if test="enterpriseId != null and enterpriseId != ''">
+                enterprise_id=#{enterpriseId},
+            </if>
+            <if test="pic != null and pic != ''">
+                pic=#{pic},
+            </if>
+            <if test="isAlumni != null and isAlumni != ''">
+                is_alumni=#{isAlumni},
+            </if>
+            <if test="classinfo != null and classinfo != ''">
+                classinfo=#{classinfo},
+            </if>
+            <if test="position != null and position != ''">
+                `position`=#{position},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by=#{updateBy},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks=#{remarks},
+            </if>
+            <if test="description != null and description != 0">
+                description=#{description},
+            </if>
+            <if test="isShow != null and isShow != 0">
+                is_show=#{isShow},
+            </if>
+            <if test="cloudTeamId != null and cloudTeamId != 0">
+                cloud_team_id=#{cloudTeamId},
+            </if>
+            <if test="userId != null and userId != ''">
+                user_id=#{userId},
+            </if>
+            update_date=#{updateDate}
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateByCloudTeamId" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterpriseTeam">
+        UPDATE cloud_enterprise_team SET
+        <if test="fullName != null and fullName != ''">
+            `full_name`= #{fullName},
+        </if>
+        <if test="enterpriseId != null and enterpriseId != ''">
+            enterprise_id=#{enterpriseId},
+        </if>
+        <if test="pic != null and pic != ''">
+            pic=#{pic},
+        </if>
+        <if test="isAlumni != null and isAlumni != ''">
+            is_alumni=#{isAlumni},
+        </if>
+        <if test="classinfo != null and classinfo != ''">
+            classinfo=#{classinfo},
+        </if>
+        <if test="position != null and position != ''">
+            `position`=#{position},
+        </if>
+        <if test="updateBy != null and updateBy != ''">
+            update_by=#{updateBy},
+        </if>
+        <if test="remarks != null and remarks != ''">
+            remarks=#{remarks},
+        </if>
+        <if test="description != null and description !=''">
+            description=#{description},
+        </if>
+        <if test="isShow != null and isShow != ''">
+            is_show=#{isShow},
+        </if>
+        <if test="cloudTeamId != null and cloudTeamId !=''">
+            cloud_team_id=#{cloudTeamId},
+        </if>
+        <if test="userId != null and userId != ''">
+            user_id=#{userId},
+        </if>
+        update_date=#{updateDate}
+        WHERE cloud_team_id =#{cloudTeamId}
+    </update>
+
+    <select id="findEnterPriseTeamList" parameterType="map" resultMap="enterpriseTeamResultMap">
+        SELECT
+          cet.*, ce.`name` AS enterprise_name,e.type AS type,e.status AS status
+        FROM
+        cloud_enterprise_team cet
+        LEFT JOIN cloud_enterprise ce ON cet.enterprise_id = ce.cloud_id AND ce.del_flag = '0'
+        LEFT JOIN cloud_entrepreneur e ON e.team_id = cet.cloud_team_id AND e.del_flag ='0'
+        WHERE cet.del_flag = '0' AND ce.id IS NOT NULL AND ce.del_flag = '0'
+        <if test="id != null and id != ''">
+            AND cet.id = #{id}
+        </if>
+        <if test="enterpriseId != null and enterpriseId != ''">
+            AND cet.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="fullName != null and fullName != ''">
+            AND cet.`full_name` LIKE CONCAT('%', #{fullName},'%')
+        </if>
+        <if test="isAlumni != null and isAlumni != ''">
+            AND cet.`is_alumni` LIKE CONCAT('%', #{isAlumni},'%')
+        </if>
+        <if test="cloudTeamId != null and cloudTeamId != ''">
+            AND cet.cloud_team_id = #{cloudTeamId}
+        </if>
+        ORDER BY cet.update_date
+        <if test="isNotLimit != 1">
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+    <select id="count" parameterType="map" resultType="long">
+        SELECT
+            COUNT(cet.id)
+        FROM
+        cloud_enterprise_team cet
+        LEFT JOIN cloud_enterprise ce ON cet.enterprise_id = ce.id AND ce.del_flag = '0'
+        WHERE cet.del_flag = '0' AND ce.id IS NOT NULL AND ce.del_flag = '0'
+        <if test="id != null and id != ''">
+            AND cet.id = #{id}
+        </if>
+        <if test="enterpriseId != null and enterpriseId != ''">
+            AND cet.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="fullName != null and fullName != ''">
+            AND cet.`full_name` LIKE CONCAT('%', #{fullName},'%')
+        </if>
+    </select>
+    <update id="delete" parameterType="string">
+        UPDATE cloud_enterprise_team SET del_flag = 1 WHERE id = #{id}
+    </update>
+
+</mapper>

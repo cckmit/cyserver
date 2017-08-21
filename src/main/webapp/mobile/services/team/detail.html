@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html style="height: auto">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>社团详情</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/team.css" rel="stylesheet" type="text/css" />
+    <style>
+        .centerxy{
+            max-height: 63px;
+            overflow: hidden;
+        }
+        #click_more{
+            display: none;
+            position: relative;
+            text-align: center;
+            width: 100%;
+            height: 20px;
+            font-size: 12px;
+            line-height: 20px;
+            box-sizing: border-box;
+            padding: 0 10px;
+
+        }
+        #click_more span{
+            color: #00a5e0;
+            display: inline-block;
+        }
+        .right_hao{
+            margin-left: 5px;
+            transition: all 0.5s ease;
+
+        }
+        .right_hao1{
+            animation:myfirst1 2s;
+            -webkit-animation:myfirst1 2s; /* Safari and Chrome */
+            animation-iteration-count:infinite;
+            -webkit-animation-iteration-count:infinite;
+
+            transform:translateY(-5px);
+        }
+        .right_hao2{
+            animation:myfirs2t 2s;
+            -webkit-animation:myfirst2 2s; /* Safari and Chrome */
+            animation-iteration-count:infinite;
+            -webkit-animation-iteration-count:infinite;
+
+            transform:translateY(5px);
+        }
+        @keyframes myfirst1
+        {
+            0%   {transform:translateY(-5px);color: #00a5e0;;}
+            100% {transform:translateY(5px);color: #a4e7ff;;}
+        }
+        @-webkit-keyframes myfirst1 /* Safari and Chrome */
+        {
+            0%   {transform:translateY(-5px);color: #00a5e0;;}
+            100% {transform:translateY(5px);color: #a4e7ff;;}
+        }
+        @keyframes myfirst2
+        {
+            0%   {transform:translateY(5px);color: #00a5e0;;}
+            100% {transform:translateY(-5px);color: #a4e7ff;;}
+        }
+        @-webkit-keyframes myfirst2 /* Safari and Chrome */
+        {
+            0%   {transform:translateY(5px);color: #00a5e0;;}
+            100% {transform:translateY(-5px);color: #a4e7ff;;}
+        }
+    </style>
+</head>
+<body class="H-flexbox-vertical content">
+
+<div class="H-padding-vertical-bottom-2"></div>
+
+<!--社团介绍  box-->
+<div id="team_detail">
+    <div class="H-theme-background-color-white H-position-relative">
+        <div tapmode=""  class="H-flexbox-horizontal H-theme-background-color-white H-clear-both">
+            <div class="H-box-sizing-border-box" style="padding-bottom: 2px;width: 100%;">
+                <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="" alt="" title="" class="H-display-block team_logs" style="width: 100%; height: 150px;box-sizing: border-box;">
+            </div>
+        </div>
+        <div class="H-flex-item H-position-relative H-margin-10 H-position-relative H-box-sizing-border-box" style=" border-bottom: 1px solid #ebebeb; margin-top: 5px;padding-bottom: 5px">
+            <span class="H-flex-item  H-font-size-16 H-font-weight-600 team_names" style="line-height: 24px;"> </span>
+            <div style="margin-top: 5px">
+                <p class="H-font-size-14 H-theme-font-color-999 H-z-index-14 H-margin-0" style="padding-bottom: 3px">
+                    <i class="H-iconfont H-icon-user2"></i> <span class="tuanzhang"> </span>
+                </p>
+                <p class="H-font-size-14 H-theme-font-color-999 H-z-index-14 H-margin-0" style="padding-bottom: 3px">
+                    <i class="H-iconfont H-icon-phone"></i> <span class="tuandianhua"> </span>
+                </p>
+                <p class="H-font-size-14 H-theme-font-color-999 H-z-index-14  H-margin-0" style="padding-bottom: 3px">
+                    <i class="H-iconfont H-icon-position"></i> <span class="tuandizhi"> </span>
+                </p>
+            </div>
+            <div class="" style="width:115px;height:30px;overflow:hidden;position: fixed;bottom: 50px; right: 10px; z-index: 999;font-size: 14px">
+                <div class="goin_st" style="transform: translateX(85px);position: absolute;transition: transform 0.4s;left:0;color: #fff; background: #ff5a54;width: 75px;height: 30px;text-align: -webkit-center;line-height: 30px; box-shadow:0px 0px 3px #b9b9b9">
+                    申请加入
+                </div>
+                <div class="goin_stout" style="position: absolute;right:0;z-index: 1; background: #3598db;width: 30px;height: 30px;text-align: -webkit-center;line-height: 30px; box-shadow:0px 0px 3px #b9b9b9">
+                    <i class="H-iconfont H-icon-plus H-font-size-15 H-vertical-middle H-theme-font-color-white"></i>
+                </div>
+            </div>
+
+
+        </div>
+        <div id="team_ct" class="H-theme-background-color-white H-theme-font-color-333 H-margin-horizontal-both-10 H-font-size-14 team_conters" style="margin: 5px 0; padding: 0 10px;">
+
+        </div>
+        <div id="click_more">
+            <span class="more_btn">查看更多</span><span class="right_hao right_hao1"> ︾ </span>
+        </div>
+    </div>
+</div>
+
+<!--成员 文字-->
+<div class="H-margin-vertical-top-5 H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+    <span class="H-icon H-display-block H-margin-horizontal-left-10">
+        <i class="H-iconfont H-icon-user2 H-font-size-20 H-vertical-middle H-theme-font-color2" style="margin-top: -4px"></i>
+    </span>
+    <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">成员</div>
+
+    <span id="registerNum" class="H-icon H-padding-horizontal-right-10 H-font-size-14 H-display-block">[0]</span>
+
+</div>
+<!--社团成员列表-->
+<div class="attend_person">
+
+    <div class="H-n-grid H-border-vertical-top-after H-clear-both">
+        <div id="registerList" class="H-clear-both H-width-100-percent H-display-table H-box-sizing-border-box H-theme-background-color-white">
+            <!--
+            <div tapmode="" class="H-display-table-cell H-float-left H-box-sizing-border-box H-width-avg-4 H-center-all
+            H-theme-background-color-white H-padding-vertical-both-10 H-touch-active" style="min-height: 80px;">
+                <div>
+                    <span class="H-icon H-display-block H-horizontal-center" style="width: 45px; height: 45px;">
+                        <img src="../static/img/icons/icon_avatar@3x.png" class="H-display-block H-border-radius-circle H-width-45 H-height-45">
+                    </span>
+                    <label class="H-display-block H-font-size-12 H-text-align-center H-theme-font-color-999 H-margin-vertical-top-8">AA</label>
+                </div>
+            </div>
+
+            <div tapmode=""
+                 class="H-display-table-cell H-float-left H-box-sizing-border-box H-width-avg-4 H-center-all H-theme-background-color-white
+                 H-padding-vertical-both-10 H-touch-active" style="min-height: 80px;">
+                <div>
+                    <span class="H-icon H-display-block H-horizontal-center" style="width: 45px; height: 45px;">
+                        <img src="http://127.0.0.1:8080/cy/file//file/506/face/201610251542470022_05.jpeg" class="H-display-block H-border-radius-circle H-width-45 H-height-45">
+                    </span>
+                    <label class="H-display-block H-font-size-12 H-text-align-center H-theme-font-color-999 H-margin-vertical-top-8">马传宗</label>
+                </div>
+            </div>
+            <div tapmode="" class="H-display-table-cell H-float-left H-box-sizing-border-box H-width-avg-4 H-center-all
+            H-theme-background-color-white H-padding-vertical-both-10 H-touch-active" style="min-height: 80px;">
+                <a href="album_list.html" class="H-text-decoration-none">
+                    <span class="H-icon H-display-block H-horizontal-center" style="width: 45px; height: 45px;">
+                        <img style="border: 1px dashed #6e6e6e" src="../static/img/plus.png" class="H-display-block H-border-radius-circle H-width-45 H-height-45" alt="" title="">
+                    </span>
+                    <label class="H-display-block H-font-size-12 H-text-align-center H-theme-font-color-999 H-margin-vertical-top-8">更多</label>
+                </a>
+            </div>
+            -->
+        </div>
+    </div>
+</div>
+
+<!--评论 文字-->
+<div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+    <span class="H-icon H-display-block H-margin-horizontal-left-10">
+        <i class="H-iconfont H-icon-more-menu H-font-size-20 H-vertical-middle H-theme-font-color4" style="margin-top: -2px"></i>
+    </span>
+    <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">活动</div>
+    <span class="H-icon H-padding-horizontal-right-10 H-font-size-14 H-display-block activess">
+        [0]
+    </span>
+
+</div>
+
+
+<div class="contentloists">
+    <div class="news-list active_list" id="team_list">
+        <script id="teamList" type="text/html">
+
+            <%for(var key in list){%>
+            <div tapmode="" onclick="openDetail('<%=list[key].id%>');" class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after" style="position: relative;">
+                <div class="H-padding-vertical-both-10">
+                    <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="<%=B.getImageAbsoluteUrl(list[key].picUrl)%>" alt="" title="" class="H-display-block H-margin-horizontal-left-10" style="width: 90px; height: 105px;">
+                </div>
+                <div class="H-flex-item H-padding-10">
+                    <strong class="H-font-weight-normal font-weight-500 H-font-size-16 H-display-block  H-text-show-row-1"><%=list[key].title%></strong>
+                    <div class="H-font-size-14 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-5">
+                        <label class="H-iconfont H-icon-position H-font-size-14"></label>
+                        <label><%=list[key].place%></label>
+                    </div>
+                    <div class="H-font-size-14 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-5">
+                        <label class="H-iconfont H-icon-time H-font-size-14"></label>
+                        <label><%=list[key].startTime%>-<%=list[key].endTime%></label>
+                    </div>
+                    <div class="H-font-size-14 H-text-show-row-1 H-padding-horizontal-left-0 H-theme-font-color-999 H-margin-vertical-top-5">
+                        <label class="H-iconfont H-icon-user2 H-font-size-14"></label>
+                        <label><%=list[key].signupNum%><%if(list[key].maxPeople==0){%><%}else{%>/<%=list[key].maxPeople%><%}%></label>
+                    </div>
+                    <%if(list[key].type==0){%>
+                    <button class="H-font-size-12 H-outline-none H-padding-vertical-both-2 H-padding-horizontal-both-10 H-theme-background-color7 H-theme-font-color-white H-theme-border-color7" style="position: absolute; bottom: 1px; right: 10px;">官方</button>
+                    <%}%>
+                    <%if(list[key].isJoined=='1'){%>
+                    <button class="H-font-size-12 H-outline-none H-padding-vertical-both-2 H-padding-horizontal-both-10 H-theme-background-color7 H-theme-font-color-white H-theme-border-color7" style="position: absolute; bottom: 1px; right: 60px;">已报名</button>
+                    <%}%>
+                </div>
+            </div>
+            <%
+            }
+            if(list.length>0){
+            %>
+            <div onclick='H.openWin("活动列表", "../activity/list.html?accountNum="+accountNum+"&teamId="+teamId);' id="active_more" style="font-size: 12px;background: #fff;text-align: center;padding: 5px;">
+                查看更多活动
+            </div>
+            <%
+            }
+            %>
+
+
+        </script>
+
+    </div>
+
+</div>
+</body>
+
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+
+
+
+<!--动态-->
+<script type="text/javascript">
+    // 接收URL中的参数
+    var teamId = B.getUrlParamByName("associationId"); //社团id, 这里先使用 秩年返校的 接口
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var detailFlag = B.getUrlParamByName("detailFlag");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("../services/team/detail.html?ts=" + B.getRandomInt(4)) + "&teamId=" + teamId;
+                    H.openWin("登陆页面", "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+    }
+
+    $(function () {
+        H.tppl_flag = ["<%", "%>"];
+
+        //动态获取 社团详情
+        st_content();
+
+        B.ready(function(){
+            //判断是否已认证
+            renzhenguser()
+        })
+
+
+    })
+    //动态获取 社团详情
+    function st_content(){
+        B.ready(function(){
+            //动态获取 社团详情
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "259","content": {"associationId": "'+teamId+'", "userAccount": "'+accountNum+'"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log('{"command": "259","content": {"associationId": "'+teamId+'", "userAccount": "'+accountNum+'"} }')
+                    if(data.obj) {
+                        if(data.obj.poster)
+                            $('.team_logs').attr('src',B.getImageAbsoluteUrl(data.obj.posterUrl));
+                        if (data.obj.name)
+                            $('.team_names').html(data.obj.name);
+                        if (data.obj.concatName)
+                            $('.tuanzhang').html(data.obj.concatName);
+                        if (data.obj.telephone)
+                            $('.tuandianhua').html(data.obj.telephone);
+                        if (data.obj.address)
+                            $('.tuandizhi').html(data.obj.address);
+                        if (data.obj.introduction)
+                            $('.team_conters').html(B.changeSrcFromRelativeToAbsolute(data.obj.introduction));
+                        if($('.team_conters').height()>63){
+                            $('#team_ct').addClass('centerxy')
+                            $('#click_more').show();
+                        }
+
+                        if (data.obj.memberCount && data.obj.memberCount != '') {
+                            $('#registerNum').html('[' + data.obj.memberCount + ']'); //报名人数
+                        } else {
+                            $('#registerNum').html('[0]'); //报名人数
+                        }
+
+                        istuanyuan = data.obj.memberStatus;
+                        if (data.obj.memberStatus == 20) {
+                            //$('.goin_st').attr('flag','1');
+                            $('.goin_st').html('申请退出');
+                            $('.goin_st').css('background', '#999999');
+                        }else if(data.obj.memberStatus == 10 || data.obj.memberStatus==25 || data.obj.memberStatus == 55){
+                            $('.goin_st').html('取消审核');
+                            $('.goin_st').css('background', '#999999');
+                        }else{
+                            //$('.goin_st').attr('flag','0');
+                            $('.goin_st').html('申请加入');
+                            $('.goin_st').css('background','#ff5a54');
+                        }
+
+                        if(openId && openId != 'null'){
+                            var title = data.obj.name;
+                            var desc = data.obj.introduction;
+                            var imgUrl = B.getImageAbsoluteUrl(data.obj.posterUrl);
+                            var shareData = {
+                                title: title,
+                                desc: desc,
+                                link: location.href.split('?')[0]+"?associationId="+teamId+"&detailFlag="+detailFlag,
+                                imgUrl: imgUrl
+                            };
+                            mkShareInfo(location.href, shareData, 0);
+                        }
+
+                    }
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+            //动态获取 报名人
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{ "command": "261","content": { "page": "1", "rows": "3", "associationId": "'+teamId+'" , "accountNum":"'+accountNum+'" } }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log('{ "command": "261","content": { "page": "1", "rows": "3", "associationId": "'+teamId+'" , "accountNum":"'+accountNum+'" } }')
+                    if(data.success==true && data.obj.length>0){
+                        var list='';
+                        for(var i in data.obj){
+                            list +=
+                                    '<div tapmode="" class="H-display-table-cell H-float-left H-box-sizing-border-box H-width-avg-4 ' +
+                                    'H-center-all H-theme-background-color-white H-padding-vertical-both-10 H-touch-active" style="min-height: 80px;">'+
+                                    '<div>'+
+                                    '<span class="H-icon H-display-block H-horizontal-center" style="width: 45px; height: 45px;">' +
+                                    '<img onerror="javascript:this.src=\'../static/img/banner4@3x.png\';" src="'+B.getImageAbsoluteUrl(data.obj[i].pictureUrl)+'" class="H-display-block H-border-radius-circle H-width-45 H-height-45">' +
+                                    '</span>'+
+                                    '<label class="H-display-block H-font-size-12 H-text-align-center H-theme-font-color-999 H-margin-vertical-top-8">'+data.obj[i].name+'</label>'+
+                                    '</div>'+
+                                    '</div>';
+                        }
+
+                        $('#registerList').html(list);
+                        $('#registerList').append(
+                                '<div tapmode="" class="H-display-table-cell H-float-left H-box-sizing-border-box H-width-avg-4 H-center-all H-theme-background-color-white H-padding-vertical-both-10 H-touch-active" style="min-height: 80px;">'+
+                                '<a onclick="renshuhl()" href="javascript:;" class="H-text-decoration-none">'+
+                                '<span class="H-icon H-display-block H-horizontal-center" style="width: 45px; height: 45px;">' +
+                                '<img style="border: 1px dashed #6e6e6e" src="../static/img/plus.png" class="H-display-block H-border-radius-circle H-width-45 H-height-45" alt="" title="">' +
+                                '</span>'+
+                                '<label class="H-display-block H-font-size-12 H-text-align-center H-theme-font-color-999 H-margin-vertical-top-8">更多</label>'+
+                                '</a>'+
+                                '</div>');
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+
+        });
+    }
+
+    //判断是否已认证
+    var userrz='';
+    function renzhenguser(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj && data.obj.baseInfoId){
+                    userrz = 1;
+                }else{
+                    userrz = 0;
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    // 单击跳转动态详情
+/*    function goThat(n) {
+        switch(n)
+        {
+            case 1:
+                H.openWin("社团详情", "active_list.html?accountNum="+accountNum+"&associationId="+teamId);
+                break;
+            case 2:
+                H.openWin("社团详情", "gonggao_list.html?accountNum="+accountNum+"&associationId="+teamId);
+                break;
+            case 3:
+                H.openWin("社团详情", "album_list.html?accountNum="+accountNum+"&associationId="+teamId);
+                break;
+            case 4:
+                H.openWin("社团详情", "qrcode.html?accountNum="+accountNum+"&associationId="+teamId);
+                break;
+            default:
+
+        }
+
+    }*/
+
+
+
+    // 初始化页面
+    $(function(){
+
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "61","content": {"accountNum": "'+accountNum+'","type":"99","page": "1",  "rows": "5","associationId":"'+teamId+'" } }'
+                },
+                dataType: 'json',
+                success: function(data){
+
+console.log('{"command": "61","content": {"accountNum": "'+accountNum+'","type":"99","page": "1",  "rows": "5","associationId":"'+teamId+'" } }')
+                    transData(data);
+                    //console.log(data.obj.rows.length);
+                    $('.activess').html("["+data.obj.rows.length+"]")
+                    var render = H.tppl(H.D("#teamList").innerHTML);
+                    var result = render({list:data.obj.rows});
+                    $('#team_list').append(result);
+
+                },
+                error: function(xhr, type){
+
+                }
+            });
+
+        });
+    });
+
+    //进入报名成员列表页面
+    function renshuhl(){
+        if(accountNum=='null' || accountNum==''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    H.openWin("登陆页面", "../../wechat/login.html?backUrl="+B.encrypt('../services/team/detail.html?associationId'+teamId)+"&ts=" + B.getRandomInt(4));
+                };
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else if( userrz!=1 ){
+            //认证提示区分微信端和APP端
+            if (openId && openId != '' && openId != 'null') {
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        H.openWin("信息认证", "../../wechat/verify/class_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum);
+                    };
+                }, '确认提示：', '尚未认证，是否去认证？');
+            }else {
+                H.alert('亲，您还未认证，请先去认证吧');
+            }
+        }else{
+            if(istuanyuan==20){
+                H.openWin('报名成员', 'list_renshu.html?ts=' + B.getRandomInt(4) + '&categoryId=' + teamId +"&accountNum="+accountNum+"&detailFlag="+detailFlag);
+            }else{
+                H.alert('您尚未成为该社团成员')
+            }
+        }
+    }
+
+    // 单击跳转动态详情
+    function lookDetail(title, newsId) {
+        H.openWin(title, "detail_index.html?ts="+B.getRandomInt(4) + "&id=" + newsId);
+    }
+
+    function openDetail(eventId){
+        H.openWin('活动详情', "../activity/detail.html?ts=" + B.getRandomInt(4) +"&eventId="+eventId +"&accountNum="+accountNum+ "&associationId="+teamId +"&detailFlag="+detailFlag );
+    }
+
+
+    //点击加号出现加入/退出社团
+    $('.goin_stout').click(function(){
+        if(accountNum=='null' || accountNum==''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    H.openWin("登陆页面", "../../wechat/login.html?backUrl="+B.encrypt('../services/team/detail.html?associationId'+teamId)+"&ts=" + B.getRandomInt(4));
+                };
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else if( userrz!=1 ){
+            //认证提示区分微信端和APP端
+            if (openId && openId != '' && openId != 'null') {
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        H.openWin("信息认证", "../../wechat/verify/class_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum);
+                    };
+                }, '确认提示：', '尚未认证，是否去认证？');
+            }else {
+                H.alert('亲，您还未认证，请先去认证吧');
+            }
+        }else{
+            if($('.goin_st').attr('chu')==1){
+                $('.goin_st').css('transform','translateX(85px)');
+                $('.goin_st').attr('chu','0');
+            }else{
+                $('.goin_st').css('transform','translateX(0px)');
+                $('.goin_st').attr('chu','1');
+            }
+        }
+
+    })
+    //加入退出社团
+    $('.goin_st').click(function(){
+        if(accountNum=='null' || accountNum==''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    H.openWin("登陆页面", "../../wechat/login.html?ts=" + B.getRandomInt(4));
+                };
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }else if( userrz!=1 ){
+            //认证提示区分微信端和APP端
+            if (openId && openId != '' && openId != 'null') {
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        H.openWin("信息认证", "../../wechat/verify/class_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum);
+                    };
+                }, '确认提示：', '尚未认证，是否去认证？');
+            }else {
+                H.alert('亲，您还未认证，请先去认证吧');
+            }
+        }else{
+            if (istuanyuan == 20) {
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        inout_st(2);
+                        $('.goin_st').css('transform','translateX(85px)');
+                        $('.goin_st').attr('chu','0');
+
+                    };
+                }, '确认提示：', '您确定要退出该社团吗？');
+            }else if(istuanyuan == 10 || istuanyuan == 55){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        inout_st(2);
+                        $('.goin_st').css('transform','translateX(85px)');
+                        $('.goin_st').attr('chu','0');
+                    };
+                }, '确认提示：', '您确定要取消审核吗？');
+            }else{
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        inout_st(1);
+                        $('.goin_st').css('transform','translateX(85px)');
+                        $('.goin_st').attr('chu','0');
+                    };
+                }, '确认提示：', '是否申请加入该社团吗？');
+            }
+        }
+    })
+
+    function inout_st(types){
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "251","content": {"accountNum": "'+accountNum+'","associationId": "'+teamId+'","type": "'+types+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(JSON.stringify(data));
+                    if(data.success){
+                        st_content();
+                    }
+                },
+                error: function(xhr, type){
+
+                }
+            });
+
+        });
+    }
+
+
+
+
+
+
+
+
+    function transData(data){
+        for(var key in data.obj.rows){
+            var startTmp = data.obj.rows[key].startTime;
+            var endTmp = data.obj.rows[key].endTime;
+            startTmp = startTmp.substring(0,16);
+            endTmp = endTmp.substring(0,16);
+
+            //startTmp = startTmp.substring(0,4)+'年'+startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日'+startTmp.substring(11,16);
+
+            if(startTmp.substring(0,4) == endTmp.substring(0,4)){
+                if(startTmp.substring(5,7) == endTmp.substring(5,7)){
+                    if(startTmp.substring(8,10) == endTmp.substring(8,10)){
+                        startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日&nbsp;'+startTmp.substring(11,16);
+                        endTmp = endTmp.substring(11,16);
+                    }else{
+                        startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日';
+                        endTmp = endTmp.substring(5,7)+'月'+endTmp.substring(8,10)+'日';
+                    }
+                }else{
+                    startTmp = startTmp.substring(0,4)+'年'+startTmp.substring(5,7)+'月';
+                    endTmp = endTmp.substring(5,7)+'月';
+                }
+            }else{
+                startTmp = startTmp.substring(0,4)+'年';
+                endTmp = endTmp.substring(0,4)+'年';
+            }
+
+            data.obj.rows[key].startTime = startTmp;
+            data.obj.rows[key].endTime = endTmp;
+            /*
+             console.log(JSON.stringify(data.obj.rows[key]));
+             var format = new DateFormat();
+             var startTime = format.parseDate(data.obj.rows[key].startTime);
+             var endTime = format.parseDate(data.obj.rows[key].endTime);
+             var startFormatStr = 'yyyy年MM月dd日';
+             var endFormatStr = 'yyyy年MM月dd日'
+             if(startTime.getFullYear()==format.curDate.getFullYear()&&endTime.getFullYear()==format.curDate.getFullYear()){
+             startFormatStr = 'MM月dd日';
+             endFormatStr = 'MM月dd日'
+             }
+             if(startTime.getFullYear()==endTime.getFullYear()&&startTime.getMonth()==endTime.getMonth()&&startTime.getDate()==endTime.getDate()){
+             startFormatStr = startFormatStr + ' HH:mm';
+             endFormatStr = 'HH:mm';
+             }
+             data.obj.rows[key].startTime = format.format(startTime,startFormatStr);
+             data.obj.rows[key].endTime = format.format(endTime,endFormatStr);
+             */
+        }
+        return data;
+    }
+
+
+    //收缩社团简介
+    $('#click_more').click(function(){
+        $('#team_ct').toggleClass('centerxy');
+        if($('#team_ct').hasClass('centerxy')){
+            $('.more_btn').html('查看更多');
+            $('.right_hao').html('︾');
+            $('.right_hao').addClass('right_hao1').removeClass('right_hao2');
+        }else{
+            $('.more_btn').html('收起');
+            $('.right_hao').html('︽');
+            $('.right_hao').addClass('right_hao2').removeClass('right_hao1');
+        }
+    })
+
+    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            //ios返回
+//            var rnumber = Math.floor(Math.random()*1000)
+//
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber+"&associationId="+teamId+"&detailFlag="+detailFlag);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+    //返回
+    var jsonStr = {
+        "title":"社团详情",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+    }
+
+    function fallback() {
+        if (detailFlag && detailFlag!=''&& detailFlag !='null'){
+            switch (detailFlag){
+                case '10': window.location.href = B.serverUrl + "/mobile/services/team/index.html?accountNum=" + accountNum;break;
+                case '20': window.location.href = B.serverUrl + "/mobile/services/team/my_team.html?accountNum=" + accountNum;break;
+                default:  window.location.href = B.serverUrl + "/mobile/services/team/index.html?accountNum=" + accountNum;
+            }
+        }else {
+            window.location.href = B.serverUrl + "/mobile/services/team/index.html?accountNum=" + accountNum;
+        }
+    }
+
+
+</script>
+
+</html>
+

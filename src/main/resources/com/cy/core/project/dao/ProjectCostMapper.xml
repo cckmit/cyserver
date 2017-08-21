@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.project.dao.ProjectCostMapper">
+    <resultMap type="com.cy.core.project.entity.ProjectCost" id="projectCostResultMap">
+        <id column="id" property="id" />
+        <result column="project_id" property="projectId"/>
+        <result column="cost_time" property="costTime"/>
+        <result column="cost_money" property="costMoney"/>
+        <result column="description" property="description"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+    <select id="selectList" parameterType="map" resultMap="projectCostResultMap">
+        SELECT cpc.*
+        FROM cy_project_cost cpc
+        WHERE cpc.del_flag != '1'
+        <if test="projectId != null and projectId != ''">
+            AND cpc.project_id = #{projectId}
+        </if>
+        ORDER BY cpc.cost_time DESC
+        <if test="isNoLimit != 1">
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="countProjectCost" parameterType="map" resultType="long">
+        SELECT COUNT(cpc.id)
+        FROM cy_project_cost cpc
+        WHERE cpc.del_flag != '1'
+        <if test="projectId != null and projectId != ''">
+            AND cpc.project_id = #{projectId}
+        </if>
+    </select>
+
+    <select id="selectById" parameterType="string" resultMap="projectCostResultMap">
+        SELECT cpc.*
+        FROM cy_project_cost cpc
+        WHERE cpc.id = #{id}
+    </select>
+
+    <insert id="save" parameterType="com.cy.core.project.entity.ProjectCost">
+        INSERT INTO cy_project_cost(
+            id ,
+            project_id ,
+            cost_time ,
+            cost_money ,
+            description ,
+            del_flag ,
+            create_by ,
+            create_date ,
+            update_by ,
+            update_date ,
+            remarks
+        )VALUES(
+          #{id},
+          #{projectId},
+          #{costTime},
+          #{costMoney},
+          #{description},
+          #{delFlag},
+          #{createBy},
+          #{createDate},
+          #{updateBy},
+          #{updateDate},
+          #{remarks}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.project.entity.ProjectCost">
+        UPDATE cy_project_cost SET
+        <if test="projectId != null and projectId != ''">
+            project_id = #{projectId},
+        </if>
+        <if test="costTime != null and costTime != ''">
+            cost_time = #{costTime},
+        </if>
+        <if test="costMoney != null and costMoney != ''">
+            cost_money = #{costMoney},
+        </if>
+        <if test="description != null and description != ''">
+            description = #{description},
+        </if>
+        <if test="delFlag != null and delFlag != ''">
+            del_flag = #{delFlag},
+        </if>
+        <if test="remarks != null and remarks != ''">
+            remarks = #{remarks},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id=#{id}
+    </update>
+
+    <update id="delete" parameterType="list">
+        UPDATE cy_project_cost SET del_flag = '1'
+        WHERE id in
+        <foreach collection="list" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

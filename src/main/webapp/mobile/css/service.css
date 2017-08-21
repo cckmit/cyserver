@@ -1,0 +1,122 @@
+body {
+	background: #FBFBFB;
+}
+.service-list {
+	background: #FFF;
+}
+.service-list ul {
+	border-top: 1px solid #D8D8D8;
+}
+.service-list li {
+	border-right:1px solid #D8D8D8;
+	border-bottom: 1px solid #D8D8D8;
+	text-align: center;
+}
+.service-list li:nth-child(4n) {
+	border-right: 0;
+}
+.service-list h4 {
+	font-size: 12px;
+	font-weight: normal;
+	margin-top: 5px;
+}
+.service-list a {
+	display: block;
+	width: 100%;
+	padding: 10px 0;
+	color: #7B7B7B;
+	text-decoration: none;
+}
+/* slider */
+.slider-caption{
+  bottom:0px;
+  height:40px;
+  width:100%;
+  right:0px;
+  padding:10px 0;
+  position:absolute;
+  z-index:99998;
+  background-color:rgba(0,0,0,0.7);
+  color:#FFFFFF;
+}
+.slider-caption p{
+  color:#FFFFFF;
+  line-height: 20px;
+}
+.slider-title{
+  font-size:14px;
+  text-align:center;
+}
+.bx-wrapper div{
+  position:static;
+  overflow:visible;
+}
+/** RESET AND LAYOUT
+===================================*/
+.bx-wrapper{overflow:visible;}
+.bx-controls{overflow:visible;}
+.bx-has-pager{overflow:visible;}
+.bx-controls-direction{overflow:visible;}
+.bx-has-controls-direction{overflow:visible;}
+.bx-pager{overflow:visible;}
+.bx-default-pager{overflow:visible;}
+.bx-pager-item{overflow:visible;}
+.bx-wrapper {
+  position: relative;
+  margin: 0 auto;
+  *zoom: 1;
+}
+.bx-wrapper img {
+  max-width: 100%;
+  display: block;
+}
+/** THEME
+===================================*/
+.bx-wrapper .bx-viewport {
+  box-sizing:border-box!important;
+}
+/* LOADER */
+.bx-wrapper .bx-loading {
+  min-height: 50px;
+  background: url(../images/bx_loader.gif) center center no-repeat #fff;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+}
+/* PAGER */
+.bx-wrapper blockquote,.bx-wrapper blockquote p {
+  margin:0;
+}
+
+.bx-wrapper .bx-prev{
+  left:20px;
+  background: url(../images/prev.png) no-repeat;
+  background-size:27px 27px;
+}
+.bx-wrapper .bx-next{
+  right:20px;
+  background: url(../images/next.png) no-repeat;
+  background-size:27px 27px;
+}
+.bx-wrapper .bx-prev:hover {
+  opacity:0.7;
+}
+.bx-wrapper .bx-next:hover {
+  opacity:0.7;
+}
+.bx-wrapper .bx-controls-direction a {
+  position: absolute;
+  top: 50%;
+  margin-top: -16px;
+  outline: 0;
+  width: 32px;
+  height: 32px;
+  text-indent: -9999px;
+  z-index: 9999;
+}
+.bx-wrapper .bx-controls-direction a.disabled {
+  display: none;
+}

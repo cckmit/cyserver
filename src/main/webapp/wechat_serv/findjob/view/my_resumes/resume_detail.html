@@ -1,0 +1,284 @@
+
+     <style>
+         .bg{
+             background-color: #f2f2f2;
+             width:100%;
+             height:100%;
+             overflow:auto;
+             display: flex;
+             flex-direction: column;
+         }
+         .wrap1{
+
+         }
+
+
+         .wrap2{
+             /*flex:1;*/
+         }
+
+         .item_1{
+             display: flex;
+             justify-content: center;
+             background-color:#fff;
+             padding:0.2rem;
+             margin-bottom:0.02rem;
+
+         }
+         .item_1 .item_l{
+             width:1.6rem;
+             height:1.6rem;
+
+             margin-right: 0.2rem;
+         }
+         .item_1 .item_m{
+             flex:1;
+             display: flex;
+             flex-direction: column;
+             justify-content: center;
+             /*align-items: center;*/
+         }
+         .item_1 .item_m .row1{
+             font-size: 0.3rem;
+             line-height: 2;
+             color:#333;
+         }
+         .item_1 .item_m .row2{
+             font-size: 0.26rem;
+             line-height: 2;
+             color:#576B95;
+         }
+         .item_1 .item_m .row3{
+             /*font-size: 0.24rem;*/
+             /*color:#555;*/
+             /*line-height: 2;*/
+         }
+         .item_1 .item_m .row3>span{
+             display: inline-block;
+             font-size: 0.24rem;
+             color:#555;
+             line-height: 2;
+         }
+
+         .item_1 .item_r .row1{
+             font-size: 0.3rem;
+             line-height: 2;
+             color:#F15B4B;
+         }
+         .item_1 .item_r .row2{
+             visibility: hidden;
+             font-size: 0.26rem;
+             line-height: 2;
+             color:#888;
+             text-align: right;
+         }
+         .item_1 .item_r .row3{
+             font-size: 0.22rem;
+             line-height: 2;
+             color:#888;
+             text-align: right;
+         }
+
+         /*titel*/
+         .title{
+             display: flex;
+             background-color: #f2f2f2;
+             color:#888;
+             padding:0 0.2rem;
+         }
+         .title i{
+             font-size:0.4rem;
+             line-height: 0.8rem;
+             margin-right:0.12rem;
+         }
+         .title span{
+             font-size: 0.28rem;
+             line-height: 0.8rem;
+         }
+
+         /*address*/
+         .add{
+             background-color: #fff;
+             padding:0 0.2rem;
+             font-size:0.26rem;
+             color:#333;
+             line-height: 0.45rem;
+         }
+
+         /*职位描述*/
+         .des{
+             background-color: #fff;
+         }
+
+        .sec_title{
+            font-size:0.28rem;
+            padding:0 0.2rem;
+        }
+         .des_box1,.des_box2{
+             padding:0.3rem 0.2rem;
+             font-size: 13px;
+             color: #333333;
+             letter-spacing: 0;
+             line-height: 18px;
+         }
+
+
+
+
+
+         /*职位发布者*/
+         .res_give{
+             padding:0.28rem 0.2rem;
+             background-color:#fff;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+         }
+         .res_give .item_l{
+             width:0.8rem;
+             height: 0.8rem;
+             margin-right:0.4rem;
+         }
+         .res_give .item_m{
+             flex:1;
+         }
+         .res_give .item_m .row1{
+             font-size:0.26rem;
+             color:#333;
+             line-height: 0.32rem;
+             margin-bottom: 0.22rem;
+         }
+         .res_give .item_m .row2{
+             font-size:0.22rem;
+             color:#576B95;
+         }
+         .res_give .item_r{
+             font-size:0.22rem;
+             color:#0F88EB;
+         }
+
+         /*foot_box*/
+         .foot_box{
+             background-color:#fff;
+             position:fixed;
+             /*bottom:0;*/
+             display: flex;
+             width:100%;
+         }
+         .f_l{
+             font-size: 0.26rem;
+             line-height: 0.7rem;
+             margin: 0 0.4rem;
+
+         }
+         .f_r{
+             flex: 1;
+             background-color: #0F88EB;
+             color:#fff;
+             font-size:0.3rem;
+             line-height: 2;
+             text-align: center;
+             margin: 0.1rem 0.1rem;
+         }
+
+
+     </style>
+
+<div class="bg">
+    <!--top-->
+    <div class="wrap1">
+        <div class="item_1">
+            <div class="item_l">
+                <img style="width:100%; height: 100%; " onerror="javascript:this.src='img/none.png';" ng-src="zwcenter.enterpriseLogo | filter_pic"/>
+            </div>
+            <div class="item_m">
+                <div class="row1 name">{{zwcenter.name}}</div>
+                <div class="row2 firm">{{zwcenter.enterpriseName}}</div>
+                <div class="row3 require H-text-show-row-1">
+                    <span class="city">{{zwcenter.city}}</span>
+                    <!--<span>-</span>-->
+                    <!--<span class="city">武汉</span>-->
+                    <!--<span>-</span>-->
+                    <!--<span class="area">武昌区</span>-->
+                    <span>/</span>
+                    <span class="epx">{{zwcenter.demand}}</span>
+                    <span>/</span>
+                    <span class="aca">{{zwcenter.education}}</span>
+                </div>
+            </div>
+            <div class="item_r">
+                <div class="row1 sal">
+                    <span class="min_sal">{{zwcenter.salaryMin}}k</span>
+                    <span>-</span>
+                    <span class="max_sal">{{zwcenter.salaryMax}}k</span>
+                </div>
+                <div class="row2">11</div>
+                <div class="row3">刚刚</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrap2">
+
+        <div class="title">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            <span class="txt">工作地址</span>
+        </div>
+        <div class="add">
+            武汉市东湖高新技术开发区光谷一路隆越大厦a座
+        </div>
+        <div class="title">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            <span class="txt">职位描述</span>
+        </div>
+        <div class="des">
+            <div class="des_box1">
+                卡巴Kabba青少儿科技活动中心，旨在为3-16岁青少儿提供科技启蒙教育，培养孩子的创造力。
+                卡巴KABBA以风靡欧美等发达国家的科技启蒙教具为载体，通过"做中学"，
+                即Learning by making，激发孩子们的学习兴趣，想象力、动手能力、组织协调能力等，
+                为孩子们成为创新型人才奠定基础，深受青少儿和家长的好评。
+            </div>
+            <div class="sec_title">岗位要求</div>
+            <div class="des_box2">
+                卡巴Kabba青少儿科技活动中心，旨在为3-16岁青少儿提供科技启蒙教育，培养孩子的创造力。
+                卡巴KABBA以风靡欧美等发达国家的科技启蒙教具为载体，通过"做中学"，即Learning by making，
+                激发孩子们的学习兴趣，想象力、动手能力、组织协调能力等，为孩子们成为创新型人才奠定基础，
+                深受青少儿和家长的好评。
+            </div>
+        </div>
+
+        <div class="title">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            <span class="txt">职位发布者</span>
+        </div>
+        <div class="res_give">
+            <div class="item_l">
+                <img src="img/avatar.png" style="width:100%; height:100%; border-radius: 50%" />
+            </div>
+            <div class="item_m">
+                <div class="row1"><span class="firm_name">武汉图图有限公司</span>-<span class="firm_man">HR</span></div>
+                <div class="row2">武汉图图有限公司</div>
+            </div>
+            <div class="item_r">
+                该公司在招
+                <span class="job_num">23</span>个职位
+            </div>
+        </div>
+
+    </div>
+
+    <div style="height:0.2rem;"></div>
+    <div class="wrap3">
+        <div class="foot_box">
+            <div class="f_l">
+                <i class="fa fa-star-o" aria-hidden="true"></i>
+                <span>收藏</span>
+            </div>
+            <div class="f_r btn">投递简历</div>
+        </div>
+    </div>
+
+
+</div>
+

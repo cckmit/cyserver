@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>捐赠查询</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <link href="../jslib/hui/plugins/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        /*search bar*/
+        .search_input{
+            border:1px solid #cbcbcb;
+            background-color:#ebebeb;
+        }
+        .thanks{
+            /*text-align:center;*/
+            padding:0 10px;
+            color:#2b2b2b;
+            font-size:16px;
+        }
+        .tips{
+            display: none;
+            /*text-align:center;*/
+            padding:0 10px;
+            color:#2b2b2b;
+            font-size:16px;
+        }
+
+        /*项目列表*/
+        .txt{
+            background-color:#ebebeb;
+            color:#2b2b2b;
+            font-size:14px;
+            padding-left:10px;
+            margin-top:0;
+            margin-bottom:0;
+
+        }
+        .my_item{
+            background-color:#fff;
+            padding:10px;
+
+        }
+        .show_btn{
+            border:1px solid #fa9641;
+            background-color:#fff;
+            color:#262626;
+        }
+        .show_btn:active,.show_btn:hover{
+            outline:none;
+            background-color:#fa9641;
+            color:#fff;
+        }
+
+        /*no donation*/
+        .no_donate{
+            padding-top:30px;
+            background-color:#fff;
+            text-align: center;
+        }
+        .tip{
+            margin: 0;
+            padding: 10px;
+            font-size:14px;
+        }
+
+        /*user have no verified*/
+    </style>
+    <script type="text/html" id="tppl">
+    <%for(var key in list){%>
+        <% if(list[key].project.projectName && list[key].project.projectName!=''){%>
+        <div class="my_item H-margin-vertical-bottom-2">
+
+            <div class="H-box-sizing-content-box H-width-100-percent">
+                <div class="H-flexbox-horizontal">
+                    <div class="H-flex-item">
+                        <div class="H-flexbox-horizontal">
+                            <div class="H-flex-item H-font-weight-500 H-font-size-14 H-text-show-row-1 ">
+                                <%=list[key].project.projectName%>
+                            </div>
+                        </div>
+                        <div class="H-font-size-14 H-text-show-row-1 H-margin-vertical-top-2" style="color:#fa9641;">
+                            <%if(list[key].donationType && list[key].donationType=='20'){%>
+                                <%=list[key].itemNum %>
+                            <%}else{%>
+                                <%=list[key].money%>元
+                            <%}%>
+                        </div>
+                        <div class="H-font-size-12 H-theme-font-color-999 H-text-show-row-1 H-margin-vertical-top-2">
+                            <%=list[key].donationTime.substring(0,10)%>
+                        </div>
+                    </div>
+                    <% if(list[key].confirmStatus > 20){%>
+                    <div class="H-padding-vertical-both-10 H-center-all">
+                        <button onclick="showCertificate('<%=list[key].certificatePicUrl%>');" class="show_btn H-display-block H-font-size-14 H-padding-horizontal-both-5">查看证书</button>
+                    </div>
+                    <%}%>
+                </div>
+            </div>
+
+        </div>
+        <%}%>
+
+    <%}%>
+    </script>
+</head>
+<body>
+<!--search bar-->
+<div class="H-padding-vertical-both-10 H-padding-horizontal-both-5 H-theme-background-color-white">
+    <div class="H-search H-flexbox-horizontal H-box-sizing-border-box  H-overflow-hidden H-position-relative">
+        <div id="ser" class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle
+        H-text-align-center H-theme-font-color-999  H-border-radius-15">
+            <span class="H-display-block H-width-100-percent H-font-size-12">
+                <i class="ser_icon H-iconfont H-icon-search H-font-size-12"></i>
+                <span class="search_tip">请输入姓名查询证书</span>
+            </span>
+        </div>
+        <input id="ipt" onsearch="searchResult();" type="search" name="keyword"
+               class="search_input H-border-none  H-border-radius-9 H-flex-item H-font-size-12 H-padding-horizontal-both-10
+                   H-padding-vertical-both-5" placeholder="">
+        <span class="H-display-block H-font-size-13 H-vertical-middle H-theme-font-color-999 H-padding-horizontal-both-10 H-icon H-display-block H-horizontal-center btn" style="display: none;">
+                <i class="H-iconfont H-icon-search H-vertical-middle" onclick="searchResult()"></i>
+                <i class="H-iconfont H-vertical-middle">&emsp;</i>
+                <i class="H-iconfont H-icon-close H-vertical-middle"></i>
+        </span>
+    </div>
+    <!--thanksgiving-->
+    <p class="thanks">亲爱的<span class="donor_name" style="color:#fa9641"></span><br>感谢您为有需要的人捐赠
+            <span class="donate_money" style="color:#fa9641"></span><span class="yuan">元</span>善款!</p>
+
+    <!--提示 没有捐赠信息-->
+    <p class="tips">亲爱的<span class="ser_name" style="color:#fa9641"></span><br>
+        没有查询到您的捐赠信息,请先<span onclick="goLogin()" style="color:#fa9641">登录</span></p>
+</div>
+
+<div style="padding:10px 0; background-color:#ebebeb">
+    <p class="txt"><span class="donor_name"></span>的捐赠记录</p>
+</div>
+<!--content-->
+<div class="content">
+    <div class="my_list" style=" background-color:#ebebeb;">
+
+    </div>
+</div>
+
+<!--no donation-->
+<div class="no_donate" style="display: none;">
+    <img src="img/no_donation.png" style="height: 84px;width: 84px;"/>
+    <p class="tip">暂无捐赠<a href="javascript:;" onclick="goDonate();" style="color:#fa9641; text-decoration: none;">点击此处</a>进行捐赠 </p>
+</div>
+
+</body>
+
+<script src="../jslib/hui/script/H.js" type="text/javascript"></script>
+<script src="../mobile/js/B.js" type="text/javascript" ></script>
+<script src="../jslib/xdomain.min.js" type="text/javascript"></script>
+<script src="../jslib/zepto/zepto.min.js" type="text/javascript"></script>
+<script src="../jslib/dropload/dropload.js" type="text/javascript"></script>
+<script src="../mobile/js/jbase64.js" type="text/javascript"></script>
+<script src="../mobile/js/wechat.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        $("title").html("捐赠查询");
+
+
+            var shareData = {
+                title: '证书页面',
+                desc: '',
+                link: location.href.split('?')[0],
+                imgUrl: ''
+            };
+            mkShareInfo(location.href, shareData, 1);
+
+
+    }else{
+        //app或网页
+        $("title").html('{"title":"捐赠查询","backUrl":"/foundation/donate_find.html?accountNum=' + accountNum+'","backTitle":"返回"}');
+    }
+
+
+    if(!accountNum || accountNum == 'null' ){
+        accountNum = '';
+    }
+
+    //搜索框
+    //点击搜索框
+    H.D("#ser").addEventListener("touchend", function (e) {
+        H.D(".search_tip").style.cssText = "display:none;";
+        H.D(".btn").removeAttribute("style");
+        H.D("#ipt").setAttribute("placeholder", "请输入姓名");
+        H.D("#ipt").style.paddingLeft="30px";
+        H.D("#ipt").style.textAlign = "left";
+        H.D("#ser").style.width="10%";
+    });
+
+    //点击"取消"按钮
+    H.D(".H-icon-close").addEventListener("touchend", function (e) {
+        H.D(".btn").style.cssText = "display:none;";
+        H.D(".search_tip").style.cssText = "display:inline-block;";
+        H.D("#ipt").setAttribute("placeholder", "");
+        H.D("#ser").removeAttribute("style");
+        $("#ipt").val('');
+        if(accountNum && accountNum != ''){
+            myDonateList();
+        }else if(openId && openId != '' && appId && appId != ''){
+            myDonateList();
+        }
+    });
+
+    //点击搜索框(输入框),但是没有输入时, 点击其他位置, 搜索框恢复原来状态
+    H.D("#ipt").addEventListener("blur",function (e) {
+        if($('#ipt').val()=='') {
+            H.D(".btn").style.cssText = "display:none;";
+            H.D(".search_tip").style.cssText = "display:inline-block;";
+            H.D("#ipt").setAttribute("placeholder", "");
+            H.D("#ser").removeAttribute("style");
+        }
+
+    })
+
+
+    // 页面初始化
+    $(function(){
+
+        // 定义模板标签符
+        H.tppl_flag = ["<%", "%>"];
+
+
+        if(accountNum && accountNum!=''){
+
+            //加载页面时候, 清空搜索框
+            var serVal = $("#ipt").val();
+            if(serVal!='') {
+                searchResult();
+
+            }else{
+                //加载登录用户信息
+                //loadMyInfo();
+                //加载登录用户的捐赠项目列表
+                myDonateList();
+
+            }
+
+
+        } else if(openId && openId != '' && appId && appId != ''){
+            //加载页面时候, 清空搜索框
+            var serVal = $("#ipt").val();
+            if(serVal!='') {
+                searchResult();
+            }else{
+                //加载登录用户的捐赠项目列表
+                myDonateList();
+
+            }
+        }else{
+            $('.thanks').css('display','none');
+            $('.txt').css('display','none');
+            $('.content').css('display','none');
+            $('.tips').css('display','block');
+            $('.no_donate').css("display","block");
+        }
+
+
+
+
+
+    });
+
+    //搜索某人的捐赠信息
+    function searchResult(){
+        var ser_name= $('.search_input').val();
+
+
+        if(ser_name && ser_name != ''){
+
+            //重置搜索框内容
+            $('#ipt').css("padding-left","30px");
+            $('.ser_icon').remove();
+            $('.search_tip').empty();
+
+            //加载搜索到的用户信息
+            searchDonateList(ser_name);
+        }else if (accountNum && accountNum != ''){
+            //loadMyInfo();
+            myDonateList();
+        }else if(openId && openId != '' && appId && appId != ''){
+            myDonateList();
+        }
+
+    }
+
+
+
+    //搜索用户的项目列表
+    function searchDonateList(s_name){
+
+        // 跨域请求
+        B.ready(function(){
+            // 页码
+            var page=1;
+            $('.my_list').empty();
+            $('.dropload-up').remove();
+            $('.dropload-down').remove();
+
+            $('.content').css('display','block');
+
+            // 下拉刷新上拉加载
+            $('.content').dropload({
+                scrollArea : window,
+                  domUp : {
+                 domClass   : 'dropload-up',
+                 domRefresh : '<div class="dropload-refresh">↓下拉刷新-捐赠查询</div>',
+                 domUpdate  : '<div class="dropload-update">↑释放更新-捐赠查询</div>',
+                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                 },
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-捐赠查询</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadDownFn : function(me){
+                    console.log('{"command": "73","content": {"accountNum": "" ,"page":"'+page+'","rows":"10","donorName":"'+s_name+'"} }')
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "73","content": {"accountNum": "" ,"page":"'+page+'","rows":"10","donorName":"'+s_name+'"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+//                            console.log(JSON.stringify(data));
+
+                            if(data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                                 //重置输入框
+
+                                //查询的用户没有捐款
+                                //添加donor信息
+//                                $('.tips .donor_name').text(s_name);
+                                $('.donate_money').text(data.obj.totalMoney);
+                                if(page == 1){
+                                    $('.txt').css('display','none');
+                                    $('.thanks').css('display','none');
+                                    $('.no_donate').css('display','block');
+                                    $('.content').css('display','none');
+                                }
+                            }else{
+                                if(page == 1){
+                                    $('.thanks').css('display','none');
+                                    $('.txt').css('display','block');
+                                    $('.no_donate').css('display','none');
+                                    $('.donor_name').text(s_name);
+                                    $('.donate_money').text(data.obj.totalMoney);
+
+                                }
+
+//                                console.log("搜索结果："+JSON.stringify(data));
+                                //添加donor信息
+
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.my_list').append(result);
+
+                                page++;
+
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            //me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+
+    }
+
+    //加载登录用户的捐赠项目列表
+    function myDonateList() {
+
+        // 跨域请求
+        B.ready(function(){
+            // 页码
+            var page=1;
+            $('.my_list').empty();
+            $('.dropload-up').remove();
+            $('.dropload-down').remove();
+
+
+            // 下拉刷新上拉加载
+            $('.content').dropload({
+                scrollArea : window,
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-捐赠查询</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadDownFn : function(me){
+                    console.log('{"command": "73","content": {"accountNum": "'+accountNum+'" ,"openId": "'+openId+'","accountAppId": "'+appId+'","payStatus":"1","page":"'+page+'","rows":"10"} }')
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "73","content": {"accountNum": "'+accountNum+'" ,"openId": "'+openId+'","accountAppId": "'+appId+'","payStatus":"1","page":"'+page+'","rows":"10"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(JSON.stringify(data));
+                            if(!data || !data.success || !data.obj ||data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+
+                                //查询的用户没有捐款
+                                //添加donor信息
+                                if(page ==1){
+                                    $('.donor_name').text(data.obj.userName);
+                                    $('.donate_money').text(data.obj.totalMoney);
+                                    $('.no_donate').css('display','block');
+                                }
+                                //去除dropload-down
+                                $('.dropload-down').remove();
+
+                            }else{
+//				                	console.log("上拉加载："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj.rows});
+                                if(page == 1){
+                                    $('.donor_name').text(data.obj.userName);
+                                    $('.donate_money').text(data.obj.totalMoney);
+                                }
+
+                                $('.my_list').append(result);
+
+                                page++;
+                            }
+
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            //me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+    }
+
+
+    //查看证书
+    function showCertificate(certificatePicUrl){
+        H.openWin("查看证书", "certificate.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&imgUrl="+B.encrypt(certificatePicUrl));
+    }
+
+    //去捐赠
+    function goDonate(){
+        H.openWin("捐赠项目", "project_list.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum);
+    }
+
+    //去登录
+    function goLogin() {
+        H.openWin("登录", "login.html?ts="+B.getRandomInt(4));
+    }
+
+    var t = B.getUrlParamByName("t");
+
+    if(!t || t=='null' || t!=1){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                    WeixinJSBridge.call('closeWindow');
+                } else if(ua.indexOf("alipay")!=-1){
+                    AlipayJSBridge.call('closeWebview');
+                }else if(ua.indexOf("baidu")!=-1){
+                    BLightApp.closeWindow();
+                }
+                else{
+                    window.close();
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }
+</script>
+</html>

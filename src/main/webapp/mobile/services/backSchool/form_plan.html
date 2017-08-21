@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!-- UC强制全屏 -->
+    <meta name="full-screen" content="yes">
+    <!-- QQ强制全屏 -->
+    <meta name="x5-fullscreen" content="true">
+    <title>发起计划</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/backSchool.css" rel="stylesheet" type="text/css" />
+    <link href="font/iconfont.css" rel="stylesheet" type="text/css" />
+
+
+    <!--提取表单-->
+    <style type="text/css">
+        #project .cy-label {
+            min-width: 60px;
+        }
+
+        .select-area{
+              position: relative;
+               overflow: hidden;
+            height: 48px;
+            width: 100%;
+            line-height: 48px;
+            font-size: 12px;
+             }
+         .select-area select{
+                position: absolute;
+                left: 0;
+                 top: 0;
+                 opacity: 0;
+                 width: 100%;
+               }
+    </style>
+
+
+
+</head>
+
+<body>
+
+
+
+
+<!--top img-->
+<!--avatar+name+prise-->
+<div class="H-horizontal-center H-theme-background-color-black H-overflow-hidden H-padding-vertical-bottom-10 plan-banner-box">
+    <div class="H-overflow-hidden H-max-width-100-percent H-padding-horizontal-both-10 H-box-sizing-border-box" style="margin:30px auto;">
+    <div class="picture H-margin-horizontal-auto " style="width: 96px; height: 96px;">
+        <img id="userAvatar" onerror="javascript:this.src='../static/img/icons/default_profile.png';" src="" class="H-display-block H-border-radius-circle" alt="" title=""
+             style="width: 90px; height: 90px; border:3px solid rgba(255,255,255,0.3);">
+    </div>
+    <div class="H-display-block H-font-weight-normal H-font-weight-500 H-font-size-16 H-theme-font-color-white
+        H-text-align-center H-margin-vertical-top-5" style="margin-bottom:20px;">
+        <span id="userName"></span>
+        <span class="">
+            <i id="sex_flag" class="H-iconfont H-icon-woman H-font-size-18 H-theme-font-color11"></i>
+        </span>
+    </div>
+
+
+</div>
+
+
+    <!--发起 参与 我的 tab-->
+    <div class="tab-group H-tabs-channel H-overflow-scrolling" style="background: rgba(1,1,1,0.5)">
+        <ul class="H-width-100-percent H-auto-height H-theme-font-color-999 H-flexbox-horizontal H-clear-both H-theme-background-color-transparent H-padding-5 H-box-sizing-border-box">
+            <li tapmode="" onclick="goPlan(0)"
+                class="H-channel-item H-flex-item  H-theme-font-color-999
+                H-text-align-center H-font-size-16">参与
+            </li>|
+            <li tapmode="" onclick="goPlan(1)"
+                class="H-channel-item H-flex-item H-theme-font-color-999 H-margin-horizontal-right-5
+                H-text-align-center H-font-size-16">我的
+            </li>|
+            <li tapmode="" onclick="goPlan(2)"
+                class="H-channel-item H-flex-item H-theme-font-color-999
+                H-text-align-center H-font-size-16">收藏
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+<!--发起+参与+我的 content -->
+<div class="content">
+     <!--发起/编辑 计划 form-->
+    <div class="create_plan">
+         <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15">
+                <!--<i class="H-iconfont H-icon-profile H-font-size-18 H-vertical-middle H-theme-font-color1"></i>-->
+                <i class="icon iconfont icon-zhuti H-vertical-middle H-theme-font-color14"></i>
+            </span>
+             <span class="H-vertical-middle H-padding-horizontal-left-10 H-theme-background-color-white H-font-size-14" style="line-height: 14px;">主题：</span>
+             <!--<span class="topic_item edit_item">元旦返校</span>-->
+             <input type="text" id="topic"
+                    class="input_item input_topic H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-line-height-default H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-12" placeholder="请输入主题">
+
+         </div>
+         <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15 H-margin-vertical-bottom-2">
+                <!--<i class="H-iconfont H-icon-tip-msg H-font-size-18 H-vertical-middle H-theme-font-color2"></i>-->
+                <i class="icon iconfont icon-renshu H-vertical-middle H-theme-font-color11"></i>
+            </span>
+             <span class="H-vertical-middle H-padding-horizontal-left-10 H-theme-background-color-white H-font-size-14" style="line-height: 14px;">人数：</span>
+             <!--<span class="pNum_item edit_item">12</span>-->
+             <input type="number" id="plannedPeopleNum" class="input_item input_pNum H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-12 " placeholder="请输入人数（0为无上限）">
+         </div>
+         <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle"  style="height: 48px;width: 100%;font-size: 12px;">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15 H-margin-vertical-bottom-2">
+                <!--<i class="H-iconfont H-icon-weixin H-font-size-18 H-vertical-middle H-theme-font-color6"></i>-->
+                <i class="icon iconfont icon-shijian H-vertical-middle H-theme-font-color6"></i>
+            </span>
+             <span class="H-vertical-middle H-padding-horizontal-left-10 H-theme-background-color-white H-font-size-14" style="line-height: 14px;">开始：</span>
+             <!--<span class="backTime_item edit_item">2016-12-31</span>-->
+
+             <input id="backSchoolStartTime" type="date"
+                    class="input_item input_backTime H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-12" placeholder="请选择返校开始时间"
+                    tapmode="" style="width: 100%;background: none; padding-left: 12px;">
+             <!--<input type="text" id="backSchoolStartTime" type="datetime-local"-->
+                    <!--class="input_item input_backTime H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box-->
+            <!--H-border-none H-outline-none H-padding-12" placeholder="请选择返校开始时间"-->
+                    <!--readonly="readonly" tapmode="" onclick="H.dateTip(this);">-->
+
+         </div>
+        <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle" style="height: 48px;width: 100%;font-size: 12px;">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15 H-margin-vertical-bottom-2">
+                <!--<i class="H-iconfont H-icon-weixin H-font-size-18 H-vertical-middle H-theme-font-color6"></i>-->
+                <i class="icon iconfont icon-shijian H-vertical-middle H-theme-font-color6"></i>
+            </span>
+            <span class="H-vertical-middle H-padding-horizontal-left-10 H-theme-background-color-white H-font-size-14" style="line-height: 14px;">结束：</span>
+            <!--<span class="backTime_item edit_item">2016-12-31</span>-->
+
+            <input id="backSchoolEndTime" type="date"
+                   class="input_item input_backTime H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-12" placeholder="请选择返校结束时间"
+                   tapmode="" style="width: 100%;background: none;  padding-left: 12px;">
+            <!--<input type="text" id="backSchoolEndTime" type="datetime-local"-->
+                   <!--class="input_item input_backTime H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box-->
+            <!--H-border-none H-outline-none H-padding-12" placeholder="请选择返校结束时间"-->
+                   <!--readonly="readonly" tapmode="" onclick="H.dateTip(this);">-->
+
+        </div>
+
+
+
+         <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15 H-margin-vertical-bottom-3">
+                <!--<i class="H-iconfont H-icon-friends H-font-size-18 H-vertical-middle H-theme-font-color7"></i>-->
+                <i class="icon iconfont icon-banjiquan  H-vertical-middle H-theme-font-color10 "></i>
+            </span>
+             <span class="H-vertical-middle H-padding-horizontal-left-10 H-theme-background-color-white H-font-size-14">班级：</span>
+             <div class="select-area">
+                  <span class="select-value" style=" padding-left: 12px;"></span>
+                  <select  flag="123" id="classItem" class="input_item input_class H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+            H-border-none H-outline-none H-padding-12">
+                  </select>
+            </div>
+
+             <!--<input type="text" flag="123" id="classItem" class="input_item input_class H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box-->
+            <!--H-border-none H-outline-none H-padding-12" placeholder="请选择班级" readonly="readonly" tapmode="">-->
+         </div>
+
+         <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-both-after H-vertical-middle">
+            <span class="H-icon H-display-block H-margin-horizontal-left-15 H-margin-vertical-bottom-2">
+                <!--<i class="H-iconfont H-icon-where H-font-size-18 H-vertical-middle H-theme-font-color5"></i>-->
+                <i class="icon iconfont icon-huodong H-vertical-middle H-theme-font-color13"></i>
+            </span>
+             <span class="H-vertical-middle H-padding-10 H-font-size-14">活动：</span>
+         </div>
+
+         <!--textbox-->
+         <div class="H-flexbox-horizontal H-padding-15 ">
+        <textarea id="describe" class="input_activity H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+        H-border-none H-outline-none H-padding-12" placeholder="请输入活动内容" style="min-height:120px;"></textarea>
+         </div>
+
+        <li class="H-position-relative H-padding-10 H-theme-background-color-white">
+            <input type="hidden" id="poster" name="poster" value="">
+            <input type="file" id="picNative" name="picNative" onchange="getPicUrl(this);" style="display: none;">
+
+            <div onclick="selectPic()" class="H-width-100-percent H-height-100-percent H-center-all H-border-style-dashed H-theme-border-color1" style="min-height: 100px;position: relative;">
+                <img id="picPreview" name="picPreview" src="" style="display: none;width: 100%;">
+                <div id="uploadImg" class="H-text-align-center">
+                    <i class="H-iconfont H-icon-camera H-font-size-22 H-theme-font-color-999"></i>
+                    <label class="H-display-block H-font-size-14">上传活动图片</label>
+                </div>
+            </div>
+
+        </li>
+
+
+         <!--发起计划 按钮-->
+         <div class="H-padding-horizontal-both-15" style="margin: 10px 0;">
+             <button id="submitBtn"  name="" onclick="createPlan();"
+                     class="create_btn pId H-button H-width-100-percent  H-font-size-16 H-outline-none H-padding-vertical-both-8 H-padding-horizontal-both-20
+        H-theme-background-color1 H-theme-font-color-white H-theme-border-color1 H-theme-border-color1-click H-theme-background-color1-click
+        H-theme-font-color1-click H-border-radius-3">发&nbsp;&nbsp;起</button>
+         </div>
+
+     </div>
+
+</div>
+<!--提示框: "我的"计划列表中针对没有通过审核的用户提示 静态页面-->
+<!--
+<div class="msg_advice">
+    <div class="H-dialog H-theme-background-color-white animated" style="animation-duration: 0.3s; width: 362px; min-height: 80px; margin-top: 0px;">
+        <div class="H-dialog-title H-padding-10 H-font-size-16 H-line-height-normal H-text-align-center H-theme-background-color1 H-theme-font-color-white">
+            活动建议：
+        </div>
+        <div id="messageWin" class="H-dialog-content H-padding-10 H-word-break-break-all H-font-size-16 H-theme-font-color-666">
+            如果你无法简洁表单你的想法,请提高您的文化水平
+        </div>
+        <div class="H-dialog-buttons H-flexbox-horizontal H-border-vertical-top-after">
+        <div class="H-dialog-button H-border-horizontal-right-after H-flex-item H-font-size-16 H-padding-10 H-center-all H-touch-active H-theme-font-color1">
+            立即修改
+        </div>
+        </div>
+    </div>
+</div>
+-->
+
+<!--提示框: "发起"表单中成功发起计划 提示用户 静态页面-->
+<!--
+<div class="msg_success">
+    <div class="H-dialog H-theme-background-color-white animated zoomIn H-border-radius-9">
+    <div class="H-text-align-center H-padding-vertical-top-20">
+        <span class="H-icon H-display-block H-horizontal-center">
+            <i class="icon iconfont icon-1 H-vertical-middle H-theme-font-color1" style="font-size:5rem;"></i>
+        </span>
+    </div>
+
+    <div id="messageWin" class="H-dialog-content H-padding-10 H-word-break-break-all H-font-size-16 H-theme-font-color-666 H-text-align-center">
+        活动发起成功,等待工作人员审核
+    </div>
+    <div class="H-dialog-buttons H-flexbox-horizontal H-border-vertical-top-after H-font-size-16 H-line-height-normal H-text-align-center H-theme-background-color1' +
+                'H-theme-font-color-white H-touch-active H-text-align-center H-width-100-percent
+                H-margin-vertical-top-20 H-border-radius-9-right-bottom H-border-radius-9-left-bottom">
+        <div class="H-dialog-button H-border-horizontal-right-after H-flex-item H-font-size-16 H-padding-10
+        H-center-all H-touch-active H-theme-background-color1 H-theme-font-color-white H-border-radius-9-right-bottom H-border-radius-9-left-bottom H-border-radius-9">
+            我知道了
+        </div>
+
+    </div>
+</div>
+</div>
+-->
+
+
+
+
+<!--<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>-->
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/jquery.min.js" type="text/javascript"  ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<!--<script src="../static/js/zepto.min.js" type="text/javascript" ></script>-->
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+
+<!--动态获取数据-->
+<script type="text/javascript">
+    // 接收URL中的参数
+    var categoryId = B.getUrlParamByName("categoryId"); //计划编号,不是生成/编辑后的计划id
+//    console.log("计划编号-categoryId=="+categoryId);
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        if(!accountNum || accountNum == 'null'){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("../services/backSchool/form_plan.html?categoryId=" + categoryId);
+                    window.location.href = "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl;
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '創建返校機會',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+
+    }else{
+        openId = '';
+    }
+
+    if(!appId || appId == "null"){
+        appId = '';
+    }
+    if(!accountNum || accountNum == "null"){
+        accountNum = '';
+    }
+
+    // 初始化页面
+    $(function(){
+        B.ready(function(){
+
+            //获取 上层 用户个人信息和收藏数量
+            getUserInfo();
+
+            //根据计划编号,来决定是编辑计划还是生成计划:
+            if(categoryId && categoryId !='' && categoryId != 'null' && categoryId!='0') {
+                //编辑计划
+                //1 调用详情接口,获得数据
+                loadPlanDetail(categoryId);
+                //初始化按钮
+                $("#submitBtn").text("修     改");
+
+            }else{
+                categoryId = ''
+            }
+            
+            // 获取班级列表
+            getClassList();
+
+            
+        });
+
+        $(".select-area .select-value").each(function(){
+            if( $(this).next("select").find("option:selected").length != 0 ){
+                $(this).text( $(this).next("select").find("option:selected").text() );
+            }
+        });
+        $(".select-area select").change(function(){
+            var value = $(this).find("option:selected").text();
+            $(this).parent(".select-area").find(".select-value").text(value);
+        });
+
+    });
+
+    function goPlan(flag){
+        H.confirm(function (ret) {
+            if(ret.buttonIndex==1){
+                //跳转到指定页面
+                H.openWin("plan","my_jihua.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&flag="+flag);
+            }
+        }, '确认提示：', '您确定要离开这里吗？');
+    }
+
+    //根据详情接口,重新获取计划详情
+    function loadPlanDetail(pId) {
+        console.log('{ "command": "84", "content": { "id": "'+pId+'","userId":"'+accountNum+'" } }')
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{ "command": "84", "content": { "id": "'+pId+'","userId":"'+accountNum+'" } }'
+            },
+            dataType: 'json',
+            success: function(data){
+
+                console.log("用户信息=="+JSON.stringify(data))
+
+                if(data.obj) {
+                    $('#topic').val(data.obj.topic);
+                    $('#plannedPeopleNum').val(data.obj.number);
+                    $('#backSchoolStartTime').val(data.obj.time);
+                    $('#backSchoolEndTime').val(data.obj.endTime);
+                    $('#classItem').val(data.obj.classInfoName.split(',')[3]);
+//                    classId = data.obj.classinfo;
+                    $('#describe').html(data.obj.other);
+                    $(".pId").attr('name', data.obj.id);//计划Id
+                }
+
+            },
+            error: function(xhr, type){
+                alert("error")
+
+            }
+        });
+    }
+
+    // 选择本地图片
+    function selectPic(){
+        if(openId != '') {
+            wechatUpdatePic(appId, openId,"", 1, '#poster', 3);
+        }else {
+            $("#picNative").trigger("click");
+        }
+    }
+
+    // 获取图片改变后的地址
+    function getPicUrl(obj){
+        // 验证上传图片
+        var fileExt = document.getElementById('picNative').value;
+        var fileName = "";
+
+        if(fileExt != null && fileExt != ''){
+
+            fileName = fileExt.substring(0,fileExt.lastIndexOf("."));
+            fileName = fileName.substr(fileName.lastIndexOf("\\")+1, fileName.length);
+
+            fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+            if(fileExt == null || fileExt == ''){
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请确认上传的文件包含正确的扩展名',
+                    button:["确认"]
+                });
+                return;
+            }
+
+            fileExt = fileExt.toLowerCase();
+            if(fileExt=='.gif' || fileExt=='.jpg' || fileExt=='.png' || fileExt=='.bmp' || fileExt=='.jpeg'){
+            }else{
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请上传正确的图片文件',
+                    button:["确认"]
+                });
+                return;
+            }
+        }
+
+        // 图片压缩
+        lrz(obj.files[0], {
+            width: 400,
+            quality: 0.8,
+            done: function (results) {
+                // 预览选择的图片
+                $("#picPreview").attr("src", results.base64).show();
+                $("#uploadImg").hide();
+
+                // 入参数组合
+//					H.alert(results.base64);
+
+                var uploadImgParam = {
+                    uploadFileBase64:results.base64.substring(results.base64.lastIndexOf(",") + 1),
+                    uploadFileName:fileName + fileExt,
+                    jsonStr:'{"command": "1","content": {"accountNum": "'+accountNum+'","type": "1"}}'
+                };
+
+                // 上传图片到服务器，返回图片在服务器的完整地址
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:uploadImgParam,
+                    dataType: 'json',
+                    success: function(data){
+                        // 将图片地址保存于隐藏域
+                        $("#poster").val(data.obj);
+                    },
+                    error: function(xhr, type){
+                        // 保存失败
+                    }
+                });
+            }
+        });
+    }
+
+
+    //获取顶部用户信息
+    function getUserInfo() {
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{ "command": "27", "content": { "accountNum": "'+accountNum+'" } }'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj) {
+                    $('#userAvatar').attr('src',B.getImageAbsoluteUrl(data.obj.picture_xd));
+                    $('#userName').text(data.obj.name);
+                    if(data.obj.sex==0){
+                        $('#sex_flag').addClass('H-icon-man').removeClass('H-icon-woman').css('color','#51bfff');
+                    }
+                }
+
+            },
+            error: function(xhr, type){
+                alert("error")
+
+            }
+        });
+        
+    }
+
+//    var classStr = '';
+    //在发起计划和编辑计划是,用于获取用户的学习经历,从中得到"班级"信息
+    function getClassList() {
+
+        B.ready(function () {
+            console.log('{"command": "101",  "content": { "accountNum": "'+accountNum+'"} }')
+
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "101",  "content": { "accountNum": "'+accountNum+'"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    var classList = new Array();
+                    var classItemList = new Array();
+                    var classIDList = new Array();
+
+                    if(data && data.obj) {
+                        if(data.obj.length > 0){
+                            classList = data.obj;
+                            //将每个班级放入array中
+                            var listrs='';
+
+                            for(var i=0; i<classList.length; i++){
+                                console.log(JSON.stringify(classList[i]))
+                                classItemList[i]=classList[i].strClass;
+                                classIDList[i]=classList[i].strStudyPathId;
+                                listrs+='<option value="'+classList[i].strStudyPathId+'">'+classList[i].strClass+'</option>'
+                            }
+                            $('#classItem').html(listrs)
+                            $(".select-value").text(classList[0].strClass);
+//                            $('#classItem').click(function () {
+//                                H.selectTip(this, classItemList,classIDList,function (index, value,valuey) {
+//                                    classId=valuey;
+//                                });
+//                            });
+                        }
+                    }else{
+                        H.alert("该用户不存在");
+                    }
+
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+        })
+    }
+
+    //创建计划 / 编辑计划
+    function createPlan() {
+
+
+
+        //获得button[id="pId"]的name属性值
+        var planId = $(".pId").attr("name"); //计划id
+
+        // 获取表单数据
+        var topic = $("#topic").val();  //组织主题
+        var plannedPeopleNum = $("#plannedPeopleNum").val();  //计划人数
+
+        var backSchoolStartTime = $("#backSchoolStartTime").val(); //返校时间
+        var backSchoolEndTime = $("#backSchoolEndTime").val(); //返校时间
+        var classItem = $(".select-value").text(); //班级
+        var describe = $("#describe").val();  //活动描述
+        var poster = $("#poster").val();
+
+        var classId = $("#classItem").val(); //班级
+
+
+        var d1 = new Date(backSchoolStartTime.replace(/\-/g, "\/"));
+        var d2 = new Date(backSchoolEndTime.replace(/\-/g, "\/"));
+
+        var date = new Date();
+        var d0 = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate();
+        var d00 = new Date(d0.replace(/\-/g, "\/"));
+        // 校验表单数据
+        if ($.trim(topic) == '') {
+            H.alert(function () {
+                $("#topic").focus();
+            }, "请输入组织主题！");
+            return false;
+        }
+        else if ($.trim(plannedPeopleNum) != '' && !(/^[0-9]+\d*$/.test(plannedPeopleNum))) {
+            H.alert(function () {
+                $("#plannedPeopleNum").focus();
+            }, '人数上限应为大于0的整数值（或为0不设上限！）');
+            return false;
+        }
+        else if ($.trim(backSchoolStartTime) == '' ) {
+            H.alert("请选择返校开始时间！");
+            return false;
+        }
+        else if ($.trim(backSchoolEndTime) == '') {
+            H.alert("请选择返校结束时间！");
+            return false;
+        }else if (d00>=d1) {
+            H.alert("当前时间不能大于开始时间！");
+            return false;
+        }
+        else if (d1>=d2) {
+            H.alert("开始时间不能大于结束时间！");
+            return false;
+        }
+        else if ($.trim(classItem) == '') {
+            H.alert("请选择班级！");
+            return false;
+        }
+        else if ($.trim(describe) == '') {
+            H.alert(function () {
+                $("#describe").focus();
+            }, "请输入计划详情描述！");
+            return false;
+        }else if($.trim(poster) == ''){
+            H.alert(function () {
+                $("#poster").focus();
+            }, "请上传海报图片！");
+            return false;
+        }
+
+        //校验classItem原有数据
+
+
+        var formData, ppId;
+
+       /* if(!planId || planId=='') {
+            //如果聚会编号为空, 则用户是希望对edit
+            ppId = '';
+        }else{
+            //create
+            ppId = planId;
+        }*/
+
+        if(!categoryId || categoryId=='') {
+            //如果聚会编号为空, 用户希望发起一个新的计划
+            ppId = '';
+        }else{
+            //如果聚会编号不为空, 用户希望编辑编号为categoryId的计划
+            ppId = planId;
+        }
+
+        formData = {
+            command: "82",
+            content: {
+                id: ppId,
+                topic: topic,
+                number: plannedPeopleNum,
+                time: backSchoolStartTime,
+                endTime: backSchoolEndTime,  //?后台要给合适的字段
+                classinfo: classId,
+                other:describe,
+                userId: accountNum,
+                poster: poster
+            }
+        };
+
+        console.log("formData==="+JSON.stringify(formData));
+
+        // 调用服务端接口，提交保存新建的活动
+        B.ready(function () {
+            console.log(JSON.stringify(formData));
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: JSON.stringify(formData)
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //创建时正在加载, 加载样式
+                    var manban =
+                            $('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;">' +
+                                    '<div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box;' +
+                                    ' -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;">' +
+                                    '<img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif">' +
+                                    '<p style="margin: 0;">加载中...</p></div></div>');
+                    $("body").append(manban);
+
+                    H.closeWin();
+                    //计划发起成功: 提示用户方式2: 使用 H.alertTipForCreatePlan() ,是H.js中自定义提示框
+                    /*H.alertTipForSuccuss(function(){
+                        H.openWin("plan","my_jihua.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&flag=1"+"&categoryId="+categoryId);
+                    }," 计划创建成功");
+*/
+
+                },
+                error: function (xhr, type) {
+                    // 保存失败
+                }
+            });
+        })
+    }
+
+
+
+    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber+ '&categoryId=' + categoryId);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+
+
+    var jsonStrBut = {
+        "title":"发起计划",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/backSchool/my_jihua.html?accountNum=" + accountNum;
+
+    }
+
+</script>
+
+</body>
+</html>

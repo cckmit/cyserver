@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>校友会</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+	    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+	    <meta content="校友会" name="description"/>
+	    <meta content="校友会" name="author"/>
+		<!--引入css文件-->
+		<link href="css/style.css" type="text/css" rel="stylesheet" />
+		<link href="css/responsiveslides.css" type="text/css" rel="stylesheet"  />		
+		<style type="text/css">
+			
+			/* 本例子css */
+			.picMarquee-left{ overflow:hidden; position:relative;}
+			.picMarquee-left .bd{ padding:10px; background-color: #FFFFFF;}
+			.picMarquee-left .bd ul{ overflow:hidden; zoom:1; }
+			.picMarquee-left .bd ul li{ margin:0 5px; float:left; display: inline-block; _display:inline-block; overflow:hidden; text-align:center;  }
+			.picMarquee-left .bd ul li .pic{ text-align:center; }
+			.picMarquee-left .bd ul li .pic img{ width:200px; height:130px; display:block; }
+		</style>
+		
+		<!--引入js文件-->
+		<script src="js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
+		<script src="js/xdomain.min.js" type="text/javascript"></script>
+		<script src="js/B.js" type="text/javascript"></script>
+		<script src="js/responsiveslides.min.js"></script>
+		<script src="js/common.js"></script>
+
+
+
+		<script language="javascript">
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+			var flag = "" ; //在线捐赠下的标示： 1-捐赠动态； 2-最新捐赠 3-捐赠项目
+
+			$(function() {
+
+				//檢測cookie
+				checkCookie();
+
+				B.ready(function() {
+					// 获取网站所有栏目（包括子栏目和不在导航上显示的校友服务）
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+						data: {
+							jsonStr: '{"command": "235","content": {}}'
+//							jsonStr: '{"command": "239","content": {"channel": "20","isMain": "1","parentId": "9","isNavigation": "0","level": "1"}'
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log("------" + JSON.stringify(data));
+
+							if(data && data.obj && data.obj.length > 0) {
+								categoryTreeData = data.obj;
+
+								var list = '';
+								var categoryIndex = 0;
+
+								var serviceList = '';
+								var serviceCategoryIndex = 0;
+
+								for(var i in categoryTreeData) {
+									if(categoryTreeData[i].checked){
+										// 初始化网站顶部导航
+//										$("#nav").append('<li><a href=' + categoryTreeData[i].id + '"news/list.html?categoryId=">' + categoryTreeData[i].text + '</a></li>');
+
+										// 初始化首页栏目列表
+										if(categoryIndex == 0) {
+											list += '<table width="695" border="0" cellpadding="0" cellspacing="0" ><tr>';
+										} else if(categoryIndex % 2 == 0) {
+											list += '</tr><tr>';
+										}
+list +=
+		'<td width="343" valign="top">' +
+		'	<table width="324" border="0" cellpadding="0" cellspacing="0">' +
+		'		<tr>' +
+		'			<td width="324" height="36" valign="top">' +
+		'				<table width="324" border="0" cellpadding="0" cellspacing="0">' +
+		'		<tr>' +
+		'			<td width="248" height="24" class="fon">' +
+		'				<span class="right-title">' + categoryTreeData[i].text + '</span>' +
+		'			</td>' +
+		'		</tr>' +
+		'	</table>' +
+		'</td>' +
+		'</tr>' +
+		'<tr>' +
+		'	<td height="140" valign="top">' +
+		'		<table width="100%" border="0" cellpadding="0" cellspacing="0" id="cn' + categoryTreeData[i].id + '">';
+list += '		</table>' +
+		'	</td>' +
+		'</tr>' +
+		'<tr>' +
+		'	<td height="20">' +
+		'		<div style="margin: 0px 5px;text-align: end;padding: 6px; border-top:1px solid #ECEDEF;border-bottom:1px solid #ECEDEF;color:#666666 ">' +
+		'			<a href="'+B.clientUrl+'news/list.html?categoryId=' + categoryTreeData[i].id + '" target="_blank">更多...</a>' +
+		'		</div>' +
+		'	</td>' +
+		'</tr>' +
+		'<tr>' +
+		'<td height="20">' +
+		'</td>' +
+		'</tr>' +
+		'</table>' +
+		'</td>';
+										categoryIndex++;
+									}
+								}
+
+								// 初始化栏目新闻列表
+								list += '</tr></table>';
+								$("#categoryList").append(list);
+								for(var j in categoryTreeData) {
+									loadCatetoryData(categoryTreeData[j].id);
+								}
+
+								// 初始化首页校友服务栏目
+								serviceList += '</tr></table><div style="height:10px;"></div>';
+								$("#serviceCategoryList").append(serviceList);
+
+								// 初始化幻灯片
+								loadImageNews();
+
+								// 初始化通知
+								loadTongZhi();
+
+								// 初始化“视界”轮播新闻
+								loadImageView();
+
+							}
+							//頂部導航欄添加校友分會列表
+							//$("#nav").append('<li><a href="alumni/xyh.html">校友组织</a></li>');
+						},
+						error: function(xhr, type) {
+
+						}
+					});
+				});
+
+				//檢測cookie
+				checkCookie();
+
+			});
+
+			// 初始化幻灯片
+			function loadImageNews() {
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: '{"command": "236","content": {"page": "1","rows": "5","category": "37"}}'
+					},
+					dataType: 'json',
+					success: function(data) {
+						if(data && data.obj && data.obj.rows && data.obj.rows.length > 0) {
+							// 初始化图片新闻
+							var total = data.obj.rows.length;
+							var imgList = '';
+							var numList = '';
+							for(var i=0; i < total; i++) {
+								imgList += '<li><a style="text-decoration: none;" href="'+B.clientUrl+'news/content.html?newsId='+data.obj.rows[i].newsId+'" target="_blank"><img src="'+data.obj.rows[i].pic+'" alt=""><div class="hdpTitle"><font color="#FFFFFF">&nbsp;&nbsp;'+data.obj.rows[i].title+'</font><div></a></li>';
+								numList += '<li><a href="javascript:void(0)"><div>'+(i+1)+'</div></a></li>';
+							}
+							$('#dowebok').append(imgList);
+							$('#slider-pager').append(numList);
+
+							changeImg();
+						}
+					},
+					error: function(xhr, type) {
+
+					}
+				});
+			}
+
+			// 初始化“视界”轮播新闻： 使用 "图片新闻" category = 3
+			function loadImageView() {
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: '{"command": "236","content": {"category": "3"}}'
+					},
+					dataType: 'json',
+					success: function(data) {
+						if(data && data.obj && data.obj.rows && data.obj.rows.length > 0) {
+							// 初始化視界圖片
+							for(var i in data.obj.rows) {
+			var htmlStr =
+			'<li>' +
+			'	<div class="pic">' +
+			'	<a href="'+B.clientUrl+'news/content.html?newsId=" title=' + data.obj.rows[i].newsId + '"' + data.obj.rows[i].title + '" target="_blank">' +
+			'		<img src="' + data.obj.rows[i].pic + '" />' +
+			'	</a>' +
+			'	</div>' +
+			'</li>';
+								$('.picList').append(htmlStr);
+							}
+
+							jQuery(".picMarquee-left").slide({
+								mainCell:".bd ul",
+								autoPlay:true,
+								effect:"leftMarquee",
+								vis:4,
+								interTime:50,
+								trigger:"click"
+							});
+						}
+					},
+					error: function(xhr, type) {
+
+					}
+				});
+			}
+
+			// 初始化栏目数据
+			function loadCatetoryData(id) {
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: '{"command": "236","content": {"page": "1","rows": "5","category": "' + id + '"} }'
+					},
+					dataType: 'json',
+					success: function(data) {
+						if(data && data.obj && data.obj.rows && data.obj.rows.length > 0) {
+							var list = '';
+							for(var i in data.obj.rows) {
+								var title = data.obj.rows[i].title;
+								var cDate = data.obj.rows[i].createDate;
+								if(title.length > 16) title = title.substring(0,15)+'...';
+								cDate = cDate.substring(5, 10);
+								list += '<tr><td width="79%" height="26" class="fon_suo"><a href="'+B.clientUrl+'news/content.html?newsId=' + data.obj.rows[i].newsId + '" title="' + title + '" target="_blank" >·&nbsp;' + title + '</a></td><td width="21%" align="center">' + cDate + '</td></tr>';
+							}
+							$('#cn' + id).append(list);
+						}
+					},
+					error: function(xhr, type) {}
+				});
+			}
+
+			// 通知欄
+			function loadTongZhi(){
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: '{"command": "236","content": {"page": "1","rows": "5","category": "37"} }'
+					},
+					dataType: 'json',
+					success: function(data) {
+						if(data && data.obj && data.obj.rows && data.obj.rows.length > 0) {
+							var list = '';
+							for(var i in data.obj.rows) {
+								var title = data.obj.rows[i].title;
+								var cDate = data.obj.rows[i].createDate;
+								if(title.length>14) title = title.substring(0,13)+'...';
+								cDate = cDate.substring(5, 10);
+								list += '<tr><td width="79%" height="26" class="fon_suo"><a href="'+B.clientUrl+'news/content.html?newsId=' + data.obj.rows[i].newsId + '" title="' + title + '" target="_blank" class="text-show-row-1">·&nbsp;' + title + '</a></td><td width="21%" align="center">' + cDate + '</td></tr>';
+							}
+							$('#tongzhi').append(list);
+						}
+					},
+					error: function(xhr, type) {}
+				});
+			}
+
+
+			//輪播
+			function changeImg(){
+			    $('#dowebok').responsiveSlides({
+					manualControls: '#slider-pager'
+				});
+			}
+
+			//登陸
+			function login(){
+
+				var accountNum = '', password = '';
+				accountNum = $('#UserName').val();
+				password = $('#PassWord').val();
+				if(accountNum == undefined || accountNum == '' ){
+					$('#loginMsg').text('请填写手机号');
+					return;
+				}
+				var mobileReg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+				if(accountNum.length != 11 || !mobileReg.test(accountNum)){
+					$('#loginMsg').text('请填写正确的手机号');
+					return;
+				}
+
+				if(password == undefined || password == ''){
+					$('#loginMsg').text('请填写密码');
+					return;
+				}
+				B.ready(function() {
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+						data: {
+							jsonStr: ' {"command": "10","content": { "accountNum": "'+accountNum+'", "password": "'+password+'"} }'
+						},
+						dataType: 'json',
+						success: function(data) {
+							if(data.success){
+								//$('#loginMsg').text('登陆成功');
+
+								if(data.success==true){
+									$('#loginMsg').text('登陆成功');
+									addCookie("password", password, 0);
+									addCookie("phoneNum",data.obj.phoneNum ,0) ;
+									addCookie("accountNum",data.obj.accountNum ,0) ;
+									addCookie("picture",data.obj.picture ,0) ;
+									addCookie("name",data.obj.name ,0) ;
+								}
+
+								if(checkCookie() == 0){
+									window.location.href = B.clientUrl+'users/user_personal.html';
+								}
+							}else{
+								$('#loginMsg').text(data.msg);
+							}
+						},
+						error: function(xhr, type) {}
+					});
+				});
+			}
+
+			function checkCookie() {
+				$('#afterDiv').empty();
+				var accountNum = getCookie("accountNum");
+				var picture = getCookie("picture");
+				var name = getCookie("name") ;
+				if(accountNum && accountNum != ''){
+					//cookie中有用户登录信息
+					$('#loginDiv').hide(); //隐藏右侧登录框
+					$('#afterDiv').show(); //显示右侧信息中心
+
+					$('.login_tk_dl').hide();
+					$('.login_tk_dlh').show();//显示顶层信息中心
+					if(!name || name == ''){
+						name = "未知者";
+					}
+					if(!picture || picture == '' || !is_website(picture)){
+						picture = B.clientUrl+"image/user-avatar.png";
+					}
+					$('#afterDiv').append(
+							'<a href="javascript:;">' +
+							'<img src="'+ picture +'" class="user_img_style"/></a>');
+					$('#afterDiv').append(
+							'<div class="afterDiv_box">' +
+							'<a href="javascript:;" style="text-decoration:none;">欢迎您！'+name+'</a>' +
+							'<a class="user_center_btn" href="'+B.clientUrl+'users/user_personal.html">个人中心</a>' +
+							'<a class="user_logout_btn" href="javascript:;" onclick="logout();" >退出</a>' +
+							'</div>');
+
+
+					return 0;
+				}else{
+					$('#afterDiv').hide();
+					$('#loginDiv').show();
+
+					$('.login_tk_dlh').hide();
+					$('.login_tk_dl').show();//显示顶层信息中心
+
+					return 1;
+				}
+			}
+
+			//退出登录
+			function logout() {
+				//1. 清除cookie
+				addCookie("accountNum","",-1) ;
+				addCookie("phoneNum","",-1) ;
+				addCookie("password","",-1);
+				addCookie("picture","",-1) ;
+				addCookie("name","",-1) ;
+
+//				window.location.href="index.html";
+				$("#loginDiv").show();  // 展示右侧登录窗口（无个人中心）
+				// 隐藏右侧登录窗口（个人中心）
+				$(".afterLogin").hide();
+//				$("#afterDiv").hide(); //多余
+
+				$(".login_tk_dlh").hide(); //隐藏顶层登录层（欢迎您：用户 | 退出登录）
+				$(".login_tk_dl").show();	// 展示顶层登录层（校友登录|立即注册）
+
+			}
+		</script>
+	</head>
+
+	<body>
+
+	<!--这是顶部::start-->
+	<div id="head">
+
+		<div class="lines">
+		</div>
+
+		<div class="header_nav">
+		</div>
+
+		<div class="header_content">
+		</div>
+
+	</div>
+	<!--这是顶部::end-->
+	<div class="dengluTankuang"></div>
+
+		<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:20px;">
+			<tr>
+				<td width="697" valign="top" >
+					<div style=" margin: 5px 37px 10px 0px ;width: 660px; height:440px;">
+						<div class="wrap">
+							<ul class="rslides" id="dowebok">
+
+							</ul>
+							<ul id="slider-pager">
+							</ul>
+						</div>
+					</div>
+				</td>
+				<td rowspan="2"  valign="top">
+					<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+						<tr>
+							<td  height="208" valign="top" style="padding: 5px 10px 0 10px;">
+								<table width="100%" border="0" cellpadding="0" cellspacing="0">
+
+
+									<!--登录窗口-->
+									<div class="index_login">
+										<div class="login_bt radiustlr">校友信息系统平台入口</div>
+										<div id="loginDiv" class="loginForm">
+											<form id="login_form" action="" method="post">
+												<p><span>手机号</span><input type="text" name="UserName" id="UserName" class="login_input radius"></p>
+												<p><span>密　码</span><input type="password" name="PassWord" id="PassWord" class="login_input radius"></p>
+												<span id="loginMsg" ></span>
+												<p class="mid"><input type="button" class="login_btn radius" name="submit_btn" onclick="login()" id="submit_btn" value="立即登录">
+													<a href="users/user_register.html" class="radius">我要注册</a>
+												</p>
+											</form>
+
+										</div>
+										<div class="afterLogin" id="afterDiv" style="width: 289px; height: 130px;margin: 10px 0; display: none">
+
+										</div>
+									</div>
+									
+									<tr>
+										<td height="36" valign="top">
+											<table width="100%" border="0" cellpadding="0" cellspacing="0">
+												<tr>
+													<td height="24" class="fon">
+														<span class="right-title">通知公告</span>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td height="140" width="287" valign="top">
+											<table width="100%" border="0" cellpadding="0" cellspacing="0" id="tongzhi"></table>
+										</td>
+									</tr>
+									<tr>
+										<td width="100%" height="20">
+											<div style="margin: 0 5px;text-align: end;padding: 6px; border-top:1px solid #ECEDEF;border-bottom:1px solid #ECEDEF;color:#666666 ">
+												<a href="news/list.html?categoryId=65" target="_blank">更多...</a>
+											</div>
+										</td>
+									</tr>
+									<tr><td height="20"></td></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" class="right-wrap">
+								<ul>
+									<li>
+										<table width="289" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#F2F8FF" style="font-size: 14px">
+											<tr height="10"></tr>
+											<tr>
+												<td align="center">
+													<img height="85px" src="image/cy_qr.png" />
+												</td>
+												<td align="center">
+													<img height="85px" src="image/qrcode_jmiwxh.jpg"/>
+												</td>
+											</tr>
+											<tr height="5"></tr>
+											<tr>
+												<td align="center">窗友&nbsp;&nbsp;APP</td>
+												<td align="center">科贸校友服务</td>
+											</tr>
+											<tr height="10"></tr>
+										</table>
+									</li>
+									<!--校友服务-->
+									<!--
+									<li>
+										<span class="right-title">校友服务</span>
+									</li>
+									<li id="serviceCategoryList">
+
+									</li>
+									-->
+									<!--在线捐赠-->
+									<li>
+										<span class="right-title">在线捐赠</span>
+									</li>
+									<li id="donateOnline">
+										<a href="service/donate/donateList.html?flag=1">
+											<img src="image/img_donation.png" width="289" height="142" />
+										</a>
+									</li>
+									<li>
+										<span class="right-title">联系我们</span>
+									</li>
+									<li>
+										<table width="100%" border="0" cellpadding="0" cellspacing="0">
+											<tr>
+												<td width="25%" height="33" align="center" style="border-bottom:#EDF3E9 solid 1px;"><img src="image/icon_phone.png" width="22" height="22" /></td>
+												<td width="75%" style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+											</tr>
+											<tr>
+												<td height="36" align="center" style="border-bottom:#EDF3E9 solid 1px;"><img src="image/icon_fax.png" width="22" height="22" /></td>
+												<td style="border-bottom:#EDF3E9 solid 1px;">020-84561783</td>
+											</tr>
+											<tr>
+												<td height="34" align="center"><img src="image/icon_email.png" width="22" height="22" /></td>
+												<td>kmxyhhyn@126.com</td>
+											</tr>
+										</table>
+									</li>
+								</ul>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<!-- 新聞欄目 -->
+				<td width="697" valign="top" id="categoryList"></td>
+			</tr>
+		</table>
+		
+		<!--底部落款部分::start-->
+		<table width="980" height="195" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:20px;">
+			<tr>
+				<td width="70" height="159" align="center" bgcolor="#005ABF" style=" color:#FFFFFF; font-size:17px; font-weight:bold;">
+					<p>视</p>
+					<p>界</p>
+				</td>
+				<td width="910" bgcolor="#F2F8FF">
+					<table width="910" border="0" cellpadding="0" cellspacing="0" class="picMarquee-left">
+						<tr>
+							<td width="30" height="145"><img class="next" src="image/left_arrow.png" width="27" height="73" style="cursor: pointer" /></td>
+							<td width="827" valign="top" class="bd">
+								<ul class="picList">
+									
+								</ul>
+							</td>
+							<td width="31"><img class="prev" src="image/right_arrow.png" width="29" height="73" style="cursor: pointer" /></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<!--底部落款部分::end-->
+		<!--友情链接::start-->
+		<table width="980" border="0" align="center" cellpadding="0" cellspacing="0">
+			<tr>
+				<td width="61" height="43"></td>
+				<td width="91"></td>
+				<td width="203"></td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		<!--友情链接::end-->
+		<!--底部线条::start-->
+		<div id="footer_line"></div>
+		<!--底部线条::end-->
+	</body>
+
+
+</html>
+<script src="js/public.js"></script>

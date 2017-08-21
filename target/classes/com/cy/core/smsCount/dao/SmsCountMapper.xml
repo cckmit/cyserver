@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.smsCount.dao.SmsCountMapper">
+    <select id="countTotalByTimeLine" parameterType="map" resultType="long">
+        SELECT COUNT(1) AS total
+        FROM cy_msg_send
+        WHERE 1=1
+        <if test="minTime != null and minTime != '' and maxTime != null and maxTime != '' ">
+             <![CDATA[
+                AND LEFT(sendtime, 10) >= #{minTime}
+                AND LEFT(sendtime, 10) <= #{maxTime}
+             ]]>
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            AND dept_id=#{alumniId}
+        </if>
+    </select>
+
+    <select id="countSuccessByTimeLine" parameterType="map" resultType="long">
+        SELECT COUNT(1) AS total
+        FROM cy_msg_send
+        WHERE `statues` = '2'
+        <if test="minTime != null and minTime != '' and maxTime != null and maxTime != '' ">
+            <![CDATA[
+                AND LEFT(sendtime, 10) >= #{minTime}
+                AND LEFT(sendtime, 10) <= #{maxTime}
+             ]]>
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            AND dept_id=#{alumniId}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的分会</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+    <style>
+        .tab_bg{
+            background-color:#ebebeb;
+        }
+        .tab_list{
+            width:100%;
+            box-sizing: border-box;
+            background-color:#fff;
+            padding-right:10px;
+            display:flex;
+            font-size:16px;
+
+        }
+        .tab_list .tab_item{
+            flex:1;
+            padding:10px 0;
+            text-align: center;
+        }
+        .chked{
+            border-bottom:2px solid #4d99db;
+            color: #4d99db;
+        }
+        .add{
+        }
+        .add span{
+            display:inline-block;
+            background-color:#3498db;
+            width:30px;
+            height:30px;
+            line-height: 30px;
+            font-size:20px;
+            text-align: center;
+            box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+            transform: translateY(8px);
+        }
+        .add span:after{
+            content: "+";
+            position: absolute;
+            color: #fff;
+            top: -2px;
+            left: 6px;
+            font-size: 30px;
+            line-height: 30px;
+        }
+        .hide{
+            display:none;
+        }
+
+    </style>
+
+    <!--tpl-->
+    <script>
+
+    </script>
+</head>
+<body>
+    <!--tab_list: 已加入 | 申请中-->
+    <div class="tab_bg" style="margin-bottom:10px;">
+        <ul class="tab_list" style="font-size:16px;">
+            <li name="jy" class="tab_item chked">已加入</li>
+            <li name="sq" class="tab_item">申请中</li>
+            <li name="yq" class="tab_item">被邀请</li>
+            <li class="add"><span></span></li>
+        </ul>
+    </div>
+
+    <div class="alu_wrap">
+
+
+        <div class="alu_box depart_box">
+
+            <div class="alu_title H-flexbox-horizontal H-box-sizing-border-box H-border-vertical-bottom-after H-clear-both H-vertical-middle H-touch-active">
+                <div id="departAlu" name="depart_alu" class="H-flex-item">院系分会</div>
+                <span class="H-badge H-display-block">
+                    <label class="alu_num depart_num H-display-inline-block H-vertical-middle H-theme-font-color-white H-font-size-12" style="background-color: #3498db;"></label>
+                </span>
+                <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                    <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                </span>
+            </div>
+
+            <ul class="depart_list alumni_list hide">
+              <!--  <li onclick="goAlumniDetail()" class="H-qq-item H-vertical-middle H-overflow-hidden">
+                    <div  class="alumni_item H-text-list H-flexbox-horizontal H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+                        <div class="H-flex-item H-font-size-14 H-padding-10">北京海淀分会</div>
+                        <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                            <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                        </span>
+                    </div>
+                    <div class="H-qq-menu H-vertical-middle H-position-relative H-overflow-hidden" style="transition: transform 0.4s; transform: translateX(0px);">
+                        <div class="H-font-size-16 H-padding-horizontal-both-20 H-theme-background-color-red H-display-block H-theme-font-color-white white-space-nowrap"
+                             style="height: 40px; line-height: 40px;">删除</div>
+                    </div>
+                </li>-->
+
+            </ul>
+        </div>
+
+        <div class="alu_box">
+            <div class="alu_title H-flexbox-horizontal H-box-sizing-border-box H-border-vertical-bottom-after H-clear-both H-vertical-middle H-touch-active">
+                <div id="areaAlu" name="area_alu" class="H-flex-item area_alu">地方分会</div>
+                <span class="H-badge H-display-block">
+                    <label class="alu_num area_num H-display-inline-block H-vertical-middle H-theme-font-color-white H-font-size-12" style="background-color: #3498db;"></label>
+                </span>
+                <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                        <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                </span>
+            </div>
+
+            <ul class="area_list alumni_list hide">
+                <!--<li onclick="goAlumniDetail()" class="alumni_item H-text-list H-flexbox-horizontal H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+                    <div class="H-flex-item H-font-size-14 H-padding-10">北京海淀分会</div>
+                    <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                            <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                        </span>
+                </li>
+                <li onclick="goAlumniDetail()" class="alumni_item H-text-list H-flexbox-horizontal H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+                    <div class="H-flex-item H-font-size-14 H-padding-10">北京海淀分会</div>
+                    <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                            <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                        </span>
+                </li>-->
+            </ul>
+        </div>
+
+        <div class="alu_box">
+
+            <div class="alu_title H-flexbox-horizontal H-box-sizing-border-box H-border-vertical-bottom-after H-clear-both H-vertical-middle H-touch-active">
+                <div id="industryAlu" name="industry_alu" class="H-flex-item industry_alu">行业分会</div>
+                <span class="H-badge H-display-block">
+                    <label class="alu_num ind_num H-display-inline-block H-vertical-middle H-theme-font-color-white H-font-size-12" style="background-color: #3498db;"></label>
+                </span>
+                <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                        <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                </span>
+            </div>
+
+            <ul class="industry_list alumni_list hide">
+               <!-- <li onclick="goAlumniDetail()" class="alumni_item H-text-list H-flexbox-horizontal H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+                    <div class="H-flex-item H-font-size-14 H-padding-10">北京海淀分会</div>
+                    <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                            <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                        </span>
+                </li>
+                <li onclick="goAlumniDetail()" class="alumni_item H-text-list H-flexbox-horizontal H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+                    <div class="H-flex-item H-font-size-14 H-padding-10">北京海淀分会</div>
+                    <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+                            <i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+                        </span>
+                </li>-->
+            </ul>
+        </div>
+
+
+    </div>
+
+
+</body>
+
+</html>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("alumni/alumni_list.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '班級列表',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+
+    }
+
+
+    var isVerified = '0'; //初始化时 未认证
+
+    $(function () {
+
+        //判断认证
+        checkVerify();
+
+        //type(1-学院分会,2-地方分会,3-行业分会)
+        //isJoin(0-未加入; 1-已加入)
+        //status: 10-申请加入; 20-已加入; 5- 被邀请)
+
+        //默认加载列表
+        getAlumniListAll("1", "20");
+
+        //点击"已加入"和"申请中","邀请" tab
+        $('.tab_list').on('click','li',function () {
+            $(this).addClass('chked').siblings().removeClass('chked');
+            $('.alu_wrap').find('span i').removeClass('H-icon-arrow-up');
+            $('.alu_wrap').find('span i').addClass('H-icon-arrow-right');
+            $('.alu_wrap').find('.alumni_list').removeClass('show');
+            $('.alu_wrap').find('.alumni_list').addClass('hide');
+
+
+            var nameVal = $(this).attr('name');
+
+            var status = '20';//正式成员
+
+            switch (nameVal){
+                case 'jy':
+                    status = '20';
+                    break;
+                case 'sq':
+                    status = '10';
+                    break;
+                case 'yq':
+                    status = '5';
+                    break;
+                default:
+                    status = '20';
+            }
+
+
+            getAlumniListAll("1", status);
+
+
+        })
+
+        //点击"分会",收展列表
+        $('.alu_title').on('click',function () {
+
+            //对arrow和list的样式
+            var $arrow = $(this).children().find('span i');
+            var $aluList = $(this).parent().children('.alumni_list');
+            var $otherAluList = $(this).parent().siblings().find('.alumni_list');
+            var $otherArrow = $(this).parent().siblings().find('span i');
+
+
+
+            if($arrow.hasClass('H-icon-arrow-right')){
+                //展开列表
+                $arrow.removeClass('H-icon-arrow-right');
+                $arrow.addClass('H-icon-arrow-up');
+                $aluList.removeClass('hide');
+                $aluList.addClass('show');
+
+
+                $otherArrow.removeClass('H-icon-arrow-up');
+                $otherArrow.addClass('H-icon-arrow-right');
+                $otherAluList.removeClass('show');
+                $otherAluList.addClass('hide');
+
+
+
+            }else if($arrow.hasClass('H-icon-arrow-up')){
+                //收起列表
+                $arrow.removeClass('H-icon-arrow-up');
+                $arrow.addClass('H-icon-arrow-right');
+                $aluList.removeClass('show');
+                $aluList.addClass('hide');
+
+                $otherArrow.removeClass('H-icon-arrow-up');
+                $otherArrow.addClass('H-icon-arrow-right');
+                $otherAluList.removeClass('show');
+                $otherAluList.addClass('hide');
+
+            }
+
+
+        })
+
+        //点击"+"按钮, 判断是否用户已经认证, 已经认证的用户才可以添加分会
+        $('.add').on('click',function () {
+            if(isVerified == '1'){
+                H.openWin("申请加入分会","alumni_add.html?ts="+B.getRandomInt(4)+'&fromFoundation='+fromFoundation);
+            }else if(isVerified == '0'){
+                H.alert(function () {
+                    H.openWin("申请班级进行信息认证","../verify/class_list.html?ts=" + B.getRandomInt(4));
+                },"亲,您还没有认证,快去认证吧");
+            }
+        })
+        
+
+
+    })
+
+    function checkVerify() {
+        B.ready(function () {
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+                },
+                dataType: "json",
+                success: function(data){
+                    if (data && data.success) {
+                        if(data.obj.baseInfoId && data.obj.baseInfoId !=''){
+                            //被认证
+                            isVerified = '1';
+                        }else{
+
+                        }
+                    }
+                }
+            });
+        })
+
+    }
+
+    //院系分会
+    function getDepartList(typeVal, isJoinVal, statusVal,clsVal){
+        //去除之前的节点
+        $('.alumni_list').html('');
+        B.ready(function () {
+
+            $.ajax({
+                type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "28","content": {"type": \"'+typeVal+'\","userId": \"'+accountNum+'\","isJoin": \"'+isJoinVal+'\","status": \"'+statusVal+'\"}}'
+                },
+
+                dataType: 'json',
+                success: function(data) {
+                    var list = new Array();
+
+                    if(data && data.obj && data.obj.length > 0) {
+                        list =data.obj;
+
+                        for(var i=0; i<list.length;i++) {
+                            var liStr =
+                                    '<li onclick="goAlumniDetail(\''+list[i].id+'\', 20)" class="alumni_item H-vertical-middle H-overflow-hidden">'+
+                                    '<div class="H-text-list H-flexbox-horizontal H-vertical-middle H-touch-active">'+
+                                    ' <div class="H-flex-item H-font-size-14" style="padding:5px 10px;">'+list[i].name+'</div>' +
+                                    ' <span class="H-icon H-padding-horizontal-right-5 H-display-block">'+
+                                    '<i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>'+
+                                    '</span>'+
+                                    '</div>'+
+                                    '</li>';
+
+                            $(clsVal).append(liStr);
+                        }
+
+                        $(clsVal).parent().children().find('.alu_title .depart_num').text(list.length);
+
+                    }else {
+                        var txtStr =
+                                '<li class="alumni_item H-text-align-center " style="color:#ccc;font-size:14px;padding:5px 10px;">' + '您没有加入分会' +
+                                '</li>';
+                        $(clsVal).append(txtStr);
+                        $(clsVal).parent().children().find('.alu_title .depart_num').text('0');
+                    }
+
+                },
+                error: function(xhr, type) {}
+
+
+            });
+
+        })
+    }
+
+    function getAlumniList(typeVal, isJoinVal, statusVal,clsVal){
+        //去除之前的节点
+        $('.alumni_list').html('');
+
+        B.ready(function () {
+//            console.log('{"command": "28","content": {"type": \"'+typeVal+'\","userId": \"'+accountNum+'\","isJoin": \"'+isJoinVal+'\","status": \"'+statusVal+'\"}}');
+
+            $.ajax({
+                type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "28","content": {"type": \"'+typeVal+'\","userId": \"'+accountNum+'\","isJoin": \"'+isJoinVal+'\","status": \"'+statusVal+'\"}}'
+                },
+
+                dataType: 'json',
+                success: function(data) {
+                    var list = new Array();
+
+                    if(data && data.obj && data.obj.length > 0) {
+                        list =data.obj;
+
+                        for(var i=0; i<list.length;i++) {
+                            var liStr =
+                                    '<li onclick="goAlumniDetail(\''+list[i].id+'\', '+statusVal+')" class="alumni_item H-qq-item H-vertical-middle H-overflow-hidden">'+
+                                    '<div class="H-text-list H-flexbox-horizontal H-vertical-middle H-touch-active">'+
+                                    ' <div class="H-flex-item H-font-size-14" style="padding:5px 10px;">'+list[i].name+'</div>' +
+                                    ' <span class="H-icon H-padding-horizontal-right-5 H-display-block">'+
+                                    '<i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>'+
+                                    '</span>'+
+                                    '</div>';
+                            if(statusVal!='5'){
+                                liStr +=
+                                        '<div class="H-qq-menu H-vertical-middle H-position-relative H-overflow-hidden" style="transition: transform 0.4s; transform: translateX(0px);">'+
+                                        ' <div onclick="quitAlumni(this,\''+list[i].id+'\',\''+statusVal+'\')" class="H-font-size-16 H-padding-horizontal-both-20 H-theme-background-color-red H-display-block H-theme-font-color-white white-space-nowrap" ' +
+                                        'style="height: 30px; line-height: 30px;">退出</div>'+
+                                        '</div>';
+                            }
+
+                            liStr +='</li>';
+
+                                $(clsVal).append(liStr);
+                            }
+
+                        $(clsVal).parent().children().find('.alu_title .alu_num').text(list.length);
+
+
+                        }else{
+                        var txtStr =
+                                '<li class="alumni_item H-text-align-center " style="color:#ccc;font-size:14px;padding:5px 10px;">'+'您没有加入分会'+
+                                '</li>';
+                        $(clsVal).append(txtStr);
+                        $(clsVal).parent().children().find('.alu_title .alu_num').text('0');
+
+                    }
+
+                },
+                error: function(xhr, type) {}
+
+
+            });
+
+        })
+    }
+
+    function getAlumniListAll(isJoinVal,statusVal) {
+        $('.alumni_list').empty();
+        //申请中(status==10)或者未加入(isJoinVal==0)分会都不显示"院系分会",
+        //即 isJoin==1 && status==20的状态, 才显示"院系分会",其他情况都不显示"院系分会"
+        if(isJoinVal=='1' && statusVal == '20'){
+            $('.depart_box').removeClass('hide');
+            getDepartList('1', isJoinVal, statusVal,'.depart_list');
+        }else{
+            $('.depart_box').addClass('hide');
+        }
+
+
+        getAlumniList('2', isJoinVal, statusVal,'.area_list');
+        getAlumniList('3', isJoinVal, statusVal,'.industry_list');
+
+    }
+
+
+    //退出分会
+    function quitAlumni(item,id,tab_type){
+        event.stopPropagation();
+        //提示用户
+        H.confirm(function (ret) {
+            if(ret.buttonIndex==1){
+                outAlumni(item,id,tab_type);
+            }
+            else{
+
+            }
+        }, '确认提示：', '你确认要退出该分会吗？');
+
+
+    }
+
+    function outAlumni(item,fhId,tab_type){
+
+
+        var $aluItem = $(item).parent().parent();
+
+
+        B.ready(function () {
+//            console.log('{"command": "209","content": {"accountNum": \"'+accountNum+'\","alumniIds": \"'+fhId+'\"}}');
+
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "209","content": {"accountNum": \"'+accountNum+'\","alumniIds": \"'+fhId+'\"}}'
+
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data && data.success){
+
+                        H.alert(data.msg)
+                        $aluItem.hide(); //把"删除"项隐藏起来
+                        //cal
+                       var $num= $aluItem.parents('.alu_box').children().find('.alu_num');
+                        $num.text(($num.html())- 1);
+
+                        if($num.text() == 0){
+                            getAlumniListAll("1", tab_type);
+                        }
+
+                    }else {
+                        H.alert(data.msg)
+                    }
+                },
+                error: function(xhr, type) {
+                    alert("调用失败");
+                }
+            });
+        })
+    }
+
+
+
+    //################## 侧滑全部代码
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
+        }
+
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
+    }
+
+    var _startX = 0;
+    var _startY = 0;
+    var scrollHeight = 0;
+    var scrollWidth = 0;
+    var currentRange = 0;
+    var parentEle = null;
+    var direction = 1;
+
+    // 设置侧滑动画
+    function setScroll(parentElement, value, time) {
+
+        parentElement.firstElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+        parentElement.lastElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+    }
+
+    // 触摸开始
+    window.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            parentEle = H.getParents(event.target, "H-qq-item");
+            if (H.isElement(parentEle)) {
+
+                // 其他兄弟隐藏
+                var siblings = H.siblings(parentEle);
+                for (var i = 0; i < siblings.length; i++) {
+                    var _siblingObj = siblings[i];
+                    setScroll(_siblingObj, 0, 0);
+                }
+
+                scrollHeight = parentEle.firstElementChild.clientHeight;
+                scrollWidth = H.D(".H-qq-menu", parentEle).clientWidth;
+
+                for (var i = 0; i < parentEle.lastElementChild.childNodes.length; i++) {
+                    var child = parentEle.lastElementChild.childNodes[i];
+                    if (H.isElement(child)) {
+                        child.style.cssText = "height:" + scrollHeight + "px;line-height:" + scrollHeight + "px;";
+                    }
+                }
+
+                currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+                _startX = touch.pageX;
+                _startY = touch.pageY;
+            }
+        }
+    }, false);
+    // 触摸过程
+    window.addEventListener("touchmove", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            direction = GetSlideDirection(_startX, _startY, touch.pageX, touch.pageY);
+            if (direction == 3 || direction == 4) {
+                event.preventDefault();
+                if (H.isElement(parentEle)) {
+                    var range = touch.pageX - _startX;
+                    if (range <= 0) {
+                        if (range - currentRange >= -scrollWidth && range - currentRange <= 0) {
+                            setScroll(parentEle, (range - currentRange), 0);
+                        }
+                    }
+                    else {
+                        if (range + currentRange <= 0) {
+                            setScroll(parentEle, (range + currentRange), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }, false);
+    // 触摸接触
+    window.addEventListener("touchend", function (event) {
+        var touch = event.targetTouches[0];
+        if (H.isElement(parentEle)) {
+            currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+            if (direction == 3 && (currentRange < 0)) {
+                setScroll(parentEle, -scrollWidth, 0.4);
+            }
+            else if (direction == 4 && currentRange < 80) {
+                setScroll(parentEle, 0, 0.4);
+            }
+            else {
+                setScroll(parentEle, 0, 0.4);
+            }
+        }
+    }, false);
+    // 点击
+    window.addEventListener("click", function (event) {
+        var parentEle = H.getParents(event.target, "H-qq-item");
+        if (H.isElement(parentEle)) {
+            setScroll(parentEle, 0, 0.4);
+        }
+    }, false);
+
+
+    //进入详情
+    function goAlumniDetail(alumniId, status) {
+        H.openWin("分会详情","alumni_detail.html?alumniId="+alumniId+'&status='+status+'&ts='+B.getRandomInt(4)+'&fromFoundation='+fromFoundation);
+    }
+
+
+
+</script>

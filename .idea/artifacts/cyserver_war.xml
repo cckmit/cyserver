@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="cyserver:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="cyserver-2.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="cyserver:war exploded" />
+    </root>
+  </artifact>
+</component>

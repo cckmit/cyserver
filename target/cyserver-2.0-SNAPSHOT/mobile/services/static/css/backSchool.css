@@ -1,0 +1,134 @@
+/*秩年返校*/
+
+/*计划列表*/
+
+.avatar-box{
+    padding: 10px 10px 0 10px;
+    border: 1px solid #3498db;
+    border-radius:3px;
+}
+.avatar-box img{
+    width: 70px;
+    height: 70px;
+}
+
+
+.list-item{
+    border-bottom: 1.5px solid #ebebeb;
+}
+
+
+.link-style{
+    text-decoration: none;
+}
+.top_border{
+    border-top: 1px solid #999;
+}
+
+/*计划详情*/
+
+/*banner 图片大小*/
+.banner-style{
+    width:100%;
+}
+/*收藏点赞左右边线*/
+
+
+/*我的计划*/
+.plan-banner-box{
+    position:relative;
+    background-image:url(../img/banner4@3x.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+
+}
+
+.tab-group{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.tab-group ul li{
+    display: inline-block;
+}
+
+
+
+#contents1 img{
+    max-width: 100%;
+}
+/*评论*/
+.sanjiao{
+    margin-left: 6px;
+    width: 0px;
+    height: 0px;
+    border-top: 0px solid #f8fffd;
+    border-bottom: 7px solid #ffffff;
+    border-left: 5px solid #eeeeee;
+    border-right: 0px solid #eeeeee;
+}
+.pinglun{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.shuru_box{
+    position: fixed;
+    bottom: 0px;
+}
+
+.active_list{
+    margin-top: 3px;
+}
+
+
+.baoming_btn{
+    position: absolute;
+    top: 3px;
+    right: 20px;
+    border-radius: 50%;
+    border: 1px solid #527998;
+    color: #527998;
+    font-size: 12px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+}
+.bam_bai{
+    width: 17px;
+    height: 10px;
+    background: #ffffff;
+    transform: rotate(126deg);
+    position: absolute;
+    top: 29px;
+    left: 29px;
+}
+
+/* tab */
+/*#content1,
+#content2, #content3{
+    display:none;
+}
+
+#content1:target,
+#content2:target,
+#content3:target{
+     display:block;
+ }*/
+
+
+/*点击tab 字体改变颜色*/
+.delete{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 54px;
+    height: 110px;
+    text-align: center;
+    line-height: 110px;
+    background: #fe5b56;
+    color: #fff;
+    font-size: 14px;
+    transform: translateX(54px);
+}

@@ -1,0 +1,523 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>校友会</title>
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../css/user.css" type="text/css" />
+    <link href="../css/artDialog/ui-dialog.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../css/friends.css" type="text/css" />
+
+    <script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+    <script src="../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../js/B.js" type="text/javascript"></script>
+    <script src="../js/common.js" type="text/javascript"></script>
+    <script src="../js/interfacepath.js" type="text/javascript"></script>
+    <script src="../js/title_style.js" type="text/javascript"></script>
+    <!--<script type="text/javascript" src="js/artDialog/dialog-plus.js"></script>-->
+
+    <script type="text/javascript">
+
+        var accountNum = '';
+
+
+        var avatarStr= '';
+        var innerStr = '';
+
+        $(function() {
+
+            B.ready(function() {
+                accountNum = getCookie("accountNum");
+
+                setLeftNavDate();
+
+                if( accountNum && accountNum != ''){
+                    loadFriendsList();
+                }
+                //左侧导航:图片
+
+            });
+
+            initFoot();
+        });
+
+
+
+        function loadFriendsList(){
+            interface.userFriendsList.jsonData.content.userId = accountNum.toString();
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + interface.userFriendsList.url,
+                data: {
+                    jsonStr: JSON.stringify(interface.userFriendsList.jsonData)
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data && data.obj && data.obj.length > 0) {
+                        var friendsStr = '', friendsStrVerf = '', check = '';
+                        var countCheck = 0;
+                        for( var i = 0;  i < data.obj.length; i++){
+                            var userId=''; pic='', name='', phone ='', astatus='', createDate='', sex ='', thisStudyPath = new Array();
+                            var  detials = '',detailName = '', detailPhoto = '', detailPhone = '', detailStudyPath = '', detailStatus = '';
+
+                            if(data.obj[i].accountNum && data.obj[i].accountNum  )
+                                userId = data.obj[i].accountNum;
+                            if(data.obj[i].name && data.obj[i].name != '')
+                                name = data.obj[i].name;
+                            else
+                                name = '无名氏';
+
+
+                            detailName = '<div>'+ name +'</div>';
+
+                            if(data.obj[i].picture && data.obj[i].picture != '' && is_website(data.obj[i].picture))
+                                pic = data.obj[i].picture;
+                            else
+                                pic = B.clientUrl+'/image/user-avatar.png';
+
+                            detailPhoto = '<img src='+ pic +' />';
+
+                            if(data.obj[i].sex && data.obj[i].sex != '' ){
+                                sex = data.obj[i].sex;
+
+                                if(sex == '0')
+                                    sex = '<img src=../image/icon_male.png /> &nbsp;&nbsp;&nbsp;';
+                                else
+                                    sex = '<img src=../image/icon_female.png /> &nbsp;&nbsp;&nbsp;';
+
+                                detailName = '<div>'+ sex +name +'</div>';
+                            }
+
+                            if(data.obj[i].phoneNum && data.obj[i].phoneNum != ''){
+                                phone = data.obj[i].phoneNum;
+                                detailPhone = '<div>'+ phone +'</div>';
+                            }
+
+                            if(data.obj[i].createDate && data.obj[i].createDate != '')
+                                createDate = data.obj[i].createDate;
+
+                            detailStudyPath = '<table>';
+                            if(data.obj[i].departName && data.obj[i].departName != ''){
+                                thisStudyPath = data.obj[i].departName.split('_');
+
+                                for(var k = 0; k < thisStudyPath.length; k++) {
+                                    if(thisStudyPath[k]){
+                                        detailStudyPath += '<tr>';
+                                        var hehe = thisStudyPath[k].split(',');
+                                        for (var j = 0; j < hehe.length; j++) {
+                                            detailStudyPath += '<td>' + hehe[j] + '</td>';
+                                            if (j < 3) {
+                                                detailStudyPath += '<td width=10></td>';
+                                            }
+                                        }
+                                        detailStudyPath += '</tr>';
+                                    }
+                                }
+                            }
+
+
+                            if(data.obj[i].status && data.obj[i].status != ''){
+
+                                if(data.obj[i].status == '1' || data.obj[i].status == '0' ){
+                                    if(data.obj[i].status == '1'){
+                                        detailStatus = '<span> 已是好友 </span>';
+                                        detailStudyPath += '<tr><td height=40 colspan=8 align=center>'+ detailStatus +'</td></tr></table>';
+                                        detials =  detailPhoto + detailName + detailPhone + detailStudyPath;
+                                        astatus = '<div class="user_hy_nr"><span class="shanchu_haoyou" onclick="del_haoyou(this)">'+data.obj[i].accountNum+'</span>';
+                                        friendsStr += '<li onmouseover=\'wsug(event,"'+ detials +'")\' onmouseout="wsug(event, 0)"><img src="'+ pic +'" class="user_hy_tx">'+astatus+'<p class="user_hy_nane">'+ name +'</p><p class="user_hy_phone">'+phone+'</p></div></li>';
+                                        //alert(astatus)
+                                    }else {
+                                        astatus = '<img class="user_hy_icon" src="../image/icon_verifing.png"/><span class="shanchu_haoyou" onclick="del_haoyou(this)">'+data.obj[i].accountNum+'</span><div class="user_hy_nr user_hy_nrw">';
+                                        if(phone.length >= 5){
+                                            phone = '*******' + phone.substring(phone.length-5, phone.length-1)
+                                        }
+                                        if(data.obj[i].applicantFlag && data.obj[i].applicantFlag!='' && data.obj[i].applicantFlag == '0' ){
+                                            detailStatus = '<span> 待确认 </span>';
+                                            countCheck ++;
+                                            detailStudyPath += '<tr><td height=40 colspan=8 align=center>'+ detailStatus +'</td></tr></table>';
+                                            detials =  detailPhoto + detailName + detailPhone + detailStudyPath;
+                                            check += '<div class="dcl_hy"><a onmouseover=\'wsug(event,"'+ detials +'")\' onmouseout="wsug(event, 0)"><img style="margin-top: 10px" src="'+ pic +'" class="dcl_hy_tx"></a><div class="dcl_hy_ny"><p><span class="user_dcl_nane">'+name+'</span>请求添加好友</p><div><a href="javascript:;" style="display: inline-block;"><div onclick="verifing(\''+userId+'\',\'1\')" style="float:left;"><span style="color: #005ABF; font-size: 14px">√</span>同意添加</div></a><a href="javascript:;" style="display: inline-block; margin-left: 15px;"><div onclick="verifing(\''+userId+'\',\'3\')" style="float:left;"><span style="color: #ff2528; font-size: 15px">×</span>拒绝添加</div></a></div></div><div class="dcl_hy_time">'+ createDate +'</div></div>';
+                                        }else if(data.obj[i].applicantFlag && data.obj[i].applicantFlag!='' && data.obj[i].applicantFlag == '1'){
+                                            detailStatus = '<span> 等待同意 </span>';
+                                            detailStudyPath += '<tr><td height=40 colspan=8 align=center>'+ detailStatus +'</td></tr></table>';
+                                            detials =  detailPhoto + detailName + detailPhone + detailStudyPath;
+                                            friendsStrVerf += '<li onmouseover=\'wsug(event,"'+ detials +'")\' onmouseout="wsug(event, 0)"><img src="'+ pic +'" class="user_hy_tx">'+astatus+'<p class="user_hy_nane">'+ name +'</p><p class="user_hy_phone">'+phone+'</p></div></li>';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        $('#friendsList').empty();
+                        $('#checkList').empty();
+
+                        $('#friendsList').html(friendsStr + friendsStrVerf);
+                        if(countCheck > 0){
+                            $('#checkList').append('<p class="dcl_wenz">待处理好友请求<span class="dcl_shumu">('+countCheck+')</span></p>');
+                            $('#checkList').append(check);
+                            init(logoI,headColor,branchColor,branchColorBorder,listBg,userBg);
+
+                        }
+//                        reBuildPic();
+                    }
+                },
+                error: function(xhr, type) {}
+            });
+        }
+
+        function verifing( contactId, vfv ) {
+            if(contactId && contactId != '' && vfv  && vfv != ''){
+                interface.userFriendsverifing.jsonData.content.userId = accountNum.toString();
+                interface.userFriendsverifing.jsonData.content.contactId = contactId.toString();
+                interface.userFriendsverifing.jsonData.content.status = vfv.toString();
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl + interface.userFriendsverifing.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userFriendsverifing.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        if(data.success)
+                            loadFriendsList();
+                    },
+                    error: function(xhr, type) {}
+                });
+            }
+        }
+
+        window.onresize = function () {
+            initFoot();
+        }
+
+        function initFoot(){
+            var windowHeight = $(window).height() ;
+            if(windowHeight > 200) {
+                $(".section").css("min-height",windowHeight-195);
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+
+<!--这是顶部::start-->
+<div id="head">
+
+    <div class="lines">
+    </div>
+
+    <div class="header_nav">
+    </div>
+
+    <div class="header_content">
+    </div>
+
+</div>
+<!--这是顶部::end-->
+
+<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin: auto ;margin-top:10px; margin-bottom: 20px;">
+    <tr>
+        <td  align="left" valign="top">
+
+            <div class="section clearfix">
+                <div class="line30"></div>
+
+                <div class="info-wrap">
+                    <!--左侧导航-->
+                    <div class="info-box">
+                        <div class="avatar-box">
+                        </div>
+                        <ul class="side-nav">
+                            <li>
+                                <a href="user_personal.html">个人资料</a>
+                            </li>
+                            <li>
+                                <a href="user_studyPath.html">学习经历</a>
+                            </li>
+                            <li>
+                                <a href="user_rzclass.html">班级认证</a>
+                            </li>
+                            <li>
+                                <a href="user_branch.html">所属分会</a>
+                            </li>
+                            <li>
+                                <a class="side-nav-style" href="user_friends.html">我的好友</a>
+                            </li>
+                            <li>
+                                <a href="../service/donate/myDonate.html">我的捐赠</a>
+                            </li>
+                            <li>
+                                <a href="user_changePwd.html">修改密码</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" onclick="logoutConfirm()">退出登录</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/左侧导航11-->
+
+                    <!--右侧内容-->
+                    <div class="home-box">
+                        <div class="u-tab-content">
+                            <div class="head-box clearfix yj_friend">
+
+                                <div class="user_tjhy">
+                                    <a href="javascript:;" class="user_tjhy_btn">添加好友</a>
+                                </div>
+
+                                <ul class="user_hy" id="friendsList">
+                                </ul>
+
+                                <div class="user_hy_dcl" id="checkList">
+                                </div>
+                            </div>
+
+                            <div class="head-box clearfix add_friend">
+                                <div class="add_f_top">
+                                    <span>请输入好友姓名:</span><input type="text" placeholder="请输入关键字" class="ss_suoyin" /><a href="javascript:;" class="shousuo_friend">搜索</a>
+                                </div>
+                                <div class="add_f_xinxi">
+                                    <span>性别</span>
+                                    <label>男<span>0</span></label>
+                                    <label>女<span>1</span></label>
+                                    <span>地区</span>
+                                    <input type="text" class="ss_diqu" placeholder="" id="inputTest" />
+                                    <span>行业</span>
+                                    <!--<input type="text" class="ss_hangye" />-->
+                                    <select class="ss_diqu u_ofe"><option>it</option><option>ti</option></select>
+                                    <span>入学时间</span>
+                                    <!--<input type="text" class="ss_ruxuesj" />-->
+                                    <select class="ss_diqu u_time"></select>
+                                </div>
+                                <div class="weishoudao"  style=" text-align: center; padding: 25px; font-size: 18px; color: #6f6f6f;">					请输入查找信息
+                                </div>
+                                <div class="add_f_list">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!--/右侧内容-->
+                </div>
+            </div>
+
+        </td>
+    </tr>
+</table>
+
+<div class="theme-pop">
+    <div class="theme-poptit">
+        <a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+        <h3>警告</h3>
+    </div>
+    <div class="theme-popbod dform">
+        <p style="margin-top: 18px; font-size: 13px;">确认退出登录？</p>
+        <div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+            <input style="width: 70px; float:left;" class="confirmBtn" onclick="logout()" value=" 确认退出 " />
+            <input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+        </div>
+    </div>
+</div>
+<div class="theme-pop-mask"></div>
+<script type="text/javascript">
+    function logoutConfirm(){
+        $('.theme-pop-mask').fadeIn(100);
+        $('.theme-pop').slideDown(200);
+    }
+
+    function closeConfirm() {
+        $('.theme-pop-mask').fadeOut(100);
+        $('.theme-pop').slideUp(200);
+    }
+</script>
+
+<div id="footer_line"></div>
+<!--顶部线条::end-->
+</body>
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>
+<script>
+    //添加好友
+    $(".user_tjhy_btn").click(function(){
+
+        $(".yj_friend").hide();
+        $(".add_friend").show();
+    })
+    $(".add_f_xinxi label").click(function(){
+        $(this).toggleClass("ss_sex").siblings().removeClass("ss_sex")
+
+    })
+    //搜索
+    var accountNum=getCookie("accountNum");
+    var user_name=getCookie("name");
+    $(".shousuo_friend").click(function(){
+        var u_name=$(".ss_suoyin").val();  //姓名
+        var u_sex=$(".ss_sex span").text()   //性别
+        var u_addres=$(".ss_diqu").val()    //地址
+        var u_ofe=$(".u_ofe option:selected").text();   //行业
+        var u_time=$(".u_time option:selected").text()  //时间
+        //alert(u_name+"v"+u_sex+"v"+u_addres+"v"+u_ofe+"v"+u_time);
+        if($(".friend_list").length>0){
+            $(".add_f_list").empty("friend_list");
+        }
+        B.ready(function() {
+            interface.userFriendsFind.jsonData.content.currUserId = accountNum.toString();
+            interface.userFriendsFind.jsonData.content.name = u_name.toString();
+            interface.userFriendsFind.jsonData.content.sex = u_sex.toString();
+            $.ajax({
+                type: 'post',
+//                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                data: {
+//                    jsonStr: '{"command": "42","content": {"currUserId": \"'+accountNum+'\","name": \"'+u_name+'\","sex": \"'+u_sex+'\","age": "","professionId": "","cityId": ""}}'
+//                },
+                url: B.serverUrl + interface.userFriendsFind.url,
+                data: {
+                    jsonStr: JSON.stringify(interface.userFriendsFind.jsonData)
+                },
+                dataType: 'json',
+                dataType: 'json',
+                success: function(data) {
+                    console.log(JSON.stringify(data));
+                    if(data.success==true){
+                        //alert("123")
+                        $(".weishoudao").hide();
+                        //console.log(data.obj[0].userName)
+                        var u_x=new Array();
+                        u_x=data.obj;
+                        for (x in u_x){
+                            names=u_x[x].userName;
+                            banji=u_x[x].departName.replace(/_/g, "<br/>");
+                            toux=u_x[x].pictureUrl;
+                            s_userId=u_x[x].userId;
+                            console.log(toux)
+                            var friend_list='<div class="friend_list">'+
+                                    '<div class="friend_list_left">'+
+                                    '<img src='+toux+' />'+
+                                    '<div class="friend_list_center">'+
+                                    '<p class="friend_list_name">'+names+'<span style="display: none">'+s_userId+'</span>'+'</p>'+
+                                    '<p class="friend_list_class" style=" height: 32px; line-height: 16px;">'+banji+'</p>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '<a href="javascript:;" onclick="sqtj_friend(this)"  class="friend_list_sqtj">'+'申请添加'+'</a>'+
+                                    '</div>';
+                            if(names!=user_name){
+                                $(".add_f_list").append(friend_list);
+                            }else{
+                                $(".weishoudao").show();
+                                $(".weishoudao").html("没有找到您所查找的信息");
+                            }
+
+                        }
+                        init(logoI,headColor,branchColor,branchColorBorder,listBg,userBg);
+                    }
+                    else{
+                        $(".weishoudao").show();
+                        $(".weishoudao").html("没有找到您所查找的信息");
+                    }
+                },
+                error: function(xhr, type) {
+                    alert("调用失败");
+                }
+            });
+        })
+
+    })
+
+
+    //申请好友
+    //申请好友
+    function sqtj_friend(obj){
+        var contactId=$(obj).siblings().children(".friend_list_center").children(".friend_list_name").children().text()
+        interface.userFriendsFor.jsonData.content.userId = accountNum.toString();
+        interface.userFriendsFor.jsonData.content.contactId = contactId.toString();
+        B.ready(function() {
+            $.ajax({
+                type: 'post',
+//                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                data: {
+//                    jsonStr: '{"command": "43","content": {"userId": \"'+accountNum+'\","contactId": \"'+contactId+'\","applicantFlag":"1"}}'
+//                },
+                url: B.serverUrl + interface.userFriendsFor.url,
+                data: {
+                    jsonStr: JSON.stringify(interface.userFriendsFor.jsonData)
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(JSON.stringify(data));
+                    if(data.success==true){
+                        alert(data.msg);
+                        window.location.href="user_friends.html";
+                        //showMsgWin(data.msg, data.success, 1);
+                        //setTimeout(function(){
+                        //},2500)
+                    }else {
+                        //showMsgWin(data.msg, data.success, 1);
+                        alert(data.msg);
+                        window.location.href="user_friends.html";
+                    }
+
+                },
+                error: function(xhr, type) {
+                    alert("调用.失败");
+                }
+            });
+        })
+    }
+
+    //删除好友
+    function del_haoyou(obj){
+        var contactId=$(obj).text();
+        //alert('{"command": "44","content": {"userId": \"'+accountNum+'\","contactId": \"'+contactId+'\"}}')
+        if(confirm("您确定要删除好友吗?对方好友也会删除!")){
+            B.ready(function() {
+                interface.userFriendsClear.jsonData.content.userId = accountNum.toString();
+                interface.userFriendsClear.jsonData.content.contactId = contactId.toString();
+                $.ajax({
+                    type: 'post',
+//                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                    data: {
+//                        jsonStr: '{"command": "44","content": {"userId": \"'+accountNum+'\","contactId": \"'+contactId+'\"}}'
+//                    },
+                    url: B.serverUrl + interface.userFriendsClear.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userFriendsClear.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(JSON.stringify(data));
+                        if(data.success==true){
+                            showMsgWin(data.msg, data.success, 1);
+                            $(obj).parent().fadeOut(300);
+                        }else {
+                            showMsgWin(data.msg, data.success, 1);
+                        }
+
+                    },
+                    error: function(xhr, type) {
+                        alert("调用失败");
+                    }
+                });
+            })
+        }else{
+            //alert("您已取消操作");
+        }
+    }
+
+
+    function showMsgWin( aMsg, result, type){
+        $('#messageWin').text( aMsg );
+        $('.theme-message-mask').fadeIn(100);
+        $('.theme-message').slideDown(200);
+        setTimeout(function(){closeMsgWin(result, type)}, 2500);
+    }
+
+
+
+
+</script>

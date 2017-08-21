@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.mobserv.dao.MobServMapper">
+
+	<select id="getServList" parameterType="com.cy.core.mobserv.entity.CyServ" resultType="com.cy.core.mobserv.entity.CyServ">
+		select
+		cs.*,
+		(select count(id) from cy_service_comment where serviceId = cs.id) as commentNum,
+		(select count(id) from cy_service_praise where serviceId = cs.id) as praiseNum,
+		(select count(id) from cy_service_favorite where serviceId = cs.id) as favoriteNum,
+		IFNULL(u.name,'') as userName,
+		IFNULL(u.picture,'') as userAvatarUrl,
+		IFNULL(u.phoneNum,'') as userTel,
+		IFNULL(u.sex,'') as userSex,
+		CASE cs.auditStatus WHEN 0 THEN '未审核' WHEN 1 THEN '通过' WHEN 2 THEN '未通过' END auStatu,
+		CASE cs.`status` WHEN 0 THEN '正常' WHEN 1 THEN '投诉处理-信息正常' WHEN 2 THEN '投诉处理-信息违规' WHEN 3 THEN '用户自己删除' WHEN 4 THEN '管理员删除' END sevStatu
+		from
+		cy_service cs LEFT JOIN cy_userprofile u
+		on
+		cs.accountNum = u.accountNum
+		<where> 1=1 AND cs.status in(0,1,2,3)
+			<if test="type!=null and type!='' and type!=0">
+				and cs.type = #{type}
+			</if>
+			<if test="category!=null and category!='' and category!=0">
+				and cs.category = #{category}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0 and viewType != 'favorite'">
+				and cs.accountNum = #{accountNum}
+			</if>
+			<if test="accountNum==null or accountNum=='' or accountNum==0 or viewType == 'favorite'">
+				and cs.status in(0,1) and cs.auditStatus = 1
+			</if>
+			<if test="viewType!=null and viewType!='' and viewType == 'favorite'">
+				and cs.id IN(select serviceId from cy_service_favorite where accountNum = #{accountNum})
+			</if>
+			<if test="region!=null and region!=''">
+				and cs.region like concat('%',#{region},'%')
+			</if>
+		</where>
+		order by id desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	<select id="countServ" parameterType="com.cy.core.mobserv.entity.CyServ" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_service cs
+		<where>
+			1=1 AND cs.status in(0,1,2,3)
+			<if test="type!=null and type!='' and type!=0">
+				and cs.type = #{type}
+			</if>
+			<if test="category!=null and category!='' and category!=0">
+				and cs.category = #{category}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0 and viewType != 'favorite'">
+				and cs.accountNum = #{accountNum}
+			</if>
+			<if test="accountNum==null or accountNum=='' or accountNum==0 or viewType == 'favorite'">
+				and cs.status in(0,1) and cs.auditStatus = 1
+			</if>
+			<if test="viewType!=null and viewType!='' and viewType == 'favorite'">
+				and cs.id IN(select serviceId from cy_service_favorite where accountNum = #{accountNum})
+			</if>
+			<if test="region!=null and region!=''">
+				and cs.region like concat('%',#{region},'%')
+			</if>
+		</where>
+		
+	</select>
+	
+	
+	<select id="getServ" parameterType="com.cy.core.mobserv.entity.CyServ" resultType="com.cy.core.mobserv.entity.CyServ">
+		select 
+			cs.*,
+			(select count(id) from cy_service_comment where serviceId = cs.id) as commentNum,
+			(select count(id) from cy_service_praise where serviceId = cs.id) as praiseNum,
+			(select count(id) from cy_service_favorite where serviceId = cs.id) as favoriteNum,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_service cs LEFT JOIN cy_userprofile u
+		on 
+			cs.accountNum = u.accountNum 
+		<where>
+			cs.status in(0,1,2,3)
+			<!-- and cs.auditStatus = 1 -->
+			<if test="type!=null and type!='' and type!=0">
+				and cs.type = #{type}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and cs.accountNum = #{accountNum}
+			</if>
+			<if test="region!=null and region!=''">
+				and cs.region like concat('%',#{region},'%')
+			</if>
+			<if test="id!=null and id!='' and id!=0">
+				and cs.id = #{id}
+			</if>
+		</where>
+		order by id desc limit 1
+	</select>
+	
+	
+	<select id="getServPicList" parameterType="com.cy.core.mobserv.entity.CyServPic" resultType="com.cy.core.mobserv.entity.CyServPic">
+		select * from cy_service_pic where serviceId = #{serviceId} order by id desc
+	</select>
+	
+	<select id="getServPicListForServDetail" parameterType="com.cy.core.mobserv.entity.CyServ" resultType="com.cy.core.mobserv.entity.CyServPic">
+		select * from cy_service_pic where id in(select max(id) from cy_service_pic where serviceId in(select id from cy_service where serviceId = #{serviceId}) group by serviceId) order by id desc limit 3
+	</select>
+	
+	
+	<select id="getServCommentList" parameterType="com.cy.core.mobserv.entity.CyServComment" resultType="com.cy.core.mobserv.entity.CyServComment">
+		select 
+			csc.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_service_comment csc LEFT JOIN cy_userprofile u
+		on 
+			csc.accountNum = u.accountNum 
+		where serviceId = #{serviceId} order by id desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	<select id="countServComment" parameterType="com.cy.core.mobserv.entity.CyServComment" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_service_comment
+		
+		<where>
+			<if test="serviceId!=null and serviceId!=''">
+				and serviceId = #{serviceId}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and accountNum = #{accountNum}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="countServComplaint" parameterType="com.cy.core.mobserv.entity.CyServComplaint" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_service_complaint
+		
+		<where>
+			<if test="serviceId!=null and serviceId!=''">
+				and serviceId = #{serviceId}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and accountNum = #{accountNum}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="countServFavorite" parameterType="com.cy.core.mobserv.entity.CyServFavorite" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_service_favorite
+		
+		<where>
+			<if test="serviceId!=null and serviceId!=''">
+				and serviceId = #{serviceId}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and accountNum = #{accountNum}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="countServPraise" parameterType="com.cy.core.mobserv.entity.CyServPraise" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_service_praise
+		
+		<where>
+			<if test="serviceId!=null and serviceId!=''">
+				and serviceId = #{serviceId}
+			</if>
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and accountNum = #{accountNum}
+			</if>
+		</where>
+	</select>
+	
+	
+	<insert id="insertServComplaint" parameterType="com.cy.core.mobserv.entity.CyServComplaint">
+		insert into cy_service_complaint(serviceId, accountNum, reason, createTime) 
+		values(#{serviceId}, #{accountNum}, #{reason}, now())
+	</insert>
+	
+	
+	<insert id="insertServComment" parameterType="com.cy.core.mobserv.entity.CyServComment">
+		insert into cy_service_comment(serviceId, accountNum, content, type, status, createTime) 
+		values(#{serviceId}, #{accountNum}, #{content}, 9, 0, now())
+	</insert>
+	<delete id="deleteServComment" parameterType="com.cy.core.mobserv.entity.CyServComment">
+		delete from cy_service_comment where id = #{id} and accountNum = #{accountNum}
+	</delete>
+	
+	<insert id="insertServPraise" parameterType="com.cy.core.mobserv.entity.CyServPraise">
+		insert into cy_service_praise(serviceId, accountNum, createTime) 
+		values(#{serviceId}, #{accountNum}, now())
+	</insert>
+	<delete id="deleteServPraise" parameterType="com.cy.core.mobserv.entity.CyServPraise">
+		delete from cy_service_praise where serviceId = #{serviceId} and accountNum = #{accountNum}
+	</delete>
+	
+	<insert id="insertServFavorite" parameterType="com.cy.core.mobserv.entity.CyServFavorite">
+		insert into cy_service_favorite(serviceId, accountNum, createTime) 
+		values(#{serviceId}, #{accountNum}, now())
+	</insert>
+	<delete id="deleteServFavorite" parameterType="com.cy.core.mobserv.entity.CyServFavorite">
+		delete from cy_service_favorite where serviceId = #{serviceId} and accountNum = #{accountNum}
+	</delete>
+	
+	
+	<update id="deleteServ" parameterType="com.cy.core.mobserv.entity.CyServ">
+		update cy_service set status = 3 where id = #{id} and accountNum = #{accountNum}
+	</update>
+	
+	<insert id="insertServ" parameterType="com.cy.core.mobserv.entity.CyServ">
+	    
+	    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+	    
+		insert into cy_service(title, content, region, category, type, accountNum, createTime, auditStatus, auditOpinion, auditUserId, auditTime, status) 
+		values(#{title}, #{content}, #{region}, #{category}, #{type}, #{accountNum}, now(), #{auditStatus}, #{auditOpinion}, #{auditUserId}, #{auditTime}, #{status})
+	</insert>
+	
+	<insert id="insertServPic" parameterType="com.cy.core.mobserv.entity.CyServPic">
+		insert into cy_service_pic(serviceId, pic) 
+		values(#{serviceId}, #{pic})
+	</insert>
+	
+	<select id="getServById" parameterType="com.cy.core.mobserv.entity.CyServ" resultType="com.cy.core.mobserv.entity.CyServ">
+		select 
+			cs.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_service cs LEFT JOIN cy_userprofile u
+		on 
+			cs.accountNum = u.accountNum 
+		
+		where cs.id = #{id}
+	</select>
+	
+	<insert id="insertContact" parameterType="com.cy.core.mobserv.entity.CyContact">
+	    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+		
+		insert into cy_contact(title, content, category, accountNum, createTime, replyContent, replyUserId, replyTime, status, alumni_id)
+		values(#{title}, #{content}, #{category}, #{accountNum}, now(), #{replyContent}, #{replyUserId}, #{replyTime}, #{status}, #{alumniId})
+	</insert>
+	
+	<select id="getContactList" parameterType="com.cy.core.mobserv.entity.CyContact" resultType="com.cy.core.mobserv.entity.CyContact">
+		select
+			IFNULL((select s.school_logo from cy_system_setting s),'') as userAvatarUrl,
+			IFNULL(cu.name,'') as userName,
+			<!-- IFNULL(cu.picture,'') as userAvatar, -->
+			IFNULL(cu.phoneNum,'') as userTel,
+			IFNULL(cu.sex,'') as userSex,
+			IFNULL(cu.picture,'') as userPicture,
+			(select userName from cy_user WHERE cc.replyUserId =cy_user.userId)replyUserName,
+
+			cc.*
+		from cy_contact cc
+		LEFT JOIN cy_userprofile cu on cc.accountNum = cu.accountNum
+		<where>
+			cc.status = 0
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and cc.accountNum = #{accountNum}
+			</if>
+			<if test="category!=null and category!='' and category!=0">
+				and cc.category = #{category}
+			</if>
+			
+			
+		</where>
+		order by cc.id desc limit #{currentRow},#{incremental}
+		<!-- order by cc.id desc limit #{currentRow},2  -->
+	</select>
+	<select id="getContactListCount" parameterType="com.cy.core.mobserv.entity.CyContact" resultType="long">
+		select count(1) from cy_contact cc
+		LEFT JOIN cy_userprofile cu on cc.accountNum = cu.accountNum
+		<where>
+			cc.status = 0
+			<if test="accountNum!=null and accountNum!='' and accountNum!=0">
+				and cc.accountNum = #{accountNum}
+			</if>
+			<if test="category!=null and category!='' and category!=0">
+				and cc.category = #{category}
+			</if>
+		</where>
+	</select>
+	<select id="getMobProvinceCapital" resultType="map">
+		select cityName from cy_city where type=1
+		
+	</select>
+	
+	<select id="getMobProvince" resultType="map">
+		select provinceName from cy_province where countryId=1
+	</select>
+	
+	<select id="getMobProvinceAndId" resultType="map">
+		select provinceName, id from cy_province where countryId=1
+	</select>
+	
+	<select id="getMobCapitalFromProvince" parameterType="map" resultType="map">
+		select cityName from cy_city where provinceId=#{provinceId}
+		
+	</select>
+	
+</mapper>

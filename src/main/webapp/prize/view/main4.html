@@ -1,0 +1,198 @@
+<style>
+    .main1_box{
+        width: 100%;
+        height:100%;
+    }
+    .main_centers{
+        width: 1000px;
+        height:760px;
+        position: absolute;
+        left:50%;
+        margin-left: -500px;
+        top:50%;
+        margin-top: -380px;
+        text-align: center;
+    }
+    .wai_box{
+        width: 100%;
+        height:760px;
+        position: absolute;
+        top:50%;
+        margin-top: -380px;
+        text-align: center;
+    }
+    .huangsede{
+        position: absolute;
+        top:0;
+        width: 100%;
+        height:70px;
+        background: #fac207;
+    }
+
+    .main_title{
+        padding-top: 70px;
+        text-align: center;
+        font-size: 40px;
+        line-height: 100px;
+        color: #fff;
+    }
+    
+    .jiyuan{
+        position: absolute;
+        width: 170px;
+        height: 170px;
+        background: #922fae;
+        border-radius: 50%;
+        left:7px;
+        bottom: 20px;
+    }
+    .lvyuan{
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        background: #2fae83;
+        border-radius: 50%;
+        left:60px;
+        bottom: 170px;
+    }
+    .huangyuan{
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        background: #fac207;
+        border-radius: 50%;
+        right:-40px;
+        bottom: 5px;
+        text-align: center;
+    }
+    .huangyuan img{
+        width: 130px;
+        height:130px;
+        margin-top: 55px;
+    }
+    .ziyuan{
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        background: #922fae;
+        border-radius: 50%;
+        right: 30px;
+        bottom: -130px;
+    }
+
+    .list{
+        width: 815px;
+        height:530px;
+        border:5px solid #ff0022;
+        border-radius: 40px;
+        background: #fff;
+        box-shadow: 0px 0px 10px #9c1225;
+        margin: auto;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .content_list{
+        width: 616px;
+        height:440px;
+        background: #ff0000;
+        margin: auto;
+        margin-top: 45px;
+    }
+
+
+
+    .list li{
+        margin-top: 20px;
+    }
+    .usertouxiang{
+        width: 50px;
+        height:50px;
+        border-radius: 50%;
+    }
+    .userphone{
+        line-height: 50px;
+        font-size: 24px;
+        color: #333333;
+        display: inline-block;
+        width: 160px;
+        margin-left: 30px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .usernames{
+        line-height: 50px;
+        font-size: 24px;
+        color: #333333;
+        display: inline-block;
+        width: 160px;
+        margin-left: 0px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .userjiangli{
+        line-height: 50px;
+        font-size: 24px;
+        color: #ffb80a;
+        display: inline-block;
+        width: 130px;
+        margin-left: 0px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .userjiangwenzi{
+        line-height: 50px;
+        font-size: 24px;
+        display: inline-block;
+        width: 130px;
+        margin-left: 0px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .userjiangpin{
+        width: 50px;
+        height:50px;
+        margin-left: 20px;
+    }
+
+    .str_wrap{
+        background: #fff;
+    }
+</style>
+<div class="main1_box">
+    <div class="wai_box">
+        <div class="huangsede"></div>
+        <div class="main_centers">
+            <div class="jiyuan"></div>
+            <div class="lvyuan"></div>
+            <div class="main_title">
+                中奖名单
+            </div>
+            <div class="list">
+                <ul>
+                    <li ng-repeat="list in zjrlist" on-finish-render>
+                        <img onerror="javascript:this.src='img/1.jpg';" class="usertouxiang" ng-src="{{list.headSrc | filter_pic}}" alt="">
+                        <span class="userphone">{{list.telephone | phonenum}}</span>
+                        <span class="usernames">{{list.applicantName}}</span>
+                        <span class="userjiangli">{{list.awardsName}}</span>
+                        <!--<span class="userjiangwenzi">{{list.prizeName}}</span>-->
+                        <img onerror="javascript:this.src='img/liwu.png';" class="userjiangpin" ng-src="{{list.prizeSrc | filter_pic}}" alt="">
+                    </li>
+
+                </ul>
+            </div>
+            <div class="ziyuan"></div>
+            <div class="huangyuan">
+                <img src="img/erweima.png" alt="">
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+
+</script>

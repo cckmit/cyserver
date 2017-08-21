@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人中心</title>
+
+    <!--css-->
+    <link href="static/layer/need/layer.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/font_my_center/iconfont.css" rel="stylesheet" type="text/css">
+    <link href="static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        body{
+            background-color:#ebebeb;
+        }
+    </style>
+
+</head>
+<body>
+    <!--top img-->
+    <div class="my_banner_box H-horizontal-center H-overflow-hidden H-position-relative H-theme-background-color-black"
+         style="min-height:200px;" tapmode="" onclick="goPersonal()">
+
+        <!--avatar+name-->
+        <div class="avatar_wrap">
+
+            <!--upload img-->
+            <div onclick="selectPic()" class="img_box H-position-relative" style="width:104px;margin: 0 auto;">
+                <img id="uploadImg" class="user_pic H-display-block H-border-radius-circle H-padding-5"
+                     onerror="javascript:this.src='../img/userlogo.png';"/>
+                <div class="verify_flag H-theme-background-color-eb">V</div>
+            </div>
+
+            <div class="user_info H-display-block H-font-weight-normal H-font-size-16 H-theme-font-color17
+                 H-text-align-center H-margin-vertical-top-5" style="margin-left:17px;">
+                <span id="userName" class="user_name">姓名</span>
+                <i class="sex_icon H-iconfont H-font-size-18 H-margin-horizontal-right-5"></i>
+            </div>
+        </div>
+        <!--top-bottom-->
+        <!--
+        <div class="title_wrap H-position-absolute H-theme-font-color17 H-padding-horizontal-left-15" style="line-height: 32px;">
+            <span class="info_icon H-padding-horizontal-right-10">
+                <i class="icon iconfont icon-write-r H-font-size-18"></i>
+            </span>
+            <span id="signature" class="info_text H-font-size-14 ">个性签名</span>
+        </div>
+        -->
+
+    </div>
+
+    <table class="menu_table" cellpadding="0" cellspacing="0"><tbody>
+        <tr>
+            <td onclick="goTabDetail(1)">
+                <div class="menu item1">
+                    <span><i class="icon iconfont icon-renzheng H-theme-font-color-white" style="font-size:25px;"></i></span>
+                </div>
+                <div class="menu_name">信息认证</div>
+            </td>
+            <td onclick="goTabDetail(2)">
+                <div class="menu item2">
+                    <span><i class="icon iconfont icon-addressbook H-theme-font-color-white" style="font-size:22px;"></i></span>
+                </div>
+                <div class="menu_name">通讯录</div>
+            </td>
+            <td onclick="goTabDetail(3)">
+                <div class="menu item3">
+                    <span><i class="icon iconfont icon-banjishi H-theme-font-color-white" style="font-size:20px;"></i></span>
+                </div>
+                <div class="menu_name">我的班级</div>
+            </td>
+            <td onclick="goTabDetail(4)">
+                <div class="menu item4">
+                    <span><i class="icon iconfont icon-wode H-theme-font-color-white" style="font-size:20px;"></i></span>
+                </div>
+                <div class="menu_name">我的</div>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+
+    <!--我的服务 横线+文字-->
+    <div class="H-theme-background-color-white H-margin-vertical-top-10">
+        <div class="border_box">
+            <div class="with_line H-font-size-16 H-theme-font-color15">我的服务</div>
+        </div>
+    </div>
+
+    <div class="H-theme-background-color-white">
+        <div onclick="goService(6)" class="H-position-relative">
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">校友分会</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/alumni.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>
+        <div onclick="goService(1)" class="H-position-relative H-margin-vertical-top-10">
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">社团组织</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/team.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>
+        <div onclick="goService(2)" class="H-position-relative H-margin-vertical-top-10">
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">校友活动</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/activity.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>
+        <div onclick="goService(3)" class="H-position-relative H-margin-vertical-top-10" >
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">值年返校</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/backSchool.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>
+        <!--<div onclick="goService(4)" class="H-position-relative H-margin-vertical-top-10">
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">爱心捐赠</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/donate.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>-->
+        <!--<div onclick="goService(5)" class="H-position-relative H-margin-vertical-top-10">
+            <span style="font-size: 14px; color: #fff; position: absolute;display: block;width: 60px;height: 30px;line-height: 30px;text-align: center;top:50%;margin-top: -15px;left: 50%;margin-left: -30px">电子刊物</span>
+            <img src="static/img/biankuang@3x.png" style="width: 150px;position: absolute; top:20px;left: 50%;margin-left: -88px;">
+            <img src="static/img/eleBook.png" style="width: 100%;height: 120px; vertical-align: middle">
+        </div>-->
+    </div>
+    <div style="width: 100%; height: 75px;"> </div>
+
+    <!--取消服务 按钮-->
+    <div class="H-theme-background-color-white H-position-fixed H-vertical-bottom-0 H-width-100-percent H-flexbox-horizontal" style="border-top: 1px solid #cfcfcf;">
+        <button id="switchAccountBtn" class="H-button H-flex-item H-margin-10 H-font-size-14 H-outline-none H-padding-vertical-both-10 H-padding-horizontal-both-20
+         H-theme-border-color16 H-border-radius-9" style="background-color:#3498db; color: #fefefe;">退出账号</button>
+    </div>
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="static/layer/layer.js" type="text/javascript"></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+<script>
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    var accountNum = localStorage.getItem("accountNum");
+
+    if(openId && openId != "null") {
+        var shareData = {
+            title: '個人中心',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+    // 判断是否存在accountNum
+    if (!accountNum || accountNum == "null"){
+        // 不存在，重定向至登录页面
+        window.location.href = "login.html?ts=" + B.getRandomInt(4);
+    }
+
+    var isVerified = '0'; //初始化时 未认证
+
+    $(function(){
+        // 页面初始化
+        B.ready(function(){
+            // 获取用户信息
+            loadUserInfo();
+
+            // 退出当前账号
+            $("#switchAccountBtn").click(function () {
+                $.ajax({
+                    type: "post",
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{
+                        jsonStr:'{"command": "603","content": {"openid": "' + openId + '", "accountNum": "' + accountNum + '"}}'
+                    },
+                    dataType: "json",
+                    success: function(data){
+                        if (data && data.success) {
+                            localStorage.removeItem("accountNum");
+
+                            window.location.href = "login.html?ts=" + B.getRandomInt(4);
+                        }
+                        else{
+                            layer.open({ content:"退出失败，请稍后再试！", skin:"msg", time:2 });
+                        }
+                    }
+                });
+            });
+        });
+    });
+
+    // 初始化用户信息
+    function loadUserInfo() {
+        $.ajax({
+            type: "post",
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+            },
+            dataType: "json",
+            success: function(data){
+                if (data && data.success) {
+                    initPage(data.obj);
+                }
+            }
+        });
+    }
+
+    function initPage(userObj){
+        //判断用户是否已经认证
+        if(userObj && userObj.baseInfoId && userObj.baseInfoId !='null') {
+            //被认证
+            isVerified = '1';
+        }
+        // 用户头像
+        var picAb = B.getImageAbsoluteUrl(userObj.pictureRT);
+        $(".user_pic").attr("src",picAb);
+
+        // 用户姓名
+        $(".user_name").text(userObj.name);
+        // 个性签名
+        $("#signature").html("");
+
+        //根据性别更改图标
+        if(userObj.sex == 1) {
+            //woman
+            $(".sex_icon").removeClass("H-icon-man");
+            $(".sex_icon").addClass("H-icon-woman");
+
+            $(".sex_icon").removeClass("H-theme-font-color1");
+            $(".sex_icon").addClass("H-theme-font-color11");
+
+        }else if(userObj.sex == 0) {
+            //man
+            $(".sex_icon").removeClass("H-icon-woman");
+            $(".sex_icon").addClass("H-icon-man");
+
+            $(".sex_icon").removeClass("H-theme-font-color11");
+            $(".sex_icon").addClass("H-theme-font-color1");
+        }
+
+        //判断用户是否已经认证
+        if(userObj && userObj.baseInfoId && userObj.baseInfoId !='') {
+            // 认证标识(.verify_flag) 为主题色
+            $(".verify_flag").removeClass("H-theme-background-color-eb");
+            $(".verify_flag").addClass("H-theme-background-color8");
+
+        }else{
+            //未被认证 , 认证标识(.verify_flag) 为白色(默认)
+            $(".verify_flag").removeClass("H-theme-background-color8");
+            $(".verify_flag").addClass("H-theme-background-color-eb");
+        }
+    }
+
+    // 单击顶部背景图,跳转个人信息
+    function goPersonal() {
+        H.openWin("个人信息", "personal.html?ts=" + B.getRandomInt(4));
+    }
+
+    var fromMain = '';
+    // 单击跳转不同的服务
+    function goService(flag) {
+        switch (flag) {
+            case 1: H.openWin("社团组织","../services/team/my_team.html?t=1&ts=" + B.getRandomInt(4));
+                break;
+            case 2: H.openWin("校友活动","../services/activity/list_user_create.html?fromMain=1&t=1&ts=" + B.getRandomInt(4));
+                break;
+            case 3: H.openWin("秩年返校","../services/backSchool/my_jihua.html?t=1&ts=" + B.getRandomInt(4));
+                break;
+            case 4: H.openWin("爱心捐赠","../services/donate/list_my.html?t=1&ts=" + B.getRandomInt(4));
+                break;
+            case 5: H.openWin("电子刊物","../services/eleBook/list.html?t=1&ts=" + B.getRandomInt(4));
+                break;
+            case 6: H.openWin("校友分会", "alumni/alumni_list.html?ts="+B.getRandomInt(4));
+        }
+    }
+
+    // 单击跳转选项卡详情
+    function goTabDetail(flag) {
+        /*switch (flag) {
+            case 1: H.openWin("信息认证","verify/class_list.html?ts=" + B.getRandomInt(4));
+                break;
+            case 2: H.openWin("通讯录","tongxunlu/address_list.html?ts=" + B.getRandomInt(4));
+                break;
+            case 3: H.openWin("我的班级","study_path.html?ts=" + B.getRandomInt(4));
+                break;
+            case 4: H.openWin("我的","personal.html?ts=" + B.getRandomInt(4));
+                break;
+        }*/
+
+        //未认证的用户不可以访问"通讯录"和"我的班级",提示用户 进行"信息认证"
+        if(isVerified=='0') {
+             //未认证
+             if(flag==1) {
+             //点击了"信息认证"
+                H.openWin("申请班级进行信息认证","verify/class_list.html?ts=" + B.getRandomInt(4));
+             }else if(flag==2) {
+                 //点击了"通讯录",提示用户去 认证
+                 H.alert(function () {
+                     H.openWin("申请班级进行信息认证","verify/class_list.html?ts=" + B.getRandomInt(4));
+                 },"亲,您还没有认证,快去认证吧");
+             }else if(flag==3) {
+                 //点击了"我的班级",提示用户去 认证
+                 H.alert(function () {
+                     H.openWin("申请班级进行信息认证","verify/class_list.html?ts=" + B.getRandomInt(4));
+                 },"亲,您还没有认证,快去认证吧")
+             }else if(flag==4) {
+                 //点击了"我的",进入"个人信息"
+                 H.openWin("个人信息","personal.html?ts=" + B.getRandomInt(4));
+             }
+
+         }else if(isVerified == '1') {
+                 //已经认证
+                switch (flag) {
+                    case 1: H.openWin("信息认证","verify/class_list.html?ts=" + B.getRandomInt(4));
+                        break;
+//                    case 2: H.openWin("未开发中","loading.html?ts=" + B.getRandomInt(4)); //"通讯录"业务作为"未开发"处理
+//                        break;
+                    case 2: H.openWin("通讯录","tongxunlu/address_list.html?ts=" + B.getRandomInt(4));
+                        break;
+                    case 3: H.openWin("我的班级","study_path.html?ts=" + B.getRandomInt(4));
+                        break;
+                    case 4: H.openWin("个人信息","personal.html?ts=" + B.getRandomInt(4));
+                        break;
+                }
+             }
+         }
+
+
+    $(function(){
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+</script>

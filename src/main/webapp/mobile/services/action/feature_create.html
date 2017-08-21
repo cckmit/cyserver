@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<!-- UC强制全屏 -->
+	<meta name="full-screen" content="yes">
+	<!-- QQ强制全屏 -->
+	<meta name="x5-fullscreen" content="true">
+	<title>创建花絮</title>
+	<link href="../static/css/Hui.css" rel="stylesheet" type="text/css">
+	<style type="text/css">
+		.preimg {
+			float: left;margin-right: 10px;margin-bottom: 10px;width: 80px;height:80px;
+		}
+	</style>
+</head>
+
+<body>
+
+<header id="header"></header>
+
+<div class="H-flexbox-horizontal">
+	<textarea id="comment" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请填写活动花絮内容..."></textarea>
+</div>
+<div class="H-clear-both H-width-100-percent H-display-table H-box-sizing-border-box H-padding-vertical-top-10 H-padding-horizontal-left-10
+			H-theme-background-color-white">
+	<ul id="imgList">
+
+		<li id="addImg" style="float: left;margin-right: 10px;margin-bottom: 10px;width: 80px;height:80px;background-color: white;">
+			<img onclick="chooseImg()" src="../static/img/plus.png" class="H-width-100-percent H-display-block" alt="" title="">
+			<input type="file" id="selectLocalPic" name="selectLocalPic" onchange="getPicUrl(this);" style="display: none;"/>
+		</li>
+	</ul>
+</div>
+
+<div style="height: 50px;"></div>
+
+<!--submit button-->
+<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+	<li class="H-flex-item H-padding-5">
+		<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none H-padding-vertical-both-8 H-theme-background-color1 H-theme-font-color-white H-theme-border-color1 H-theme-border-color1-click H-theme-background-color1-click H-theme-font-color1-click H-border-radius-3" style="background: #0f88eb">创&nbsp;&nbsp;建</button>
+	</li>
+</ul>
+
+<script src="../../js/jquery.min.js" type="text/javascript" ></script>
+<script src="../static/plug/layer/layer.js" type="text/javascript" ></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript" src="../static/js/lrz.mobile.min.js"></script>
+<script type="text/javascript">
+	// 接收url中的参数
+	var eventId = B.getUrlParamByName("eventId");
+	var isOwner = B.getUrlParamByName("isOwner");
+	var sourceFlag = B.getUrlParamByName("sourceFlag");
+
+    var accountNum = localStorage.getItem("accountNum");
+
+	var associationId =  B.getUrlParamByName("associationId");
+	var teamId = B.getUrlParamByName("teamId");
+	var detailFlag = B.getUrlParamByName("detailFlag");
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+	var fromMain = B.getUrlParamByName("fromMain");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+					if(fromMain && fromMain=='1'){
+						H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/feature_create.html?eventId=' + eventId + '&isOwner=' + isOwner + '&sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4)+"&fromMain="+fromMain);
+					}else{
+						H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/feature_create.html?eventId=' + eventId + '&isOwner=' + isOwner + '&sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4));
+
+					}
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '创建花絮',
+            desc: '',
+            link: location.href.split('?')[0]+"?eventId=" +eventId,
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }else{
+        openId = '';
+    }
+    if(!appId || appId == "null"){
+        appId = '';
+    }
+    if(!accountNum || accountNum == "null"){
+        accountNum = '';
+    }
+
+	//点击“plus"，trigger the selected element
+	function chooseImg() {
+        if(openId != '') {
+            wechatUpdatePic(appId, openId,"", 9, '', 2);
+        }else{
+            $("#selectLocalPic").trigger("click");
+		}
+	}
+	//获取上传图片后在server上的地址url
+	function getPicUrl(obj) {
+
+    // 获取选择的本地图片信息
+		var fileExt = document.getElementById("selectLocalPic").value;
+		var fileName = "";
+
+		if(fileExt != null && fileExt != '') {
+
+			fileName = fileExt.substring(0, fileExt.lastIndexOf("."));
+			fileName = fileName.substr(fileName.lastIndexOf("\\") + 1, fileName.length);
+
+			fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+			if(fileExt == null || fileExt == '') {
+				$.dialog({
+					title: '温馨提示',
+					content: '请确认上传的文件包含正确的扩展名',
+					button: ["确认"]
+				});
+				return;
+			}
+
+			fileExt = fileExt.toLowerCase();
+			if(fileExt == '.gif' || fileExt == '.jpg' || fileExt == '.png' || fileExt == '.bmp' || fileExt == '.jpeg') {} else {
+				$.dialog({
+					title: '温馨提示',
+					content: '请上传正确的图片文件',
+					button: ["确认"]
+				});
+				return;
+			}
+		}
+        layer.msg('图片上传中', {icon: 15,shade: 0.01, time: 20000});
+		//			obj.files[0]
+		// 选择的图片预览,图片压缩后预览
+		lrz(obj.files[0], {
+			width: 550,
+			quality: 0.8,
+			done: function(results) {
+				// 入参数组合
+				B.ready(function() {
+					var uploadImgParam = {
+						uploadFileBase64: results.base64.substring(results.base64.lastIndexOf(",") + 1),
+						uploadFileName: fileName + fileExt,
+						jsonStr: '{"command": "1","content": {"accountNum": "' + accountNum + '","type": "1"}}'
+					};
+
+					// 上传图片到服务器，返回图片在服务器的完整地址
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+						data: uploadImgParam,
+						dataType: 'json',
+						success: function(data) {
+								//H.alert(JSON.stringify(data));
+							if(data.success){
+                                var imgServerUrl = data.obj;
+
+                                // 动态添加图片预览，并设置图片地址到隐藏域
+                                var $li = $("<li class=\"preimg\"></li>");
+                                $li.css("background","url(" + imgServerUrl + ")");
+                                $li.css("background-size","80px 80px");
+                                $li.append("<input type=\"hidden\" class=\"pic\" value=\"" + imgServerUrl + "\">");
+                                $("#addImg").before($li);
+                                layer.msg('上传成功');
+                            }else{
+                                layer.msg('data.msg');
+							}
+
+						},
+						error: function(xhr, type) {
+							// 保存失败
+						}
+					});
+				});
+			}
+		});
+	}
+
+	$(function() {
+		/*// 判断是否存在accountNum
+		if (!accountNum || accountNum == "null"){
+			// 不存在，重定向至登录页面
+			window.location.href = "login.html?ts=" + B.getRandomInt(4);
+			return;
+		}*/
+
+		$("#submitBtn").click(function() {
+			var cyEventBoardPicList =[];
+
+			//判断是否选择图像，如果没有则提示
+			if($(".pic").length == 0){
+				layer.alert("请上传图片");
+				return;
+			}
+
+			// 获取选择的图片集合，组装入参要求的格式
+			$(".pic").each(function(index, element){
+				var imgObj = {};
+				imgObj.pic = $(this).val();
+				cyEventBoardPicList.push(imgObj);
+			});
+
+			// 组合入参
+			var formData = {
+				command: "222",
+				content: {
+					eventId: eventId,
+					userInfoId: accountNum,
+					comment: $("#comment").val(),
+					cyEventBoardPicList:cyEventBoardPicList
+				}
+			};
+
+//				H.alert(JSON.stringify(formData));
+
+			// 调用创建花絮接口，提交保存
+			B.ready(function() {
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: JSON.stringify(formData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						if(data.success){
+							H.alert(function(){
+
+								//创建时正在加载
+								var manban=$('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;"><div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;"><img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif"><p style="margin: 0;">加载中...</p></div></div>');
+								$("body").append(manban);
+
+								H.closeWin();
+//								H.openWin("花絮列表", "feature_list.html?accountNum="+accountNum+ "&eventId=" + eventId + "&sourceFlag=" + sourceFlag+"&fromMain="+fromMain +"&associationId="+ associationId +"&teamId=" +teamId +"&detailFlag="+detailFlag);
+							}, data.msg);
+						}else{
+							H.alert(data.msg);
+						}
+					},
+					error: function(xhr, type) {}
+				});
+			});
+		});
+	});
+
+//	//ios返回刷新
+//	var t = B.getUrlParamByName("t");
+//	$(function () {
+//		var u = navigator.userAgent, app = navigator.appVersion;
+//		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//		var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//		if (isAndroid) {
+//
+//		}
+//		/*if (isIOS) {
+//			var rnumber = Math.floor(Math.random()*1000)
+//			history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+ '&eventId=' + eventId + '&sourceFlag=' + sourceFlag+'&mod='+rnumber+"&fromMain="+fromMain+'&isOwner='+isOwner +"&associationId="+ associationId +"&teamId=" +teamId +"&detailFlag="+detailFlag);
+//			window.onpopstate = function(event) {
+//				location.reload();
+//			};
+//		}*/
+//	});
+
+	//返回
+	var jsonStr = {
+
+		"title":"创建花絮",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback"
+		}
+	}
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+		return jsonStr;
+
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStr);
+		window.stub.jsMethod(str);
+		return jsonStr;
+
+	}
+
+	function fallback() {
+		window.history.back();
+	}
+
+
+
+
+</script>
+</body>
+
+</html>

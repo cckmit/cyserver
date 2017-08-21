@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.mobileLocal.dao.MobileScratchMapper">
+	<resultMap type="com.cy.core.mobileLocal.entity.MobileScratch"
+		id="mobileScratchResultMap">
+		<id column="mobileNumber" property="mobileNumber" />
+	</resultMap>
+	<insert id="insert" parameterType="com.cy.core.mobileLocal.entity.MobileScratch">
+		insert
+		cy_mobile_scratch(mobileNumber) values(#{mobileNumber})
+	</insert>
+	<select id="selectByMobileNumber" parameterType="string"
+		resultMap="mobileScratchResultMap">
+		select mobileNumber from cy_mobile_scratch where
+		mobileNumber=#{mobileNumber}
+	</select>
+	<delete id="delete" parameterType="string">
+		delete from cy_mobile_scratch
+		where mobileNumber=#{mobileNumber}
+	</delete>
+</mapper>

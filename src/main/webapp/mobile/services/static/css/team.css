@@ -1,0 +1,382 @@
+/*社团列表*/
+.swiper-container .weizhi{
+    bottom: 40px;
+    text-align: right;
+    width: 97%;
+}
+
+.qiehuan{
+    display: flex;
+    display: -webkit-box;
+    display: -webkit-flex;
+    background: rgba(1,1,1,0.4);
+    bottom: 0;
+    height: 40px;
+    line-height: 40px;
+    z-index: 99;
+    font-size: 16px;
+    color: #a5a5a5;
+    position: absolute;
+    width: 100%;
+}
+.qiehuan a{
+    flex: 1;
+    text-align: center;
+    color: #dddddd;
+    text-decoration: none;
+}
+.qiehuan .dq_shetuan{
+    color: #47dcd7;
+}
+
+.list_box1{
+    border-right: 2.5px solid #f4f5f9;
+    border-bottom: 2.5px solid #f4f5f9;
+}
+.list_box2{
+    border-left: 2.5px solid #f4f5f9;
+    border-bottom: 2.5px solid #f4f5f9;
+}
+.list_box3{
+    border-right: 2.5px solid #f4f5f9;
+    border-top: 2.5px solid #f4f5f9;
+}
+.list_box4{
+    border-left: 2.5px solid #f4f5f9;
+    border-top: 2.5px solid #f4f5f9;
+}
+
+
+.dengduo{
+    text-align: center;
+    padding:0 5px;
+    color: #3598dc;
+    line-height: 2.7rem;
+    position: relative;
+}
+.d_line{
+    width: 100%;
+    height: 1px;
+    background: #3598dc;
+    box-sizing: content-box;
+
+}
+.d_line span{
+    width: 7rem;
+    line-height: 2.7rem;
+    font-size: 1rem;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -3.5rem;
+    display: block;
+    background: #f4f5f9;
+}
+
+.jiaruanniu{
+    font-size: 12px;
+    color: #3598dc;
+    border: 1px solid #3598dc;
+    border-radius: 2px;
+    padding: 0px 12px;
+}
+.timess{
+    margin-top: 5px;
+    height: 12px;
+    color: #c2c2c2;
+}
+
+.team-tabs-group{
+    bottom:0;
+    right: 0;
+    background-color: rgba(0,0,0,0.2);
+}
+.team-banner-box{
+    position:relative;
+    background-image:url(../img/banner4@3x.png);
+    background-size:cover;
+    background-repeat:no-repeat;
+
+}
+.gonggao_icon{
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    border:1px solid indianred;
+    text-align: center;
+    position: absolute;
+}
+.gonggao_icon img{
+    width: 15px;
+    height: 15px;
+    vertical-align: middle;
+    padding-top:5px;
+}
+
+.img-bck{
+    background-color:#ff5b55;
+}
+
+/*社团活动*/
+.team-status-box{
+    top: 4px;
+    left: 60px;
+}
+.team-status-box .team-status-label {
+    height: 12px;
+    line-height: 12px;
+    padding: 0px 5px;
+    border-radius: 9px;
+    -webkit-border-radius: 5px;
+    transform: translateY(0.5);
+    -webkit-transform: translateY(0.5);
+}
+
+
+/*评论*/
+.sanjiao{
+    margin-left: 6px;
+    width: 0px;
+    height: 0px;
+    border-top: 0px solid #f8fffd;
+    border-bottom: 7px solid #ffffff;
+    border-left: 5px solid #eeeeee;
+    border-right: 0px solid #eeeeee;
+}
+.pinglun{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.shuru_box{
+    position: fixed;
+    bottom: 0px;
+}
+.active_list{
+    margin-top: 3px;
+}
+
+
+/*活动列表*/
+.active_time{
+    font-size: 12px;
+    color: #a5a5a5;
+}
+.active_list_relative{
+    position: relative;
+}
+.active_zt{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 75px;
+    height: 75px;
+    overflow: hidden;
+}
+.active_zt_dq {
+    position: absolute;
+    top: 9px;
+    left: -23px;
+    width: 80px;
+    height: 14px;
+    line-height: 14px;
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+.active_ing{
+    background: #41b560;
+}
+.active_end{
+    background: #fe5b56;
+}
+.active_liebiao{
+    position: relative;
+}
+.delete{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 54px;
+    height: 95px;
+    text-align: center;
+    line-height: 95px;
+    background: #fe5b56;
+    color: #fff;
+    font-size: 14px;
+    transform: translateX(54px);
+}
+
+/*社团公告*/
+
+/*活动详情*/
+.conent_img{
+    width: 100%;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+}
+.conent_img img{
+    width: 100%;
+    height: 100%;
+}
+.content_btn{
+    position: absolute;
+    z-index: 2;
+    top:12px;
+    right: 12px;
+}
+
+
+
+/*相册*/
+.tupian_xc_box{
+    padding-left: 55px;
+    padding-right: 30px;
+}
+
+.box_xx_ts{
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: 1px solid #999999;
+    text-align: center;
+    font-size: 35px;
+}
+.zhuangtai_xc_s{
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+.xc_boxs{
+    padding-bottom: 5px;
+}
+
+.daxiangq{
+    position: fixed;
+    background: #fff;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10px;
+    display: none;
+}
+.daxiangq img{
+    width: 100%;
+}
+.erwe_box{
+    margin-top: 5px;
+    height: 175px;
+    background: #ffffff;
+    text-align: center;
+}
+.erwe_box img{
+    width: 90px;
+    height: 90px;
+    margin-top: 20px;
+}
+
+.status_strip_box{
+    position: absolute;
+    top:10px;
+    left:10px;
+    width: 75px;
+    height: 75px;
+    overflow: hidden;
+}
+.status_strip{
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    height: 15px;
+    position: absolute;
+    top: 11px;
+    left: -32px;
+    line-height: 15px;
+    font-size: 12px;
+    width: 100px;
+    text-align: center;
+    background: green;
+    color: #fff;
+}
+
+
+/*计划列表--后加*/
+.lsit_jihua{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 0 0 0;
+/*    -webkit-box-shadow: 1px 1px 1px #606060;
+    -moz-box-shadow: 1px 1px 1px #606060;
+    box-shadow: 1px 1px 1px #606060;*/
+}
+.lsit_jihua img{
+    width: 100%;
+    height: 140px;
+    outline-width:0;
+    vertical-align:top;
+}
+.jihua_box{
+    height: 30px;
+    overflow: hidden;
+    border-bottom:1px solid #e8e8e8;
+}
+.jihua_wj{
+    background: #fff;
+    width: 100%;
+    height: 30px;
+    position: relative;
+    display:table;
+}
+.jihua_wj p{
+    margin: 0px;
+    padding: 0px;
+    line-height: 30px;
+    font-size: 14px;
+    padding-right: 120px;
+    padding-left: 10px;
+    display:table-cell;
+    vertical-align:middle;
+    height: 30px;
+    border-top:1px solid #f4f5f9;
+}
+.jihua_wj .listin_btn{
+    width: 100px;
+    height: 30px;
+    margin: 0;
+    text-align: center;
+    line-height: 30px;
+    font-size: 14px;
+    color: #fff;
+    border-top:1px solid #00a5e0;
+    background:#00a5e0;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.lsit_jihua1{
+    padding: 5px 0;
+    box-sizing: border-box;
+    position: relative;
+}
+.lsit_jihua1 img{
+    width: 100%;
+    outline-width:0;
+    vertical-align:top;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

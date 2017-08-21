@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<!-- UC强制全屏 -->
+	<meta name="full-screen" content="yes">
+	<!-- QQ强制全屏 -->
+	<meta name="x5-fullscreen" content="true">
+	<title>报名校友列表</title>
+
+	<link href="../static/css/Hui.css" rel="stylesheet" type="text/css">
+
+	<!--template-->
+	<script type="text/html" id="memberTppl">
+		<%
+		if(memberList.length > 0){
+		for(var key in memberList ) {
+		if(memberList[key]) {
+		%>
+		<div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-margin-left-10-after H-vertical-middle H-touch-active">
+			<div class="H-padding-vertical-both-8">
+				<%
+				if(memberList[key].picture == null || memberList[key].picture > 0) {
+				%>
+				<img src="../static/img/demo/activity_01.jpg" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}else{
+				%>
+				<img src="<%=memberList[key].picture%>" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}
+				%>
+			</div>
+
+			<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">
+				<%=memberList[key].name%>
+			</div>
+
+			<%
+			if(memberList[key].isSignIn != null && memberList[key].isSignIn != "" && memberList[key].isSignIn == "1") {
+			%>
+			<img style=" width: 48px; height: 48px;" src="../../img/icon_success.png">
+			<%
+			}
+			%>
+
+			<div class="H-font-size-14 H-padding-horizontal-both-10">
+				<%=memberList[key].phoneNum%>
+			</div>
+		</div>
+		<%
+		}
+		}
+		}
+		%>
+
+	</script>
+</head>
+
+<body>
+<header id="header"></header>
+
+<!--搜索-->
+<div class="H-padding-vertical-both-10 H-padding-horizontal-both-5 H-theme-background-color-white">
+	<div class="H-search H-flexbox-horizontal H-box-sizing-border-box  H-overflow-hidden H-position-relative">
+		<div class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle H-text-align-center H-theme-font-color-999  H-border-radius-15" id="ser">
+		            	<span class="H-display-block H-width-100-percent H-font-size-14">
+		            		<i class="H-iconfont H-icon-search H-font-size-14"></i> 搜索关键字
+		            	</span>
+		</div>
+		<input type="search" name="keyword" onsearch="keySearch();" id="ipt" class="H-border-none  H-border-radius-15 H-theme-background-color-f4f4f4 H-flex-item H-font-size-14 H-padding-horizontal-both-10 H-padding-vertical-both-5 H-theme-background-color-f4f4f4" />
+		<span class="H-display-block H-font-size-14 H-vertical-middle H-theme-font-color1 H-padding-horizontal-both-10 btn" style="display:none;">取消</span>
+	</div>
+</div>
+
+<!--members-->
+<div id="memberList"></div>
+
+<script type="text/javascript" src="../../js/H.js"></script>
+<script type="text/javascript" src="../../js/zepto.min.js"></script>
+<script type="text/javascript" src="../../js/xdomain.min.js"></script>
+<script type="text/javascript" src="../../js/B.js"></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript" src="../static/js/dropload.min.js"></script>
+<script type="text/javascript" src="../static/js/dateformat.js"></script>
+
+<script type="text/javascript">
+	// 接收url中的参数
+	var eventId = B.getUrlParamByName("eventId");
+	var sourceFlag = B.getUrlParamByName("sourceFlag");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+	var fromMain = B.getUrlParamByName("fromMain");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        var shareData = {
+            title: '报名校友列表',
+            desc: '',
+            link: location.href.split('?')[0]+"?eventId=" +eventId,
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+	var dataList;
+
+	// 初始化页面数据
+	$(function() {
+		H.tppl_flag = ["<%", "%>"];
+		B.ready(function() {
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "219","content": {"eventId": "' + eventId + '"}}'
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(data.obj.length) {
+						dataList = data.obj;
+						reloadList(data.obj);
+					}
+				},
+				error: function(xhr, type) {
+
+				}
+			});
+		});
+	});
+
+	function keySearch(){
+		var keywords = $("#ipt").val();
+
+		var newDataList =[];
+		// 遍历校友集合，根据关键字筛选出名称中包含关键字的校友集合
+		for(var i = 0; i < dataList.length; i++){
+			if(dataList[i].name.indexOf(keywords) >= 0){
+				newDataList.push(dataList[i]);
+			}
+		}
+
+		reloadList(newDataList);
+	}
+
+	// 重新渲染加载列表数据
+	function reloadList(list){
+//				H.alert(JSON.stringify(list));
+		// 重新渲染加载数据
+		var render = H.tppl(H.D("#memberTppl").innerHTML);
+		var result = render({
+			memberList: list
+		});
+
+		$('#memberList').html(result);
+	}
+
+	H.D("#ser").addEventListener("touchend", function (e) {
+		this.style.cssText = "display:none;";
+		H.D(".btn").removeAttribute("style");
+		H.D("#ipt").setAttribute("placeholder", "请输入关键字");
+	});
+
+	H.D(".btn").addEventListener("touchend", function (e) {
+		this.style.cssText = "display:none;";
+		H.D("#ipt").setAttribute("placeholder", "");
+		H.D("#ser").removeAttribute("style");
+		// 刷新校友列表
+
+		$("#ipt").val("");
+		reloadList(dataList);
+	});
+
+//	//ios返回刷新
+//	var t = B.getUrlParamByName("t");
+//	$(function () {
+//		var u = navigator.userAgent, app = navigator.appVersion;
+//		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//		var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//		if (isAndroid) {
+//
+//		}
+//	/*	if (isIOS) {
+//			var rnumber = Math.floor(Math.random()*1000)
+//			history.replaceState({mod:rnumber}, 'Title', '?t='+t+"&accountNum=" + accountNum +'&mod='+rnumber+ "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+associationId+"&teamId="+teamId +"&detailFlag="+detailFlag);
+//			window.onpopstate = function(event) {
+//				location.reload();
+//			};
+//		}*/
+//	});
+
+	var jsonStr = {
+
+		"title":"报名校友列表",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback"
+		}
+	};
+
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+		return jsonStr;
+
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStr);
+		window.stub.jsMethod(str);
+		return jsonStr;
+
+	}
+
+
+	var associationId = B.getUrlParamByName("associationId");
+	var teamId = B.getUrlParamByName("teamId");
+	var detailFlag = B.getUrlParamByName("detailFlag");
+	function fallback() {
+
+		window.location.href = B.serverUrl + "/mobile/services/activity/detail.html?accountNum=" + accountNum + "&eventId=" +eventId + "&sourceFlag=" + sourceFlag +"&associationId="+ associationId +"&teamId="+teamId +"&detailFlag="+detailFlag;
+
+	}
+
+</script>
+</body>

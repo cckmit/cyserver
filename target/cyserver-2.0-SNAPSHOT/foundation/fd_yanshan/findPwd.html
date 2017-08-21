@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>找回密码</title>
+
+    <!--css-->
+    <link href="../jslib/layer/need/layer.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <style>
+        .B-login-bg{
+            background-size:100%;
+            min-height: 100%;
+            background-color:#fff;
+        }
+
+
+        .B-find-pwd {
+            margin-right: 40px;
+            word-break: keep-all;
+        }
+
+        /*基本颜色*/
+        .font_color_8d{
+            color:#8d8d8d;
+        }
+        .main_color{
+            color:#4d99db;
+        }
+
+        .login_banner{
+            background-image: url(img/login_banner.png);
+            background-size: cover;
+            background-repeat: no-repeat;
+
+        }
+        .login_input{
+            margin-top: 10px;
+            margin-bottom:35px;
+        }
+        /* >361px*/
+        @media only screen and (min-width: 376px){
+            .login_banner{
+                min-height: 260px;
+            }
+            .logo_bg{
+                padding:55px 0;
+            }
+        }
+
+        /* <361px*/
+        @media only screen and (max-width: 375px){
+            .login_banner{
+                min-height: 240px;
+            }
+            .logo_bg{
+                padding:45px 0;
+            }
+        }
+        @media only screen and (max-width: 320px){
+            .login_banner{
+                min-height: 200px;
+            }
+            .logo_bg{
+                padding:35px 0;
+            }
+        }
+
+        /*登录btn*/
+        .submit_btn{
+            font-size: 20px;
+            height: 50px;
+            border: none;
+            width: 300px;
+            background-color: #4d99db;
+            color: #fefefe;
+            text-align: center;
+            border-radius: 30px;
+            line-height: 50px;
+            box-shadow: 1px 3px 5px rgba(77, 153, 219, 0.5);
+
+        }
+        .space{
+            margin:0 5px;
+        }
+
+
+        .hideInput{
+            display: none;
+        }
+
+
+        .input_vfcode{
+            max-width: calc(100% - 150px);
+        }
+        .getVerifyCode{
+            color:#4d99db;
+        }
+
+        .disabled_button {
+            border: 1px solid dimgrey;color: dimgrey;
+        }
+
+    </style>
+</head>
+
+<body class="B-login-bg H-box-sizing-border-box H-overflow-hidden">
+<div class="H-overflow-hidden">
+    <!--logo-->
+    <div class="H-flexbox-vertical B-padding-vertical-20 login_banner">
+        <div class="H-center-all logo_bg">
+            <div class="H-center-all" style="background-image: url(img/logo_yanshan.png);
+                    background-size: 100%;width: 120px;height: 120px;">
+            </div>
+        </div>
+    </div>
+    <!--phone+pwd-->
+
+    <div class="login_input">
+
+        <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after H-padding-horizontal-left-20 H-margin-vertical-bottom-20" style="border-bottom:1px solid #999;">
+                <span class="H-icon H-vertical-middle H-padding-horizontal-left-20">
+                    <i class="H-iconfont H-icon-phone H-font-size-24 H-vertical-middle" style="color:#000;"></i>
+                </span>
+            <input type="text" id="username"
+                   class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-15 font_color_8d
+                       H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+                   placeholder="请输入手机号码">
+        </div>
+
+        <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after H-padding-horizontal-left-20 H-margin-vertical-bottom-20"
+             style="border-bottom:1px solid #999;">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-20">
+                <i class="H-iconfont H-icon-star-null H-font-size-24 H-vertical-middle" style="color:#000;"></i>
+            </span>
+            <input type="text" id="vfCode"
+                   class="input_vfcode H-textbox H-vertical-align-middle H-vertical-middle H-font-size-15 font_color_8d H-flex-item
+                       H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+                   placeholder="请输入验证码" >
+            <span class="getVerifyCode H-float-right H-font-size-15 H-padding-vertical-both-10 B-find-pwd" id="getCode">获取验证码</span>
+        </div>
+
+        <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after H-padding-horizontal-left-20 H-margin-vertical-bottom-20"
+             style="border-bottom:1px solid #999;">
+            <span class="H-icon H-vertical-middle H-padding-horizontal-left-20">
+                <i class="H-iconfont H-icon-lock H-font-size-24 H-vertical-middle" style="color:#000;"></i>
+            </span>
+            <input type="text" id="password"
+                   class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-15 font_color_8d
+                           H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+                   placeholder="请输入登录密码">
+        </div>
+
+        <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after H-padding-horizontal-left-20 H-margin-vertical-bottom-20"
+             style="border-bottom:1px solid #999;">
+                    <span class="H-icon H-vertical-middle H-padding-horizontal-left-20">
+                        <i class="H-iconfont H-icon-safe H-font-size-24 H-vertical-middle" style="color:#000;"></i>
+                    </span>
+            <input type="text" id="name"
+                   class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-15 font_color_8d
+                           H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+                   placeholder="请再次输入登录密码">
+        </div>
+
+    </div>
+
+
+
+    <!--重置密码按钮-->
+    <div class="H-padding-horizontal-both-10 H-text-align-center">
+        <button class="submit_btn" id="submitBtn">重置密码</button>
+    </div>
+
+
+</div>
+</body>
+</html>
+
+
+<!--引入脚本文件-->
+<script type="text/javascript" src="../jslib/zepto/zepto.min.js" ></script>
+<script type="text/javascript" src="../jslib/layer/layer.js" ></script>
+<script type="text/javascript" src="../jslib/xdomain.min.js" ></script>
+<script type="text/javascript" src="../jslib/hui/script/H.js" ></script>
+<script type="text/javascript" src="../mobile/js/B.js"  ></script>
+<script type="text/javascript" src="../mobile/js/jbase64.js" ></script>
+<script type="text/javascript" src="../mobile/js/wechat.js" ></script>
+
+<script>
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        var shareData = {
+            title: '找回秘密',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+    $(function(){
+        B.ready(function(){
+            // 获取短信验证码
+            $("#getCode").click(function () {
+                if (!$("#getCode").hasClass("disabled_button")) {
+                    var phone = $("#phone").val();
+                    if (phone == "") {
+                        layer.open({content: "手机号码不能为空！", skin: "msg", time: 2});
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data: {
+                            jsonStr: '{"command": "3","content": {"phoneNum": "' + phone + '","secretKey": "getRegisterCode123"}}'
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data && data.success) {
+                                layer.open({content: "验证码发送成功！", skin: "msg", time: 2});
+                                times($("#getCode"));
+                            }
+                            else {
+                                layer.open({content: data.msg, skin: "msg", time: 2});
+                            }
+                        }
+                    });
+                }
+            });
+
+            // 重置密码
+            $("#updatePwdBtn").click(function () {
+                if (validateForm()) {
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "16","content": {"phoneNum": "' + $("#phone").val() + '","password": "' + $("#password").val() + '","checkCode":"' +$("#code").val() + '"}}'
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data && data.success) {
+                                layer.open({ content:"重置密码成功，请重新登录！", skin:"msg", time:2 });
+                                window.location.href = "login.html?ts=" + B.getRandomInt(4);
+                            }
+                            else {
+                                layer.open({ content:data.msg, skin:"msg", time:2 })
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        // 验证表单数据
+        function validateForm() {
+            var phone = $("#phone").val();
+            var code = $("#code").val();
+            var password = $("#password").val();
+            var password2 = $("#password2").val();
+
+            if (phone == "") {
+                layer.open({ content: "手机号码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (code == "") {
+                layer.open({ content: "验证码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (password == "") {
+                layer.open({ content: "密码不能为空！",skin: "msg",time: 2 });
+                return false;
+            }
+            if (password2 != password) {
+                layer.open({ content: "两次密码输入不一致！",skin: "msg",time: 2 });
+                return false;
+            }
+            return true;
+        }
+
+        // 验证码获取后60s倒计时
+        var wait = 60;
+        function times(val){
+            if(wait == 0){
+                val.text("重新获取验证码");
+                val.removeAttr("disabled");
+                val.removeClass("disabled_button");
+                val.addClass("active_button");
+                wait = 60;
+            }else{
+                val.attr("disabled","disabled");
+                val.removeClass("active_button");
+                val.addClass("disabled_button");
+                setTimeout(function(){
+                    times(val);
+                },1000);
+                val.text(wait+" 重新获取验证码");
+                wait--;
+            }
+        }
+    });
+</script>

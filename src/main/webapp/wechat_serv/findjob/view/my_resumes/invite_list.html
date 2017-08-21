@@ -1,0 +1,229 @@
+
+    <style>
+        /* 设置文字显示多少行 */
+        .H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            word-wrap: break-word;
+            white-space: normal !important;
+            -webkit-box-orient: vertical; }
+
+        .H-text-show-row-1 {
+            line-clamp: 1;
+            -webkit-line-clamp: 1; }
+
+        .H-text-show-row-2 {
+            line-clamp: 2;
+            -webkit-line-clamp: 2; }
+
+        .H-text-show-row-3 {
+            line-clamp: 3;
+            -webkit-line-clamp: 3; }
+
+        .H-text-show-row-4 {
+            line-clamp: 4;
+            -webkit-line-clamp: 4; }
+
+        .H-text-show-row-5 {
+            line-clamp: 5;
+            -webkit-line-clamp: 5; }
+
+        .H-text-show-row-6 {
+            line-clamp: 6;
+            -webkit-line-clamp: 6; }
+
+
+
+
+        .bg{
+            height: 100%;
+            width:100%;
+            background-color:#f2f2f2;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .nav_tabs{
+            box-sizing: border-box;
+            width:100%;
+            background-color:#fff;
+            display: flex;
+            justify-content: center;
+            font-size:0.3rem;
+            line-height: 1rem;
+            padding:0 0.2rem;
+            margin-bottom: 0.1rem;
+        }
+        .nav_item{
+            color:#333;
+            flex:1;
+            text-align: center;
+
+        }
+        .chk_item{
+            color:#0F88EB;
+            border-bottom:0.04rem solid #0F88EB;
+        }
+
+
+        /*list*/
+        .inv_list{
+            flex:1;
+        }
+
+        .inv_item{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color:#fff;
+            padding:0.3rem 0.2rem;
+            margin-bottom:0.02rem;
+
+        }
+        .inv_item .item_l{
+            width:0.8rem;
+            height:0.8rem;
+            margin-right: 0.4rem;
+        }
+        .inv_item .item_r{
+            flex:1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .inv_item .item_r .row1{
+            margin-bottom: 0.2rem;
+            line-height: 0.32rem;
+            font-size: 0.3rem;
+            color: #333;
+            display: flex;
+        }
+        .inv_item .item_r .row1 .row1_l{
+            flex:1;
+            display: flex;
+        }
+        .inv_item .item_r .row1 .row1_l .row1_ll{
+            font-size: 0.26rem;
+            color:#333;
+            margin-right: 0.1rem;
+        }
+
+        .inv_item .item_r .row1 .row1_l .row1_lr{
+            font-size: 0.22rem;
+            color:#888;
+        }
+
+        .inv_item .item_r .row1 .row1_r{
+            font-size: 0.22rem;
+            color:#888;
+
+        }
+        .inv_item .item_r .row2{
+            font-size: 0.3rem;
+            color:#576B95;
+        }
+
+
+        /*null*/
+        .list_null{
+            width:100%;
+            height:100%;
+            text-align: center;
+
+        }
+        .list_null img{
+            margin-top:2rem;
+            margin-bottom: 1rem;
+        }
+        .list_null .tip{
+            font-size: 0.28rem;
+            line-height: 2;
+            color:#888;
+        }
+
+        .center_divcs{
+            flex:1;
+            position: relative;
+        }
+        .pane, .view {
+            background-color: #f2f2f2;
+        }
+    </style>
+
+
+<div class="bg">
+    <div class="nav_tabs">
+        <div class="nav_item {{dq_nav=='1'?'chk_item':''}}" ng-click="chkItem('1')">新邀约</div>
+        <div class="nav_item {{dq_nav=='2'?'chk_item':''}}" ng-click="chkItem('2')">待处理</div>
+        <div class="nav_item {{dq_nav=='3'?'chk_item':''}}" ng-click="chkItem('3')">已处理</div>
+    </div>
+
+
+    <div class="center_divcs">
+        <ion-view>
+            <ion-content class="main1_center">
+                <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+
+                <div class="inv_list" style="display: block">
+                    <div class="inv_item">
+                        <div class="item_l">
+                            <img style="width:100%; height: 100%; border-radius:50%;" src="img/avatar.png"/>
+                        </div>
+                        <div class="item_r">
+                            <div class="row1">
+                                <div class="row1_l">
+                                    <div class="row1_ll">
+                                        <span class="firm_name">武汉图图有限公司</span>-<span class="firm_man">HR</span>
+                                    </div>
+                                    <div class="row1_lr status">邀请你投递</div>
+                                </div>
+
+                                <div class="row1_r">1分钟前 </div>
+                            </div>
+                            <div class="row2 job_name">UI设计师</div>
+                        </div>
+                    </div>
+                    <div class="inv_item">
+                        <div class="item_l">
+                            <img style="width:100%; height: 100%; border-radius:50%;" src="img/avatar.png"/>
+                        </div>
+                        <div class="item_r">
+                            <div class="row1">
+                                <div class="row1_l">
+                                    <div class="row1_ll">
+                                        <span class="firm_name">武汉图图有限公司</span>-<span class="firm_man">HR</span>
+                                    </div>
+                                    <div class="row1_lr status">邀请你投递</div>
+                                </div>
+
+                                <div class="row1_r">1分钟前 </div>
+                            </div>
+                            <div class="row2 job_name">UI设计师</div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nodata" ng-if="dataNull">没有更多了!</div>
+                <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+                <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" >没有更多了</ion-infinite-scroll>
+            </ion-content>
+        </ion-view>
+    </div>
+
+
+    <!--邀约为空-->
+    <div class="list_null" ng-if="" style="display: none">
+
+        <img style=" width:3.56rem; height:3.56rem; " src="img/none.png"/>
+
+        <div class="tip">您还没有邀约呢！</div>
+    </div>
+
+
+
+</div>
+
+

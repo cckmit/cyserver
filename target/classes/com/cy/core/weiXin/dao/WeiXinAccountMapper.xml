@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.weiXin.dao.WeiXinAccountMapper">
+    <resultMap type="com.cy.core.weiXin.entity.WeiXinAccount" id="weiXinAccountResultMap">
+        <id column="id" property="id" />
+        <result column="account_name"  property="accountName"/>
+        <result column="account_token"  property="accountToken"/>
+        <result column="account_number"  property="accountNumber"/>
+        <result column="account_type"  property="accountType"/>
+        <result column="account_email"  property="accountEmail"/>
+        <result column="account_desc"  property="accountDesc"/>
+        <result column="account_access_token"  property="accountAccessToken"/>
+        <result column="account_app_id"  property="accountAppId"/>
+        <result column="account_app_secret"  property="accountAppSecret"/>
+
+        <result column="partner"  property="partner"/>
+        <result column="partner_key"  property="partnerKey"/>
+        <result column="code_image"  property="codeImage"/>
+
+        <result column="encrypt_message"  property="encryptMessage"/>
+        <result column="encoding_aes_key"  property="encodingAesKey"/>
+        <result column="add_token_time"  property="addTokenTime"/>
+        <result column="del_flag"  property="delFlag"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="remarks"  property="remarks"/>
+        <result column="subscribe_type"  property="subscribeType"/>
+        <result column="welcomes"  property="welcomes"/>
+        <result column="news_id"  property="newsId"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.cy.core.weiXin.entity.WeiXinAccount">
+        INSERT INTO weixin_account (
+        id,
+        account_name,
+        account_token,
+        account_number,
+        account_type,
+        account_email,
+        account_desc,
+        account_access_token,
+        account_app_id,
+        account_app_secret,
+        partner,
+        partner_key,
+        code_image,
+        encrypt_message,
+        encoding_aes_key,
+        add_token_time,
+        subscribe_type,
+        welcomes,
+        news_id,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        VALUES (
+        #{id},
+        #{accountName},
+        #{accountToken},
+        #{accountNumber},
+        #{accountType},
+        #{accountEmail},
+        #{accountDesc},
+        #{accountAccessToken},
+        #{accountAppId},
+        #{accountAppSecret},
+        #{partner},
+        #{partnerKey},
+        #{codeImage},
+        #{encryptMessage},
+        #{encodingAesKey},
+        #{addTokenTime},
+        #{subscribeType},
+        #{welcomes},
+        #{newsId},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.weiXin.entity.WeiXinAccount" >
+        UPDATE weixin_account SET
+        account_name=#{accountName},
+        account_token=#{accountToken},
+        account_number=#{accountNumber},
+        account_type=#{accountType},
+        account_email=#{accountEmail},
+        account_desc=#{accountDesc},
+        account_access_token=#{accountAccessToken},
+        account_app_id=#{accountAppId},
+        account_app_secret=#{accountAppSecret},
+        encrypt_message=#{encryptMessage},
+        encoding_aes_key=#{encodingAesKey},
+        partner=#{partner},
+        partner_key=#{partnerKey},
+        code_image=#{codeImage},
+        add_token_time=#{addTokenTime},
+        subscribe_type=#{subscribeType},
+        welcomes=#{welcomes},
+        news_id=#{newsId},
+        del_flag = #{delFlag},
+        update_date = #{updateDate},
+        update_by = #{updateBy},
+        remarks = #{remarks}
+		WHERE id = #{id}
+    </update>
+    <select id="selectById" parameterType="string" resultMap="weiXinAccountResultMap">
+      SELECT
+         wa.*
+      FROM weixin_account wa
+      WHERE wa.id = #{id} AND wa.del_flag != '1'
+    </select>
+    <select id="selectAll" resultMap="weiXinAccountResultMap">
+        SELECT * FROM weixin_account WHERE del_flag != '1'
+    </select>
+    <select id="selectList" parameterType="map" resultMap="weiXinAccountResultMap">
+       SELECT
+          wa.*
+        FROM weixin_account wa
+        WHERE wa.del_flag != '1'
+        <if test="accountType != null and accountType != ''">
+            AND wa.account_type = #{accountType}
+        </if>
+        <if test="appId != null and appId != ''">
+            AND wa.account_app_id = #{appId}
+        </if>
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+</mapper>

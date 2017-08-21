@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.serviceNewsType.dao.ServiceNewsTypeMapper">
+
+    <resultMap id="serviceNewsTypeResultMap" type="com.cy.core.serviceNewsType.entity.ServiceNewsType">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="url" property="url"/>
+        <result column="orderNum" property="orderNum"/>
+        <result column="origin" property="origin"/>
+        <result column="cityName" property="cityName"/>
+        <result column="isNavigation" property="isNavigation"/>
+        <result column="dept_id" property="deptId"/>
+        <result column="channel" property="channel"/>
+        <result column="isMain" property="isMain"/>
+        <result column="service_id" property="serviceId"/>
+        <result column="serviceName" property="serviceName"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <!-- 查询服务新闻栏目 -->
+    <select id="query" parameterType="map" resultMap="serviceNewsTypeResultMap">
+        SELECT
+            st.*,ss.serviceName
+        FROM
+            cy_service_news_type st
+        LEFT JOIN cy_school_service ss ON st.service_id=ss.id
+        <where> del_flag != '1'
+            <if test="name!=null and name!=''">
+                AND st.name like concat('%',#{name},'%')
+            </if>
+            <if test="parentId !=null and parentId!=''">
+                AND st.parent_id = #{parentId}
+            </if>
+            <if test="serviceId!=null and serviceId!=''">
+                AND st.service_id = #{serviceId}
+            </if>
+        </where>
+        order by orderNum
+    </select>
+
+    <!-- 查询新闻栏目的详细信息 -->
+    <select id="getById" parameterType="string" resultMap="serviceNewsTypeResultMap">
+        SELECT
+            st.*
+        FROM
+            cy_service_news_type st
+        WHERE st.id = #{id} AND del_flag != '1'
+    </select>
+
+    <!-- 根据名字查询新闻栏目 -->
+    <select id="getByName" parameterType="string" resultMap="serviceNewsTypeResultMap">
+        SELECT
+            st.*
+        FROM
+            cy_service_news_type st
+        WHERE st.`name` = #{name} AND del_flag != '1'
+    </select>
+
+    <!--创建服务新闻栏目-->
+    <insert id="save" parameterType="com.cy.core.serviceNewsType.entity.ServiceNewsType">
+        INSERT INTO cy_service_news_type(
+            id,
+            parent_id,
+            `name`,
+            `type`,
+            url,
+            orderNum,
+            origin,
+            cityName,
+            isNavigation,
+            dept_id,
+            channel,
+            isMain,
+            service_id,
+            create_date,
+            create_by,
+            update_date,
+            update_by,
+            remarks,
+            del_flag
+        )VALUES(
+            #{id},
+            #{parentId},
+            #{name},
+            #{type},
+            #{url},
+            #{orderNum},
+            #{origin},
+            #{cityName},
+            #{isNavigation},
+            #{deptId},
+            #{channel},
+            #{isMain},
+            #{serviceId},
+            #{createDate},
+            #{createBy},
+            #{updateDate},
+            #{updateBy},
+            #{remarks},
+            #{delFlag}
+        )
+    </insert>
+
+    <!--更新新闻栏目-->
+    <update id="update" parameterType="com.cy.core.serviceNewsType.entity.ServiceNewsType">
+        UPDATE cy_service_news_type SET
+            parent_id = #{parentId},
+            `name` = #{name},
+            `type` = #{type},
+            url = #{url},
+            origin = #{origin},
+	 		orderNum = #{orderNum},
+		 	cityName = #{cityName},
+		 	channel = #{channel},
+		 	dept_id = #{deptId},
+		 	isNavigation = #{isNavigation},
+		 	isMain = #{isMain},
+		 	service_id = #{serviceId},
+		 	update_date = #{updateDate},
+		 	update_by = #{updateBy},
+		 	remarks = #{remarks},
+		 	del_flag = #{delFlag}
+		WHERE id = #{id}
+    </update>
+</mapper>

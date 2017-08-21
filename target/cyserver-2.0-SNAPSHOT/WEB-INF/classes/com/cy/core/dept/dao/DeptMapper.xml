@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.dept.dao.DeptMapper">
+	<resultMap type="com.cy.core.dept.entity.Dept" id="deptResultMap">
+		<id column="dept_id" property="deptId" />
+		<result column="dept_name" property="deptName" />
+		<result column="parent_id" property="parentId" />
+		<result column="create_time" property="createTime" />
+		<result column="full_name" property="fullName" />
+		<result column="level" property="level" />
+		<result column="alias_name" property="aliasName" />
+		<result column="isCurrent" property="isCurrent" />
+		<result column="belongDeptId" property="belongDeptId" />
+		<result column="belongDeptName" property="belongDeptName" />
+		<result column="status" property="status" />
+		<result column="sort" property="sort" />
+		<collection property="depts" ofType="com.cy.core.dept.entity.Dept">
+			<id column="dept_id1" property="deptId" />
+			<result column="dept_name1" property="deptName" />
+		</collection>
+	</resultMap>
+	<!-- 获取院系信息 -->
+	<select id="selectList" parameterType="map" resultMap="deptResultMap">
+		SELECT d.*
+		FROM cy_dept_info d
+		WHERE d.status = '20'
+		<if test="isCurrent != null and isCurrent != ''">
+			AND d.is_current = #{isCurrent} AND <![CDATA[ LENGTH(d.dept_id) <= 10 ]]>
+		</if>
+		<if test="deptLength != null and deptLength != ''">
+			AND length(d.dept_id) = ${deptLength}
+		</if>
+		<if test="deptName != null and deptName != ''">
+			AND d.dept_name LIKE concat('%',#{deptName},'%')
+		</if>
+		<if test="deptFullName != null and deptFullName != ''">
+			AND d.dept_name = #{deptFullName}
+		</if>
+		<choose>
+			<when test='level == "1"'>  <!-- 查询学校 -->
+				AND LENGTH(d.dept_id) = 6
+			</when>
+			<when test='level == "2"'>  <!-- 查询学院 -->
+				AND LENGTH(d.dept_id) = 10
+			</when>
+			<when test='level == "3"'>  <!-- 查询年级 -->
+				AND LENGTH(d.dept_id) = 14
+			</when>
+			<when test='level == "4"'>  <!-- 查询班级 -->
+				AND LENGTH(d.dept_id) = 16
+			</when>
+		</choose>
+	</select>
+	
+	<select id="selectEvery" resultMap="deptResultMap">
+		select c.*,
+            c.is_current AS isCurrent ,
+            c.belong_dept_id AS belongDeptId ,
+            (select b.full_name FROM cy_dept_info b WHERE b.dept_id = c.belong_dept_id) belongDeptName
+		from cy_dept_info c where <![CDATA[ length(c.dept_id)<=10 ]]>
+	</select>
+
+	<select id="getDepts" parameterType="long" resultType="java.lang.String">
+		SELECT deptId AS dept_id FROM cy_user_dept WHERE userId=#{userId}
+	</select>
+
+	<select id="selectAll" parameterType="list" resultMap="deptResultMap">
+		select  c.*,
+			c.is_current AS isCurrent ,
+			c.belong_dept_id AS belongDeptId ,
+			(select b.full_name FROM cy_dept_info b WHERE b.dept_id = c.belong_dept_id) belongDeptName
+		from cy_dept_info c
+		where <![CDATA[ length(dept_id)<=10 ]]>
+		<if test="list!=null and list.size()>0">
+			and
+			<foreach collection="list" open="(" separator="or" close=")" item="dept">
+				<!-- dept_id like concat(#{dept.deptId},'%') -->
+				dept_id like concat(#{dept},'%') or #{dept} like concat(dept_id,'%')
+			</foreach>
+			<!--and
+			<foreach collection="list" open="(" separator="and" close=")" item="dept">
+				length(dept_id) !=length(#{dept.deptId})
+			</foreach>-->
+		</if>
+	</select>
+
+	<select id="selectDepart" parameterType="list" resultMap="deptResultMap">
+		select c.*,
+			c.is_current AS isCurrent ,
+			c.belong_dept_id AS belongDeptId ,
+			(select b.full_name FROM cy_dept_info b WHERE b.dept_id = c.belong_dept_id) belongDeptName
+		from cy_dept_info c
+		where length(dept_id)=10
+		<if test="list!=null and list.size()>0">
+			and
+			<foreach collection="list" open="(" separator="or" close=")" item="dept">
+				dept_id like concat(#{dept.deptId},'%')
+			</foreach>
+		</if>
+	</select>
+
+	<select id="selectAll1" parameterType="list" resultMap="deptResultMap">
+		SELECT
+			c.*,
+			c.is_current AS isCurrent,
+			c.belong_dept_id AS belongDeptId,
+			b.full_name AS belongDeptName
+		FROM cy_dept_info c
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		<where>
+			<if test="list!=null and list.size()>0">
+				<foreach collection="list" open="(" separator="or" close=")" item="dept">
+					c.dept_id like concat(#{dept.deptId},'%') or #{dept.deptId} like concat(c.dept_id,'%')
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="selectAll2" parameterType="list" resultMap="deptResultMap">
+		select * from cy_dept_info 
+	</select>
+	<insert id="insert" parameterType="com.cy.core.dept.entity.Dept" useGeneratedKeys="true" keyProperty="deptId">
+		insert into
+		cy_dept_info(dept_id,dept_name,parent_id,create_time,full_name,level,alias_name,status,sort) values(#{deptId},#{deptName},#{parentId},#{createTime},#{fullName},#{level},#{aliasName},#{status},#{sort})
+	</insert>
+	<!--Lixun 2017-5-12 优化导入效率-->
+	<insert id="multiinsert" parameterType="List" useGeneratedKeys="true" keyProperty="deptId">
+		insert into
+		cy_dept_info(dept_id,dept_name,parent_id,create_time,full_name,level,alias_name,status)
+		values
+		<foreach collection="list" item="item" separator=",">
+		(#{item.deptId},#{item.deptName},#{item.parentId},#{item.createTime},#{item.fullName},#{item.level},#{item.aliasName},#{item.status})
+		</foreach>
+	</insert>
+
+	<select id="checkDeptId" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_id=#{deptId}
+	</select>
+	<select id="selectOne" parameterType="string" resultMap="deptResultMap">
+		select i.* from cy_dept_info i where i.dept_id=#{deptId}
+	</select>
+	<select id="selectByDeptId" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_id like concat(#{deptId},'%')
+	</select>
+	<delete id="delete" parameterType="list">
+		delete from cy_dept_info where dept_id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="selectByName" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_name=#{deptName}
+	</select>
+	<select id="selectByNameAndParentId" parameterType="map" resultMap="deptResultMap">
+		select * from cy_dept_info where parent_id=#{parentId} and dept_name=#{deptName}
+		<if test="deptId!=null and deptId!=''">
+			and dept_id!=#{deptId}
+		</if>
+	</select>
+	<select id="getSchool" resultMap="deptResultMap">
+		select * from cy_dept_info where LENGTH(dept_id)=6 AND status = '20'
+	</select>
+	<select id="selectAllDept" parameterType="map" resultMap="deptResultMap">
+		select
+		c.*,
+		c.is_current AS isCurrent,
+		c.belong_dept_id AS belongDeptId,
+		b.full_name AS belongDeptName
+		FROM cy_dept_info c
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		WHERE 1=1
+		<choose>
+			<when test='level == "1"'>  <!-- 查询学校 -->
+				AND LENGTH(c.dept_id) = 6
+			</when>
+			<when test='level == "2"'>  <!-- 查询学院 -->
+				AND LENGTH(c.dept_id) = 10
+			</when>
+			<when test='level == "3"'>  <!-- 查询年级 -->
+				AND LENGTH(c.dept_id) = 14
+			</when>
+			<when test='level == "4"'>  <!-- 查询班级 -->
+				AND LENGTH(c.dept_id) = 16
+			</when>
+		</choose>
+		<if test="status != null and status != ''">
+			AND c.status = #{status}
+		</if>
+		<if test="deptPid != null and deptPid != ''">
+			AND c.dept_id LIKE concat(#{deptPid},'%')
+		</if>
+
+	</select>
+	<select id="selectAllClass" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_id=#{deptId}
+	</select>
+	<select id="countDept" parameterType="map" resultType="long">
+		select count(dept_id) from cy_dept_info c
+		WHERE c.delstate != '1'
+			<if test="fullName!=null and fullName!=''">
+				AND full_name like concat('%',#{fullName},'%')
+			</if>
+            <choose>
+                <when test='level == "1"'>  <!-- 查询学校 -->
+                    AND LENGTH(c.dept_id) = 6
+                </when>
+                <when test='level == "2"'>  <!-- 查询学院 -->
+                    AND LENGTH(c.dept_id) = 10
+                </when>
+                <when test='level == "3"'>  <!-- 查询年级 -->
+                    AND LENGTH(c.dept_id) = 14
+                </when>
+                <when test='level == "4"'>  <!-- 查询班级 -->
+                    AND LENGTH(c.dept_id) = 16
+                </when>
+            </choose>
+	</select>
+
+	<!-- 获取院系列表信息 -->
+	<select id="selectDeptList" parameterType="map" resultMap="deptResultMap">
+		select
+		c.*,
+		c.is_current AS isCurrent,
+		c.belong_dept_id AS belongDeptId,
+		b.full_name AS belongDeptName
+		FROM cy_dept_info c
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		WHERE c.delstate != '1' AND c.status = '20'
+		<if test="fullName!=null and fullName!=''">
+			AND full_name like concat('%',#{fullName},'%')
+		</if>
+		<choose>
+			<when test='level == "1"'>  <!-- 查询学校 -->
+				AND LENGTH(c.dept_id) = 6
+			</when>
+			<when test='level == "2"'>  <!-- 查询学院 -->
+				AND LENGTH(c.dept_id) = 10
+			</when>
+			<when test='level == "3"'>  <!-- 查询年级 -->
+				AND LENGTH(c.dept_id) = 14
+			</when>
+			<when test='level == "4"'>  <!-- 查询班级 -->
+				AND LENGTH(c.dept_id) = 16
+			</when>
+		</choose>
+		<if test="isCurrent != null and isCurrent != ''">
+			AND c.is_current = #{isCurrent} AND <![CDATA[ LENGTH(c.dept_id) <= 10 ]]>
+		</if>
+		<if test="status != null and status != ''">
+			AND c.status = #{status}
+		</if>
+		<if test="deptPid != null and deptPid != ''">
+			AND c.dept_id LIKE concat(#{deptPid},'%')
+		</if>
+		ORDER BY c.level,c.sort,c.dept_name
+		<if test='isNotLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- 查询班级列表条数 -->
+	<select id="countClassList" parameterType="map" resultType="long">
+		SELECT count(1)
+		FROM cy_dept_info t
+		JOIN cy_dept_info s ON s.dept_id = left(t.dept_id,6)
+		JOIN cy_dept_info c ON c.dept_id = left(t.dept_id,10)
+		JOIN cy_dept_info g ON g.dept_id = left(t.dept_id,14)
+		LEFT JOIN cy_dept_info b ON b.dept_id = t.belong_dept_id
+		WHERE
+			t.delstate != '1' AND LENGTH(t.dept_id) = 16 AND t.status='20'
+			<if test="fullName!=null and fullName!=''">
+				AND t.full_name like concat('%',#{fullName},'%')
+			</if>
+			<if test="schoolName!=null and schoolName!=''">
+				AND s.dept_name like concat('%',#{schoolName},'%')
+			</if>
+			<if test="collegeName!=null and collegeName!=''">
+				AND c.dept_name like concat('%',#{collegeName},'%')
+			</if>
+			<if test="gradeName!=null and gradeName!=''">
+				AND g.dept_name like concat('%',#{gradeName},'%')
+			</if>
+			<if test="className!=null and className!=''">
+				AND t.dept_name like concat('%',#{className},'%')
+			</if>
+			<if test="schoolId!=null and schoolId!=''">
+				AND s.dept_id = #{schoolId}
+			</if>
+			<if test="collegeId!=null and collegeId!=''">
+				AND c.dept_id = #{collegeId}
+			</if>
+			<if test="gradeId!=null and gradeId!=''">
+				AND g.dept_id = #{gradeId}
+			</if>
+			<if test="classId!=null and classId!=''">
+				AND t.dept_id = #{classId}
+			</if>
+	</select>
+	<!-- 查询班级列表 -->
+	<select id="selectClassList" parameterType="map" resultType="map">
+		SELECT
+			s.dept_name schoolName,
+			c.dept_name collegeName,
+			g.dept_name gradeName,
+			<!-- GROUP_CONCAT(u.user_id) adminIds,
+			GROUP_CONCAT(u.user_name)adminNames, -->
+			t.dept_id AS deptId ,
+			t.dept_name AS deptName,
+			t.full_name AS fullName
+		FROM cy_dept_info t
+		JOIN cy_dept_info s ON s.dept_id = left(t.dept_id,6)
+		JOIN cy_dept_info c ON c.dept_id = left(t.dept_id,10)
+		JOIN cy_dept_info g ON g.dept_id = left(t.dept_id,14)
+		<!-- LEFT JOIN cy_user_info u ON left(u.user_id,16) = t.dept_id and u.is_class_admin = '1' -->
+		LEFT JOIN cy_dept_info b ON b.dept_id = t.belong_dept_id
+		WHERE
+			t.delstate != '1' AND LENGTH(t.dept_id) = 16 AND t.status='20'
+			<if test="fullName!=null and fullName!=''">
+				AND t.full_name like concat('%',#{fullName},'%')
+			</if>
+			<if test="schoolName!=null and schoolName!=''">
+				AND s.dept_name like concat('%',#{schoolName},'%')
+			</if>
+			<if test="collegeName!=null and collegeName!=''">
+				AND c.dept_name like concat('%',#{collegeName},'%')
+			</if>
+			<if test="gradeName!=null and gradeName!=''">
+				AND g.dept_name like concat('%',#{gradeName},'%')
+			</if>
+			<if test="className!=null and className!=''">
+				AND t.dept_name like concat('%',#{className},'%')
+			</if>
+			<if test="schoolId!=null and schoolId!=''">
+				AND s.dept_id = #{schoolId}
+			</if>
+			<if test="collegeId!=null and collegeId!=''">
+				AND c.dept_id = #{collegeId}
+			</if>
+			<if test="gradeId!=null and gradeId!=''">
+				AND g.dept_id = #{gradeId}
+			</if>
+			<if test="classId!=null and classId!=''">
+				AND t.dept_id = #{classId}
+			</if>
+			<!--<if test="adminNames!=null and adminNames!=''">
+				AND c.adminNames like concat('%',#{adminNames},'%')
+			</if>-->
+		limit #{start},#{rows}
+	</select>
+	<!-- 查询班级列表根据用户权限 -->
+	<select id="countClassListByUser" parameterType="map" resultType="long">
+		SELECT
+		COUNT(1)
+		FROM
+		(SELECT
+		t.dept_id
+		FROM cy_dept_info t
+		JOIN cy_dept_info s ON s.dept_id = left(t.dept_id,6)
+		JOIN cy_dept_info c ON c.dept_id = left(t.dept_id,10)
+		JOIN cy_dept_info g ON g.dept_id = left(t.dept_id,14)
+		left JOIN cy_user_info u ON LEFT (u.user_id, 16) = t.dept_id AND u.is_class_admin = '1'
+		WHERE t.`status` = '20'
+		<if test="userId != nulll and userId != ''">
+			and LEFT(t.dept_id, 10) IN (
+			SELECT
+			t2.dept_id
+			FROM
+			cy_dept_info t2
+			LEFT JOIN cy_alumni al ON al.academyid = t2.dept_id OR al.academyid = t2.belong_dept_id
+			LEFT JOIN cy_user us ON us.dept_id = al.alumniId
+			WHERE
+			t2.delstate != '1'
+			AND t2. STATUS = '20'
+			AND us.userId = #{userId}
+			AND LENGTH(t2.dept_id) = 10
+			)
+		</if>
+		<if test="fullName!=null and fullName!=''">
+			AND t.full_name like concat('%',#{fullName},'%')
+		</if>
+		<if test="schoolName!=null and schoolName!=''">
+			AND s.dept_name like concat('%',#{schoolName},'%')
+		</if>
+		<if test="collegeName!=null and collegeName!=''">
+			AND c.dept_name like concat('%',#{collegeName},'%')
+		</if>
+		<if test="gradeName!=null and gradeName!=''">
+			AND g.dept_name like concat('%',#{gradeName},'%')
+		</if>
+		<if test="adminNames!=null and adminNames!=''">
+			AND adminNames like concat('%',#{adminNames},'%')
+		</if>
+		<if test="className!=null and className!=''">
+			AND t.dept_name like concat('%',#{className},'%')
+		</if>
+		GROUP BY t.dept_id) a
+	</select>
+	<select id="selectClassListByUser" parameterType="map" resultType="map">
+		SELECT
+			s.dept_name schoolName,
+			c.dept_name collegeName,
+			g.dept_name gradeName,
+			GROUP_CONCAT(u.user_id) adminIds,
+			GROUP_CONCAT(u.user_name)adminNames,
+			t.dept_id AS deptId ,
+			t.dept_name AS deptName,
+			t.full_name AS fullName
+		FROM cy_dept_info t
+		JOIN cy_dept_info s ON s.dept_id = left(t.dept_id,6)
+		JOIN cy_dept_info c ON c.dept_id = left(t.dept_id,10)
+		JOIN cy_dept_info g ON g.dept_id = left(t.dept_id,14)
+		left JOIN cy_user_info u ON LEFT (u.user_id, 16) = t.dept_id AND u.is_class_admin = '1'
+		WHERE t.`status` = '20'
+			<if test="userId != nulll and userId != ''">
+				and LEFT(t.dept_id, 10) IN (
+					SELECT
+						t2.dept_id
+					FROM
+						cy_dept_info t2
+					LEFT JOIN cy_alumni al ON al.academyid = t2.dept_id OR al.academyid = t2.belong_dept_id
+					LEFT JOIN cy_user us ON us.dept_id = al.alumniId
+					WHERE
+						t2.delstate != '1'
+						AND t2. STATUS = '20'
+						AND us.userId = #{userId}
+						AND LENGTH(t2.dept_id) = 10
+				)
+			</if>
+			<if test="fullName!=null and fullName!=''">
+				AND t.full_name like concat('%',#{fullName},'%')
+			</if>
+			<if test="schoolName!=null and schoolName!=''">
+				AND s.dept_name like concat('%',#{schoolName},'%')
+			</if>
+			<if test="collegeName!=null and collegeName!=''">
+				AND c.dept_name like concat('%',#{collegeName},'%')
+			</if>
+			<if test="gradeName!=null and gradeName!=''">
+				AND g.dept_name like concat('%',#{gradeName},'%')
+			</if>
+			<if test="adminNames!=null and adminNames!=''">
+				AND adminNames like concat('%',#{adminNames},'%')
+			</if>
+			<if test="className!=null and className!=''">
+				AND t.dept_name like concat('%',#{className},'%')
+			</if>
+		GROUP BY t.dept_id
+		limit #{start},#{rows}
+	</select>
+	<select id="selectAluByUser" parameterType="long" resultType="long">
+		SELECT dept_id FROM cy_user WHERE userId = #{userId};
+	</select>
+	<select id="getDepart" resultMap="deptResultMap">
+		select * from cy_dept_info where LENGTH(dept_id)=6
+	</select>
+	<select id="getDepart1" resultMap="deptResultMap">
+		select * from cy_dept_info where LENGTH(dept_id)=10
+	</select>
+	<select id="getDepart2" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where LENGTH(dept_id)=10 and parent_id=#{parentId}
+	</select>
+	<select id="getByParentId" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where parent_id=#{deptId} and status = '20' and delstate != '1'
+	</select>
+	<select id="getById" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_id=#{deptId}
+	</select>
+	<update id="updateFullName" parameterType="com.cy.core.dept.entity.Dept">
+		update cy_dept_info set full_name=REPLACE(full_name,#{resourceName},#{deptName}) where
+		dept_id like concat(#{deptId},'%')
+	</update>
+	<update id="update" parameterType="com.cy.core.dept.entity.Dept">
+		update cy_dept_info set dept_name=#{deptName},sort=#{sort} where
+		dept_id =#{deptId}
+	</update>
+	<update id="updateBelong" parameterType="com.cy.core.dept.entity.Dept">
+		update cy_dept_info set alias_name=#{aliasName} where
+		dept_id =#{deptId}
+	</update>
+	<update id="updateAliasName" parameterType="string">
+		update cy_dept_info set alias_name='' where
+		alias_name =#{aliasName}
+	</update>
+	<select id="getBelong1" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where (alias_name='' or alias_name is null) and dept_id!=#{deptId} and LENGTH(dept_id)=6
+	</select>
+	<select id="getBelong2" parameterType="string" resultMap="deptResultMap">
+		select * from cy_dept_info where alias_name='' or alias_name is null and dept_id!=#{deptId} and LENGTH(dept_id)=10
+	</select>
+	<select id="getByAliasName" parameterType="string" resultMap="deptResultMap">
+		select d1.*,d2.dept_id as dept_id1,d2.dept_name as dept_name1 from cy_dept_info d1 left join cy_dept_info d2 on d1.dept_id =
+		d2.alias_name where d1.dept_id=#{deptId}
+	</select>
+	<select id="selectByDeptIds" parameterType="list" resultMap="deptResultMap">
+		select * from cy_dept_info where dept_id in
+		<foreach collection="list" open="(" separator="," close=")" item="ids">
+			#{ids}
+		</foreach>
+	</select>
+	<select id="getByParentIdAndDeptIds" parameterType="map" resultMap="deptResultMap">
+		select * from cy_dept_info where parent_id=#{deptId} and dept_id in
+		<foreach collection="list" open="(" separator="," close=")" item="ids">
+			#{ids}
+		</foreach>
+	</select>
+	<select id="getCurRootDept" resultMap="deptResultMap">
+		select * from cy_dept_info where parent_id='0' and is_current='1' and delstate!='1'
+	</select>
+	<select id="selectAlumniDeptTree" resultMap="deptResultMap">
+		select DISTINCT * from cy_dept_info c
+        where
+        c.dept_id in (
+            select d.parent_id from cy_dept_info d
+            where
+                <![CDATA[length(d.dept_id)<=10]]>
+                and
+                d.is_current = '1'
+        )
+	</select>
+
+	<!-- 历史沿革与院系归属院系列表 -->
+	<select id="queryDeptByAttribution" parameterType="map" resultType="map" >
+
+		SELECT
+			c.parent_id AS schoolId,
+			s.dept_name schoolName,
+			c.dept_id AS collegeId,
+			c.dept_name AS collegeName,
+			GROUP_CONCAT(g.dept_id) AS gradeIds,
+			GROUP_CONCAT(g.dept_name) AS gradeNames ,
+			c.is_current AS isCurrent,
+			c.belong_dept_id AS belongDeptId,
+			b.full_name AS belongDeptName
+		FROM
+			cy_dept_info c
+		JOIN cy_dept_info s ON s.dept_id = c.parent_id AND s.`status` = '20'
+		LEFT JOIN cy_dept_info g ON g.parent_id = c.dept_id AND g.`status` = '20'
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		WHERE
+			LENGTH(c.dept_id) = 10
+			AND c. STATUS = '20'
+		<if test="schoolName!=null and schoolName!=''">
+			AND s.dept_name like concat('%',#{schoolName},'%')
+		</if>
+		<if test="collegeName!=null and collegeName!=''">
+			AND c.dept_name like concat('%',#{collegeName},'%')
+		</if>
+        <if test="belongDeptId != null and belongDeptId != ''">
+            AND (c.belong_dept_id = #{belongDeptId} OR c.dept_id = #{belongDeptId})
+        </if>
+        <if test="isCurrent != null and isCurrent != ''">
+            AND c.is_current = #{isCurrent}
+        </if>
+        <if test='hasBelong != null and hasBelong == "1"'>
+            AND ( (c.belong_dept_id IS NOT NULL AND trim(c.belong_dept_id) != '') OR c.is_current = '1' )
+        </if>
+        <if test='hasBelong != null and hasBelong == "0"'>
+            AND ((c.belong_dept_id IS NULL OR trim(c.belong_dept_id) = '') AND c.is_current != '1')
+        </if>
+		GROUP BY c.dept_id
+		<if test="limit != null and limit != ''">
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<!-- 历史沿革与院系归属院系列表条数 -->
+	<select id="countByAttribution" parameterType="map" resultType="long" >
+		select
+			count(1)
+		from cy_dept_info c where LENGTH(dept_id) = 10
+		<if test="belongDeptId != null and belongDeptId != ''">
+			AND c.belong_dept_id = #{belongDeptId}
+		</if>
+		<if test="isCurrent != null and isCurrent != ''">
+			AND c.is_current = #{isCurrent}
+		</if>
+		<if test='hasBelong != null and hasBelong == "1"'>
+			AND ( (c.belong_dept_id IS NOT NULL AND trim(c.belong_dept_id) != '') OR c.is_current = '1' )
+		</if>
+		<if test='hasBelong != null and hasBelong == "0"'>
+			AND ((c.belong_dept_id IS NULL OR trim(c.belong_dept_id) = '') AND c.is_current != '1')
+		</if>
+	</select>
+    <!-- 设置现有机构 -->
+    <update id="setCurrent" parameterType="map"  >
+        update cy_dept_info set is_current = #{isCurrent},belong_dept_id=null
+        WHERE FIND_IN_SET(dept_id,#{deptIds})
+    </update>
+
+    <!-- 设置现有机构 -->
+    <update id="shiftFromSourceBelongToGoalBelong" parameterType="map"  >
+        update cy_dept_info set belong_dept_id = #{goalBelongId}
+        WHERE belong_dept_id = #{sourceBelongId}
+    </update>
+
+    <!-- 设置归属学院 -->
+    <update id="setBelongDept" parameterType="map"  >
+        <choose>
+            <when test="belongDeptId != null and belongDeptId != ''">
+                update cy_dept_info set belong_dept_id = #{belongDeptId}
+                <where>
+                    <if test="deptId != null and deptId != ''">
+                        dept_id = #{deptId}
+                    </if>
+                    <if test="deptIds != null and deptIds != ''">
+                        FIND_IN_SET(dept_id,#{deptIds})
+                    </if>
+                </where>
+            </when>
+            <otherwise>
+                update cy_dept_info set belong_dept_id = NULL
+                <where>
+                    <if test="deptId != null and deptId != ''">
+                        belong_dept_id = #{deptId}
+                    </if>
+                    <if test="deptIds != null and deptIds != ''">
+                        FIND_IN_SET(belong_dept_id,#{deptIds})
+                    </if>
+                </where>
+            </otherwise>
+        </choose>
+    </update>
+
+    <!-- 获取现有树 -->
+    <select id="findCurrDeptTree" parameterType="map" resultMap="deptResultMap">
+        select * from cy_dept_info c
+        where
+		<!-- (c.dept_id in (
+            select d.dept_id from cy_dept_info d
+            where
+                <![CDATA[length(d.dept_id)<=10]]>
+                and
+                d.is_current = '1'
+        ) or c.dept_id in (
+            select d.parent_id from cy_dept_info d
+            where
+                <![CDATA[length(d.dept_id)<=10]]>
+                and
+                d.is_current = '1'
+        )) -->
+		c.delstate != '1'
+		<if test="deptList!=null and deptList.size()>0">
+			<foreach collection="deptList" open="and (" separator="or" close=")" item="dept">
+				#{dept.deptId} like concat(c.dept_id,'%')
+			</foreach>
+		</if>
+    </select>
+
+	<!-- add by jiangling
+		根据条件查询 -->
+	<select id="findDeptTreeBySearchCondition" parameterType="map" resultMap="deptResultMap">
+		SELECT
+		c.*,
+		c.is_current AS isCurrent,
+		c.belong_dept_id AS belongDeptId,
+		b.full_name AS belongDeptName
+		FROM cy_dept_info c
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		<where> 1=1 AND c.status='20'
+			<if test="list!=null and list.size()>0">
+				<foreach collection="list" open="and (" separator="or" close=")" item="dept">
+					c.dept_id like  (#{dept.deptId},'%') or #{dept.deptId} like concat(c.dept_id,'%')
+				</foreach>
+			</if>
+			<if test="isCurrent != null and isCurrent !='' ">
+				and (
+					(c.is_current = #{isCurrent} AND length(c.dept_id) = 10)
+					OR
+					c.dept_id in (
+						select d.parent_id
+						from cy_dept_info d
+						where (d.is_current = #{isCurrent} AND length(d.dept_id) = 10)
+					)
+					OR
+					c.dept_id IN (
+						select d.dept_id
+						from cy_dept_info d,cy_dept_info i
+						where d.dept_id like CONCAT(i.dept_id,'%') AND (i.is_current = #{isCurrent} AND length(i.dept_id) = 10)
+					)
+				)
+			</if>
+			<if test="belongDeptId != null and belongDeptId != '' ">
+				AND (
+				(c.belong_dept_id LIKE concat(#{belongDeptId},'%') AND length(c.dept_id) = 10)
+				OR
+				(c.dept_id LIKE CONCAT(#{belongDeptId},'%') AND LENGTH(c.dept_id) = 10 )
+				OR
+				c.dept_id in (
+				SELECT d.parent_id
+				FROM cy_dept_info d
+				WHERE (d.belong_dept_id LIKE concat(#{belongDeptId},'%') AND length(d.dept_id) = 10) OR (d.dept_id LIKE  concat(#{belongDeptId},'%') AND length(d.dept_id) = 10)
+				)
+				OR
+				c.dept_id IN (
+				SELECT d.dept_id
+				FROM cy_dept_info d,cy_dept_info i
+				WHERE (d.dept_id LIKE CONCAT(i.dept_id,'%') AND (i.belong_dept_id LIKE concat(#{belongDeptId},'%') AND length(i.dept_id) = 10)) OR
+				(d.dept_id LIKE CONCAT(i.dept_id,'%') AND (i.dept_id LIKE concat(#{belongDeptId},'%') AND length(i.dept_id) = 10))
+				)
+				)
+			</if>
+			<if test='hasBelong != null and hasBelong == "1"'>
+				AND ( (c.belong_dept_id IS NOT NULL AND trim(c.belong_dept_id) != '') OR c.is_current = '1' )
+			</if>
+			<if test='hasBelong != null and hasBelong == "0"'>
+				AND ((c.belong_dept_id IS NULL OR trim(c.belong_dept_id) = '') AND c.is_current != '1')
+			</if>
+            <if test="schoolName != null and schoolName != '' ">
+				AND ( c.dept_name LIKE concat('%',#{schoolName},'%')
+				AND LENGTH(c.dept_id) = 6
+				OR left(c.dept_id ,6) IN
+				( SELECT p.dept_id
+				FROM cy_dept_info p
+				WHERE p.dept_name LIKE concat('%',#{schoolName},'%')
+				AND LENGTH(p.dept_id) = 6 ) )
+            </if>
+            <if test="departName != null and departName != '' ">
+				AND (
+				(SELECT c.dept_id IN
+				( SELECT p.parent_id
+				FROM cy_dept_info p
+				WHERE p.dept_name LIKE concat('%',#{departName},'%')
+				AND LENGTH(p.dept_id) = 10 ) )
+				OR left(c.dept_id ,10) IN
+				( SELECT p.dept_id
+				FROM cy_dept_info p
+				WHERE p.dept_name LIKE concat('%',#{departName},'%')
+				AND LENGTH(p.dept_id) = 10 ) )
+            </if>
+			<if test="grade !=null and grade != '' " >
+				AND (
+				( SELECT GROUP_CONCAT(p.dept_id)
+				FROM cy_dept_info p
+				WHERE substring(p.dept_id,11,14)=#{grade} ) LIKE CONCAT(c.dept_id,'%')
+				OR left(c.dept_id ,14) IN
+				( SELECT p.dept_id
+				FROM cy_dept_info p
+				WHERE substring(p.dept_id,11,14)=#{grade}
+				AND LENGTH(p.dept_id) = 14 ) )
+			</if>
+            <if test="classes != null and classes != '' ">
+				AND (
+				( SELECT GROUP_CONCAT(p.dept_id)
+				FROM cy_dept_info p
+				WHERE p.dept_name LIKE concat('%',#{classes},'%')
+				AND LENGTH(p.dept_id) = 16 ) LIKE CONCAT(c.dept_id,'%'))
+            </if>
+		</where>
+	</select>
+
+
+	<!-- 根据手机用户找到他所属的现有院系 -->
+	<select id="queryCurrDeptByAccountNum" parameterType="string" resultMap="deptResultMap">
+		SELECT
+			*
+		FROM
+			cy_dept_info d
+		WHERE
+			(
+				(
+					FIND_IN_SET(
+						d.dept_id,
+						(
+							SELECT
+								GROUP_CONCAT(LEFT(u.user_id, 10))
+							FROM
+								cy_user_info u
+							WHERE
+								FIND_IN_SET(
+									u.user_id,
+									(
+										SELECT
+											up.baseInfoId
+										FROM
+											cy_userprofile up
+										WHERE
+											up.accountNum = #{accountNum}
+									)
+								)
+						)
+					)
+					AND d.is_current = '1'
+				)
+				OR (
+					FIND_IN_SET(
+						d.dept_id,
+						(
+							SELECT
+								GROUP_CONCAT(di.belong_dept_id)
+							FROM
+								cy_dept_info di
+							WHERE
+								FIND_IN_SET(
+									di.dept_id,
+									(
+										SELECT
+											GROUP_CONCAT(LEFT(u.user_id, 10))
+										FROM
+											cy_user_info u
+										WHERE
+											FIND_IN_SET(
+												u.user_id,
+												(
+													SELECT
+														up.baseInfoId
+													FROM
+														cy_userprofile up
+													WHERE
+														up.accountNum = #{accountNum}
+												)
+											)
+									)
+								)
+							AND di.is_current = '0'
+						)
+					)
+				)
+			)
+	</select>
+
+	<!-- lixun 根据userId查询有操作权限的部门 -->
+	<select id="selectDeptByUserId" parameterType="long" resultMap="deptResultMap">
+		select a.* from cy_dept_info a join cy_user_dept on userid=#{userid} and (dept_id=deptid or belong_dept_id=deptid)
+	</select>
+	<!-- lixun 根据user的DetpId(alumniId)查询部门名称 -->
+	<select id="selectDeptByAlumniId" parameterType="long" resultType="java.lang.String">
+		select alumniName from cy_alumni where alumniid=#{deptid}
+	</select>
+
+	<!-- 获取当前学院和归属于该学院的学院的所有上级学校、下级年级班级 -->
+	<select id="queryCurrAndBelongDept" parameterType="map" resultMap="deptResultMap">
+		SELECT * FROM cy_dept_info d
+		WHERE d.status='20'
+		<if test="currDeptId != null and currDeptId != ''">
+			AND (
+			<!-- 查询满足条件的学院 -->
+			FIND_IN_SET(d.dept_id,(
+			select GROUP_CONCAT(dept_id) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id =
+			#{currDeptId} ORDER  BY d.level ,d.sort
+			))
+			OR
+			<!-- 查询满足条件的学院所属的上级学校 -->
+			FIND_IN_SET(d.dept_id,(
+			select GROUP_CONCAT(left(dept_id,6)) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id =
+			#{currDeptId} ORDER  BY d.level ,d.sort
+			))
+			OR
+			<!-- 查询满足条件的学院的下级年级、班级 -->
+			FIND_IN_SET(left(d.dept_id,10),(
+			select GROUP_CONCAT(dept_id) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id =
+			#{currDeptId} ORDER  BY d.level ,d.sort
+			))
+			)
+		</if>
+		<if test="deptId != null and deptId != ''">
+			AND d.dept_id LIKE CONCAT(#{deptId},'%')
+		</if>
+		ORDER  BY d.sort
+	</select>
+	<!-- 获取当前学院和归属于该学院的学院的所有上级学校、下级年级班级 -->
+	<select id="getDeptAndBelongDeptIdsByCurrDeptId" parameterType="map" resultType="string">
+		SELECT GROUP_CONCAT(d.dept_id) FROM cy_dept_info d
+		WHERE 1=1
+		<if test="currDeptId != null and currDeptId != ''">
+			AND (
+				<!-- 查询满足条件的学院 -->
+				FIND_IN_SET(d.dept_id,(
+				select GROUP_CONCAT(dept_id) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id = #{currDeptId}
+				))
+				OR
+				<!-- 查询满足条件的学院所属的上级学校 -->
+				FIND_IN_SET(d.dept_id,(
+				select GROUP_CONCAT(left(dept_id,6)) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id = #{currDeptId}
+				))
+				OR
+				<!-- 查询满足条件的学院的下级年级、班级 -->
+				FIND_IN_SET(left(d.dept_id,10),(
+				select GROUP_CONCAT(dept_id) from cy_dept_info where dept_id = #{currDeptId} or belong_dept_id = #{currDeptId}
+				))
+			)
+		</if>
+		<if test="deptId != null and deptId != ''">
+			AND d.dept_id LIKE CONCAT(#{deptId},'%')
+		</if>
+	</select>
+	<!--更新审核状态-->
+	<update id="updateStatus" parameterType="com.cy.core.dept.entity.Dept">
+		UPDATE cy_dept_info SET `status`= #{status} WHERE dept_id=#{deptId}
+	</update>
+
+	<!-- 根据班级编号查出班级管理员 -->
+	<select id="selectAdminByClass" parameterType="string" resultType="map">
+		select
+			GROUP_CONCAT(u.user_id) adminIds,
+			GROUP_CONCAT(u.user_name) adminNames
+		from cy_user_info u where left(u.user_id,16) = #{classId} and u.is_class_admin = '1'
+	</select>
+
+
+	<select id="selectChatGroupByClassId" parameterType="string" resultType="map">
+		SELECT
+			dg.dept_id AS deptId,
+			cg.easemob_group_id AS groupEasemobId,
+			cg.id AS groupId
+		FROM
+			cy_chat_dept_group dg
+		JOIN cy_chat_group cg ON dg.group_id = cg.id
+		WHERE cg.del_flag='0' AND dg.del_flag='0'
+		AND dg.dept_id = #{classId}
+		ORDER BY dg.create_date DESC LIMIT 1
+	</select>
+
+
+	<!-- 根据班级上级机构查询热门班级列表 -->
+	<select id="findDeptListPage" parameterType="map" resultType="map">
+		SELECT
+			s.dept_name AS schoolName,
+			c.dept_name AS collegeName,
+			g.dept_name AS  gradeName,
+			t.dept_id AS deptId,
+			t.dept_name AS deptName,
+			t.full_name AS fullName,
+			cdi.total AS classmateNum,
+			di.rtotal AS verifiedNum,
+			cg.easemob_group_id AS easemobGroupId
+		FROM
+			cy_dept_info t
+		JOIN cy_dept_info s ON s.dept_id = LEFT (t.dept_id, 6)
+		JOIN cy_dept_info c ON c.dept_id = LEFT (t.dept_id, 10)
+		JOIN cy_dept_info g ON g.dept_id = LEFT (t.dept_id, 14)
+		LEFT JOIN cy_dept_info b ON b.dept_id = t.belong_dept_id
+		LEFT JOIN cy_chat_dept_group cdg ON cdg.dept_id = t.dept_id
+		JOIN cy_chat_group cg ON cg.id = cdg.group_id
+		LEFT JOIN (
+			SELECT
+				d.dept_id,
+				count(d.dept_id) AS total
+			FROM
+				cy_dept_info d
+			JOIN cy_user_info u ON LEFT (u.user_id, 16) = d.dept_id
+			GROUP BY
+				d.dept_id
+		) cdi ON cdi.dept_id = t.dept_id
+		LEFT JOIN (
+			SELECT
+				d.dept_id,
+				count(d.dept_id) AS rtotal
+			FROM
+				cy_dept_info d
+			JOIN cy_user_info u ON LEFT (u.user_id, 16) = d.dept_id
+			AND (
+				u.accountNum != NULL
+				OR u.accountNum != ''
+			)
+			GROUP BY
+				d.dept_id
+		) di ON di.dept_id = t.dept_id
+		WHERE
+			t.delstate != '1'
+		AND LENGTH(t.dept_id) = 16
+		AND t. STATUS = '20'
+		<if test="deptId != null and deptId != ''">
+			AND t.parent_id LIKE CONCAT('%', #{deptId}, '%')
+		</if>
+		GROUP BY
+			t.dept_id
+		ORDER BY
+			di.rtotal DESC
+		<if test='isNotLimit != null and isNotLimit != "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+
+
+	<!-- 获取院系列表信息 -->
+	<select id="selectTreeList" parameterType="map" resultMap="deptResultMap">
+		select
+		c.*,
+		c.is_current AS isCurrent,
+		IF(c.belong_dept_id IS NULL, 1, c.belong_dept_id) AS belongDeptId,
+		b.full_name AS belongDeptName
+		FROM cy_dept_info c
+		LEFT JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		WHERE c.delstate != '1' AND c.status = '20'
+ 		AND <![CDATA[ LENGTH(c.dept_id) = 10 ]]>
+		<if test='hasBelong != null and hasBelong == "1"'>
+			AND ( (c.belong_dept_id IS NOT NULL AND trim(c.belong_dept_id) != '') OR c.is_current = '1')
+		</if>
+		<if test='hasBelong != null and hasBelong == "0"'>
+			AND ((c.belong_dept_id IS NULL OR trim(c.belong_dept_id) = '') AND c.is_current != '1')
+		</if>
+	</select>
+
+	<select id="findtreeDeptTree" parameterType="map" resultMap="deptResultMap">
+		select c.*,c.is_current as isCurrent,
+		IF(c.belong_dept_id IS NULL, 1, c.belong_dept_id) AS belongDeptId,
+		b.dept_name as belongDeptName
+		from cy_dept_info c left JOIN cy_dept_info b ON b.dept_id = c.belong_dept_id
+		where
+		c.delstate != '1'
+		<if test="deptList!=null and deptList.size()>0">
+			<foreach collection="deptList" open="and (" separator="or" close=")" item="dept">
+				#{dept.deptId} like concat(c.dept_id)
+			</foreach>
+		</if>
+	</select>
+</mapper>

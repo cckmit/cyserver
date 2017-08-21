@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.clientrelease.dao.ClientMapper">
+	<resultMap type="com.cy.core.clientrelease.entity.Client" id="clientResultMap">
+		<id column="id" property="id"/>
+		<result column="version" property="version"/>
+		<result column="url" property="urller"/>
+		<result column="downloads" property="downloads"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+	<select id="countClient" parameterType="com.cy.core.clientrelease.entity.ClientModel" useCache="true" flushCache="false" resultType="long">
+		select count(id) from cy_apk_version
+	</select>
+	<select id="selectClient" parameterType="com.cy.core.clientrelease.entity.ClientModel" useCache="true" flushCache="false" resultMap="clientResultMap">
+		select * from cy_apk_version
+		<if test="start != null and start !=''">
+			limit #{start},#{end}
+		</if>
+
+	</select>
+	<insert id="addClient" parameterType="com.cy.core.clientrelease.entity.ClientModel" flushCache="true">
+		insert into cy_apk_version(version,url,downloads,create_time) values(#{version},#{urller},#{downloads},#{createTime});
+	</insert>
+	<update id="updateClient" parameterType="com.cy.core.clientrelease.entity.ClientModel" flushCache="true">
+		update cy_apk_version
+		<set>
+			<if test="version!=null and version!=''">
+				version=#{version},
+			</if>
+			<if test="downloads!=null and downloads!=''">
+				downloads=#{downloads},
+			</if>
+			<if test="urller!=null and urller!=''">
+				url=#{urller}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+	<select id="selectById" parameterType="int" useCache="false" resultMap="clientResultMap">
+		select * from cy_apk_version where id=#{id}
+	</select>
+	<select id="selectNewOne" resultMap="clientResultMap">
+		select * from cy_apk_version order by id desc limit 0,1
+	</select>
+
+	<!-- 查询当前最新或正式版本下的APP信息 -->
+	<select id="selectNewAppVersion" resultMap="clientResultMap">
+		select * from cy_apk_version
+		order by create_time DESC ,id DESC
+		limit 0,1
+	</select>
+</mapper>

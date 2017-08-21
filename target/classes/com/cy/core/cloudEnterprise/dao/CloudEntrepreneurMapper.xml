@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.cloudEnterprise.dao.CloudEntrepreneurMapper">
+<resultMap id="enterpriseResultMap" type="com.cy.core.cloudEnterprise.entity.CloudEntrepreneur">
+    <id column="id" property="id"/>
+    <result column="enterprise_id" property="enterpriseId"/>
+    <result column="team_id"       property="teamId"/>
+    <result column="telephone"     property="telephone"/>
+    <result column="college"       property="college"/>
+    <result column="grade"         property="grade"/>
+    <result column="clbum"         property="clbum"/>
+    <result column="sys_name"      property="sysName"/>
+    <result column="sys_phone"     property="sysPhone"/>
+    <result column="accountNum"    property="accountNum"/>
+    <result column="type"          property="type"/>
+    <result column="status"        property="status"/>
+    <result column="opinion"       property="opinion"/>
+
+    <result column="create_by" property="createBy" />
+    <result column="create_date" property="createDate" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_date" property="updateDate" />
+    <result column="remarks" property="remarks" />
+    <result column="del_flag" property="delFlag" />
+
+    <result column="teamName" property="teamName" />
+    <result column="sex" property="sex" />
+    <result column="position" property="position" />
+    <result column="enterpriseName" property="enterpriseName" />
+
+</resultMap>
+    <select id="findList" parameterType="map" resultMap="enterpriseResultMap">
+        SELECT DISTINCT et.full_name AS teamName,et.sex,et.position AS position,e.name AS enterpriseName,a.*
+        FROM cloud_entrepreneur a
+        JOIN cloud_enterprise_team et ON et.cloud_team_id = a.team_id AND et.del_flag = '0'
+        JOIN cloud_enterprise e ON  e.cloud_id = a.enterprise_id AND e.del_flag ='0'
+        WHERE a.del_flag ='0'
+        <if test="id != null and id != ''" >
+            AND a.id = #{id}
+        </if>
+        <if test="enterpriseId != null and enterpriseId != ''" >
+            AND a.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="enterpriseName !=null and enterpriseName != '' ">
+            AND e.name LIKE CONCAT('%', #{enterpriseName} ,'%')
+        </if>
+        <if test="type !=null and type != '' ">
+            AND a.type = #{type}
+        </if>
+        <if test="teamId !=null and teamId != '' ">
+            AND a.team_id = #{teamId}
+        </if>
+        <if test="teamName !=null and teamName != '' ">
+            AND et.full_name LIKE CONCAT('%', #{teamName} ,'%')
+        </if>
+        <if test="college !=null and college != '' ">
+            AND a.college LIKE CONCAT('%', #{college} ,'%')
+        </if>
+        <if test="status !=null and status != '' ">
+            AND a.status = #{status}
+        </if>
+        <if test="statuses !=null and statuses != '' ">
+            AND find_in_set(a.status,#{statuses})
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            AND a.telephone = #{telephone}
+        </if>
+        ORDER BY a.update_date DESC
+        <if test='isNotLimit != "1" '>
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="enterpriseResultMap">
+        SELECT DISTINCT et.full_name AS teamName,et.sex,et.position AS position,e.name AS enterpriseName,a.*
+        FROM cloud_entrepreneur a
+        JOIN cloud_enterprise_team et ON et.cloud_team_id = a.team_id AND et.del_flag = '0'
+        JOIN cloud_enterprise e ON  e.cloud_id = a.enterprise_id AND e.del_flag ='0'
+        WHERE a.del_flag != '1' AND a.id=#{id}
+    </select>
+
+    <select id="countEntrepreneur" parameterType="map" resultType="long">
+        select DISTINCT count(a.id)
+        FROM cloud_entrepreneur a
+        JOIN cloud_enterprise_team et ON et.cloud_team_id = a.team_id AND et.del_flag = '0'
+        JOIN cloud_enterprise e ON  e.cloud_id = a.enterprise_id AND e.del_flag ='0'
+        WHERE a.del_flag ='0'
+        <if test="id != null and id != ''" >
+            AND a.id = #{id}
+        </if>
+        <if test="enterpriseId != null and enterpriseId != ''" >
+            AND a.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="enterpriseName !=null and enterpriseName != '' ">
+            AND e.name LIKE CONCAT('%', #{enterpriseName} ,'%')
+        </if>
+        <if test="type !=null and type != '' ">
+            AND a.type = #{type}
+        </if>
+        <if test="teamId !=null and teamId != '' ">
+            AND a.team_id = #{teamId}
+        </if>
+        <if test="teamName !=null and teamName != '' ">
+            AND et.full_name LIKE CONCAT('%', #{teamName} ,'%')
+        </if>
+        <if test="status !=null and status != '' ">
+            AND a.status = #{status}
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            AND a.telephone = #{telephone}
+        </if>
+        <if test="statuses !=null and statuses != '' ">
+            AND find_in_set(a.status,#{statuses})
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.cy.core.cloudEnterprise.entity.CloudEntrepreneur">
+        INSERT INTO cloud_entrepreneur (
+        id,
+        enterprise_id,
+        team_id,
+        telephone,
+        college,
+        grade,
+        clbum,
+        sys_name,
+        sys_phone,
+        accountNum,
+        type,
+        status,
+        opinion,
+        sync_status,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{enterpriseId},
+        #{teamId},
+        #{telephone},
+        #{college},
+        #{grade},
+        #{clbum},
+        #{sysName},
+        #{sysPhone},
+        #{accountNum},
+        #{type},
+        #{status},
+        #{opinion},
+        #{syncStatus},
+        now(),
+        #{updateBy},
+        now(),
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.cloudEnterprise.entity.CloudEntrepreneur" >
+        UPDATE cloud_entrepreneur SET
+        <if test="enterpriseId !=null and enterpriseId != '' ">
+            enterprise_id = #{enterpriseId},
+        </if>
+        <if test="teamId !=null and teamId != '' ">
+            team_id = #{teamId},
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            telephone = #{telephone},
+        </if>
+        <if test="college !=null and college != '' ">
+            college = #{college},
+        </if>
+        <if test="grade !=null and grade != '' ">
+            grade = #{grade},
+        </if>
+        <if test="clbum !=null and clbum != '' ">
+            type = #{clbum},
+        </if>
+        <if test="sysName !=null and sysName != '' ">
+            sys_name = #{sysName},
+        </if>
+        <if test="sysPhone !=null and sysPhone != '' ">
+            sys_phone = #{sysPhone},
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            accountNum = #{accountNum},
+        </if>
+        <if test='isNullAccountNum == "1"'>
+            accountNum = NULL ,
+        </if>
+        <if test="type !=null and type != '' ">
+            type = #{type},
+        </if>
+        <if test="status !=null and status != '' ">
+            status = #{status},
+        </if>
+        <if test="opinion !=null and opinion != '' ">
+            opinion = #{opinion},
+        </if>
+        <if test="syncStatus !=null and syncStatus != '' ">
+            sync_status = #{syncStatus},
+        </if>
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cloud_entrepreneur SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

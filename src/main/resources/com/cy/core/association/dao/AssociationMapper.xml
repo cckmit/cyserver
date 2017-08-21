@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.association.dao.AssociationMapper">
+    <resultMap type="com.cy.core.association.entity.Association" id="associationResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name" />
+        <result column="alumni_id" property="alumniId" />
+        <result column="isused" property="isused" />
+        <result column="introduction" property="introduction" />
+        <result column="type_id" property="typeId" />
+        <result column="member_count" property="memberCount" />
+        <result column="concat_name" property="concatName"/>
+        <result column="telephone" property="telephone"/>
+        <result column="address" property="address"/>
+        <result column="email" property="email"/>
+        <result column="user_id" property="userId"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="change_time" property="changeTime"/>
+        <result column="userAccount" property="userAccount"/>
+        <result column="userPassword" property="userPassword"/>
+        <result column="tel" property="tel"/>
+        <result column="alumniName" property="alumniName" />
+        <result column="type_name" property="typeName" />
+        <result column="logo" property="logoUrl" />
+        <result column="eventNum" property="eventNum" />
+        <result column="isMember" property="isMember" />
+        <result column="position" property="position"/>
+        <result column="poster" property="posterUrl"/>
+        <result column="memberStatus" property="memberStatus"/>
+        <result column="top" property="top" />
+    </resultMap>
+    <select id="selectAssociation" parameterType="map" resultMap="associationResultMap">
+        SELECT
+        u.userAccount ,
+        u.telephone tel ,
+        ca.id ,
+        ca.`name` ,
+        ca.introduction ,
+        (
+        SELECT
+        COUNT(cam.id)
+        FROM
+        cy_association_member cam
+        WHERE
+        cam.del_flag = '0'
+        AND cam.association_id = ca.id
+        AND (cam.status='20' OR cam.status='25')
+        ) AS member_count ,
+        ca.concat_name ,
+        ca.telephone ,
+        ca.address ,
+        ca.email ,
+        ca.logo,
+        ca.poster,
+        ca.create_date,
+        ca.top,
+        a.`alumniName` ,
+        d.`dict_name` AS type_name,
+        <if test="userAccount != null and userAccount != ''">
+            (
+            SELECT
+            cam.`status`
+            FROM
+            cy_association_member cam
+            WHERE
+            cam.del_flag = '0'
+            AND cam.association_id = ca.id
+            AND cam.account_num = #{userAccount}
+            ) AS memberStatus ,
+            (
+            SELECT
+            cam.position
+            FROM
+            cy_association_member cam
+            WHERE
+            cam.del_flag = '0'
+            AND cam.association_id = ca.id
+            AND cam.account_num = #{userAccount}
+            ) AS `position`,
+        </if>
+        (SELECT COUNT(ce.id) FROM cy_event ce WHERE ce.type='99' AND ce.dept_id=ca.id) eventNum
+        FROM cy_association ca
+        LEFT JOIN cy_user u ON u.userId = ca.user_id
+        LEFT JOIN cy_alumni a ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict d ON d.`dict_type_id`='23' AND d.`dict_value`= ca.`type_id`
+        <if test="userAccount != null and userAccount != ''">
+            LEFT JOIN cy_association_member cam ON cam.del_flag='0' AND cam.association_id=ca.id AND cam.account_num = #{userAccount}
+        </if>
+        WHERE ca.del_flag = '0' AND CASE WHEN a.main=1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="alumniId !=null and alumniId != '' ">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND ca.telephone = #{telephone}
+        </if>
+        <if test="name != null and name != ''" >
+            AND ca.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="typeId != null and typeId != ''">
+            AND ca.type_id = #{typeId}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ca.user_id = #{userId}
+        </if>
+        <if test="memberCount != null and memberCount != ''">
+            AND ca.member_count = #{memberCount}
+        </if>
+        <if test="introduction != null and introduction != ''">
+            AND ca.introduction = #{introduction}
+        </if>
+        <if test="userAccount != null and userAccount!= '' and inType != null and inType != ''">
+            <if test='inType == "10"'>
+                AND (cam.`status` = '10' OR cam.`status` = '55')
+            </if>
+            <if test='inType == "20"'>
+                AND (cam.`status` = '20' OR cam.`status` = '25')
+            </if>
+            <if test='inType == "30"'>
+                AND (cam.`status` = '40' OR cam.`status` = '50')
+            </if>
+        </if>
+        <if test="top != null and top != ''">
+            <if test = 'top == "100"'>
+                AND ca.top = '100'
+            </if>
+            <if test='top == "0"'>
+                AND ca.top != '100'
+            </if>
+        </if>
+        ORDER BY ca.update_date DESC
+        <if test="isNoLimit != 1">
+            LIMIT #{start},#{rows}
+        </if>
+
+    </select>
+
+    <select id="getAssociationById" parameterType="string" resultMap="associationResultMap">
+        SELECT
+        u.userAccount,
+        u.userPassword,
+        u.telephone tel,
+        ca.*,
+        a.`alumniName`,
+        d.`dict_name` AS type_name
+        FROM
+        cy_association ca
+        LEFT JOIN cy_user u
+        ON u.userId = ca.user_id
+        LEFT JOIN cy_alumni a
+        ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict d ON d.`dict_type_id`='23' AND d.`dict_value`= ca.`type_id`
+        WHERE ca.id = #{id}
+    </select>
+
+    <select id="getAssociationInfoByAssociationAndUserId" parameterType="map" resultMap="associationResultMap">
+        SELECT
+            u.userAccount ,
+            u.telephone tel ,
+            ca.id ,
+            ca.`name` ,
+            ca.introduction ,
+            (
+                SELECT
+                COUNT(cam.id)
+                FROM
+                cy_association_member cam
+                WHERE
+                cam.del_flag = '0'
+                AND cam.association_id = ca.id
+                AND (cam.status='20' OR cam.status='25')
+            ) AS member_count ,
+            ca.concat_name ,
+            ca.telephone ,
+            ca.address ,
+            ca.email ,
+            ca.logo,
+            ca.poster,
+            ca.create_date,
+            a.`alumniName` ,
+            <if test="userAccount != null and userAcount !=''">
+                (
+                SELECT
+                cam.`status`
+                FROM
+                cy_association_member cam
+                WHERE
+                cam.del_flag = '0'
+                AND cam.association_id = ca.id
+                AND cam.account_num = #{userAccount}
+                ) AS memberStatus ,
+                (
+                SELECT
+                cam.position
+                FROM
+                cy_association_member cam
+                WHERE
+                cam.del_flag = '0'
+                AND cam.association_id = ca.id
+                AND cam.account_num = #{userAccount}
+                ) AS `position`,
+            </if>
+          d.`dict_name` AS type_name
+        FROM
+            cy_association ca
+        LEFT JOIN cy_user u ON u.userId = ca.user_id
+        LEFT JOIN cy_alumni a ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict d ON d.`dict_type_id` = '23'
+        AND d.`dict_value` = ca.`type_id`
+        WHERE
+        ca.del_flag='0' AND ca.id = #{associationId}
+    </select>
+
+    <select id="countAssociation" parameterType="map" resultType="long">
+        select count(ca.id)
+        FROM cy_association ca
+        LEFT JOIN cy_user u ON u.userId = ca.user_id
+        LEFT JOIN cy_alumni a ON ca.`alumni_id` = a.`alumniId`
+        LEFT JOIN cy_dict d ON d.`dict_type_id`='23' AND d.`dict_value`= ca.`type_id`
+        <if test="userAccount != null and userAccount != ''">
+            LEFT JOIN cy_association_member cam ON cam.del_flag='0' AND cam.association_id=ca.id AND cam.account_num = #{userAccount}
+        </if>
+        WHERE ca.del_flag = '0' AND CASE WHEN a.main=1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="alumniId !=null and alumniId != '' ">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND ca.telephone = #{telephone}
+        </if>
+        <if test="name != null and name != ''" >
+            AND ca.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="typeId != null and typeId != ''">
+            AND ca.type_id = #{typeId}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND ca.user_id = #{userId}
+        </if>
+        <if test="memberCount != null and memberCount != ''">
+            AND ca.member_count = #{memberCount}
+        </if>
+        <if test="introduction != null and introduction != ''">
+            AND ca.introduction = #{introduction}
+        </if>
+        <if test="userAccount != null and userAccount!= '' and inType != null and inType != ''">
+            <if test='inType == "10"'>
+                AND cam.status = '10'
+            </if>
+            <if test='inType == "20"'>
+                AND cam.status = '20'
+            </if>
+            <if test='inType == "30"'>
+                AND cam.`status` = '40'
+            </if>
+        </if>
+        <if test="top != null and top != ''">
+            <if test = 'top == "100"'>
+                AND ca.top = '100'
+            </if>
+            <if test='top == "0"'>
+                AND (ca.top IS NULL OR ca.top != '100')
+            </if>
+        </if>
+    </select>
+
+    <insert id="insert"  parameterType="com.cy.core.association.entity.Association">
+        insert into
+        cy_association(
+        id,
+        name,
+        alumni_id,
+        isused,
+        introduction,
+        type_id,
+        member_count,
+        logo,
+        poster,
+        concat_name,
+        telephone,
+        address,
+        email,
+        user_id,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        change_time,
+        top
+        )
+        values(
+        #{id},
+        #{name},
+        #{alumniId},
+        #{isused},
+        #{introduction},
+        #{typeId},
+        #{memberCount},
+        #{logoUrl},
+        #{posterUrl},
+        #{concatName},
+        #{telephone},
+        #{address},
+        #{email},
+        #{userId},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{changeTime},
+        #{top}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.association.entity.Association">
+        update cy_association set
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            alumni_id = #{alumniId},
+        </if>
+        <if test="typeId != null and typeId != ''">
+            type_id = #{typeId},
+        </if>
+        <if test="isused != null and isused != ''">
+            isused=#{isused},
+        </if>
+        <if test="memberCount != null and memberCount != ''">
+            member_count=#{memberCount},
+        </if>
+        <if test="top != null and top != ''">
+            top = #{top},
+        </if>
+        introduction=#{introduction},
+        concat_name=#{concatName},
+        telephone=#{telephone},
+        address=#{address},
+        email=#{email},
+        logo=#{logoUrl},
+        poster=#{posterUrl},
+        user_id=#{userId},
+        del_flag=#{delFlag},
+        update_date=#{updateDate},
+        update_by=#{updateBy},
+        create_date=#{createDate},
+        create_by=#{createBy},
+        remarks=#{remarks},
+        change_time=#{changeTime}
+        where
+        id=#{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_association SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+
+    <!-- 查询社团类型标签 -->
+    <select id="getAssociationType"  parameterType="string" resultType="com.cy.core.dict.entity.Dict">
+        SELECT dict_name AS dictName, dict_value AS dictValue FROM cy_dict WHERE dict_type_id=#{type}
+    </select>
+</mapper>

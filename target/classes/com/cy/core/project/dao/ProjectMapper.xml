@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.project.dao.ProjectMapper">
+	<resultMap type="com.cy.core.project.entity.Project" id="projectResultMap">
+		<id column="projectId" property="projectId" />
+		<result column="projectName" property="projectName" />
+		<result column="donationMoney" property="donationMoney" />
+		<result column="remark" property="remark" />
+		<result column="createTime" property="createTime" />
+		<result column="createId" property="createId" />
+		<result column="seq" property="seq" />
+		<result column="introduction" property="introduction"/>
+		<result column="content" property="content"/>
+		<!--<result column="projectPic" property="projectPic"/>-->
+		<result column="projectPic" property="projectPicUrl"/>
+		<result column="target" property="target"/>
+		<result column="has_end_time" property="hasEndTime"/>
+		<result column="end_time" property="endTime"/>
+		<result column="start_time" property="startTime"/>
+		<result column="has_target" property="hasTarget"/>
+		<result column="countPeople" property="countPeople"/>
+		<result column="rateOfTime" property="rateOfTime"/>
+		<result column="timeStatus" property="timeStatus"/>
+		<result column="status" property="status"/>
+		<result column="cost_money" property="costMoney"/>
+		<result column="project_type" property="projectType"/>
+		<result column="foun_project" property="founProject"/>
+		<result column="is_foun" property="isFoun"/>
+		<result column="is_command" property="isCommand"/>
+		<association property="user" column="createId" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</association>
+	</resultMap>
+	<insert id="save" parameterType="com.cy.core.project.entity.Project">
+		insert into cy_project(projectName,remark,createTime,createId,seq,introduction,content,projectPic,target, has_end_time,start_time, end_time, has_target,status,project_type,foun_project,is_foun,is_command) values(#{projectName},#{remark},#{createTime},#{createId},#{seq},#{introduction},#{content},#{projectPicUrl},#{target}, #{hasEndTime},#{startTime},#{endTime},#{hasTarget},#{status},#{projectType},#{founProject},#{isFoun},#{isCommand})
+	</insert>
+	<select id="selectList" parameterType="map" resultMap="projectResultMap">
+		SELECT
+		p.projectId ,
+		p.projectName ,
+		p.createTime ,
+		p.target ,
+		p.has_end_time ,
+		p.start_time ,
+		p.end_time ,
+		p.has_target ,
+		p.seq ,
+		p.status,
+		p.introduction,
+		p.project_type,
+		u.userName ,
+		p.projectPic,
+		p.foun_project,
+		p.is_foun,
+		p.is_command,
+		(SELECT count(d.donationId) FROM cy_donation d WHERE d.projectId = p.projectId AND (d.confirmStatus IS NOT NULL AND d.confirmStatus!='' AND d.confirmStatus!='10' AND d.confirmStatus!='20')) AS countPeople,
+		(SELECT CASE WHEN SUM(payMoney) IS NOT NULL THEN SUM(payMoney) ELSE 0 END donationMoney FROM cy_donation d WHERE d.projectId = p.projectId AND d.donation_type!='20' AND (d.confirmStatus IS NOT NULL AND d.confirmStatus!='' AND d.confirmStatus!='10' AND d.confirmStatus!='20') ) AS donationMoney,
+		(SELECT CASE WHEN SUM(cost_money) IS NOT NULL THEN SUM(cost_money) ELSE 0 END cost_money FROM cy_project_cost cpc WHERE cpc.project_id = p.projectId AND cpc.del_flag != '1' ) AS cost_money,
+		<![CDATA[
+			CASE WHEN p.end_time IS NOT NULL AND p.end_time !='' AND p.end_time < now() THEN 100 WHEN p.end_time IS NOT NULL AND p.start_time IS NOT NULL AND p.end_time != '' AND p.start_time != '' AND p.end_time > now() AND p.start_time < now() THEN (now()-p.start_time)/(p.end_time-p.start_time)*100 ELSE 0 END rateOfTime,
+			CASE WHEN p.status='0' OR p.status IS NULL OR p.status = '' THEN '未发布' WHEN p.status='1' THEN (CASE WHEN p.start_time IS NULL OR p.start_time = '' OR p.start_time > now() THEN '未开始'  WHEN p.start_time<=now() AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='')) THEN '进行中' ELSE '已结束' END) ELSE '已下线'  END timeStatus
+		]]>
+		FROM
+		cy_project p
+		LEFT JOIN cy_user u ON p.createId = u.userId
+		<where>1=1
+			<if test="projectName!=null and projectName!=''">
+				AND p.projectName like concat('%',#{projectName},'%')
+			</if>
+			<if test="projectType!=null and projectType!=''">
+				AND p.project_type like concat('%',#{projectType},'%')
+			</if>
+			<if test="status != null and status != ''">
+				AND p.status = #{status}
+			</if>
+			<if test='isCommand != null and isCommand != ""'>
+				AND p.is_command = #{isCommand}
+			</if>
+			<if test="timeStatus != null and timeStatus != ''">
+				<!-- 结束 -->
+				<if test='timeStatus == "2"' >
+					<![CDATA[
+						AND p.has_end_time='1' AND p.end_time <= NOW() AND p. STATUS = '1'
+					]]>
+				</if>
+				<!-- 进行中 -->
+				<if test='timeStatus == "1"' >
+					<!--AND (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='' OR p.end_time > NOW())-->
+					<![CDATA[
+						AND (p.status='1'AND now()>p.start_time AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='')))
+					]]>
+				</if>
+				<!-- 未发布-->
+				<if test='timeStatus == "0"' >
+					  AND (p. STATUS = '0' OR p. STATUS IS NULL OR p. STATUS = '')
+				</if>
+				<!-- 已下线-->
+				<if test='timeStatus == "3"' >
+						AND  p. STATUS = '2'
+				</if>
+
+			</if>
+			<if test="donatedList!=null and donatedList.size()>0">
+				AND p.projectId NOT IN
+				<foreach collection="donatedList" open="(" separator="or"
+						 close=")" item="donatedId">
+					#{donatedId}
+				</foreach>
+			</if>
+		</where>
+		order by seq ,countPeople DESC
+		<if test='isNotLimit != "1"' >
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<select id="countProject" parameterType="map" resultType="long">
+		select count(projectId)
+		FROM
+		cy_project p
+		LEFT JOIN cy_user u ON p.createId = u.userId
+		<where>1=1
+			<if test="projectName!=null and projectName!=''">
+				AND p.projectName like concat('%',#{projectName},'%')
+			</if>
+			<if test="projectType!=null and projectType!=''">
+				AND p.project_type like concat('%',#{projectType},'%')
+			</if>
+			<if test="status != null and status != ''">
+				AND p.status = #{status}
+			</if>
+			<if test='isCommand != null and isCommand != ""'>
+				AND p.is_command = #{isCommand}
+			</if>
+			<if test="timeStatus != null and timeStatus != ''">
+				<!-- 结束 -->
+				<if test='timeStatus == "2"' >
+					<![CDATA[
+						AND p.has_end_time='1' AND p.end_time <= NOW() AND p. STATUS = '1'
+					]]>
+				</if>
+				<!-- 进行中 -->
+				<if test='timeStatus == "1"' >
+					<!--AND (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='' OR p.end_time > NOW())-->
+					<![CDATA[
+						AND (p.status='1'AND now()>p.start_time AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='')))
+					]]>
+				</if>
+				<!-- 未发布-->
+				<if test='timeStatus == "0"' >
+					AND (p. STATUS = '0' OR p. STATUS IS NULL OR p. STATUS = '')
+				</if>
+				<!-- 已下线-->
+				<if test='timeStatus == "3"' >
+					AND  p. STATUS = '2'
+				</if>
+
+			</if>
+			<if test="donatedList!=null and donatedList.size()>0">
+				AND p.projectId NOT IN
+				<foreach collection="donatedList" open="(" separator="or"
+						 close=")" item="donatedId">
+					#{donatedId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	<select id="selectByProjectName" parameterType="string" resultMap="projectResultMap">
+		select * from cy_project where projectName=#{projectName}
+	</select>
+	<select id="selectByFounProject" parameterType="string" resultMap="projectResultMap">
+		select * from cy_project where foun_project=#{founProject}
+	</select>
+
+	<select id="selectById" parameterType="long" resultMap="projectResultMap">
+		SELECT
+			p.*,
+			u.userName ,
+			(SELECT count(d.donationId) FROM cy_donation d WHERE d.projectId = p.projectId AND (d.confirmStatus IS NOT NULL AND d.confirmStatus!='' AND d.confirmStatus!='10' AND d.confirmStatus!='20')) AS countPeople,
+			(SELECT CASE WHEN SUM(payMoney) IS NOT NULL THEN SUM(payMoney) ELSE 0 END donationMoney FROM cy_donation d WHERE d.projectId = p.projectId AND d.donation_type!='20' AND d.confirmStatus IS NOT NULL AND d.confirmStatus != '' AND d.confirmStatus!='10' AND d.confirmStatus != '20' ) AS donationMoney,
+			(SELECT CASE WHEN SUM(cost_money) IS NOT NULL THEN SUM(cost_money) ELSE 0 END cost_money FROM cy_project_cost cpc WHERE cpc.project_id = p.projectId AND cpc.del_flag != '1' ) AS cost_money,
+			<![CDATA[
+				CASE WHEN p.end_time IS NOT NULL AND p.end_time !='' AND p.end_time < now() THEN 100 WHEN p.end_time IS NOT NULL AND p.start_time IS NOT NULL AND p.end_time != '' AND p.start_time != '' AND p.end_time > now() AND p.start_time < now() THEN (now()-p.start_time)/(p.end_time-p.start_time)*100 ELSE 0 END rateOfTime,
+				CASE WHEN p.status='0' OR p.status IS NULL OR p.status = '' THEN '未发布' WHEN p.status='1' THEN (CASE WHEN p.start_time IS NULL OR p.start_time = '' OR p.start_time > now() THEN '未开始'  WHEN p.start_time<=now() AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' AND (p.end_time IS NULL OR p.end_time = ''))) THEN '进行中' ELSE '已结束' END) ELSE '已下线'  END timeStatus
+			]]>
+		FROM
+			cy_project p
+		LEFT JOIN cy_user u ON p.createId = u.userId
+		WHERE
+			p.projectId=#{projectId}
+	</select>
+	<delete id="delete" parameterType="list">
+		delete from cy_project where projectId in
+		<foreach collection="list" open="(" separator="," close=")" item="projectId">
+			#{projectId}
+		</foreach>
+	</delete>
+	<select id="selectByProjectNameAndProjectId" parameterType="com.cy.core.project.entity.Project" resultMap="projectResultMap">
+		select * from cy_project where projectId!=#{projectId} and projectName=#{projectName}
+	</select>
+	<update id="update" parameterType="com.cy.core.project.entity.Project">
+		update cy_project set projectName=#{projectName},remark=#{remark},seq=#{seq},introduction=#{introduction},content=#{content},projectPic=#{projectPicUrl},target=#{target},start_time=#{startTime},end_time=#{endTime},has_end_time=#{hasEndTime},has_target=#{hasTarget},status=#{status},project_type=#{projectType},is_command=#{isCommand} where projectId=#{projectId}
+	</update>
+	<update id="changeIsCommand" parameterType="List">
+		UPDATE cy_project SET is_command="1" where projectId in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			<if test="ids!=''">
+				#{ids}
+			</if>
+		</foreach>
+	</update>
+	<update id="changeIsNotCommand" parameterType="List">
+		UPDATE cy_project SET is_command="0" where projectId in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			<if test="ids!=''">
+				#{ids}
+			</if>
+		</foreach>
+	</update>
+	<select id="selectAll" resultMap="projectResultMap">
+		select projectId,projectName,projectPic from cy_project
+	</select>
+	<select id="selectTop6" resultMap="projectResultMap">
+		select projectId,projectName,introduction,projectPic from cy_project order by seq asc limit 0,6
+	</select>
+	<select id="selectTotalCount" resultType="long">
+		select count(projectId) from cy_project
+	</select>
+	<select id="selectMore" parameterType="map" resultMap="projectResultMap">
+		select projectId,projectName,introduction,projectPic from cy_project order by seq asc
+		<if test='isNotLimni != "1"' >
+			limit #{start},#{rows}
+		</if>
+	</select>
+	<update id="updateDonationMoney" parameterType="com.cy.core.project.entity.Project">
+		update cy_project set donationMoney=#{donationMoney} where projectId=#{projectId}
+	</update>
+
+	<!-- 得到所有的捐赠种类-->
+	<select id="getALLDonateType" resultType="com.cy.core.dict.entity.Dict">
+		select DISTINCT dict_name as dictName from cy_dict where dict_type_id = (select dict_type_id from cy_dict_type where dict_type_name = '捐赠项目类型')
+	</select>
+
+	<!--基金会修改项目-->
+	<update id="updateByFounProject" parameterType="com.cy.core.project.entity.Project">
+		update cy_project set projectName=#{projectName},remark=#{remark},seq=#{seq},introduction=#{introduction},content=#{content},projectPic=#{projectPicUrl},target=#{target},start_time=#{startTime},end_time=#{endTime},has_end_time=#{hasEndTime},has_target=#{hasTarget},status=#{status},project_type=#{projectType} where foun_project=#{founProject}
+	</update>
+	<delete id="deleteFounProject" parameterType="String">
+		delete from cy_project where is_foun = '1' AND foun_project = #{founProject}
+		<!--<foreach collection="list" open="(" separator="," close=")" item="founProject">
+			#{founProject}
+		</foreach>-->
+	</delete>
+</mapper>

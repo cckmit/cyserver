@@ -1,0 +1,85 @@
+.contact-list {
+    /*padding: 10px;*/
+}
+.contact-list h3 {
+    font-size: 14px;
+    line-height: 21px;
+    margin: 0;
+    margin-bottom: 10px;
+    color: #181818;
+}
+.contact-list .post-content {
+    margin-bottom: 20px;
+}
+.contact-list .detail {
+    font-size: 12px;
+    line-height: 18px;
+    color: #7B7B7B
+}
+.contact-list .post,.contact-list .reply {
+    position: relative;
+    background: #FFF;
+    padding: 10px;
+}
+.contact-list .post {
+    padding-left: 84px;
+}
+.contact-list .user-info {
+    position: absolute;
+    top: 15px;
+    left: 10px;
+}
+.contact-list .avatar img {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+}
+.contact-list .post-time, .contact-list .reply-time {
+    font-size: 12px;
+    line-height: 20px;
+    color: #7B7B7B;
+    text-align: right;
+}
+.contact-list .reply-time {
+    text-align: left;
+}
+.contact-list .reply {
+    background: #F5F5F5;
+}
+.reply h3, .reply .detail {
+    /*margin-right: 84px;*//* ���ع���Աlogo */
+}
+.contact-list .master-info {
+    display: none;/* ���ع���Աlogo */
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
+.contact-list .no-reply {
+    width: 100%;
+    font-size: 12px;
+    color: #999;
+    text-align: center;
+    padding: 20px;
+}
+
+.post-list li {
+    position: relative;
+    padding: 14px 90px 14px 10px;
+    border-top: 1px solid #d9d9d9;
+}
+.post-list li h3 {
+    font-size: 16px;
+    line-height: 24px;
+    color: #353535;
+    margin: 0 0 14px;
+}
+.post-list li h3 a {
+    color: #353535;
+    text-decoration: none;
+}
+.more a {
+    display: block;
+    line-height: 44px;
+    text-align: center;
+}

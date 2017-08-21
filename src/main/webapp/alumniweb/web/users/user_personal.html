@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+    <!--css-->
+    <link rel="stylesheet" href="../css/style.css" type="text/css" />
+    <link rel="stylesheet" href="../css/user.css" type="text/css" />
+
+    <!--js-->
+    <script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+    <script src="../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../js/B.js" type="text/javascript"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/interfacepath.js"></script>
+    <script src="../js/lrz.mobile.min.js"></script>
+    <script src="../js/lazyload-min.js"></script>
+
+    <!--动态加载-->
+    <script type="text/javascript">
+
+        accountNum = getCookie("accountNum");
+       //alert(accountNum) ;
+        var personalStr = '';
+
+        $(function() {
+
+
+            testCookie();
+
+            //左侧导航头像
+            setLeftNavDate();
+
+            //用户信息
+            loadPersonal();
+
+            initFoot();
+
+        });
+
+
+        //获取个人信息
+        function loadPersonal() {
+            B.ready(function() {
+                interface.userpersonal.jsonData.content.accountNum= accountNum.toString();
+                $.ajax({
+                    type:'post',
+//                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                    data: {
+//                        jsonStr: '{"command": "27","content": {"accountNum": \"' +accountNum + '\"}}'
+//                    },
+                    url: B.serverUrl + interface.userpersonal.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userpersonal.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("loadPersonal 27" + JSON.stringify(data));
+
+                        console.log("picture: "+data.obj.picture);
+
+                        if(data && data.obj) {
+
+                            var sex = '', picture = B.clientUrl+'image/user-avatar.png';
+
+
+                            //添加默认头像
+                            if(data.obj.picture && data.obj.picture != '' && is_website(data.obj.picture))
+                                picture = data.obj.picture;
+
+                            //转译
+                            if(data.obj.sex && data.obj.sex == '1')
+                                sex = '男';
+                            else
+                                sex = '女';
+
+                            personalStr =
+                                    '<div class="user_p_img">' +
+                                    '   <div style="position:relative"> ' +
+                                    '       <img style="width:80px; height:80px; border-radius:50%;" class="user_pImg" src= " '+picture+' " />' +
+                                    '       <div class="user_xg_pImg"> ' +
+                                    '           <img onclick="chooseImg()" src="'+B.clientUrl+'image/user-avatar.png" class="p_img" alt="" title=""/>' +
+                                    '           <span onclick="chooseImg()">修改头像</span> ' +
+                                    '           <input type="file" id="selectLocalPic" name="selectLocalPic" onchange="getPicUrl(this);" style="display: none;"/> ' +
+                                    '       </div>' +
+                                    '   </div>' +
+                                    '   <a class="changeBtn" href="javascript:void(0);" onclick="changePersonal()">修改个人信息</a>' +
+                                    '</div>' +
+                                    '<div style="background-color:'+positionStyle.userStyle.bgColorcenter+'; padding:10px; min-height:500px">' +
+                                        '<dl style="width: 33%;">' +
+                                        '   <dt class="p-list">姓名</dt>' +
+                                        '   <dd>'+data.obj.name+'</dd>' +
+                                        '</dl>' +
+                                        '<dl style="width: 33%; position: relative;">' +
+                                        '   <dt class="p-list">性别</dt>' +
+                                        '   <dd class=y_sex>'+sex+'</dd>' +
+
+                                        '<span class="x_sex_button" style="display:none;cursor: pointer; color: red;  position: absolute; top: 0px; left: 121px;">'+'点击修改性别'+'</span>'+
+                                         '       <span class="x_sex" style=" display: none; color: red">'+
+                                         '       <label>'+
+                                        '        <input type="radio" name="sex" value="0"  checked/>'+'&nbsp;男'+
+                                        '</label>'+'&nbsp;&nbsp;'+
+                                        '<label>'+
+                                            '<input type="radio" name="sex" value="1" />'+'&nbsp;女'+
+                                        '</label>'+
+                                        '</span>'+
+
+                                        '</dl>' +
+                                        '<dl style="width: 33%;">' +
+                                        '   <dt class="p-list">手机号</dt>' +
+                                        '   <dd>'+getCookie("phoneNum")+'</dd>' +
+                                        '</dl>' +
+                                        '<dl style="width: 33%;">' +
+                                        '   <dt class="p-list">邮箱</dt>' +
+                                        '   <dd class="p_infor p_email">'+data.obj.email+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_email" placeholder="请输入您的邮箱"/>' +
+                                        '</dl>' +
+                                        '<dl style="width: 33%;">' +
+                                        '   <dt class="p-list">生日</dt>' +
+                                        '   <dd class="p_infor p_birthday">'+data.obj.birthday+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_birthday" placeholder="请输入您的生日"/>' +
+                                        '</dl>' +
+                                        '<dl style="margin-top:20px; padding-top:15px; border-top:1px solid #ccc">' +
+                                        '   <dt>所在城市</dt>' +
+                                        '   <dd class="p_infor p_city">'+data.obj.address+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_city" type="text" readonly placeholder="点击选择城市" id="choseCity"/>' +
+                                        '</dl>' +
+                                        '<dl>' +
+                                        '   <dt>所在行业</dt>' +
+                                        '   <dd class="p_infor p_prof">'+data.obj.profession+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_profession" onclick="choseProf();" placeholder="点击选择行业"/>' +
+                                        '</dl>' +
+                                        '<dl>' +
+                                        '   <dt>工作单位</dt>' +
+                                        '   <dd class="p_infor p_workUtil">'+data.obj.workUtil+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_workUtil" placeholder="请输入工作单位"/>' +
+                                        '</dl>' +
+                                        '<dl>' +
+                                        '   <dt>担任职务</dt>' +
+                                        '   <dd class="p_infor p_position">'+data.obj.position+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_position" placeholder="请输入担任的职务"/>' +
+                                        '</dl>' +
+                                        '<dl>' +
+                                        '   <dt>兴趣爱好</dt>' +
+                                        '   <dd class="p_infor p_hobby">'+data.obj.hobby+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_hobby" placeholder="请输入您的兴趣爱好"/>' +
+                                        '</dl>' +
+                                        '<dl>' +
+                                        '   <dt>个性签名</dt>' +
+                                        '   <dd class="p_infor p_sign">'+data.obj.sign+'</dd>' +
+                                        '   <input class="user_xg_input user_xg_sign" placeholder="请输入您的个性签名"/>' +
+                                        '</dl>' +
+                                    '</div>' ;
+
+
+
+                            $("#personal").html(personalStr);
+
+                            //更改左导航头像
+                            $(".img-box img").prop("src",picture);
+
+                            LazyLoad.css([B.clientUrl+"css/cityStyle.css"],function() {
+                                LazyLoad.js([B.clientUrl+"js/cityScript.js"],function() {
+                                    var text = new citySelector.cityInit("choseCity");
+                                });
+
+                            });
+
+                        }
+
+                    },
+                    error: function(xhr, type) {}
+
+
+                });
+
+            });
+
+        }
+
+        //修改个人信息
+        function changePersonal() {
+
+
+            B.ready(function () {
+
+                interface.userstudyPath.jsonData.content.accountNum= accountNum.toString();
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl + interface.userstudyPath.url,
+                    data: {
+                        jsonStr: JSON.stringify(interface.userstudyPath.jsonData)
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        //console.log("返回值:"+JSON.stringify(data));
+                        //console.log(data.success+"学习经历个数"+data.obj.length);
+                        if(data.obj.length>0){
+                            $(".x_sex_button").show();
+                            $(".x_sex_button").click(function(){
+                                alert("性别仅能修该一次，请慎重修改！")
+                                $(".x_sex").show();
+                                $(".y_sex").hide();
+                                $(".x_sex_button").hide();
+                            })
+                        }else{
+
+                        }
+                    },
+                    error: function(xhr, type) {
+                        alert("调用失败");
+                    }
+                });
+            })
+
+
+
+
+            $(".user_xg_input").show();  //显示输入框
+            $(".p_infor").hide(); //隐藏原有信息
+
+            var y_email =  $(".p_email").html();
+            var y_birthday =  $(".p_birthday").html();
+            var y_city =  $(".p_city").html();
+            var y_prof =  $(".p_prof").html();
+            var y_workUtil =  $(".p_workUtil").html();
+            var y_position =  $(".p_position").html();
+            var y_hobby =  $(".p_hobby").html();
+            var y_sign =  $(".p_sign").html();
+
+            if(y_email!==""){
+                $(".user_xg_email").attr("value",y_email);
+            }
+            if(y_birthday!==""){
+                $(".user_xg_birthday").attr("value",y_birthday);
+            }
+            if(y_city!==""){
+                $(".user_xg_city").attr("value",y_city);
+            }
+            if(y_prof!==""){
+                $(".user_xg_profession").attr("value",y_prof);
+            }
+            if(y_workUtil!==""){
+                $(".user_xg_workUtil").attr("value",y_workUtil);
+            }
+            if(y_position!==""){
+                $(".user_xg_position").attr("value",y_position);
+            }
+            if(y_hobby!==""){
+                $(".user_xg_hobby").attr("value",y_hobby);
+            }
+            if(y_sign!==""){
+                $(".user_xg_sign").attr("value",y_sign);
+            }
+
+
+            $(".changeBtn").hide();
+            $(".verifyChangeBtn").show();
+
+            $(".user_xg_pImg").show(); //显示更改图像的盒子
+
+            var zp_url=$(".user_pImg").attr("src");
+            $(".p_img").attr("src",zp_url);
+        }
+
+        //点击"所在行业"，选择行业
+        function choseProf() {
+            var dheight = $(".user_xg_profession").offset().top;
+            var dwidth = $(".user_xg_profession").offset().left;
+            $(".listUl").css("top", dheight + 22);
+            $(".listUl").css("left", dwidth);
+            var ul = $(".listUl");
+            if(ul.css("display") == "none") {
+                ul.slideDown(200);
+            } else {
+                ul.slideUp(200);
+            }
+
+        }
+
+
+        var accountNum=getCookie("accountNum");
+        var password=getCookie("password");
+        var name=getCookie("name");
+        var phoneNum=getCookie("phoneNum");
+
+        //修改个人信息----确认修改
+        function verifyChange() {
+
+            var gEmail=$(".user_xg_email").val();
+            var gBirthday=$(".user_xg_birthday").val();
+            var gCity=$(".user_xg_city").val();
+            var gProf=$(".user_xg_profession").val();
+            var gWorkUtil=$(".user_xg_workUtil").val();
+            var gPosition=$(".user_xg_position").val();
+            var gHobby=$(".user_xg_hobby").val();
+            var gSign=$(".user_xg_sign").val();
+            interface.userpersonalchange.jsonData.content.accountNum= accountNum.toString();
+            interface.userpersonalchange.jsonData.content.address= gCity.toString();
+            interface.userpersonalchange.jsonData.content.email= gEmail.toString();
+            interface.userpersonalchange.jsonData.content.hobby= gHobby.toString();
+            interface.userpersonalchange.jsonData.content.password= password.toString();
+            interface.userpersonalchange.jsonData.content.profession= gProf.toString();
+            interface.userpersonalchange.jsonData.content.workUtil= gWorkUtil.toString();
+            interface.userpersonalchange.jsonData.content.position= gPosition.toString();
+            interface.userpersonalchange.jsonData.content.birthday= gBirthday.toString();
+            interface.userpersonalchange.jsonData.content.sign= gSign.toString();
+
+
+            if($(".x_sex").css("display")=="none"){
+                var jsonStrxx= JSON.stringify(interface.userpersonalchange.jsonData)
+            }else{
+                sex_xg=$(".x_sex input[name=sex]:checked").val();
+                interface.userpersonalchange.jsonData.content.sex= sex_xg.toString();
+                var jsonStrxx= JSON.stringify(interface.userpersonalchange.jsonData)
+            }
+//            console.log(jsonStrxx);
+
+            B.ready(function() {
+
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl + interface.userpersonalchange.url,
+                    data: {
+                        jsonStr: jsonStrxx
+
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log("确认修改=="+JSON.stringify(data));
+                        $(".user_xg_input").hide(); //隐藏输入框
+
+                        loadPersonal(); //重新加载修改后的数据
+                        $(".p_infor").show();//加载新数据后，显示所有新的数据
+                        $(".verifyChangeBtn").hide(); //将确认按钮隐藏
+                        $(".changeBtn").show(); //将"修改信息"按钮显示
+                        $(".user_xg_pImg").hide(); //隐藏"更改图片"的盒子
+
+                    },
+                    error: function(xhr, type) {
+                        alert("调用失败");
+                    }
+                });
+            })
+
+
+        }
+
+        function chooseImg() {
+            $("#selectLocalPic").trigger("click");
+
+        }
+        //获取上传图片后在server上的地址url
+        function getPicUrl(obj) {
+
+            // 获取选择的本地图片信息
+            var fileExt = document.getElementById("selectLocalPic").value;
+            var fileName = "";
+
+            if(fileExt != null && fileExt != '') {
+
+                fileName = fileExt.substring(0, fileExt.lastIndexOf("."));
+                fileName = fileName.substr(fileName.lastIndexOf("\\") + 1, fileName.length);
+
+                fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+                if(fileExt == null || fileExt == '') {
+                    $.dialog({
+                        title: '温馨提示',
+                        content: '请确认上传的文件包含正确的扩展名',
+                        button: ["确认"]
+                    });
+                    return;
+
+                }
+
+                fileExt = fileExt.toLowerCase();
+                if(fileExt == '.gif' || fileExt == '.jpg' || fileExt == '.png' || fileExt == '.bmp' || fileExt == '.jpeg') {} else {
+                    $.dialog({
+                        title: '温馨提示',
+                        content: '请上传正确的图片文件',
+                        button: ["确认"]
+                    });
+                    return;
+
+                }
+            }
+
+            //			obj.files[0]
+            // 选择的图片预览,图片压缩后预览
+            lrz(obj.files[0], {
+                width: 100,
+                quality: 0.8,
+                done: function(results) {
+                    // 入参数组合
+                    B.ready(function() {
+                        var uploadImgParam = {
+                            uploadFileBase64: results.base64.substring(results.base64.lastIndexOf(",") + 1),
+                            uploadFileName: fileName + fileExt,
+
+                            jsonStr: '{"command": "6","content": {"accountNum": \"'+accountNum+'\","password": \"'+password+'\"}}'
+
+                        };
+                        // 上传图片到服务器，返回图片在服务器的完整地址
+                        $.ajax({
+                            type: 'post',
+                            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                            data: uploadImgParam,
+                            dataType: 'json',
+                            success: function(data) {
+                                console.log(JSON.stringify(data));
+                                var imgServerUrl = data.obj;
+                                $(".p_img").attr("src",imgServerUrl);
+                                addCookie("picture",imgServerUrl ,0) ;
+
+                            },
+                            error: function(xhr, type) {
+                                // 保存失败
+                            }
+                        });
+                    });
+                }
+            });
+        }
+
+
+        window.onresize = function () {
+            initFoot();
+        }
+
+        function initFoot(){
+            var windowHeight = $(window).height() ;
+            if(windowHeight > 200) {
+                $(".section").css("min-height",windowHeight-195);
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+
+<!--这是顶部::start-->
+<div id="head">
+
+    <div class="lines">
+    </div>
+
+    <div class="header_nav">
+    </div>
+
+    <div class="header_content">
+    </div>
+
+</div>
+<!--这是顶部::end-->
+<!--新闻栏目::start-->
+<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+    <tr>
+        <td  align="left" valign="top">
+            <div class="section clearfix">
+                <div class="line30"></div>
+
+                <div class="info-wrap">
+                    <!--左侧导航-->
+                    <div class="info-box">
+                        <div class="avatar-box">
+                        </div>
+                        <ul class="side-nav">
+                            <li>
+                                <a class="side-nav-style" href="user_personal.html" >个人资料</a>
+                            </li>
+                            <li>
+                                <a href="user_studyPath.html">学习经历</a>
+                            </li>
+                            <li>
+                                <a href="user_rzclass.html">班级认证</a>
+                            </li>
+                            <li>
+                                <a href="user_branch.html">所属分会</a>
+                            </li>
+                            <li>
+                                <a href="user_friends.html">我的好友</a>
+                            </li>
+                            <li>
+                                <a href="../service/donate/myDonate.html">我的捐赠</a>
+                            </li>
+                            <li>
+                                <a href="user_changePwd.html">修改密码</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" onclick="logoutConfirm()">退出登录</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/左侧导航-->
+
+                    <!--右侧内容-->
+                    <div class="home-box">
+
+                        <!--中间主体-->
+                        <div class="u-tab-content">
+                            <!--个人资料-->
+                            <div id="personal" class="head-inner p-head-inner clearfix" style="margin-top:0px;">
+
+
+                            </div>
+
+                            <a href="javascript:;" class="verifyChangeBtn" onclick="verifyChange();" style="display:none;">确认修改</a>
+
+                        </div>
+                    </div>
+
+
+                        <!--中间主体/-->
+                </div>
+                    <!--/右侧内容-->
+            </div>
+        </td>
+    </tr>
+</table>
+<!--新闻栏目::end-->
+
+
+<!--定义弹出框-->
+<div class="theme-pop">
+    <div class="theme-poptit">
+        <a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+        <h3>警告</h3>
+    </div>
+    <div class="theme-popbod dform">
+        <p style="margin-top: 18px; font-size: 13px;">确认退出登录？</p>
+        <div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+            <input style="width: 70px; float:left;" class="confirmBtn" onclick="logout()" value=" 确认退出 " />
+            <input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+        </div>
+    </div>
+</div>
+<div class="theme-pop-mask"></div>
+
+<!--弹出框效果------->
+<script type="text/javascript">
+    <!--弹出框效果-->
+    function logoutConfirm(){
+        $('.theme-pop-mask').fadeIn(100);
+        $('.theme-pop').slideDown(200);
+    }
+
+    function closeConfirm() {
+        $('.theme-pop-mask').fadeOut(100);
+        $('.theme-pop').slideUp(200);
+    }
+</script>
+
+
+
+<!--选择行业-->
+<ul class="listUl">
+    <li>IT</li>
+    <li>互联网通讯</li>
+    <li>金融</li>
+    <li>农业</li>
+    <li>政府</li>
+    <li>餐饮</li>
+    <li>讲师</li>
+    <li>演员</li>
+    <li>歌手</li>
+    <li>摄影</li>
+    <li>工程师</li>
+    <li>设计师</li>
+    <li>其他</li>
+</ul>
+
+<script type="text/javascript">
+    $(function() {
+        //选中某个内容后赋值给p标签，并隐藏ul列表
+        $(".listUl li").click(function() {
+            var txt = $(this).text();
+            $(".user_xg_profession").val(txt);
+            $(".listUl").hide();
+        });
+    });
+</script>
+
+<div id="footer_line"></div>
+<!--顶部线条::end-->
+
+
+
+</body>
+</html>
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>

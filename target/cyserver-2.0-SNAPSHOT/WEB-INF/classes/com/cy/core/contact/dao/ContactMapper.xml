@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.contact.dao.ContactMapper">
+
+    <resultMap type="com.cy.core.contact.entity.Contact" id="contactResultMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="category" property="category"/>      
+        <result column="accountNum" property="accountNum"/>
+        <result column="userId" property="userId"/>
+        <result column="createTime" property="createTime"/>
+        <result column="replyContent" property="replyContent"/>
+        <result column="replyUserId" property="replyUserId"/>
+        <result column="replyTime" property="replyTime"/>
+        <result column="replyPicture" property="replyPicture"/>
+        <result column="replyName" property="replyName"/>
+        <result column="status" property="status"/>
+        <result column="sex" property="sex"/>
+        <result column="alumni_id" property="alumniId" />
+        <association column="replyUserId" property="user" javaType="com.cy.core.user.entity.User">
+			<id column="replyUserId" property="userId" />
+			<result column="userName" property="userName" />
+			<result column="telephone" property="telephone" />
+		</association>
+		<association column="accountNum" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="accountNum" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>	
+    </resultMap>
+
+    <select id="query" parameterType="map" resultMap="contactResultMap">
+        select c.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,up.sex
+       	from cy_contact c
+       	left join cy_user u on c.replyUserId=u.userId
+       	left join cy_userprofile up on c.accountNum=up.accountNum
+        <where>c.status = 0
+            <if test="category!=null and category!=''">
+                and c.category = #{category}
+            </if>
+            <if test="alumniId!=null and alumniId!=''">
+                and c.alumni_id = #{alumniId}
+            </if>
+            <if test="checkPage != null and checkPage != '' and checkPage==1">
+                and c.status = 0 and c.replyTime IS NULL and c.replyUserId = 0 and c.replyContent IS NULL
+            </if>
+             <if test="checkPage != null and checkPage != '' and checkPage==2">
+                and c.status = 0 and c.replyTime IS NOT NULL and c.replyUserId != 0 and c.replyContent IS NOT NULL
+            </if>
+        </where>
+        order by id desc
+        limit #{start},#{rows}
+    </select>
+
+    <select id="querylist" parameterType="map" resultMap="contactResultMap">
+        select c.*,up.name,up.phoneNum,up.picture,up.sex,
+        (SELECT a.picture FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as replyPicture,
+        (SELECT a.name FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as replyName,
+		(SELECT a.phoneNum FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as telephone
+       	from cy_contact c
+       	left join cy_userprofile up on c.accountNum=up.accountNum
+        <where>c.status = 0
+            <if test="category!=null and category!=''">
+                and c.category = #{category}
+            </if>
+            <if test="alumniId!=null and alumniId!=''">
+                and c.alumni_id = #{alumniId}
+            </if>
+            <if test="checkPage != null and checkPage != '' and checkPage==1">
+                and c.status = 0 and c.replyTime IS NULL and c.replyUserId = 0 and c.replyContent IS NULL
+            </if>
+             <if test="checkPage != null and checkPage != '' and checkPage==2">
+                and c.status = 0 and c.replyTime IS NOT NULL and c.replyUserId != 0 and c.replyContent IS NOT NULL
+            </if>
+        </where>
+        order by id desc
+        limit #{start},#{rows}
+    </select>
+    
+    <select id="count" parameterType="map" resultType="long">
+        select count(c.id) from cy_contact c
+        <where>c.status = 0
+            <if test="category!=null and category!=''">
+                and c.category = #{category}
+            </if>
+            <if test="alumniId!=null and alumniId!=''">
+                and c.alumni_id = #{alumniId}
+            </if>
+            <if test="checkPage != null and checkPage != '' and checkPage==1">
+                and c.status = 0 and c.replyTime IS NULL and c.replyUserId = 0 and c.replyContent IS NULL
+            </if>
+             <if test="checkPage != null and checkPage != '' and checkPage==2">
+                and c.status = 0 and c.replyTime IS NOT NULL and c.replyUserId != 0 and c.replyContent IS NOT NULL
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" parameterType="long" resultMap="contactResultMap">
+        select c.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,up.sex
+        from cy_contact c 
+        left join cy_user u on c.replyUserId=u.userId
+       	left join cy_userprofile up on c.accountNum=up.accountNum
+       	where c.id=#{id}
+    </select>
+
+
+   <select id="getByleaveId" parameterType="long" resultMap="contactResultMap">
+         SELECT c.*,up.name,up.phoneNum,up.picture,up.sex,
+        (SELECT a.picture FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as replyPicture,
+        (SELECT a.name FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as replyName,
+		(SELECT a.phoneNum FROM cy_userprofile a WHERE a.accountNum=c.replyUserId) as telephone
+        FROM cy_contact c 
+       	LEFT JOIN cy_userprofile up ON c.accountNum=up.accountNum    
+        where c.id=#{id}    
+    </select>
+    
+    <update id="reply" parameterType="com.cy.core.contact.entity.Contact">
+        update cy_contact set 
+        replyContent=#{replyContent},
+        replyUserId=#{replyUserId},
+        replyTime=now()
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="list">
+        update cy_contact set status=2 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+</mapper>

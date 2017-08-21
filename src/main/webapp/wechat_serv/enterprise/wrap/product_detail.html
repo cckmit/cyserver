@@ -1,0 +1,180 @@
+
+<style>
+    .swiper-box{
+        position:relative;
+        width:100%;
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch; overflow: scroll;
+    }
+    .swiper-bg{
+        position:absolute;
+        width:100%;
+        height:100%;
+    }
+    .logo_box{
+        box-sizing: border-box;
+    }
+
+    .swiper-slide img{
+        width:100%;
+    }
+    .logo_img{
+        width:100%;
+        display: block;
+    }
+
+    .swiper-container-horizontal > .swiper-pagination{
+        bottom: 0px;
+        background-color: rgba(0, 0, 0, 0.24);
+    }
+
+    .text_row{
+        overflow: hidden; text-overflow: ellipsis;
+        display: flex; display: -webkit-flex;
+        word-wrap: break-word;  white-space: normal !important;
+        -webkit-box-orient: vertical;
+    }
+    .intro_short{
+        height:0.36rem;
+    }
+    .intro_long{
+        height:auto;
+    }
+
+</style>
+
+    <!--轮播图-->
+    <div class="swiper-box H-swiper">
+        <div class="swiper-container swiper-bg">
+        <div class="swiper-wrapper" >
+            <div class="swiper-slide logo_box" ng-repeat="pic in pPic" on-finish-render-filters>
+                <img class="logo_img"
+                     onerror="javascript:this.src='../../images/wechat_serv/banner_demo/01.png' "
+                     ng-src="{{pic | filter_pic}}"/>
+            </div>
+
+            <!--<div class="swiper-slide logo_box">-->
+                <!--<img ng-src="http://172.17.0.71:8080/cy/cyfile////image/20170523/20170523170334_663.png"-->
+                     <!--class="logo_img" alt="" title="" />-->
+            <!--</div>-->
+            <!--<div class="swiper-slide logo_box">-->
+                <!--<img ng-src="http://172.17.0.71:8080/cy/cyfile//image/20170523/20170523170923_837.jpg" class="logo_img" alt="" title="" />-->
+            <!--</div>-->
+            <!--<div class="swiper-slide logo_box">-->
+                <!--<img ng-src="http://172.17.0.71:8080/cy/cyfile//image/20170523/20170523170351_133.png" class="logo_img" alt="" title="" />-->
+            <!--</div>-->
+            <!--<div class="swiper-slide logo_box">-->
+                <!--<img ng-src="http://172.17.0.71:8080/cy/cyfile//image/20170523/20170523170351_133.png"-->
+                     <!--class="logo_img" alt="" title="" />-->
+            <!--</div>-->
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+    </div>
+
+<!--test-->
+
+
+<div class="bg">
+    <!---->
+    <div class="ent_pro">
+        <div class="ent_div">
+            <div class="name_l">
+                <div class="ent_name">{{productDetail.name}}</div>
+                <a ui-sref="enterprise_detail({'id':productDetail.enterpriseId})" class="ent_link">{{productDetail.enterpriseName}}</a>
+            </div>
+
+            <div class="name_r" ng-click="praiseClick(productDetail.hasPraised)">
+                <!--已点-->
+                <i ng-cloak ng-show="dianzan" class="icon iconfont icon-dianzan2" style="font-size: 14px;color: #8d8d8d;"></i>
+                <!--未点-->
+                <i ng-cloak ng-hide="dianzan" class="icon iconfont icon-dianzan"></i>
+
+                <span class="zan_num" style="display: inline-block;min-width: 16px;text-align: center;">{{productDetail.praiseNumber}}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!--ent_intro-->
+    <div class="pro_box_bg">
+        <div class="pro_title">
+            <span class="icon_flag"></span>
+            产品简介
+        </div>
+        <div class="pro_box" ng-if="productDetail.summary.length<=100">
+            <div class="ent_intro intro1">
+                {{productDetail.summary}}
+            </div>
+        </div>
+        <div class="pro_box" ng-if="productDetail.summary.length>100">
+            <div class="ent_intro H-text-show-row-2 intro_short intro1">
+                {{productDetail.summary}}
+            </div>
+            <a class="icon_toggle" onclick="slideOpen1(this)">展开
+            </a>
+        </div>
+    </div>
+
+
+    <div class="pro_box_bg">
+        <div class="pro_title">
+            <span class="icon_flag"></span>
+            产品详情
+        </div>
+        <div class="pro_box" ng-if="productDetail.description.length<=100">
+            <div class="ent_intro intro2" ng-bind-html="productDetail.description | to_trusted">
+                <!--{{productDetail.description | to_trusted}}-->
+            </div>
+        </div>
+        <div class="pro_box" ng-if="productDetail.description.length>100">
+            <div class="ent_intro H-text-show-row-6 intro_short intro2" ng-bind-html="productDetail.description | to_trusted">
+                <!--{{productDetail.description | to_trusted}}-->
+            </div>
+            <a class="icon_toggle" onclick="slideOpen2(this)">展开
+            </a>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+    var clientWidth = document.body.clientWidth;
+    $(".swiper-box").height(clientWidth/2.143);
+
+    //toggle open
+    function slideOpen2(item){
+        if($(".intro2").hasClass('intro_short')){
+            $('.pro_box .intro2').removeClass('intro_short').addClass('intro_long');
+            $('.pro_box .intro2').removeClass('H-text-show-row-6');
+            $(item).text('收起');
+        }else if($('.intro2').hasClass('intro_long')){
+            $('.intro2').removeClass('intro_long').addClass('intro_short');
+            $('.intro2').addClass('H-text-show-row-6');
+            $(item).text('展开');
+        }
+
+
+    }
+
+    function slideOpen1(item){
+        if($(".intro1").hasClass('intro_short')){
+            $('.pro_box .intro1').removeClass('intro_short').addClass('intro_long');
+            $('.pro_box .intro1').removeClass('H-text-show-row-2');
+            $(item).text('收起');
+        }else if($('.intro1').hasClass('intro_long')){
+            $('.intro1').removeClass('intro_long').addClass('intro_short');
+            $('.intro1').addClass('H-text-show-row-2');
+            $(item).text('展开');
+        }
+
+
+    }
+
+
+</script>

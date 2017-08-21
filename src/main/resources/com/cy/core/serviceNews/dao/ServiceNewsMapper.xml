@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.serviceNews.dao.ServiceNewsMapper">
+    <resultMap type="com.cy.core.serviceNews.entity.ServiceNews" id="serviceNewsResultMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="pic" property="pic"/>
+        <result column="content" property="content"/>
+        <result column="introduction" property="introduction"/>
+        <result column="service_id" property="serviceId"/>
+        <result column="type" property="type"/>
+        <result column="news_url" property="newsUrl"/>
+        <result column="topnews" property="topnews"/>
+        <result column="topnews_web" property="topnewsWeb"/>
+        <result column="cityName" property="cityName"/>
+        <result column="alumni_id" property="alumniId"/>
+        <result column="status" property="status"/>
+        <result column="channel" property="channel"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="deptName" property="deptName"/>
+        <result column="browse_num" property="browseNum"/>
+        <result column="main_name" property="mainName"/>
+        <result column="name" property="name"/>
+        <result column="serviceName" property="serviceName"/>
+        <result column="channelName" property="channelName"/>
+    </resultMap>
+    <select id="selectServiceNews" parameterType="map" resultMap="serviceNewsResultMap">
+        SELECT csn.*, css.serviceName,csnt.name AS channelName
+        FROM cy_service_news csn
+        LEFT JOIN cy_school_service css ON csn.service_id = css.id
+        LEFT JOIN cy_service_news_type csnt ON csnt.id = csn.channel
+        WHERE csn.del_flag = 0
+        <if test="title !=null and title!= '' ">
+            AND title LIKE concat('%',#{title},'%')
+        </if>
+        <if test="serviceId !=null and serviceId != '' ">
+            AND csn.service_id = #{serviceId}
+        </if>
+        <if test="channel != null and channel != '' ">
+            AND csn.channel = #{channel}
+        </if>
+        <if test="topnews != null and topnews != ''">
+            AND csn.topnews = #{topnews}
+        </if>
+        ORDER BY update_date DESC
+        <if test='isNotLimit != "1"'>
+            limit ${start},${rows}
+        </if>
+
+    </select>
+    <select id="getServiceNewsById" parameterType="string" resultMap="serviceNewsResultMap">
+        SELECT csn.*, css.serviceName,csnt.name AS channelName
+        FROM cy_service_news csn
+        LEFT JOIN cy_school_service css ON csn.service_id = css.id
+        LEFT JOIN cy_service_news_type csnt ON csnt.id = csn.channel
+        WHERE csn.id = #{id}
+    </select>
+    <select id="countServiceNews" parameterType="map" resultType="long">
+        select count(id) from cy_service_news csn
+        WHERE csn.del_flag = 0
+        <if test="title !=null and title!= '' ">
+            AND csn.title LIKE concat('%',#{title},'%')
+        </if>
+        <if test="serviceId !=null and serviceId != '' ">
+            AND csn.service_id = #{serviceId}
+        </if>
+        <if test="channel != null and channel != '' ">
+            AND csn.channel = #{channel}
+        </if>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.cy.core.serviceNews.entity.ServiceNews">
+        insert into
+        cy_service_news(
+            id,
+            title,
+            pic,
+            content,
+            introduction,
+            type,
+            news_url,
+            status,
+            topnews,
+            topnews_web,
+            cityName,
+            alumni_id,
+            channel,
+            create_date,
+            create_by,
+            update_date,
+            update_by,
+            service_id,
+            remarks,
+            browse_num
+        )
+        values(
+            #{id},
+            #{title},
+            #{pic},
+            #{content},
+            #{introduction},
+            #{type},
+            #{newsUrl},
+            #{status},
+            #{topnews},
+            #{topnewsWeb},
+            #{cityName},
+            #{alumniId},
+            #{channel},
+            #{createDate},
+            #{createBy},
+            #{updateDate},
+            #{updateBy},
+            #{serviceId},
+            #{remarks},
+            #{browseNum}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.serviceNews.entity.ServiceNews">
+        update cy_service_news set
+            title=#{title},
+            pic=#{pic},
+            content=#{content},
+            introduction=#{introduction},
+            type=#{type},
+            news_url=#{newsUrl},
+            topnews=#{topnews},
+            topnews_web=#{topnewsWeb},
+            cityName=#{cityName},
+            alumni_id=#{alumniId},
+            status=#{status},
+            service_id=#{serviceId},
+            channel=#{channel},
+            create_date=now(),
+            create_by=#{createBy},
+            update_date=#{updateDate},
+            update_by=#{updateBy},
+            remarks=#{remarks},
+            browse_num=#{browseNum}
+        where
+        id=#{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_service_news SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+    <update id="setMobTypeList" parameterType="map">
+        update cy_service_news set
+        topnews=#{controlStr}
+        where
+        id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

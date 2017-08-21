@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.association.dao.AssociationHistoryMapper">
+    <resultMap id="associationHistoryResultMap" type="com.cy.core.association.entity.AssociationHistory">
+        <id column="id" property="id"/>
+        <result column="association_id" property="associationId"/>
+        <result column="type" property="type" />
+        <result column="association_old_id" property="associationOldId" />
+        <result column="old_name" property="oldName" />
+        <result column="new_name" property="newName" />
+        <result column="old_type_id" property="oldTypeId"/>
+        <result column="new_type_id" property="newTypeId"/>
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="status" property="status" />
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="old_type_name" property="oldTypeName"/>
+        <result column="new_type_name" property="newTypeName"/>
+    </resultMap>
+
+    <select id="selectAssociationHistory" parameterType="map" resultMap="associationHistoryResultMap">
+        SELECT
+        cah.*, cdo.dict_name AS old_type_name ,
+        cdn.dict_name AS new_type_name
+        FROM
+        cy_association_history cah
+        LEFT JOIN cy_dict cdo ON cdo.dict_type_id = '23' AND cdo.dict_value = cah.old_type_id
+        LEFT JOIN cy_dict cdn ON cdn.dict_type_id = '23' AND cdn.dict_value = cah.new_type_id
+        LEFT JOIN cy_association ca ON ca.id = cah.association_id
+        LEFT JOIN cy_alumni a ON ca.alumni_id = a.alumniId
+        WHERE cah.del_flag = 0 AND ca.id IS NOT NULL
+        AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="id !=null and id != '' ">
+            AND cah.id = #{id}
+        </if>
+        <if test="associationId != null and associationId != ''">
+            AND cah.association_id = #{associationId}
+        </if>
+        <if test="associationOldId != null and associationOldId != ''">
+            AND cah.association_old_id = #{associationOldId}
+        </if>
+        <if test="oldName != null and oldName != ''" >
+            AND cah.old_name LIKE CONCAT('%', #{oldName} ,'%')
+        </if>
+        <if test="type != null and type != ''">
+            AND cah.type = #{type}
+        </if>
+        <if test="status != null and status != ''">
+            AND cah.status = #{status}
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+        order by cah.update_date desc
+        <if test="start != null and start != '' and rows != null and rows != ''">
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT COUNT(cah.id)
+        FROM
+        cy_association_history cah
+        LEFT JOIN cy_dict cdo ON cdo.dict_type_id = '23' AND cdo.dict_value = cah.old_type_id
+        LEFT JOIN cy_dict cdn ON cdo.dict_type_id = '23' AND cdn.dict_value = cah.new_type_id
+        LEFT JOIN cy_association ca ON ca.id = cah.association_id
+        LEFT JOIN cy_alumni a ON ca.alumni_id = a.alumniId
+        WHERE cah.del_flag = 0 AND ca.id IS NOT NULL
+        AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+        <if test="id !=null and id != '' ">
+            AND cah.id = #{id}
+        </if>
+        <if test="associationOldId != null and associationOldId != ''">
+            AND cah.association_old_id = #{associationOldId}
+        </if>
+        <if test="associationId != null and associationId != ''">
+            AND cah.association_id = #{associationId}
+        </if>
+        <if test="status != null and status != ''">
+            AND cah.status = #{status}
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            AND ca.alumni_id = #{alumniId}
+        </if>
+    </select>
+
+    <insert id="save"  parameterType="com.cy.core.association.entity.AssociationHistory">
+        INSERT INTO
+        cy_association_history(
+        id,
+        association_id,
+        `type`,
+        association_old_id,
+        old_name,
+        new_name,
+        old_type_id,
+        new_type_id,
+        start_time,
+        end_time,
+        status,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        values(
+        #{id},
+        #{associationId},
+        #{type},
+        #{associationOldId},
+        #{oldName},
+        #{newName},
+        #{oldTypeId},
+        #{newTypeId},
+        #{startTime},
+        #{endTime},
+        #{status},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks} )
+    </insert>
+    <update id="update" parameterType="com.cy.core.association.entity.AssociationHistory">
+        update cy_association_history set
+        association_id=#{associationId},
+        `type`=#{type},
+        association_old_id=#{associationOldId},
+        old_name=#{oldName},
+        new_name=#{newName},
+        old_type_id=#{oldTypeId},
+        new_type_id=#{newTypeId},
+        start_time=#{startTime},
+        end_time=#{endTime},
+        status=#{status},
+        del_flag=#{delFlag},
+        update_date=#{updateDate},
+        update_by=#{updateBy},
+        create_date=#{createDate},
+        create_by=#{createBy},
+        remarks=#{remarks}
+        WHERE
+        id=#{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_association_history SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

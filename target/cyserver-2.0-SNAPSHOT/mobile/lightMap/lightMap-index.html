@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>点亮地图</title>
+</head>
+<link rel="stylesheet" type="text/css" href="../services/static/css/Hui.css"/>
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/lightMap-index.css">
+<body class="bg">
+    <div class="star1 absolute"></div>
+    <div class="star2 absolute"></div>
+    <div class="star3 absolute"></div>
+    <div class="star4 absolute"></div>
+    <div class="star5 absolute"></div>
+    <div class="go fixed" onclick="go()"></div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script>
+    var accountNum=B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    //来自main.html
+    var fromMain = B.getUrlParamByName("fromMain");
+
+    var teamId = B.getUrlParamByName("teamId");
+
+    var sourceFlag = B.getUrlParamByName("sourceFlag");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+    }
+    function go() {
+        if( checkLogin()){
+            window.location.href='lightMap-place.html?accountNum='+accountNum
+        }
+    }
+    function checkLogin() {
+        if(!accountNum || accountNum == '' || accountNum == 'null'){
+            if(openId && openId != 'null'){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        if(fromMain && fromMain=='1'){
+                            /* alert(11)*/
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../lightMap/lightMap-index.html?sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain);
+                        }else{
+
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../lightMap/lightMap-index.html?accountNum=' + accountNum)+"&ts=" + B.getRandomInt(4));
+                        }
+                    }
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+                return false;
+            }else {
+                H.alert('亲，您尚未登陆，请先去登陆吧！');
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+</script>
+</html>

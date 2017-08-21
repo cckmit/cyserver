@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.news.dao.MobNewsTypeMapper">
+	<resultMap id="mobNewsTypeResultMap" type="com.cy.core.news.entity.NewsType">
+		<id column="id" property="id" />
+		<result column="parent_id" property="parent_id" />
+		<result column="type" property="type" />
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="url" property="url" />
+		<result column="orderNum" property="orderNum" />
+		<result column="origin" property="origin" />
+		<result column="cityName" property="cityName" />
+		<result column="dept_id" property="deptId" />
+		<result column="dept_name" property="deptName" />
+		<result column="isNavigation" property="isNavigation" />
+		<result column="channel" property="channel" />
+		<result column="channelName" property="channelName" />
+		<result column="parent_name" property="parent_name" />
+		<result column="typePic" property="typePic"/>
+
+	</resultMap>
+
+	<!-- 查询新闻栏目并分页 -->
+	<select id="query" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		select
+		t.*,
+		case t.channel when '10' then '手机' when '20' then '网页' when '30' then '微信' when '90' then '其他' else '' end channelName ,
+		(select a.alumniName FROM cy_alumni a WHERE a.alumniId = t.dept_id) dept_name
+		from cy_mobile_news_type t
+		<where>1=1
+			<if test="parent_id!=null and parent_id>=0">
+				and t.parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=''">
+				and t.type = #{type}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="code!=null and code!=''">
+				and t.code = #{code}
+			</if>
+			<if test="origin!=null and origin!=''">
+				and t.origin = #{origin}
+			</if>
+			<if test="name!=null and name!=''">
+				and t.name like concat('%',#{name},'%')
+			</if>
+			<if test="channel!=null and channel!=''">
+				and t.channel = #{channel}
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				and t.dept_id = #{alumniId}
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and t.cityName like concat('%',#{cityName},'%')
+			</if>			
+		</where>
+		<if test="start!=null and rows!=null">
+		order by origin,cityName,orderNum limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--<select id="selectNewsType" parameterType="map" resultMap="mobNewsTypeResultMap">
+		select
+		t.*,
+		case t.channel when '10' then '手机' when '20' then '网页' when '30' then '微信' when '90' then '其他' else '' end channelName ,
+		(select a.alumniName FROM cy_alumni a WHERE a.alumniId = t.dept_id) dept_name
+		from cy_mobile_news_type t
+		<where> 1=1
+			<if test="name!=null and name!=''">
+				AND t.name like concat('%',#{name},'%')
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=''">
+				and t.type = #{type}
+			</if>
+			<if test="channel!=null and channel!=''">
+				and t.channel = #{channel}
+			</if>
+		</where>
+		order by orderNum
+	</select>-->
+
+
+	<select id="selectNewsType" parameterType="map" resultMap="mobNewsTypeResultMap">
+		select
+		t.*,
+		(select  cdit.dict_name  from cy_dict cdit where  cdit.dict_value = t.channel  and cdit.dict_type_id = (select dict_type_id from cy_dict_type where dict_type_value = 110)) channelName,
+		(select a.alumniName FROM cy_alumni a WHERE a.alumniId = t.dept_id) dept_name
+		from cy_mobile_news_type t
+		<where> 1=1
+			<if test="name!=null and name!=''">
+				AND t.name like concat('%',#{name},'%')
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and t.dept_id = #{deptId}
+			</if>
+			<if test="type!=null and type!=''">
+				and t.type = #{type}
+			</if>
+			<if test="channel!=null and channel!=''">
+				and t.channel = #{channel}
+			</if>
+		</where>
+		order by orderNum
+	</select>
+
+
+
+
+	
+	<select id="getByName" parameterType="string" resultType="com.cy.core.news.entity.NewsType">
+		select * from cy_mobile_news_type where name=#{name}
+	</select>
+
+	<select id="getByCode" parameterType="string" resultType="com.cy.core.news.entity.NewsType">
+		SELECT * FROM cy_mobile_news_type WHERE `code`=#{code}
+	</select>
+	
+	<!-- 查询数量条数 -->
+	<select id="count" parameterType="map" resultType="java.lang.Integer">
+		select count(*) from cy_mobile_news_type
+		<where>
+			<if test="parent_id!=null and parent_id>=0">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=''">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=''">
+				and origin = #{origin}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and dept_id = #{deptId}
+			</if>
+			<if test="code!=null and code!=''">
+				and code = #{code}
+			</if>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName like concat('%',#{cityName},'%')
+			</if>
+			<if test="channel!=null and channel!=''">
+				and channel =#{channel}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询新闻栏目的详细信息 -->
+	<select id="getById" parameterType="string" resultType="com.cy.core.news.entity.NewsType">
+		select t.*,n.newsId,p.`name`as parent_name,n.title as newsTitle,n.content as newsContent  ,
+		case t.channel when '10' then '手机' when '20' then '网页' when '30' then '微信' when '90' then '其他' else '' end channelName
+		from cy_mobile_news_type  t
+		LEFT JOIN cy_mobile_news_type p ON t.parent_id = p.id
+		LEFT JOIN cy_news n on t.id= n.category and t.type=3
+		where t.id = #{id};
+	</select>
+	
+	<!-- 新闻栏目新增 -->
+	<insert id="save" parameterType="com.cy.core.news.entity.NewsType">
+		insert into cy_mobile_news_type(id,parent_id,name,type,url,code,orderNum,origin,cityName,isNavigation,dept_id,channel,typePic,isMain)
+		values(#{id},#{parent_id},#{name},#{type},#{url},#{code},#{orderNum},#{origin},#{cityName},#{isNavigation},#{deptId},#{channel},#{typePic},#{isMain})
+	</insert>
+	
+	<select id="getNewId" resultType="long">
+        select LAST_INSERT_ID()
+    </select>
+	
+	<!-- 新闻栏目删除,根据id -->
+	<delete id="deleteById" parameterType="list">
+		delete from cy_mobile_news_type where id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<!-- 新闻栏目删除,根据父id -->
+	<delete id="deleteByPid" parameterType="list">
+		delete from cy_mobile_news_type where parent_id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<!-- 新闻栏目更新 -->
+	<update id="update" parameterType="com.cy.core.news.entity.NewsType" >
+		update cy_mobile_news_type set
+	 		name=#{name},
+	 		parent_id=#{parent_id},
+	 		type=#{type},
+	 		url=#{url},
+		    code=#{code},
+			isMain=#{isMain},
+	 		origin=#{origin},
+	 		orderNum=#{orderNum},
+			typePic=#{typePic},
+		 	cityName=#{cityName},
+		<if test="channel != null and channel != ''">
+			channel=#{channel},
+		</if>
+		 	<if test="deptId != null and deptId != ''">
+				dept_id = #{deptId},
+			</if>
+		 	isNavigation=#{isNavigation}
+		 where id = #{id}
+	</update>
+	<update id="updateSubType" parameterType="long">
+		update cy_mobile_news_type set channel=#{channel} where parent_id=#{id};
+	</update>
+	<insert id="saveNews" parameterType="com.cy.core.news.entity.News">
+		insert into cy_news(title,content,createTime,channelName,category,create_date,update_date,remarks,del_flag)
+		values(#{title},#{content},now(),#{channelName},#{category},now(),now(),#{remarks},#{delFlag})
+	</insert>
+	<update id="updateNews" parameterType="com.cy.core.news.entity.News">
+		update cy_news set title=#{title},content=#{content},update_date=now() where category=#{category}
+	</update>
+	<delete id="deleteNews" parameterType="string">
+		delete n
+		from cy_news n inner join cy_mobile_news_type t on n.category = t.id
+		where t.id=#{typeId} and t.type=3
+	</delete>
+
+	<select id="findNewsType" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+			select
+				*, CASE WHEN t1.type=3 THEN (SELECT cn.newsId FROM cy_news cn WHERE t1.id = cn.category) ELSE '' END newsId
+			from (
+			select * from cy_mobile_news_type
+			UNION select * from cy_mobile_news_type where parent_id in ( select id from cy_mobile_news_type)
+			) t1
+			WHERE 1=1
+			<if test="level != null and level != '' and level == 1 ">
+				AND t1.parent_id = 0
+			</if>
+			<if test="parentId!=null and  parentId !=''">
+				and t1.parent_id = #{parentId}
+			</if>
+			<if test="channel != null and channel != ''">
+				AND find_in_set(t1.channel,#{channel})
+			</if>
+			<if test="isMain != null and isMain !='' ">
+				AND t1.isMain = #{isMain}
+			</if>
+			<if test="isNavigation!=null and isNavigation!=''">
+				AND t1.isNavigation = #{isNavigation}
+			</if>
+			<if test="deptId !=null and deptId !=''">
+				AND t1.dept_id = #{deptId}
+			</if>
+			order by orderNum+0
+	</select>
+	<update id="setMobTypeList" parameterType="map">
+		UPDATE cy_mobile_news_type SET isNavigation = #{controlStr}
+		WHERE id IN
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</update>
+	<update id="setMobTypePage" parameterType="map">
+		UPDATE cy_mobile_news_type SET isMain = #{controlStr}
+		WHERE id IN
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</update>
+</mapper>

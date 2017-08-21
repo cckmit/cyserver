@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.discover.dao.DiscoverContentMapper">
+	<resultMap type="com.cy.core.discover.entity.DiscoverContent" id="discoverRecordResultMap">
+		<id column="id" property="id"/>
+		<result column="discoverContent" property="discoverContent" />
+		<result column="discoverId" property="discoverId" />
+		<result column="createTime" property="createTime" />
+		<result column="contentType" property="contentType" />
+		<result column="discoverType" property="discoverType" />
+		<result column="discoverPic" property="discoverPic" />
+		<result column="delFlag" property="delFlag" />
+		<result column="name" property="name" />
+		<result column="picture" property="picture" />
+	</resultMap>
+	<insert id="save" parameterType="com.cy.core.discover.entity.DiscoverContent">
+		insert into
+		cy_discover_content(discoverId,discoverContent,contentType,createTime,discoverPic,discoverType)
+		values(#{discoverId},#{discoverContent},#{contentType},now(),#{discoverPic},#{discoverType})
+	</insert>
+
+	<delete id="deleteDiscoverContent" parameterType="map">
+	<!--级联删除-->
+            DELETE cy_discover_content,cy_discover_comment,cy_discover_reply,cy_discover_msg_push
+            FROM cy_discover_content
+            LEFT JOIN cy_discover_comment
+            ON cy_discover_content.id = cy_discover_comment.contentId
+            LEFT JOIN cy_discover_reply
+            ON cy_discover_content.id = cy_discover_reply.messageId
+            LEFT JOIN cy_discover_praise
+            ON cy_discover_content.id = cy_discover_praise.contentId
+			LEFT JOIN cy_discover_msg_push
+			ON cy_discover_content.id = cy_discover_msg_push.contentId
+            WHERE cy_discover_content.discoverId = #{accountNum}
+            and cy_discover_content.id = #{id}
+        </delete>
+
+        <select id="showAllList" parameterType="map" resultMap="discoverRecordResultMap">
+            SELECT
+            cc.id,
+            cc.discoverId,
+            cc.discoverContent,
+            cc.createTime,
+            cc.discoverType,
+			cc.contentType,
+            cc.discoverPic,
+            cu.name,
+            cu.picture
+            FROM
+            cy_discover_content cc
+            LEFT JOIN cy_userprofile cu ON cc.discoverId = cu.accountNum
+            WHERE
+            cc.delflag = '0'
+            <if test='showFlag == "1"'>
+                AND cc.discoverId = #{accountNum}
+            </if>
+            <if test='showFlag == "2"'>
+                AND cc.contentType = '1'
+            </if>
+            <if test='showFlag == "3"'>
+                AND cc.discoverId = #{accountNum}
+                OR cc.discoverId in (select friend_id from cy_chat_contacts where user_id = #{accountNum} and status = '1' and del_flag = '0')
+                AND cc.contentType = '1'
+            </if>
+            ORDER BY cc.createTime DESC
+            <if test='isNoLimit != "1"'>
+                limit #{start},#{rows}
+            </if>
+        </select>
+
+        <select id="showAllListCount" parameterType="map" resultType="long">
+        SELECT
+        count(*)
+        FROM
+        cy_discover_content cc
+        LEFT JOIN cy_userprofile cu ON cc.discoverId = cu.accountNum
+        WHERE
+        cc.delflag = '0'
+			<if test='showFlag == "1"'>
+				AND cc.discoverId = #{accountNum}
+			</if>
+			<if test='showFlag == "2"'>
+				AND cc.contentType = '1'
+			</if>
+			<if test='showFlag == "3"'>
+				AND cc.discoverId = #{accountNum}
+				OR cc.discoverId in (select friend_id from cy_chat_contacts where user_id = #{accountNum} and status = '1' and del_flag = '0')
+				AND cc.contentType = '1'
+			</if>
+        </select>
+
+        <!--评论-->
+	<insert id="insertDiscoverComment" parameterType="com.cy.core.discover.entity.DiscoverComment">
+		insert into cy_discover_comment(contentId, userId, discoverUserId, comment, createTime)
+		values(#{contentId}, #{commentUserId}, #{discoverUserId}, #{commentContent}, now())
+	</insert>
+
+	<delete id="deleteDiscoverComment" parameterType="com.cy.core.discover.entity.DiscoverComment">
+	delete cc,cm
+	from cy_discover_comment cc
+	LEFT JOIN	cy_discover_msg_push cm
+	ON cc.id = cm.commentId
+	where cc.contentId = #{contentId} and cc.userId = #{commentUserId} and cc.id = #{commentId}
+	<!--级联删除
+    DELETE t1,t2,t3
+    FROM cy_discover_comment as t1
+    LEFT JOIN cy_discover_reply as t2
+    ON t1.id = t2.replyCommentId
+    LEFT JOIN cy_discover_reply as t3
+    ON t2.id = t3.replyCommentId
+    WHERE t1.id = #{commentId}
+    AND t1.contentId = #{contentId}
+    AND t1.userId = #{commentUserId}-->
+
+</delete>
+
+<!--回复-->
+	<insert id="insertDiscoverReply" parameterType="com.cy.core.discover.entity.DiscoverReply">
+		insert into cy_discover_reply(replyCommentId, replyContent, userId, discoverUserId, createTime, flag, messageId)
+		values(#{replyCommentId}, #{replyContent}, #{replyUserId}, #{discoverUserId}, now(), #{flag}, #{messageId})
+	</insert>
+
+	<delete id="deleteDiscoverReply" parameterType="com.cy.core.discover.entity.DiscoverReply">
+		delete cr,cm from cy_discover_reply cr
+		LEFT JOIN	cy_discover_msg_push cm
+		ON cr.id = cm.replyId
+		where cr.userId = #{replyUserId} and cr.id = #{replyId}
+	</delete>
+
+	<!--点赞-->
+	<insert id="insertDiscoverPraise" parameterType="com.cy.core.discover.entity.DiscoverPraise">
+		insert into cy_discover_praise(contentId, userId, discoverUserId, createTime)
+		values(#{contentId}, #{userId}, #{discoverUserId}, now())
+	</insert>
+
+	<delete id="deleteDiscoverPraise" parameterType="com.cy.core.discover.entity.DiscoverPraise">
+		delete from cy_discover_praise where contentId = #{contentId} and userId = #{userId}
+	</delete>
+
+	<select id="getPraise" parameterType="String" resultType="Long">
+		SELECT count(pra.id)
+		FROM cy_discover_praise pra INNER JOIN cy_discover_content con ON pra.contentId = con.id
+		where
+		con.id = #{id} and
+		pra.discoverUserId = con.discoverId
+	</select>
+
+
+	<select id="getPraiseExist" parameterType="map" resultType="Long">
+		SELECT count(id) FROM cy_discover_praise
+		where
+		userId = #{currentAccountNum} and
+		discoverUserId = #{discoverId} and
+		contentId = #{id}
+	</select>
+
+	<!--评论列表-->
+	<select id="getDiscoverCommentList" parameterType="String" resultType="com.cy.core.discover.entity.DiscoverComment">
+		select
+		ct.id AS commentId,
+		ct.comment AS commentContent,
+		ct.userId AS commentUserId,
+		<!--ct.discoverUserId,-->
+		cu.name AS commentName,
+		cu.picture AS commentPicture,
+		ct.createTime AS commentCreateTime
+	<!--,dcu.name AS discoverName,-->
+	<!--dcu.picture AS discoverPicture-->
+    from
+    cy_discover_comment ct
+    INNER JOIN cy_discover_content con ON ct.contentId = con.id
+    INNER JOIN cy_userprofile cu ON ct.userId = cu.accountNum
+	<!--INNER JOIN cy_userprofile dcu ON ct.discoverUserId = dcu.accountNum-->
+    where
+	ct.contentId = #{id} and
+    ct.discoverUserId = con.discoverId order by ct.createTime ASC
+    </select>
+
+	<!--获取当前评论ID-->
+	<select id="getDiscoverCurrentCommentId" parameterType="com.cy.core.discover.entity.DiscoverComment" resultType="String">
+	select
+	max(id)
+	from
+	cy_discover_comment
+	where
+	contentId = #{contentId}
+	and userId = #{commentUserId}
+	and discoverUserId = #{discoverUserId}
+	</select>
+
+	<!--获取当前评论-->
+	<select id="getDiscoverCurrentComment" parameterType="String" resultType="com.cy.core.discover.entity.DiscoverComment">
+		select
+		ct.id AS commentId,
+		ct.contentId,
+		ct.comment AS commentContent,
+		ct.userId AS commentUserId,
+		cu.name AS commentName,
+		cu.picture AS commentPicture,
+		ct.createTime AS commentCreateTime
+		from
+		cy_discover_comment ct
+		INNER JOIN cy_userprofile cu ON ct.userId = cu.accountNum
+		where
+		ct.id = #{currentCommentId}
+	</select>
+
+	<!--获取当前回复ID-->
+	<select id="getDiscoverCurrentReplyId" parameterType="com.cy.core.discover.entity.DiscoverReply" resultType="String">
+		select
+		max(id)
+		from
+		cy_discover_reply
+		where
+		replyCommentId = #{replyCommentId}
+		and userId = #{replyUserId}
+		and discoverUserId = #{discoverUserId}
+	</select>
+
+	<!--获取当前回复-->
+	<select id="getDiscoverCurrentReply" parameterType="String" resultType="com.cy.core.discover.entity.DiscoverReply">
+		select
+		cr.id AS replyId,
+		cr.replyContent,
+		cr.userId AS replyUserId,
+		cu.name AS replyName,
+		cu.picture AS replyPicture,
+		cr.createTime AS replyCreateTime
+		from
+		cy_discover_reply cr
+		INNER JOIN cy_userprofile cu ON cr.userId = cu.accountNum
+		where
+		cr.id = #{currentReplyId}
+	</select>
+
+	<!--回复评论列表-->
+	<select id="getDiscoverReplyList" parameterType="String" resultType="com.cy.core.discover.entity.DiscoverReply">
+		select
+		cr.id AS replyId,
+		cr.replyContent,
+		cr.userId AS replyUserId,
+		cu.name AS replyName,
+		cu.picture AS replyPicture,
+		cr.createTime AS replyCreateTime
+		from
+		cy_discover_reply cr
+		INNER JOIN cy_discover_comment cc ON cr.replyCommentId = cc.id
+		INNER JOIN cy_userprofile cu ON cr.userId = cu.accountNum
+		where
+		cr.replyCommentId = #{id} and
+		cr.flag = '0'
+		order by cr.createTime ASC
+	</select>
+
+	<!--回复回复列表-->
+	<select id="getDiscoverReplyReplyList" resultType="com.cy.core.discover.entity.DiscoverReplyComment">
+			(select
+			a.id AS commentId,
+			a.replyContent AS commentContent,
+			a.createTime AS commentCreateTime,
+			a.userId AS commentUserId,
+			cu.name AS commentName,
+			cu.picture AS commentPicture,
+			b.id AS replyId,
+			b.replyContent AS replyContent,
+			b.createTime AS replyCreateTime,
+			b.userId AS replyUserId,
+			cu1.name AS replyName,
+			cu1.picture AS replyPicture
+			from
+			cy_discover_reply a
+			INNER JOIN cy_discover_reply b ON b.replyCommentId = a.id and b.discoverUserId = a.userId
+			INNER JOIN cy_userprofile cu ON a.userId = cu.accountNum
+			INNER JOIN cy_userprofile cu1 ON b.userId = cu1.accountNum
+			where
+			b.flag = '1' and
+			a.messageId = #{id} and
+			b.messageId = #{id} order by b.createTime ASC)
+			UNION ALL
+			(select
+			null AS commentId,
+		    null AS commentContent,
+			null AS commentCreateTime,
+		    c.discoverUserId AS commentUserId,
+	        cu2.name AS commentName,
+			cu2.picture AS commentPicture,
+		    c.id AS replyId,
+			c.replyContent AS replyContent,
+			c.createTime AS replyCreateTime,
+			c.userId AS replyUserId,
+			cu3.name AS replyName,
+			cu3.picture AS replyPicture
+			from cy_discover_reply c
+		    INNER JOIN cy_userprofile cu2 ON c.discoverUserId = cu2.accountNum
+			INNER JOIN cy_userprofile cu3 ON c.userId = cu3.accountNum
+			where
+			c.flag = '1' and
+			c.messageId = #{id} and
+			c.replyCommentId not in (
+			select DISTINCT e.id from
+			cy_discover_reply d,cy_discover_reply e
+			where e.discoverUserId = d.userId)
+			order by c.createTime ASC)
+	</select>
+
+	<select id="selectDiscoverWallPhoto" parameterType="map" resultType="int">
+    SELECT count(id) FROM cy_discover_wall_photo
+    where
+    discoverId = #{accountNum}
+	</select>
+
+	<insert id="insertDiscoverWallPhoto" parameterType="map">
+    insert into cy_discover_wall_photo(discoverId, discoverWallPhoto)
+    values(#{accountNum}, #{wallPhoto})
+	</insert>
+
+	<insert id="updateDiscoverWallPhoto" parameterType="map">
+    update cy_discover_wall_photo
+    set discoverWallPhoto =  #{wallPhoto}
+    where discoverId = #{accountNum}
+	</insert>
+
+	<select id="getDiscoverWallPhoto" parameterType="map" resultType="String">
+    SELECT discoverWallPhoto FROM cy_discover_wall_photo
+    where
+    discoverId = #{accountNum}
+	</select>
+
+	<select id="listDiscoverNewsCount" parameterType="map" resultType="long">
+    SELECT
+    count(newsId)
+    FROM
+    cy_news
+    WHERE
+    del_flag = '0'
+	</select>
+
+<!--获取新闻列表-->
+	<select id="listDiscoverNews" parameterType="map" resultType="com.cy.core.discover.entity.DiscoverNews">
+		SELECT
+		cyn.newsId,
+		cyn.title,
+		cyn.introduction,
+		cyn.pic,
+		cyn.createTime,
+		cyn.channelName,
+		cyn.newsUrl,
+		cyn.create_date AS createDate,
+		cyn.update_date AS updateDate
+		FROM cy_news cyn
+		<where>
+			cyn.del_flag = '0'
+		</where>
+		ORDER BY cyn.update_date DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="listDiscoverRecruitmentCount" parameterType="map" resultType="long">
+		SELECT
+		count(id)
+		FROM
+		cy_service
+		WHERE
+		category = '3'
+	</select>
+
+	<!--获取招聘列表-->
+	<select id="listDiscoverRecruitment" parameterType="map" resultType="com.cy.core.discover.entity.DiscoverRecruitment">
+		SELECT
+		cys.id,
+		cys.accountNum,
+		cys.userId,
+		cys.content,
+		cys.region,
+		cys.type,
+		cys.status,
+		cys.auditStatus,
+		cys.auditOpinion,
+		cys.auditUserId,
+		cys.auditTime,
+		cys.createTime,
+		cu.name,
+		cu.picture
+		FROM cy_service cys
+		LEFT JOIN cy_userprofile cu ON cys.accountNum = cu.accountNum
+		<where>
+			cys.category = '3'
+		</where>
+		ORDER BY cys.createTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="getDiscoverPersonalInfo" parameterType="map" resultMap="discoverRecordResultMap">
+		SELECT
+		cc.id,
+		cc.discoverId,
+		cc.discoverContent,
+		cc.createTime,
+		cc.discoverType,
+		cc.discoverPic,
+		cu.name,
+		cu.picture
+		FROM
+		cy_discover_content cc
+		INNER JOIN cy_userprofile cu ON cc.discoverId = cu.accountNum
+		WHERE
+		cc.delflag = '0'
+	<!--AND cc.discoverId = #{accountNum}-->
+    AND cc.id = #{contentId}
+	</select>
+
+	<!--推送消息-->
+	<insert id="insertDiscoverMsgPush" parameterType="com.cy.core.discover.entity.DiscoverMsgPush">
+		insert into
+		cy_discover_msg_push(pushUserId,bePushUserId,contentId,commentId,replyId,message,isRead,messageType,createTime)
+		values(#{pushUserId},#{bePushUserId},#{contentId},#{commentId},#{replyId},#{message},#{isRead},#{messageType},now())
+	</insert>
+
+	<!--当前用户点赞推送消息ID-->
+	<select id="getPushId" parameterType="com.cy.core.discover.entity.DiscoverMsgPush" resultType="String">
+		SELECT
+		id
+		FROM cy_discover_msg_push
+		<where>
+			pushUserId = #{pushUserId} AND
+			bePushUserId  =  #{bePushUserId}
+			AND messageType = '1'
+		</where>
+	</select>
+
+	<!--更新点赞推送消息时间-->
+	<update id="updateDiscoverMsgPush" parameterType="String">
+		UPDATE
+		cy_discover_msg_push
+		SET createTime = now(),
+		isRead = '0'
+		<where>
+			id = #{pushId}
+		</where>
+	</update>
+
+
+	<!--获取推送消息列表-->
+	<select id="getDiscoverPushMsg" parameterType="map" resultType="com.cy.core.discover.entity.DiscoverMsgPush">
+		SELECT
+		cdmp.id,
+		cdmp.pushUserId,
+		cdmp.bePushUserId,
+		cdmp.contentId,
+		cdmp.message,
+		cdmp.isRead,
+		cdmp.messageType,
+		cdmp.createTime,
+		cu.name,
+		cu.picture
+		FROM cy_discover_msg_push cdmp
+		LEFT JOIN cy_userprofile cu ON cdmp.bePushUserId = cu.accountNum
+		<where>
+			cdmp.pushUserId = #{accountNum}
+		</where>
+		ORDER BY cdmp.createTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--当前用户推送消息总数-->
+	<select id="getDiscoverPushMsgCount" parameterType="map" resultType="long">
+		SELECT
+		count(id)
+		FROM cy_discover_msg_push
+		<where>
+			pushUserId = #{accountNum}
+		</where>
+	</select>
+
+	<!--当前用户推送消息未读总数-->
+	<select id="getDiscoverPushMsgNotReadCount" parameterType="map" resultType="long">
+		SELECT
+		count(id)
+		FROM cy_discover_msg_push
+		<where>
+			pushUserId = #{accountNum} and
+			isRead = '0'
+		</where>
+	</select>
+
+	<!--设置朋友圈消息推送全部已读-->
+	<update id="setAllDiscoverPushMsgRead" parameterType="map">
+		UPDATE
+		cy_discover_msg_push
+		SET isRead = '1'
+		<where>
+			pushUserId = #{accountNum}
+		</where>
+	</update>
+
+	<!--设置朋友圈消息推送已读-->
+	<update id="updateDiscoverPushMsgIsRead" parameterType="map">
+		UPDATE
+		 cy_discover_msg_push
+		 SET isRead = '1'
+		 <where>
+			 pushUserId = #{accountNum} and
+			 id = #{pushId}
+		 </where>
+	</update>
+
+	<!--朋友圈消息推送清空-->
+	<delete id="deleteDiscoverPushMsg" parameterType="map">
+		DELETE FROM
+		cy_discover_msg_push
+		<where>
+			pushUserId = #{accountNum}
+			<if test="pushId!=null and pushId!=''">
+				AND id = #{pushId}
+			</if>
+		</where>
+	</delete>
+
+	<!--判断当前用户是否举报过-->
+	<select id="getDiscoverComplaint" parameterType="map" resultType="int">
+		SELECT
+		count(complaintId)
+		FROM cy_discover_complaint
+		<where>
+			contentId = #{contentId} and
+			complaintUserId = #{complaintUserId} and
+			beComplaintUserId = #{beComplaintUserId}
+		</where>
+	</select>
+
+	<!--举报信息插入-->
+	<insert id="insertDiscoverComplaint" parameterType="map">
+		insert into
+		cy_discover_complaint(contentId,complaintUserId,beComplaintUserId,complaintReason,complaintType,createTime)
+		values(#{contentId},#{complaintUserId},#{beComplaintUserId},#{complaintReason},#{complaintType},now())
+	</insert>
+
+	<!--获取当前说说被举报次数-->
+	<select id="getTotalDiscoverComplaint" parameterType="map" resultType="int">
+		SELECT
+		count(complaintId)
+		FROM cy_discover_complaint
+		<where>
+			contentId = #{contentId}
+		</where>
+	</select>
+
+	<!--说说被举报三次，物理删除-->
+	<update id="updateDiscoverContentDelFlag" parameterType="map">
+		UPDATE
+		cy_discover_content
+		SET delFlag = '1'
+		<where>
+			id = #{contentId}
+		</where>
+	</update>
+</mapper>

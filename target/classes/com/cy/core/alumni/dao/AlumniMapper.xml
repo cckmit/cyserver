@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.alumni.dao.AlumniMapper">
+	<resultMap type="com.cy.core.alumni.entity.Alumni" id="alumniResultMap">
+		<id column="alumniId" property="alumniId" />
+		<result column="alumniName" property="alumniName" />
+		<result column="region" property="region" />
+		<result column="industry" property="industry" />
+		<result column="hobby" property="hobby" />
+		<result column="introduction" property="introduction" />
+		<result column="status" property="status" />
+		<result column="createById" property="createById" />
+		<result column="accountNum" property="accountNum" />
+		<result column="createTime" property="createTime" />
+		<result column="checkFlag" property="checkFlag" />
+
+		<!-- lixun 2016-7-12 -->
+
+		<result column="main" property="mainType" />
+		<result column="academyid" property="xueyuanId" />
+		<result column="industry" property="industryCode" />
+		<result column="pid" property="parentId" />
+		<result column="delstate" property="delState" />
+		<result column="isused" property="isUsed" />
+		<result column="level" property="level" />
+		<result column="sequence" property="sequence" />
+		<result column="parent" property="parent"/>
+		<!-- lixun -->
+		<result column="industryCode" property="industryCode"/>
+		<!-- qpf 2016-07-16 -->
+		<result column="userId" property="userId" />
+		<result column="userName" property="userName" />
+		<result column="userAccount" property="userAccount" />
+		<result column="userPassword" property="userPassword" />
+		<result column="userEmail" property="userEmail" />
+		<result column="userTelephone" property="userTelephone" />
+		<result column="userDeptId" property="userDeptId" />
+		<result column="userFlag" property="userFlag" />
+		<result column="uRoleId" property="uRoleId" />
+		<result column="roleId" property="roleId" />
+		<result column="roleName" property="roleName" />
+		<result column="roleSystemAdmin" property="roleSystemAdmin" />
+		<result column="roleFlag" property="roleFlag" />
+		<!-- qpf 2016-07-17 -->
+		<result column="diFullName" property="diFullName" />
+		<!-- 2016-07-30 -->
+		<result column="academyName" property="academyName" />
+		<!-- 2016-08-14 -->
+		<result column="main_id" property="mainId" />
+		<!-- qpf -->
+		<!-- lixun 客户端行业/地区分会融合 -->
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="memberCount" property="memberCount" />
+		<result column="presidentName" property="presidentName" />
+		<result column="telephone" property="telephone" />
+		<result column="address" property="address" />
+		<result column="email" property="email" />
+	</resultMap>
+
+	<!-- lixun -->
+
+	<resultMap type="com.cy.core.alumni.entity.Alumni" id="parentResult">
+		<id column="alumniId" property="alumniId" />
+		<result column="pid" property="parentId" />
+		<result column="level" property="level" />
+	</resultMap>
+	<resultMap type="com.cy.core.role.entity.Role" id="roleResult"  >
+		<id column="roleId" property="roleId" />
+		<result column="roleName" property="roleName" />
+	</resultMap>
+	<!-- lixun end -->
+
+	<resultMap id="joinResult" type="com.cy.mobileInterface.alumni.entity.JoinAlumni">
+		<id column="id" property="id" />
+		<result column="user_id" property="accountNum" />
+		<result column="alumni_id" property="alumniId" />
+		<result column="join_time" property="joinTime" />
+		<result column="leave_time" property="leaveTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="remark" property="remark" />
+	</resultMap>
+
+	<select id="countAlumni" parameterType="map" resultType="long">
+		select
+		count(alumniId) from cy_alumni a
+		<where> <!-- lixun -->
+			a.main>'0'
+			<if test='withoutOldAlumni == "1"'>
+				AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+			</if>
+			<if test="alumniName!=null">
+				and a.alumniName like concat('%',#{alumniName},'%')
+			</if>
+			<if test="pid != null and pid != ''">	<!-- 刘振 -->
+				and a.pid = #{pid}
+			</if>
+			<if test="aid!=null"> <!-- lixun -->
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aid})
+			</if>
+			<if test="deptid>0">
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptid})
+			</if>
+
+		</where>
+	</select>
+	<select id="selectList" parameterType="map" resultMap="alumniResultMap">
+		select a.alumniId,a.telephone,a.pid,b.alumniName parent,a.sequence,a.`level`,a.alumniName,case a.main
+		when 1 then '院系分会' when 2 then '地方分会' when 3 then '行业分会' END main,a.academyid,
+		a.region,d.`value` industry,a.hobby,a.introduction,a.`status`,a.createById,a.accountNum,
+		a.createtime,a.checkFlag,case a.isused when 0 then '未开通' when 1 then '审核中' when 2 then '已开通'end isused
+		from cy_alumni a left join cy_alumni b on a.pid=b.alumniId left join cy_industry d
+		on a.industry=d.`code`
+		<where> <!-- lixun -->
+			a.main>'0'
+			<if test='withoutOldAlumni == "1"'>
+				AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+			</if>
+			<if test="alumniName!=null">
+				and a.alumniName like concat('%',#{alumniName},'%')
+			</if>
+			<if test="pid != null and pid != ''">	<!-- 刘振 -->
+				and a.pid = #{pid}
+			</if>
+			<if test="aid!=null"> <!-- lixun -->
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aid})
+			</if>
+			<if test="deptid>0">
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptid})
+			</if>
+
+		</where>
+		order by a.sequence asc
+		limit #{start},#{rows}
+	</select>
+
+	<select id="countAdminList" parameterType="map" resultType="long">
+		SELECT count(1)
+		FROM cy_alumni a
+		INNER JOIN cy_user us ON us.dept_id=a.alumniId
+		<where>
+			a.main>='0'
+			AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+			and us.dept_id>='0' AND us.flag != '99'
+			and a.sequence like concat((select sequence from cy_alumni where alumniId=#{deptid}),'%')
+			<if test="aid!=null">
+				and a.sequence LIKE (select concat(sequence,'%') FROM cy_alumni WHERE alumniId=#{aid})
+			</if>
+			<if test="uAcount!=null">
+				and us.userAccount LIKE concat('%',#{uAcount},'%')
+			</if>
+			<if test="uName!=null">
+				and us.userName LIKE concat('%',#{uName},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectAdminList" parameterType="map" resultMap="alumniResultMap">
+		SELECT us.userId AS userId
+		,us.userName AS userName
+		,us.userAccount AS userAccount
+		,us.email AS userEmail
+		,us.telephone AS userTelephone
+		,us.dept_id AS userDeptId
+		,us.flag AS userFlag
+		,ur.id AS uRoleId
+		,re.roleId AS roleId
+		,re.roleName AS roleName
+		,re.systemAdmin AS roleSystemAdmin
+		,re.flag AS roleFlag
+		,a.alumniName
+		,a.academyid
+		,de.dept_name
+		,a.sequence
+		,a.alumniId
+		FROM cy_alumni a
+		INNER JOIN cy_user us ON us.dept_id=a.alumniId
+		LEFT JOIN cy_user_role ur ON us.userId = ur.userId and ur.roleId=2
+		LEFT JOIN cy_role re ON ur.roleId = re.roleId
+		LEFT JOIN cy_dept_info de on a.academyid=de.dept_id
+		<where>
+			a.main>='0'
+			AND CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+			and us.dept_id>='0' AND us.flag != '99'
+			and a.sequence like concat((select sequence from cy_alumni where alumniId=#{deptid}),'%')
+			<if test="aid!=null">
+				and a.sequence LIKE (select concat(sequence,'%') FROM cy_alumni WHERE alumniId=#{aid})
+			</if>
+			<if test="uAcount!=null">
+				and us.userAccount LIKE concat('%',#{uAcount},'%')
+			</if>
+			<if test="uName!=null">
+				and us.userName LIKE concat('%',#{uName},'%')
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+	<!-- lixun -->
+	<select id="selectByParent" parameterType="Long"  resultMap="parentResult">
+		select alumniId,sequence,`level` from cy_alumni where alumniId=#{sid} union
+		select max(alumniId)+1,'',1 from cy_alumni
+	</select>
+	<select id="selectXueYuanFenHui" resultType="long">
+		select alumniId from cy_alumni where level=2 and main=0 and delstate!=1 and isused=2 and alumniName like '%学院%'
+	</select>
+	<sql id="SqlDiQu">
+		select alumniId from cy_alumni where level=2 and main=0 and delstate!=1 and isused=2 and alumniName like '%地%'
+	</sql>
+	<sql id="SqlFenHui">
+		select alumniId from cy_alumni where level=2 and main=0 and delstate!=1 and isused=2
+	</sql>
+	<select id="selectDiQuFenHui" resultType="long">
+		<include refid="SqlFenHui"/> and alumniName like '%地%'
+	</select>
+	<select id="selectHangYeFenHui" resultType="long">
+		<include refid="SqlFenHui"/>and alumniName like '%行业%'
+	</select>
+	<!-- lixun end-->
+
+	<insert id="insert" parameterType="com.cy.core.alumni.entity.Alumni">
+		insert into
+		cy_alumni(alumniId,alumniName,region,industry,hobby,introduction,status,createById,createTime,accountNum,checkFlag
+		,pid,main,isused,academyid,`level`,sequence,presidentName,telephone,address,email)
+		values(#{alumniId},#{alumniName},#{region},#{industry},#{hobby},#{introduction},#{status},#{createById},#{createTime},#{accountNum},#{checkFlag}
+		,#{parentId},#{mainType},#{isUsed},#{xueyuanId},#{level},#{sequence},#{presidentName},#{telephone},#{address},#{email})
+	</insert>
+	<select id="selectByAlumniName" parameterType="com.cy.core.alumni.entity.Alumni"
+			resultMap="alumniResultMap">
+		select * from cy_alumni where alumniName=#{alumniName}
+		<if test="alumniId!=null">
+			and alumniId!=#{alumniId}
+		</if>
+	</select>
+	<delete id="delete" parameterType="list">
+		delete from cy_alumni where alumniId in
+		<foreach collection="list" open="(" close=")" item="id"
+				 separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<delete id="deleteByUserIdAndAlumniId" parameterType="map">
+		delete from cy_user_alumni where alumni_id = #{alumniId} and user_id = #{userId}
+	</delete>
+	<select id="getByAlumniId" parameterType="long" resultMap="alumniResultMap">
+	SELECT
+	a.alumniId,
+	a.pid,
+	b.alumniName parent,
+	a.sequence,
+	a.`level`,
+	a.alumniName,
+	a.main AS main_id,
+
+	CASE a.main
+		WHEN 1 THEN
+			'院系分会'
+		WHEN 2 THEN
+			'地方分会'
+		WHEN 3 THEN
+			'行业分会'
+	END main,
+	a.academyid,
+	a.region,
+	a.industry industryCode,
+	d.`value` industry,
+	a.hobby,
+	a.introduction,
+	a.`status`,
+	a.createById,
+	a.accountNum,
+	a.createtime,
+	a.checkFlag,
+	a.presidentName,
+    a.address,
+    a.telephone,
+    a.email,
+    (SELECT count(1) FROM cy_user_alumni ua WHERE ua.del_flag='0' AND ua.`status` = '20' AND ua.alumni_id = a.alumniId ) memberCount,
+	di.dept_name AS academyName,
+	CASE a.isused
+		WHEN 0 THEN
+			'未开通'
+		WHEN 1 THEN
+			'审核中'
+		WHEN 2 THEN
+			'已开通'
+	END isused
+	FROM
+	cy_alumni a
+	LEFT JOIN cy_alumni b ON a.pid = b.alumniId
+	LEFT JOIN cy_industry d ON a.industry = d.`code`
+	LEFT JOIN cy_dept_info di ON a.academyid = di.dept_id
+	WHERE
+	a.alumniId = #{alumniId}
+	</select>
+	<update id="update" parameterType="com.cy.core.alumni.entity.Alumni">
+		update cy_alumni set
+			alumniId=#{alumniId}
+		<if test="alumniName!=null">
+			,alumniName=#{alumniName}
+		</if>
+		<if test="region!=null">
+			,region=#{region}
+		</if>
+		<if test="parentId!=null">
+			,pid=#{parentId}
+		</if>
+		<if test="industry!=null">
+			,industry=#{industry}
+		</if>
+		<if test="mainType!=null">
+			,main=#{mainType}
+		</if>
+		<if test="isUsed!=null">
+			,isused=#{isUsed}
+		</if>
+		<if test="introduction!=null">
+			,introduction=#{introduction}
+		</if>
+		<if test="level!=null">
+			,level=#{level}
+		</if>
+		<if test="sequence!=null">
+			,sequence=#{sequence}
+		</if>
+		<if test="xueyuanId!=null != null and xueyuanId != ''">
+			,academyid=#{xueyuanId}
+		</if>
+		<if test="address!=null">
+			,address=#{address}
+		</if>
+		<if test="telephone!=null">
+			,telephone=#{telephone}
+		</if>
+
+		<if test="presidentName!=null">
+		,presidentName=#{presidentName}
+	    </if>
+
+
+		<if test="email!=null">
+			,email=#{email }
+		</if>
+
+
+
+		where alumniId=#{alumniId}
+	</update>
+	<!-- 去除学院与学院分会的绑定 -->
+	<update id="unbinding" parameterType="string">
+		update cy_alumni set
+			academyid = NULL
+		where find_in_set(academyid,#{xueyuanId})
+	</update>
+	<select id="selectAll" parameterType="map" resultMap="alumniResultMap">
+		select
+		<if test="userId != null and userId != ''">
+			(select t.status from cy_user_alumni t where t.alumni_id = a.alumniId and user_id = #{userId}) status,
+		</if>
+		alumniid id,alumniname name,(select count(1) from cy_user_alumni where alumni_id=a.alumniId) memberCount,presidentName,telephone,address,email
+		from cy_alumni a where pid=
+		(<include refid="SqlFenHui"/> and alumniName like concat( #{leixing}, '%') limit 1)
+	</select>
+	<select id="selectByRegion" parameterType="map" resultMap="alumniResultMap">
+		select * from cy_alumni where region like concat('%',#{region1},'%')
+		<if test="region2!=null and region2!=''">
+			or region like concat('%',#{region2},'%')
+		</if>
+	</select>
+
+	<!-- lixun 2016-7-12 -->
+	<!--
+	<select id="selectTree" parameterType="list" resultMap="alumniResultMap">
+		select * from cy_alumni
+		<where>
+			main='0'
+			<if test="list!=null and list.size()>0">
+				<foreach collection="list" open="(" separator="or" close=")" item="dept">
+					and dept_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+		</where>
+	</select>
+	-->
+
+	<!--select * from cy_alumni where main>='0' and delstate!='1'
+		order by alumniId asc -->
+	<select id="selectAlumniIdByUserId" parameterType="long" resultType="java.lang.Long">
+		select dept_id from cy_user where userId=#{id}
+	</select>
+	<select id="selectAlumniDeptTree" parameterType="long" resultMap="alumniResultMap">
+		select case academyid is null or academyid!='' when true then (select @xd:=academyid from dual where @se:=sequence) else case sequence like concat(@se,'.%') when true then @xd else '' end end academyid,alumniId,alumniName,main,pid,sequence,`level`,region,industry,hobby,isused,introduction,`status`,delstate,createById,accountNum,createTime,checkFlag,memberCount,presidentName,telephone,address,email from (
+		select * from (
+		select @se:='-1' ,@xd:='-1',a.* from cy_alumni a where (main>=0 and
+		sequence like concat((select sequence from cy_alumni where alumniId=#{id}),'.%' ))
+		and delstate!='1'
+		union
+		select * from (
+		select @r as tmp_aluId,
+		(select @r:= pid from cy_alumni where alumniId = tmp_aluId ) as tmp_pid
+		from (select @r := #{id},@l := 0 ) vars, cy_alumni h where @r != 0) t1
+		join cy_alumni t2 on t1.tmp_aluId = t2.alumniId where delstate!='1' ) cc
+		order by cc.sequence asc ) t3;
+	</select>
+	
+	<select id="selectAlumniAllTree" parameterType="long" resultMap="alumniResultMap">
+	  select * from cy_alumni where delstate!='1' and main!='99' order by sequence
+	</select>
+	
+	<select id="selectAlumniDeptTreeDrop" parameterType="long" resultMap="alumniResultMap">
+		select * from cy_alumni where
+		sequence like concat((select sequence from cy_alumni where alumniId=#{id}),'%' )
+		and delstate!='1' order by sequence
+	</select>
+
+	<select id="selectAdmin"  parameterType="java.lang.Long" resultType="java.lang.String">
+		select username from cy_user where dept_id=#{id}
+	</select>
+
+	<select id="selectRole" parameterType="long" resultType="long">
+		select count(1) from cy_user_role where userId=#{userid} and roleId=2
+	</select>
+
+	<!-- start liuzhen -->
+	<select id="queryList" parameterType="map" resultMap="alumniResultMap">
+		select a.alumniId,a.pid,b.alumniName parent,a.sequence,a.`level`,a.alumniName,case a.main
+		when 1 then '院系分会' when 2 then '地方分会' when 3 then '行业分会' END main,a.academyid,
+		a.region,d.`value` industry,a.hobby,a.introduction,a.`status`,a.createById,a.accountNum,
+		a.createtime,a.checkFlag,case a.isused when 0 then '未开通' when 1 then '审核中' when 2 then '已开通'end isused
+		from cy_alumni a left join cy_alumni b on a.pid=b.alumniId left join cy_industry d
+		on a.industry=d.`code`
+		<where> <!-- lixun -->
+			a.main>'0'
+			<if test="alumniName!=null">
+				and a.alumniName like concat('%',#{alumniName},'%')
+			</if>
+			<if test="pid != null and pid != ''">	<!-- 刘振 -->
+				and a.pid = #{pid}
+			</if>
+			<if test="xueyuanId != null and xueyuanId != ''">	<!-- 刘振 -->
+				and a.academyid=#{xueyuanId}
+			</if>
+			<if test="aid!=null"> <!-- lixun -->
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aid})
+			</if>
+			<if test="deptid>0">
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptid})
+			</if>
+			<if test="alumniChildId != null and alumniChildId != ''">
+				<!-- AND (select sequence from cy_alumni where alumniid=#{alumniChildId}) like concat('%',a.sequence,'%') -->
+				AND (
+					(
+						SELECT sequence FROM cy_alumni WHERE alumniid =#{alumniChildId}
+					) = a.sequence
+					OR
+					(
+						SELECT sequence FROM cy_alumni WHERE alumniid =#{alumniChildId}
+					) LIKE concat(a.sequence, '.%')
+				)
+			</if>
+			<if test="main != null and main != ''">
+				AND a.main = #{main}
+			</if>
+
+		</where>
+		order by status desc
+	</select>
+
+	<!-- start liuzhen -->
+	<!-- 查询满足条件的校友组织编号(多个编号以","隔开) -->
+	<select id="queryAlumniIds" parameterType="map" resultType="string">
+		SELECT
+			GROUP_CONCAT(a.alumniId)
+		FROM
+		cy_alumni a
+		LEFT JOIN cy_alumni b ON a.pid = b.alumniId
+		LEFT JOIN cy_industry d ON a.industry = d.`code`
+
+		<where> <!-- lixun -->
+			a.main>'0'
+			<if test="alumniName!=null">
+				and a.alumniName like concat('%',#{alumniName},'%')
+			</if>
+			<if test="pid != null and pid != ''">	<!-- 刘振 -->
+				and a.pid = #{pid}
+			</if>
+			<if test="xueyuanId != null and xueyuanId != ''">	<!-- 刘振 -->
+				and a.academyid=#{xueyuanId}
+			</if>
+			<if test="aid!=null"> <!-- lixun -->
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aid})
+			</if>
+			<if test="deptid>0">
+				and a.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptid})
+			</if>
+			<if test="alumniParentId != null and alumniParentId != ''">
+				AND (
+					a.alumniId = #{alumniParentId} OR a.sequence LIKE CONCAT((
+					SELECT t.sequence
+					FROM cy_alumni t
+					WHERE t.alumniId = #{alumniParentId}
+					),'.%')
+				)
+			</if>
+		</where>
+	</select>
+	<select id="selectUserAlumni" parameterType="map" resultMap="joinResult">
+		SELECT * FROM cy_user_alumni WHERE del_flag = '0' AND user_id=#{accountNum} AND alumni_id=#{alumniId} limit 0,1
+	</select>
+
+	<insert id="saveUserAlumni" parameterType="map">
+		INSERT INTO cy_user_alumni(user_id, alumni_id, join_time,status, del_flag)VALUES(#{accountNum},#{alumniId}, #{joinTime},#{status}, #{delFlag});
+	</insert>
+
+	<!-- 删除校友手机用户与分会中间表数据 -->
+	<update id="deleteUserAlumni" parameterType="map">
+		DELETE FROM cy_user_alumni WHERE user_id=#{accountNum} AND alumni_id=#{alumniId}
+	</update>
+
+	<delete id="clearByAccountNum" parameterType="String">
+		DELETE FROM cy_user_alumni WHERE user_id=#{accountNum}
+	</delete>
+
+	<update id="updateUserAlumni" parameterType="map">
+		UPDATE cy_user_alumni SET
+		<if test="leaveTime != null and leaveTime != ''">
+			leave_time=#{leaveTime},
+		</if>
+		<if test="delFlag != null and delFlag != ''">
+			del_flag=#{delFlag} ,
+		</if>
+		<if test="joinTime != null and joinTime != ''">
+			join_time=#{joinTime} ,
+		</if>
+		<if test="status != null and status != ''">
+			status=#{status} ,
+		</if>
+		user_id=#{accountNum}
+		WHERE user_id=#{accountNum} AND alumni_id=#{alumniId}
+	</update>
+
+	<!-- 获取组织成员 -->
+	<select id="queryMembers" parameterType="map" resultType="map">
+		SELECT
+			u.id AS id,
+			u.user_id AS userId,
+			u.alumni_id AS alumniId ,
+			u.status AS status ,
+			u.join_time AS joinTime ,
+			u.leave_time AS leaveTime ,
+			u.del_flag AS delFlag
+		FROM cy_user_alumni u WHERE del_flag != '1'
+		<if test="alumniId != null and alumniId != ''">
+			AND u.alumni_id = #{alumniId}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND u.user_id = #{userId}
+		</if>
+		<if test="baseInfoId != null and baseInfoId != ''">
+			AND u.user_id IN (
+				SELECT accountNum
+				FROM cy_user_info
+				WHERE user_id = #{baseInfoId}
+			)
+		</if>
+	</select>
+
+	<select id="getUserJoinedAlumni" resultType="map" parameterType="map" >
+
+      select
+        (select count(1) from cy_user_alumni c where  c.alumni_id=a.alumniId)memberCount,
+         a.alumniName name ,
+         a.address,
+         a.telephone,
+         a.email,
+         t.status,
+         a.presidentName,
+         t.alumni_id id
+         from cy_alumni a
+         left join  cy_user_alumni t on a.alumniId=t.alumni_id
+         where user_id=#{userId} AND pid=
+		(<include refid="SqlFenHui"/> and alumniName like concat( #{leixing}, '%') limit 1)
+
+		<if test="status != null and status != ''">
+         and t.status=#{status}
+		</if>
+
+	</select>
+	<select id="getUserNotJoinedAlumni" resultType="map" parameterType="map" >
+
+        SELECT DISTINCT
+              (select count(1) from cy_user_alumni c where
+               c.alumni_id=a.alumniId )memberCount,
+               a.alumniName name ,
+               a.address,
+               a.telephone,
+               a.email,
+               a.presidentName,
+               a.alumniid id
+               FROM cy_alumni a
+               LEFT JOIN cy_user_alumni u
+               on a.alumniId=u.alumni_id
+               where u.alumni_id  NOT  in
+              (select c.alumni_id from cy_user_alumni c
+              where user_id=#{user_id} ) AND pid=
+		(<include refid="SqlFenHui"/> and alumniName like concat( #{leixing}, '%') limit 1)
+
+
+
+	</select>
+
+	<!-- 查询分会列表 -->
+	<select id="selectAlumniList" parameterType="map" resultType="map">
+		SELECT *
+		FROM (
+			SELECT
+				<if test="userId != null and userId != ''">
+					(select t.status from cy_user_alumni t where t.alumni_id = a.alumniId and user_id = #{userId} AND t.del_flag != '1' LIMIT 1) status,
+				</if>
+				a.alumniid id,
+				a.alumniname name,
+				(SELECT COUNT(1) FROM cy_user_alumni cua JOIN cy_userprofile cu ON cu.accountNum=cua.user_id WHERE cua.alumni_id=a.alumniId AND cua.`status`='20' AND cua.del_flag = '0') AS memberCount,
+				a.academyid,
+				a.presidentName,
+				a.telephone,
+				a.address,
+				a.main,
+				a.email,
+				CASE WHEN GROUP_CONCAT(mnt.id) IS NULL THEN '0' ELSE '1' END hasCategory
+				FROM cy_alumni a
+				LEFT JOIN cy_mobile_news_type mnt ON a.alumniId = mnt.dept_id
+				WHERE a.isused = '2' AND a.delstate != '1'
+				AND CASE WHEN a.alumniId > 1 AND a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+				GROUP BY a.alumniId
+		) a
+		WHERE CASE WHEN a.main = 1 THEN a.academyid IS NOT NULL AND a.academyid != '' ELSE TRUE END
+			<choose>
+				<when test='type == "1" and userId != null and userId != ""'>
+					AND a.main = #{type}
+					AND (
+						a.academyid IN (
+							SELECT left(user_id,10)
+							FROM cy_user_info
+							where checkFlag = '1' AND accountNum = #{userId}
+						)
+						OR
+						a.academyid IN (
+							SELECT d.belong_dept_id FROM cy_dept_info d
+							WHERE d.is_current = '0' AND d.dept_id IN (
+								SELECT left(user_id,10)
+								FROM cy_user_info
+								where checkFlag = '1' AND accountNum = #{userId}
+							)
+						)
+					)
+				</when>
+				<otherwise>
+
+					<if test="type != null and type != ''">
+						AND a.main = #{type}
+					</if>
+					<if test="userId != null and userId != ''">
+						<if test="status != null and status != ''">
+							AND a.status = #{status}
+						</if>
+						<choose>
+							<when test='isJoin == "0"'>
+								AND (
+									a.id NOT IN (
+										SELECT alumni_id
+										FROM cy_user_alumni
+										WHERE del_flag != '1' AND user_id = #{userId} AND (status = '5' OR status = '10' OR status = '20')
+									)
+								)
+							</when>
+							<when test='isJoin == "1"'>
+								AND (
+									a.id IN (
+										SELECT alumni_id
+										FROM cy_user_alumni
+										WHERE del_flag != '1' AND user_id = #{userId} AND (status = '5' OR status = '10' OR status = '20')
+									)
+								)
+							</when>
+						</choose>
+					</if>
+				</otherwise>
+			</choose>
+			<!--if test="type != null and type != ''">
+				AND a.main = #{type}
+			</if>
+			<if test="userId != null and userId != ''">
+				<if test="status != null and status != ''">
+					AND a.status = #{status}
+				</if>
+				<choose>
+					<when test='isJoin == "0"'>
+						AND (
+							a.id NOT IN (
+								SELECT alumni_id
+								FROM cy_user_alumni
+								WHERE del_flag != '1' AND user_id = #{userId}
+							)
+							OR
+							a.status = '30'
+						)
+					</when>
+					<when test='isJoin == "1"'>
+						AND (
+							a.id IN (
+								SELECT alumni_id
+								FROM cy_user_alumni
+								WHERE del_flag != '1' AND user_id = #{userId}
+							)
+							AND
+							a.status != '30'
+						)
+					</when>
+				</choose>
+			</if-->
+	</select>
+
+	<!-- 获取分会成员数 -->
+	<select id="getAlumniMemberCount" parameterType="map" resultType="int">
+		SELECT COUNT(1)
+		FROM cy_user_alumni
+		WHERE del_flag != '1'
+		<if test="alumniId != null and alumniId != ''">
+			AND alumni_id = #{alumniId}
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+	</select>
+
+	<!-- 通过用户编号获取分会列表 -->
+	<select id="findAlumniListFromAccountNum" parameterType="String" resultMap="alumniResultMap">
+		SELECT
+			*
+		FROM
+			cy_alumni
+		WHERE
+			alumniId IN (
+				SELECT
+					alumni_id
+				FROM
+					cy_user_alumni
+				WHERE
+					del_flag = '0' and
+					`status` = '20' and
+					user_id = #{userId}
+			)
+		OR academyid IN (
+			SELECT
+				(
+					CASE cd.is_current
+					WHEN '1' THEN
+						cd.dept_id
+					ELSE
+						cd.belong_dept_id
+					END
+				) currdept_id
+			FROM
+				cy_dept_info cd
+			WHERE
+				cd.dept_id IN (
+					SELECT
+						LEFT (user_id, 10)
+					FROM
+						cy_user_info
+					WHERE
+						accountNum = #{userId}
+					AND checkFlag = '1'
+				)
+		)
+		order by main
+    </select>
+
+	<!--获取推荐分会信息-->
+	<select id="queryAlumniListByCondition" parameterType="map" resultType="com.cy.core.alumni.entity.Alumni">
+		SELECT
+		a.alumniId
+		,a.alumniName
+		,a.main mainType
+		,a.presidentName
+		,a.industry
+		FROM cy_alumni a
+		<where>
+			a.delstate = 0 and a.alumniId NOT IN
+			(select alumni_id FROM  cy_user_alumni WHERE del_flag=0 AND user_id = #{accountNum})
+			<if test='type =="1" '>
+				AND a.main = 2
+				AND a.alumniName like concat('%','${mobileArea}','%')
+			</if>
+			<if test='type =="2" '>
+				AND a.main = 3
+			</if>
+		</where>
+	</select>
+	<!--根据行业分会代号查询行业分会产业-->
+	<select id="queryProfessionByCode" parameterType="String" resultType="String">
+		SELECT `value` from cy_industry where code = #{code} and delstate = '0'
+	</select>
+</mapper>

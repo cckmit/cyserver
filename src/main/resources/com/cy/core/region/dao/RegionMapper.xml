@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.cy.core.region.dao.RegionMapper">
+	<resultMap type="com.cy.core.region.entity.Region" id="regionResultMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="pid" property="pid" />
+		<result column="orderId" property="orderId" />
+		<result column="areaCode" property="areaCode" />
+		<result column="postCode" property="postCode" />
+		<result column="level" property="level" />
+		<result column="state" property="state" />
+	</resultMap>
+
+
+	<!--add by jiangling-->
+	<sql id="region">
+		select concat('2.',id) id,provinceName name,concat('3.',countryId) pid,orderid,'' areaCode,'' postCode,'2' level from cy_province UNION
+		select concat('1.',id) id, cityName name,concat('2.',provinceId) pid,type orderid,areaCode,'' postCode,'3' level from cy_city union
+		select id, areaName name, concat('1.',cityId), '0' orderid,'' areaCode,postCode,'4' level from cy_area
+	</sql>
+	<sql id="regionAll">
+		select concat('3.',id) id,countryName name,'-1' pid,orderid,'' areaCode,'' postCode,'1' level  from cy_country union
+		<include refid="region" />
+	</sql>
+
+	<select id="selectAll"   resultMap="regionResultMap">
+		select a.*, 'open' state from (<include refid="regionAll" />) a
+	</select>
+	<select id="selectRegion" parameterType="java.lang.String"  resultMap="regionResultMap">
+		select distinct t2.* from ( select case @r when '-1' then @r:=id else @r end id,@r _tmp,
+		(select @r:=pid from (<include refid="regionAll" />) region1 where id=_tmp) pid from
+		(
+		select @r:='-1','' l1,'' l2,id from (select '' from cy_province limit 5) em,
+		(<include refid="regionAll" />) region
+
+		<where>
+			<if test="_parameter!=null">
+				name like concat('%',#{sRegion},'%' )
+			</if>
+		</where>
+		) aa  ) t1 inner join (<include refid="regionAll" />) t2 on t1._tmp=t2.id where t2.pid!='-1';
+
+	</select>
+	<select id="selectAllRegion"   resultMap="regionResultMap">
+		select a.*, case level when '2' then 'closed' else 'open' end state from (<include refid="region" />) a
+	</select>
+
+	<!--add by jiangling 查询所有的regions-->
+	<select id="selectCountryList" resultMap="regionResultMap">
+		select concat( '3.',id ) id,countryName name,'-1' pid,orderid,'' areaCode,'' postCode,'1' level from cy_country order by orderid asc;
+	</select>
+
+	<!--add by jiangling 根据传来的id来查询地区-->
+	<select id="selectRegionById" parameterType="java.lang.String" resultMap="regionResultMap">
+		select * from (<include refid="regionAll" />) co where co.id = #{sId};
+	</select>
+
+	<!--add by jiangling 更新国家信息-->
+	<update id="update1" parameterType="com.cy.core.region.entity.Region" >
+		update cy_country
+		<set>
+			<if test="name !=null and name !=''">
+				countryName = #{name},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				orderId = #{orderId},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+		</set>
+		where id=#{oldId}
+	</update>
+
+	<!--add by jiangling 更新省份信息-->
+	<update id="update2" parameterType="com.cy.core.region.entity.Region" >
+		update cy_province
+		<set>
+			<if test="name !=null and name !=''">
+				provinceName = #{name},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				orderId = #{orderId},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+		</set>
+		where id=#{oldId}
+	</update>
+
+	<!--add by jiangling 更新城市信息-->
+	<update id="update3" parameterType="com.cy.core.region.entity.Region" >
+		update cy_city
+		<set>
+			<if test="name !=null and name !=''">
+				cityName = #{name},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				orderId = #{orderId},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+			<if test="areaCode !=null and areaCode !=''">
+				areaCode = #{areaCode},
+			</if>
+		</set>
+		where id=#{oldId}
+	</update>
+
+	<!--add by jiangling 更新地区信息-->
+	<update id="update4" parameterType="com.cy.core.region.entity.Region" >
+		update cy_area
+		<set>
+			<if test="name !=null and name !=''">
+				areaName = #{name},
+			</if>
+			<if test="orderId !=null and orderId !=''">
+				orderId = #{orderId},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+			<if test="postCode !=null and postCode !=''">
+				postCode = #{postCode},
+			</if>
+		</set>
+		where id=#{oldId}
+	</update>
+
+	<!--add by aohui  查询地区列表信息-->
+	<select id="selectRegionList" parameterType="map"  resultMap="regionResultMap">
+		select
+		*
+		from (<include refid="regionAll" />) cos
+		<where>
+			<if test="level!=null and level>0">
+				and <![CDATA[(cos.level+0)<=#{level}]]>
+			</if>
+			<if test="pid != null and pid != ''">
+				and cos.pid = #{pid}
+			</if>
+			<if test="name != null and name != ''">
+				AND cos.name LIKE CONCAT(#{name}, '%')
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.wechatNewsType.dao.WechatNewsTypeMapper">
+    <resultMap type="com.cy.core.wechatNewsType.entity.WechatNewsType" id="wechatNewsTypeResultMap">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="url" property="url" />
+        <result column="orderNum" property="orderNum" />
+        <result column="origin" property="origin" />
+        <result column="cityName" property="cityName" />
+        <result column="isNavigation" property="isNavigation" />
+        <result column="parent_name" property="parentName" />
+        <result column="dept_id" property="deptId" />
+        <result column="dept_name" property="deptName" />
+    </resultMap>
+
+    <select id="countWechatNewsType" parameterType="map" resultType="long">
+        select count(id) from cy_wechat_news_type
+        <where>
+            <if test="parentId!=null and parentId>=0">
+                and parent_id = #{parentId}
+            </if>
+            <if test="deptId!=null and deptId!=''">
+                and dept_id=#{deptId}
+            </if>
+            <if test="name!=null and name!=''">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                and type = #{type}
+            </if>
+            <if test="origin!=null and origin!=''">
+                and origin = #{origin}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectWechatNews" parameterType="map" resultMap="wechatNewsTypeResultMap">
+        SELECT nt.*,al.alumniName AS dept_name
+        FROM cy_wechat_news_type nt
+        LEFT JOIN cy_alumni al ON dept_id = al.alumniId
+        <where>
+            <if test="parentId!=null and parentId>=0">
+                and parent_id = #{parentId}
+            </if>
+            <if test="name!=null and name!=''">
+                name like concat('%',#{name},'%')
+            </if>
+            <if test="deptId!=null and deptId!=''">
+                and dept_id=#{deptId}
+            </if>
+            <if test="type!=null and type!=''">
+                and type = #{type}
+            </if>
+            <if test="origin!=null and origin!=''">
+                and origin = #{origin}
+            </if>
+        </where>
+        order by orderNum
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="wechatNewsTypeResultMap">
+        select t.*,p.`name`as parent_name
+        from cy_wechat_news_type  t
+        LEFT JOIN cy_wechat_news_type p ON t.parent_id = p.id
+        where t.id = #{id}
+    </select>
+
+    <insert id="save">
+        insert into cy_wechat_news_type(id,parent_id,name,type,url,orderNum,origin,cityName,isNavigation,dept_id)
+        values(#{id},#{parentId},#{name},#{type},#{url},#{orderNum},#{origin},#{cityName},#{isNavigation},#{deptId})
+    </insert>
+
+    <delete id="deleteById" parameterType="String">
+        delete from cy_wechat_news_type where id=#{id}
+    </delete>
+
+    <delete id="deleteByPid" parameterType="list">
+        delete from cy_wechat_news_type where parent_id=#{id}
+    </delete>
+
+    <update id="update" parameterType="map" >
+        update cy_wechat_news_type set
+        name=#{name},
+        parent_id=#{parentId},
+        type=#{type},
+        url=#{url},
+        origin=#{origin},
+        orderNum=#{orderNum},
+        cityName = #{cityName},
+        isNavigation = #{isNavigation},
+        dept_id=#{deptId}
+        where id = #{id}
+    </update>
+
+    </mapper>

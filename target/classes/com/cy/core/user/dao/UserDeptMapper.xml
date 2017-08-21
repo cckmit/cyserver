@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.user.dao.UserDeptMapper">
+	<insert id="save" parameterType="com.cy.core.user.entity.UserDept">
+		insert into cy_user_dept(userId,deptId) values(#{userId},#{deptId})
+	</insert>
+	<delete id="deleteByUserId" parameterType="long">
+		delete from cy_user_dept where userId=#{userId}
+	</delete>
+	<delete id="deleteByUserIdAndDeptId" parameterType="com.cy.core.user.entity.UserDept">
+		delete from cy_user_dept where userId=#{userId} and deptId=#{deptId}
+	</delete>
+	<!-- lixun 设置现有自动带入组织机构权限 -->
+	<insert id="addUserPermission" parameterType="map">
+		insert into cy_user_dept(userid,deptid)
+	select userId,#{deptId} from cy_user a where
+	(dept_id in ( select alumniid from cy_alumni where sequence like concat(
+		(select sequence from cy_alumni where alumniid=#{aluId}),'%')
+	or alumniid=1 or sequence not like '1.2.%')) and userid not in (
+	select distinct userId from cy_user_dept where deptid=#{deptId})
+	</insert>
+	<delete id="delUserPermission" parameterType="java.lang.String">
+		delete from cy_user_dept where deptId=#{deptId}
+	</delete>
+	<!-- lixun -->
+</mapper>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<!-- UC强制全屏 -->
+	<meta name="full-screen" content="yes">
+	<!-- QQ强制全屏 -->
+	<meta name="x5-fullscreen" content="true">
+	<title>花絮详情</title>
+	<link href="../static/css/Hui.css" rel="stylesheet" type="text/css">
+	<style>	
+		.more{
+			text-decoration:none;
+    		color:#0066CC;
+    		cursor:pointer;
+			font-size: 12px;
+			position: absolute;
+			right: 10px;
+			bottom: 0;
+		}
+		div#comment{-webkit-line-clamp:10;position: relative;}
+		.all{display:none;}
+	</style>
+	<!--feature template-->
+	<script type="text/html" id="featureTppl">
+		<!--praise-->
+		<input type="hidden" id="currentUserIsPraise" value="<%=featureObj.parise%>" />
+		<div class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after">
+			<div class="H-padding-vertical-both-8">
+
+				<%
+				if(featureObj.userAvatarUrl != null && featureObj.userAvatarUrl != "" ) {
+				%>
+				<img src="<%=B.getImageAbsoluteUrl(featureObj.userAvatarUrl)%>" alt="" title=""
+					 class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}else{
+				%>
+				<img src="../static/img/icons/default_profile.png" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}
+				%>
+
+				<!--<img src="<%=featureObj.userAvatar%>" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">-->
+
+			</div>
+			<div class="H-flex-item H-margin-10">
+				<div class="H-theme-font-color-999 H-text-show-row-1 H-margin-vertical-top-2 H-font-size-14">
+					<span><%=featureObj.userName%></span>
+					<%
+					if(featureObj.userInfoId==accountNum){
+					%>
+					<span id="removeFeature" onclick="removeFeature()" style="position: absolute;right: 10px;">删除</span>
+					<%
+					}else{
+					%>
+					<span id="reportFeature" onclick="goReport()" style="position: absolute;right: 10px;">举报</span>
+					<%
+					}
+					%>
+				</div>
+				<div class="H-theme-font-color-999 H-font-size-12 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+						<span class="H-display-block H-flex-item H-text-align-left H-theme-font-color-999 H-font-size-12 H-text-show-row-1" id="times">
+							<%=featureObj.createTime%>发布
+						</span>
+						<span class="H-display-block H-flex-item H-text-align-right H-font-size-12 H-theme-font-color-999">
+							<span id="likeNum"><%=featureObj.praiseNum%></span> 次点赞
+						</span>
+				</div>
+			</div>
+		</div>
+
+		<!--event.user-->
+		<div class="H-theme-background-color-white">
+			<div class="H-flex-item H-padding-10 H-font-size-12 H-theme-font-color-999 H-background-color-transparent-0" style="line-height: 20px;">
+				<%=featureObj.comment%>
+			</div>
+		</div>
+
+		<!--event image-->
+		<div class="H-flex-item H-theme-background-color-white H-border-vertical-bottom-after H-padding-horizontal-both-10 H-margin-vertical-bottom-10">
+			<%
+			if(featureObj.cyEventBoardPicList && featureObj.cyEventBoardPicList.length>0) {
+
+			for(var key in featureObj.cyEventBoardPicList) {
+			if(featureObj.cyEventBoardPicList[key]){
+			%>
+
+			<img src="<%=B.getImageAbsoluteUrl(featureObj.cyEventBoardPicList[key].picUrl)%>"
+				 class="H-width-100-percent H-display-block H-padding-vertical-bottom-10" style="height:auto; width: 100%;">
+
+			<%
+			}
+			}
+			}
+			%>
+		</div>
+
+		<!--comment list-->
+		<div class="H-flexbox-vertical H-background-color-transparent-0">
+			<!--评论-->
+			<%
+			if(featureObj.cyEventBoardCommentList && featureObj.cyEventBoardCommentList.length>0) {
+
+			for(var key in featureObj.cyEventBoardCommentList) {
+			if(featureObj.cyEventBoardCommentList[key]){
+			%>
+			<div class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after">
+				<div class="H-padding-vertical-both-8">
+
+					<%
+					if(featureObj.cyEventBoardCommentList[key].userAvatarUrl != null && featureObj.cyEventBoardCommentList[key].userAvatarUrl != "" ) {
+					%>
+					<img src="<%=B.getImageAbsoluteUrl(featureObj.cyEventBoardCommentList[key].userAvatarUrl)%>" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+					<%
+					}else{
+					%>
+					<img src="../static/img/icons/default_profile.png" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">
+					<%
+					}
+					%>
+
+					<!--<img src="<%=featureObj.cyEventBoardCommentList[key].userAvatar%>" alt="" title="" class=" H-display-block H-margin-horizontal-left-10 H-border-radius-circle H-width-45 H-height-45">-->
+				</div>
+				<div class="H-flex-item H-margin-10">
+					<div class="H-theme-font-color-999 H-text-show-row-1 H-margin-vertical-top-2 H-font-size-14">
+						<%=featureObj.cyEventBoardCommentList[key].userName%>
+					</div>
+					<div class="H-theme-font-color-999 H-font-size-12 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+							<span class="H-display-block H-flex-item H-text-align-left H-theme-font-color-999 H-font-size-12 H-text-show-row-1" id="times">
+								<%=featureObj.cyEventBoardCommentList[key].createTime%>发布
+							</span>
+					</div>
+					<div id="comment" class="H-text-show-row-1 H-margin-vertical-top-2 H-font-size-14">
+						<%if(featureObj.cyEventBoardCommentList[key].comment.length > 20){%>
+							<div class="short">
+								<%=featureObj.cyEventBoardCommentList[key].comment.substring(0,20) + '...'%>
+							</div>
+							<div class="all">
+								<%=featureObj.cyEventBoardCommentList[key].comment%>
+							</div>
+							<div class="more">展开</div>
+						<%} else {%>
+							<div>
+								<%=featureObj.cyEventBoardCommentList[key].comment%>
+							</div>
+						<%}%>
+					</div>
+				</div>
+			</div>
+
+			<%
+			}
+			}
+			}
+			%>
+
+		</div>
+
+	</script>
+</head>
+<body>
+<header id="header"></header>
+
+<!--TpplInhalt-->
+<div id="featureInfo"></div>
+
+<div style="height:60px;"></div>
+<!--comment -->
+<div class="H-flexbox-horizontal H-clear-both H-theme-background-color-white H-padding-8 H-box-sizing-border-box" style="position: fixed; bottom: 0;">
+			<span id="clickComment" class="H-font-size-14 H-flex-item  H-center-all H-theme-font-color1 H-border-horizontal-right-after">
+                		<i class="H-iconfont H-icon-review-fill  H-font-size-18 H-margin-horizontal-right-5"></i>
+                		<label class="H-display-inline-block H-vertical-middle">评论</label>
+				</span>
+			<span id="clickLike" class="H-font-size-14 H-flex-item  H-center-all like">
+                		<i class="H-iconfont H-icon-like H-theme-font-color-ccc H-font-size-18 H-margin-horizontal-right-5"></i>
+                		<label class="H-display-inline-block H-theme-font-color-black H-vertical-middle">点赞</label>
+            </span>
+</div>
+
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript"></script>
+<script>
+ 	function init(){
+        var links = document.getElementsByClassName("more");  //获取div对象
+		console.log(links.length);
+		for( var i = 0, len = links.length; i < len; i ++ ){
+			links[i].onclick = function () {
+                if(this.innerHTML =='展开'){
+                    this.innerHTML = '收起';
+                	this.parentNode.children[0].style.display = 'none';
+					this.parentNode.children[1].style.display = 'block';
+                }else{
+                    this.innerHTML = '展开';
+                	this.parentNode.children[0].style.display = 'block';
+					this.parentNode.children[1].style.display = 'none';
+                }
+			}
+		}
+    }
+	setTimeout('init()',1000);
+</script> 
+<script type="text/javascript">
+	// 接收参数
+	var eventId = B.getUrlParamByName("eventId");
+	var boardId = B.getUrlParamByName("boardId");
+	var isOwner = B.getUrlParamByName("isOwner");
+	var sourceFlag = B.getUrlParamByName("sourceFlag");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+	var associationId =  B.getUrlParamByName("associationId");
+	var teamId = B.getUrlParamByName("teamId");
+	var detailFlag = B.getUrlParamByName("detailFlag");
+
+	var fromMain = B.getUrlParamByName("fromMain");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+    }
+    if(!accountNum || accountNum == '' || accountNum == 'null'){
+        accountNum = '';
+    }
+	// 删除自己创建的花絮
+	function removeFeature(){
+        if(!checkLogin()) return;
+		H.confirm(function (ret) {
+
+			if(ret.buttonIndex == '1'){
+
+				//创建时正在加载
+				var manban=$('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;"><div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;"><img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif"><p style="margin: 0;">加载中...</p></div></div>');
+				$("body").append(manban);
+
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: '{"command": "233","content": {"userId":"' + accountNum + '","boardId": "' + boardId + '"}}'
+					},
+					dataType: 'json',
+					success: function(data) {
+
+						//删除正在加载
+						//获取div节点对象
+						var divNode2 = document.getElementById("manban");
+						//获取父节点
+						var parentNode = divNode2.parentNode;
+						parentNode.removeChild(divNode2);
+
+						//					alert(JSON.stringify(data));
+						H.alert(function(){
+							if(fromMain && fromMain =='1'){
+								H.openWin("花絮列表", "feature_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner +"&fromMain="+fromMain +"&associationId="+ associationId +"&teamId="+teamId +"&detailFlag="+detailFlag);
+							}else{
+								H.openWin("花絮列表", "feature_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner +"&associationId="+ associationId +"&teamId="+teamId +"&detailFlag="+detailFlag );
+							}
+
+						}, data.msg);
+					},
+					error: function(xhr, type) {
+
+					}
+				});
+			}
+		},"温馨提示：","您确定要删除该花絮吗？");
+	}
+
+	// 跳转至举报页面
+	function goReport(){
+        if(!checkLogin()) return;
+		H.openWin("feature_report", "feature_report.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId+ "&boardId=" + boardId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+ associationId +"&teamId="+teamId  );
+	}
+
+	function reload() {
+//		console.log('{"command": "226","content": {"userId":"' + accountNum + '","boardId": "' + boardId + '"}}')
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data: {
+				jsonStr: '{"command": "226","content": {"userId":"' + accountNum + '","boardId": "' + boardId + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+//					alert(JSON.stringify(data));3
+				console.log('{"command": "226","content": {"userId":"' + accountNum + '","boardId": "' + boardId + '"}}')
+				if(data.obj) {
+					data.obj.isOwner = isOwner;
+
+					var render = H.tppl(H.D("#featureTppl").innerHTML);
+					var result = render({
+						featureObj: data.obj
+					});
+
+					$('#featureInfo').html(result);
+
+                    var shareData = {
+                        title: '活动花絮',
+                        desc: data.obj.comment,
+                        link: location.href.split('?')[0]+"?boardId=" + boardId,
+                        imgUrl: B.getImageAbsoluteUrl(data.obj.cyEventBoardPicList[0].picUrl)
+                    };
+                    mkShareInfo(location.href, shareData, 1);
+					// 根据当前用户是否点赞状态，初始化点赞图标及文字样式
+					var currentIsPraise = $("#currentUserIsPraise").val(); //boolean true 已赞， false 未赞
+					var likeIcon = H.D("#clickLike i");
+
+					if((currentIsPraise == "false") && likeIcon.classList.contains("H-theme-font-color-red")) {
+						// 当前是用户未点赞，将图标初始化为灰色
+						likeIcon.className = likeIcon.className.replace("H-theme-font-color-red", "H-theme-font-color-ccc");
+
+					} else if((currentIsPraise == "true") && (likeIcon.classList.contains("H-theme-font-color-ccc"))) {
+						// 当前用户已点赞，将图标初始化为红色
+						likeIcon.className = likeIcon.className.replace("H-theme-font-color-ccc", "H-theme-font-color-red");
+					}
+					init();
+				}
+			},
+			error: function(xhr, type) {
+
+			}
+		});
+	}
+
+	$(function() {
+
+		// 加载页面数据
+		H.tppl_flag = ["<%", "%>"];
+
+		B.ready(function() {
+			reload();
+			
+		});
+
+		// 监听点赞功能： 点赞后变红色心，取消点赞后变灰色心
+		$("#clickLike").click(function() {
+            if(!checkLogin()) return;
+
+			// 参数预处理: 从数据库中获得点赞状态
+			var likeIcon = H.D("#clickLike i");
+			var currentIsPraise = $("#currentUserIsPraise").val(); //boolean
+			//							 当前用户是未点赞状态
+			if((currentIsPraise == "false") && (likeIcon.classList.contains("H-theme-font-color-ccc"))) {
+				var action = "2"; //执行点赞行为
+			}
+			// 当前用户是已点赞状态
+			else if((currentIsPraise == "true") && (likeIcon.classList.contains("H-theme-font-color-red"))) {
+				action = "3"; //执行取消点赞行为
+			}
+
+			// 组织入参格式
+			var inputParam = {
+				command: "223",
+				content: {
+					boardId: boardId,
+					userId: accountNum,
+					action: action
+				}
+			};
+
+			B.ready(function() {
+				// 当前点赞数
+				var praiseNum = parseInt($("#likeNum").text());
+				// 调用点赞或取消点赞接口
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: JSON.stringify(inputParam)
+					},
+					dataType: 'json',
+					success: function(data) {
+
+						// 点赞或取消点赞成功后，改变图标和文字样式
+						var likeIcon = H.D("#clickLike i");
+
+						// 执行点赞行为
+						if(action == "2") {
+							// 点赞成功后，变为红色图标
+							likeIcon.className = likeIcon.className.replace("H-theme-font-color-ccc", "H-theme-font-color-red");
+							// 点赞成功后，点赞数+1
+							praiseNum++;
+							$("#likeNum").text(praiseNum);
+							$("#currentUserIsPraise").val("true");
+						} else if(action == "3") {
+							// 取消点赞成功后，变为灰色图标
+							likeIcon.className = likeIcon.className.replace("H-theme-font-color-red", "H-theme-font-color-ccc");
+							// 取消点赞成功后，点赞数-1
+							praiseNum--;
+							$("#likeNum").text(praiseNum);
+							$("#currentUserIsPraise").val("false");
+						}
+					},
+					error: function(xhr, type) {}
+				});
+			});
+		});
+
+		// TODO 监听评论功能
+		H.on(H.Ds("#clickComment"), "touchend", function(event) {
+//				H.alert("clickComment");
+			H.prompt(function(ret, err) {
+
+				//1. 组织入参格式
+				var inputComment = {
+					command: "223",
+					content: {
+						boardId: boardId,
+						userId: accountNum,
+						action: "0",
+						comment: ret.text
+					}
+				};
+
+//alert(JSON.stringify(inputComment));
+				//2. ajax请求点赞评论接口， 提交评论内容
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data: {
+						jsonStr: JSON.stringify(inputComment)
+					},
+					dataType: 'json',
+					success: function(data) {
+//							H.alert(JSON.stringify(data));
+						reload();
+					},
+					error: function(xhr, type) {
+
+					}
+				});
+			}, "评论", "评论内容", $("#comment").val());
+		});
+	});
+
+	//检测图连链接
+	function CheckImgExists(imgurl) {
+		var ImgObj = new Image(); //判断图片是否存在
+		ImgObj.src = imgurl;
+		//没有图片，则返回-1
+		if (ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+
+	//返回
+	var jsonStrBut = {
+		"title":"活动花絮详情",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback"
+		}
+	}
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+		return jsonStrBut;
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStrBut);
+		window.stub.jsMethod(str);
+		return jsonStrBut;
+	}
+
+
+
+	function fallback() {
+		window.location.href = B.serverUrl + "/mobile/services/activity/feature_list.html?accountNum=" + accountNum  + "&eventId="+eventId + "&isOwner="+isOwner + "&sourceFlag="+sourceFlag +"&associationId="+ associationId +"&teamId="+teamId +"&detailFlag="+detailFlag;
+	}
+
+    function checkLogin() {
+        if(openId && openId != 'null'){
+            if(!accountNum || accountNum == '' || accountNum == 'null'){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        if(fromMain && fromMain=='1'){
+                            H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/feature_detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag + "&boardId=" + boardId  + "&isOwner=" + isOwner  + "&associationId="	+ associationId +"&teamId="+teamId +"&detailFlag=" +detailFlag)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain);
+                        }else{
+                            H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/feature_detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag + "&boardId=" + boardId  + "&isOwner=" + isOwner  + "&associationId="	+ associationId +"&teamId="+teamId +"&detailFlag=" +detailFlag)+"&ts=" + B.getRandomInt(4));
+                        }
+                    }
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+                return false;
+            }else{
+                return true;
+            }
+        }else {
+            if(!accountNum || accountNum == '' || accountNum == 'null'){
+                return false;
+			}else {
+                return true;
+			}
+		}
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>绑定手机邮箱</title>
+    <!--css-->
+    <link href="../mobile/wechat/static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../mobile/wechat/static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../mobile/wechat/static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="../mobile/wechat/static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../mobile/wechat/static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+
+    <style type="text/css">
+        html{background-color: #f4f5f9;}
+        ::-webkit-input-placeholder {color:#999;}
+        :-moz-placeholder {color:#999;}
+        ::-moz-placeholder {color:#999;}
+        :-ms-input-placeholder {color:#999;}
+
+        body{
+            background-color: #f4f5f9;
+            height: 100%;
+            position: relative;
+        }
+
+        .bottomButton{
+            padding: 3%;
+            width: 94%;
+            bottom: 0;
+            position: absolute;
+        }
+
+        .disabled_button{
+            color : #cccccc
+        }
+
+        .underline{
+            border-bottom:1px solid #ebebeb;
+        }
+        .onError{
+            border: 2px solid #e16544;
+        }
+        .onSubmit{
+            border-color: #999;
+            background: #999;
+        }
+        .hide-area{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="H-flexbox-horizontal H-theme-background-color-white H-margin-vertical-bottom-10">
+        <div class="H-flex-item H-center-all H-padding-vertical-both-10 H-theme-border-color-white H-touch-active H-font-size-16 H-theme-border-color1 H-theme-font-color1 cell-phone-tab" style="border-width: 0 0 2px  0">绑定手机</div>
+        <div class="H-flex-item H-center-all H-padding-vertical-both-10 H-theme-border-color-white H-touch-active H-font-size-16 email-tab" style="border-width: 0 0 2px  0">绑定邮箱</div>
+    </div>
+    <div class="H-theme-background-color-white H-border-vertical-both-after bind-cell-phone">
+        <div id="phoneInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active underline">
+            <input id="phoneEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入手机号">
+        </div>
+        <div id="codeArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active underline">
+            <input id="verifyCode" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入验证码">
+            <span id="getCode" class="H-vertical-middle H-padding-horizontal-right-10 H-theme-background-color-white H-theme-font-color1 H-font-size-14">获取验证码</span>
+        </div>
+    </div>
+
+    <div class="H-theme-background-color-white H-border-vertical-both-after bind-email hide-area">
+        <div id="emailInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active underline">
+            <input id="emailEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入邮箱">
+        </div>
+        <div id="passWordInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active underline">
+            <input id="passWordEdit" type="password" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入密码">
+        </div>
+        <div id="passWordRepeatInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active underline">
+            <input id="passWordRepeatEdit" type="password" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请再次输入密码">
+        </div>
+    </div>
+
+    <div class="bottomButton">
+        <button id="createAccount" class="H-button H-width-100-percent  H-font-size-15 H-outline-none H-padding-vertical-both-10
+        H-padding-horizontal-both-20 H-theme-background-color1 H-theme-font-color-white H-theme-border-color1
+        H-theme-border-color1-click H-theme-background-color1-click H-theme-font-color1-click H-border-radius-3">提交</button>
+    </div>
+
+</div>
+
+
+<!--引入脚本文件-->
+<script src="../mobile/wechat/static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../mobile/js/H.js" type="text/javascript"></script>
+<script src="../mobile/js/zepto.min.js" type="text/javascript" ></script>
+<script src="../mobile/js/xdomain.min.js" type="text/javascript"></script>
+<script src="../mobile/js/B.js" type="text/javascript" ></script>
+<script src="../mobile/wechat/static/js/lrz.mobile.min.js"></script>
+<script src="../mobile/wechat/static/js/dropload.min.js" type="text/javascript" ></script>
+<script src="../jslib/layer/layer.js" type="text/javascript"></script>
+<script type="text/javascript" src="../mobile/js/jbase64.js" ></script>
+<script type="text/javascript" src="../mobile/js/wechat.js" ></script>
+<!--js-->
+<script type="text/javascript">
+    // 接收参数
+    var formData = JSON.parse(B.getUrlParamByName("formData"));
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    if(openId && openId != "null") {
+        // 微信端
+        var shareData = {
+            title: '個人信息',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+
+    $(function(){
+
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            history.back();
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+        $('.cell-phone-tab').click(function () {
+            if(!$('.cell-phone-tab').hasClass('H-theme-border-color1')){
+                $('.cell-phone-tab').addClass('H-theme-font-color1');
+                $('.cell-phone-tab').addClass('H-theme-border-color1');
+                $('.bind-cell-phone').removeClass('hide-area');
+
+                $('.email-tab').removeClass('H-theme-font-color1');
+                $('.email-tab').removeClass('H-theme-border-color1');
+                $('.bind-email').addClass('hide-area');
+            }
+        });
+        $('.email-tab').click(function () {
+            if(!$('.email-tab').hasClass('H-theme-border-color1')){
+                $('.email-tab').addClass('H-theme-font-color1');
+                $('.email-tab').addClass('H-theme-border-color1');
+                $('.bind-email').removeClass('hide-area');
+
+                $('.cell-phone-tab').removeClass('H-theme-font-color1');
+                $('.cell-phone-tab').removeClass('H-theme-border-color1');
+                $('.bind-cell-phone').addClass('hide-area');
+            }
+        });
+
+        // 手机号输入
+        $('#phoneEdit').bind('input propertychange', function () {
+            var mobilePhone = $.trim($('#phoneEdit').val());
+            if(mobilePhone != '' && !(/^1(3|4|5|7|8)\d{9}$/.test(mobilePhone))){
+                $('#phoneInputArea').addClass('onError');
+                return false;
+            }
+            $('#phoneInputArea').removeClass('onError');
+        });
+        $('#phoneEdit').blur(function(){
+            var mobilePhone = $.trim($('#phoneEdit').val());
+            if(mobilePhone != '' && !(/^1(3|4|5|7|8)\d{9}$/.test(mobilePhone))){
+                layer.open({content: "手机号码有误，请重新填写！", skin: "msg", time: 2});
+                return false;
+            }
+        });
+        $('#verifyCode').bind('input propertychange', function () {
+            if($.trim($('#verifyCode').val()) == ''){
+                $('#codeArea').addClass('onError');
+                layer.open({content: "请输入验证码！", skin: "msg", time: 2});
+                return false;
+            }
+            $('#codeArea').removeClass('onError');
+        });
+
+
+        // 邮箱输入
+
+        $('#emailEdit').bind('input propertychange', function () {
+            var email = $.trim($('#emailEdit').val());
+            if(email != '' && !email.match(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/)){
+                $('#emailInputArea').addClass('onError');
+                return false;
+            }
+            $('#emailInputArea').removeClass('onError');
+        });
+
+        $('#emailEdit').blur(function(){
+            var email = $.trim($('#emailEdit').val());
+            if(email != '' && !email.match(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/)){
+                layer.open({content: "邮箱有误，请重新填写！", skin: "msg", time: 2});
+                $('#emailInputArea').addClass('onError');
+                return false;
+            }
+            $('#emailInputArea').removeClass('onError');
+
+        });
+
+        $('#passWordEdit').bind('input propertychange', function () {
+            var passWord = $.trim($('#passWordEdit').val());
+            if(passWord < 6 ){
+                $('#passWordInputArea').addClass('onError');
+                return false;
+            }
+            $('#passWordInputArea').removeClass('onError');
+        });
+
+        $('#passWordEdit').blur(function(){
+            var passWord = $.trim($('#passWordEdit').val());
+            if(passWord < 6 ){
+                layer.open({content: "密码不少于6位！", skin: "msg", time: 2});
+                $('#passWordInputArea').addClass('onError');
+                return false;
+            }
+            $('#passWordInputArea').removeClass('onError');
+        });
+
+        $('#passWordRepeatEdit').bind('input propertychange', function () {
+            var passWord = $.trim($('#passWordEdit').val());
+            var passWordRepeat = $.trim($('#passWordRepeatEdit').val());
+            if( passWord != passWordRepeat ){
+                $('#passWordRepeatInputArea').addClass('onError');
+                return false;
+            }
+            $('#passWordRepeatInputArea').removeClass('onError');
+        });
+
+        $('#passWordRepeatEdit').blur(function(){
+            var passWord = $.trim($('#passWordEdit').val());
+            var passWordRepeat = $.trim($('#passWordRepeatEdit').val());
+            if( passWord != passWordRepeat ){
+                $('#passWordRepeatInputArea').addClass('onError');
+                return false;
+            }
+            $('#passWordRepeatInputArea').removeClass('onError');
+        });
+
+        B.ready(function() {
+            // 获取验证码
+            $("#getCode").click(function () {
+                if (!$("#getCode").hasClass("disabled_button")) {
+                    $('#getCode').addClass("disabled_button");
+                    times($("#getCode"));
+                    var phone = $("#phoneEdit").val();
+                    if (phone == "") {
+                        layer.open({content: "手机号码不能为空！", skin: "msg", time: 2});
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data: {
+                            jsonStr: '{"command": "3","content": {"phoneNum": "' + phone + '","secretKey": "getRegisterCode123"}}'
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if (data && data.success) {
+                                layer.open({content: "验证码发送成功！", skin: "msg", time: 2});
+                            }
+                            else {
+                                layer.open({content: "验证码发送失败，请稍后再试！", skin: "msg", time: 2});
+                            }
+                        }
+                    });
+                }
+            });
+
+            $("#createAccount").click(function () {
+
+
+                var mobilePhone = $.trim($('#phoneEdit').val());
+                var registCode = $.trim($('#verifyCode').val());
+                var email = $.trim($('#emailEdit').val());
+                var password = $.trim($('#passWordEdit').val());
+                var psswordRepeat = $.trim($('#passWordRepeatEdit').val());
+
+                if($('.cell-phone-tab').hasClass('H-theme-border-color1')){
+                    if(mobilePhone == ''){
+                        layer.open({content: "请输入手机号！", skin: "msg", time: 2});
+                        $('#phoneEdit').focus();
+                        $('#phoneInputArea').addClass('onError');
+                    }
+                    if(mobilePhone != '' && !(/^1(3|4|5|7|8)\d{9}$/.test(mobilePhone))){
+                        layer.open({content: "手机号码有误，请重新填写！", skin: "msg", time: 2});
+                        $('#phoneEdit').focus();
+                        $('#phoneInputArea').addClass('onError');
+                        return false;
+                    }
+
+                    if(registCode == ''){
+                        layer.open({content: "请填写验证码！", skin: "msg", time: 2});
+                        return false;
+                    }
+                    email = '';
+                    password = '';
+                }else{
+                    if(email != '' && !email.match(/[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/)){
+                        layer.open({content: "邮箱有误，请重新填写！", skin: "msg", time: 2});
+                        $('#emailShowArea').css('display', 'none');
+                        $('#emailInputArea').css('display', 'block');
+                        $('#emailEdit').focus();
+                        $('#emailInputArea').addClass('onError');
+                        return false;
+                    }
+
+                    if(password.length < 6){
+                        layer.open({content: "密码不少于6位！", skin: "msg", time: 2});
+                        $('#passWordEdit').focus();
+                        $('#passWordInputArea').addClass('onError');
+                        return false;
+                    }
+
+                    if(password != psswordRepeat ){
+                        layer.open({content: "确保两次输入密码相同！", skin: "msg", time: 2});
+                        $('#passWordRepeatEdit').focus();
+                        $('#passWordRepeatInputArea').addClass('onError');
+                        return false;
+                    }
+
+                    mobilePhone = '';
+                    registCode = '';
+                }
+
+                formData.phoneNum = mobilePhone;
+                formData.email = email;
+                formData.registCode = registCode;
+                formData.password = password;
+                console.log('{"command": "278","content": '+JSON.stringify(formData)+'}');
+                $("#createAccount").attr("disabled","disabled");
+                $("#createAccount").addClass('onSubmit');
+                $('#createAccount').text('信息提交中...请耐心等待');
+                $.ajax({
+                    type: "post",
+                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data: {
+                        jsonStr: '{"command": "278","content": '+JSON.stringify(formData)+'}'
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data && data.success) {
+                            layer.open({content: "保存成功！", skin: "msg", time: 2});
+                            H.openWin('我的捐赠', 'my_donates.html?accountNum='+data.obj);
+                        }
+                        else {
+                            layer.open({content: data.msg, skin: "msg", time: 2});
+                            $("#createAccount").removeAttr("disabled","disabled");
+                            $("#createAccount").removeClass('onSubmit');
+                            $('#createAccount').text('提交');
+                        }
+                    }
+                });
+            });
+        });
+    });
+
+    var rules=[{
+        reg:/\d+/,
+        weight:2
+    },{
+        reg:/[a-z]+/,
+        weight:4
+    },{
+        reg:/[A-Z]+/,
+        weight:8
+    },{
+        reg:/[~!@#\$%^&*\(\)\{\};,.\?\/'"]/,
+        weight:16
+    }];
+
+    var strongLevel={
+        '0-10':'弱',
+        '10-20':'中',
+        '20-30':'强'
+    };
+
+    function showLevel(inputPassword) {
+        var weight=0;
+        for(var j=rules.length-1;j>=0;j--){
+            if(rules[j].reg.test(inputPassword)){
+                weight|=rules[j].weight;
+            }
+        }
+        var key='20-30';
+        if(weight<=10)key='0-10';
+        else if(weight<=20)key='10-20';
+        return strongLevel[key];
+    }
+
+    var wait = 60;
+    function times(val){
+        if(wait == 0){
+            val.text("重新获取验证码");
+            val.removeAttr("disabled");
+            val.removeClass("disabled_button");
+            val.addClass("active_button");
+            wait = 60;
+        }else{
+            val.attr("disabled","disabled");
+            val.removeClass("active_button");
+            val.addClass("disabled_button");
+            setTimeout(function(){
+                times(val);
+            },1000);
+            val.text(wait+" 重新获取验证码");
+            wait--;
+        }
+    }
+
+</script>
+</body>
+</html>

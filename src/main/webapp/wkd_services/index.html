@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>服务</title>
+    <link rel="stylesheet" href="../mobile/css/cy_core.css">
+    <link rel="stylesheet" href="../mobile/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../mobile/css/wkd_services.css">
+</head>
+<body>
+<section class="ui-container">
+    <div class="ui-banner">
+        <img src="wkd_images/1.jpg" width="100%" alt=""/>
+    </div>
+    <div class="ui-row-flex ui-whitespace">
+        <div class="ui-col jz-item" data-href="zlcx/index.html">
+            <img src="wkd_images/zlcx_top.jpg" width="60" alt=""/><br/>
+            资料查询
+        </div>
+        <div class="ui-col jz-item" data-href="dacx/index.html">
+            <img src="wkd_images/dacx_top.jpg" width="60" alt=""/><br/>
+            档案查询
+        </div>
+        <div class="ui-col jz-item" data-href="gjts/index.html">
+            <img src="wkd_images/gjts_top.jpg" width="60" alt=""/><br/>
+            稿件投送
+        </div>
+        <div class="ui-col jz-item" data-href="zsbb/index.html">
+            <img src="wkd_images/zsbb_top.jpg" width="60" alt=""/><br/>
+            证书补办
+        </div>
+    </div>
+    <div class="ui-row-flex ui-whitespace">
+        <div class="ui-col jz-item" data-href="jz/index.html">
+            <img src="wkd_images/jz_top.jpg" width="60" alt=""/><br/>
+            捐赠
+        </div>
+        <div class="ui-col jz-item" data-href="zn/index.html">
+            <img src="wkd_images/zn_top.jpg" width="60" alt=""/><br/>
+            值年
+        </div>
+        <div class="ui-col jz-item" data-href="#">
+        </div>
+        <div class="ui-col jz-item" data-href="#">
+        </div>
+    </div>
+</section>
+<script src="../mobile/js/zepto.min.js"></script>
+<script src="../mobile/js/cy_core.js"></script>
+<script>
+    Zepto(function($){
+        $(document).on('tap','.ui-col',function(){
+            if($(this).data('href')){
+                location.href= $(this).data('href');
+            }
+        });
+    });
+</script>
+</body>
+</html>

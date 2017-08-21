@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.backschoolOnlineSign.dao.BackschoolOnlineSignMapper">
+
+	<resultMap type="com.cy.core.backschoolOnlineSign.entity.BackschoolOnlineSign"
+		id="backschoolOnlineSignMap">
+		<id column="id" property="id" />
+		<result column="id"  property="id"/>
+		<result column="activity_id"  property="activityId"/>
+		<result column="account_num"  property="accountNum"/>
+		<result column="deletion"  property="deletion"/>
+		<result column="name"  property="name"/>
+		<result column="sex"  property="sex"/>
+		<result column="birthday"  property="birthday"/>
+		<result column="location"  property="location"/>
+		<result column="industry"  property="industry"/>
+		<result column="unit"  property="unit"/>
+		<result column="position"  property="position"/>
+		<result column="status"  property="status"/>
+		<result column="check"  property="check"/>
+		<result column="check_time"  property="checkTime"/>
+		<result column="suggest"  property="suggest"/>
+		<result column="opinion"  property="opinion"/>
+		<result column="card_number"  property="cardNumber"/>
+		<result column="contact_address"  property="contactAddress"/>
+		<result column="post_code"  property="postCode"/>
+		<result column="office_phone"  property="officePhone"/>
+		<result column="home_phone"  property="homePhone"/>
+		<result column="mobile_phone"  property="mobilePhone"/>
+		<result column="email_box"  property="emailBox"/>
+		<result column="need_visit"  property="needVisit"/>
+		<result column="need_look_school"  property="needLookSchool"/>
+		<result column="need_driving"  property="needDriving"/>
+		<result column="wagon_number"  property="wagonNumber"/>
+		<result column="need_carrying_family"  property="needCarryingFamily"/>
+		<result column="visit_place"  property="visitPlace"/>
+		<result column="adult_number"  property="adultNumber"/>
+		<result column="children_number"  property="childrenNumber"/>
+
+
+	</resultMap>
+
+	<!-- 查询列表数据并分页 -->
+	<select id="list" parameterType="map" resultMap="backschoolOnlineSignMap">
+		SELECT cac.* FROM cy_backschool_online_sign cac
+		WHERE
+		cac.deletion != '1'
+		<if test='id != null and id != ""'>
+			AND cac.id = #{id}
+		</if>
+		<if test='activityId != null and activityId != ""'>
+			AND cac.activity_id = #{activityId}
+		</if>
+		<if test='name != null and name != ""'>
+			AND `name` LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test='status != null and status > 0'>
+			AND `status` = #{status}
+		</if>
+		<if test='accountNum != null and accountNum != ""'>
+			AND cac.account_num = #{accountNum}
+		</if>
+		ORDER BY cac.id DESC
+		<if test='isNoLimit != "1"'>
+			LIMIT #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- 根据id查询详细信息 -->
+	<select id="selectById" parameterType="string" resultMap="backschoolOnlineSignMap">
+		SELECT cac.* FROM cy_backschool_online_sign cac
+		WHERE id = #{id}
+	</select>
+
+
+	<select id="count" parameterType="map" resultType="long">
+		SELECT COUNT(cac.id) FROM cy_backschool_online_sign cac
+		WHERE cac.deletion != '1'
+		<if test='id != null and id != ""'>
+			AND cac.id = #{id}
+		</if>
+		<if test='activityId != null and activityId != ""'>
+			AND cac.activity_id = #{activityId}
+		</if>
+		<if test='name != null and name != ""'>
+			AND `name` LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test='status != null and status > 0'>
+			AND `status` = #{status}
+		</if>
+		<if test='accountNum != null and accountNum != ""'>
+			AND cac.account_num = #{accountNum}
+		</if>
+	</select>
+
+
+	<!-- 添加校友卡保存 -->
+	<insert id="save" parameterType="com.cy.core.backschoolOnlineSign.entity.BackschoolOnlineSign">
+		insert into cy_backschool_online_sign(
+			id,
+			activity_id,
+			account_num,
+			visit_place,
+			adult_number,
+			children_number,
+			deletion,
+			`name`,
+			sex,
+			birthday,
+			location,
+			industry,
+			unit,
+			`position`,
+			`status`,
+			`check`,
+			check_time,
+			suggest,
+			opinion,
+			card_number,
+			contact_address,
+			post_code,
+			office_phone,
+			home_phone,
+			mobile_phone,
+			email_box,
+			need_visit,
+			need_look_school,
+			need_driving,
+			wagon_number,
+			need_carrying_family
+
+		)
+		value(
+			#{id},
+			#{activityId},
+			#{accountNum},
+			#{visitPlace},
+			#{adultNumber},
+			#{childrenNumber},
+			#{deletion},
+			#{name},
+			#{sex},
+			#{birthday},
+			#{location},
+			#{industry},
+			#{unit},
+			#{position},
+			#{status},
+			#{check},
+			#{checkTime},
+			#{suggest},
+			#{opinion},
+			#{cardNumber},
+			#{contactAddress},
+			#{postCode},
+			#{officePhone},
+			#{homePhone},
+			#{mobilePhone},
+			#{emailBox},
+			#{needVisit},
+			#{needLookSchool},
+			#{needDriving},
+			#{wagonNumber},
+			#{needCarryingFamily}
+		)
+	</insert>
+
+	<!-- 批量删除 -->
+	<delete id="delete" parameterType="list">
+		delete from cy_backschool_online_sign where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<update id="deletion" parameterType="list">
+		update cy_backschool_online_sign set deletion=1 where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</update>
+
+
+	<!-- 校友卡的编辑 -->
+	<update id="update" parameterType="com.cy.core.backschoolOnlineSign.entity.BackschoolOnlineSign">
+		UPDATE cy_backschool_online_sign
+
+		SET
+		<if test='name!=null and name!=""'>
+			name = #{name},
+		</if>
+		<if test='sex!=null and sex!=""'>
+			sex = #{sex},
+		</if>
+		<if test='birthday!=null and birthday!=""'>
+			birthday = #{birthday},
+		</if>
+		<if test='location!=null and location!=""'>
+			location = #{location},
+		</if>
+		<if test='industry!=null and industry!=""'>
+			industry = #{industry},
+		</if>
+		<if test='unit!=null and unit!=""'>
+			unit = #{unit},
+		</if>
+		<if test='position!=null and position!=""'>
+			position = #{position},
+		</if>
+		<if test='status!=null and status!=""'>
+			status = #{status},
+		</if>
+		<if test='suggest!=null and suggest!=""'>
+			`suggest` = #{suggest},
+		</if>
+		<if test='opinion!=null and opinion!=""'>
+			opinion = #{opinion},
+		</if>
+		<if test='cardNumber!=null and cardNumber!=""'>
+			card_number = #{cardNumber},
+		</if>
+
+		<if test='contactAddress!=null and contactAddress!=""'>
+			contact_address = #{contactAddress},
+		</if>
+		<if test='postCode!=null and postCode!=""'>
+			post_code = #{postCode},
+		</if>
+
+		<if test='officePhone!=null and officePhone!=""'>
+			`office_phone` = #{officePhone},
+		</if>
+		<if test='homePhone!=null and homePhone!=""'>
+			home_phone = #{homePhone},
+		</if>
+		<if test='mobilePhone!=null and mobilePhone!=""'>
+			mobile_phone = #{mobilePhone},
+		</if>
+
+		<if test='emailBox!=null and emailBox!=""'>
+			email_box = #{emailBox},
+		</if>
+		<if test='needVisit!=null and needVisit!=""'>
+			need_visit = #{needVisit},
+		</if>
+		<if test='needLookSchool!=null and needLookSchool!=""'>
+			need_look_school = #{needLookSchool},
+		</if>
+		<if test='needDriving!=null and needDriving!=""'>
+			need_driving = #{needDriving},
+		</if>
+		<if test='wagonNumber!=null and wagonNumber!=""'>
+			wagon_number = #{wagonNumber},
+		</if>
+		<if test='visitPlace!=null and visitPlace!=""'>
+			visit_place = #{visitPlace},
+		</if>
+		<if test='needCarryingFamily!=null and needCarryingFamily!=""'>
+			need_carrying_family = #{needCarryingFamily},
+		</if>
+		<if test='adultNumber!=null and adultNumber!=""'>
+			adult_number = #{adultNumber},
+		</if>
+		<if test='childrenNumber!=null and childrenNumber!=""'>
+			children_number = #{childrenNumber},
+		</if>
+		deletion = #{deletion}
+		where id=#{id}
+	</update>
+
+
+
+</mapper>

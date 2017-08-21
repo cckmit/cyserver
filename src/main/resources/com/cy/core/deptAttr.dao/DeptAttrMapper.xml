@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.deptAttr.dao.DeptAttrMapper">
+    <resultMap type="com.cy.core.deptAttr.entity.DeptAttr" id="deptAttrResultMap">
+        <id column="alumniId" property="alumniId" />
+        <result column="alumniName" property="alumniName" />
+        <result column="region" property="region" />
+        <result column="industry" property="industry" />
+        <result column="hobby" property="hobby" />
+        <result column="introduction" property="introduction" />
+        <result column="status" property="status" />
+        <result column="createById" property="createById" />
+        <result column="accountNum" property="accountNum" />
+        <result column="createTime" property="createTime" />
+        <result column="checkFlag" property="checkFlag" />
+        <result column="main" property="mainType" />
+        <result column="academyid" property="xueyuanId" />
+        <result column="industry" property="industryCode" />
+        <result column="pid" property="parentId" />
+        <result column="delstate" property="delState" />
+        <result column="isused" property="isUsed" />
+        <result column="level" property="level" />
+        <result column="sequence" property="sequence" />
+        <result column="parent" property="parent"/>
+    </resultMap>
+    <!-- lixun 2016.7.25 -->
+    <resultMap type="com.cy.core.deptInfo.entity.DeptInfo" id="deptAttrInfoResultMap">
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName" />
+        <result column="parent_id" property="parentId" />
+        <result column="full_name" property="fullName" />
+        <result column="level" property="level" />
+    </resultMap>
+    <!-- lixun -->
+    <select id="selectDeptAttrTree" parameterType="long" resultMap="deptAttrResultMap">
+        select case academyid is null or academyid!='' when true then (select @xd:=academyid from dual where @se:=sequence) else case sequence like concat(@se,'.%') when true then @xd else '' end end academyid,alumniId,alumniName,main,pid,sequence,`level`,region,industry,hobby,isused,introduction,`status`,delstate,createById,accountNum,createTime,checkFlag,memberCount,presidentName,telephone,address,email from (
+        select * from (
+        select @se:='-1' ,@xd:='-1',a.* from cy_alumni a where (main>=0 and
+        sequence like concat((select sequence from cy_alumni where alumniId=#{id}),'.%' ))
+        and delstate!='1'
+        union
+        select * from (
+        select @r as tmp_aluId,
+        (select @r:= pid from cy_alumni where alumniId = tmp_aluId ) as tmp_pid
+        from (select @r := #{id},@l := 0 ) vars, cy_alumni h where @r != 0) T1
+        join cy_alumni T2 on t1.tmp_aluId = t2.alumniId where delstate!='1' ) cc
+        order by cc.sequence asc ) t3;
+    </select>
+    <!-- lixun 2016.7.25 按userid查询可看权限范围内的机构树 -->
+    <sql id="getDeptsByUser">
+        select deptId from cy_user_dept where userId=#{userId}
+    </sql>
+    <select id="selectAlterDeptTreeByUser" parameterType="long" resultMap="deptAttrInfoResultMap">
+
+        select t2.* from (select distinct case @id when '0' then @id:=dept else @id end dept_id,
+        (select @id:=parent_id from cy_dept_info where @id=dept_id) parent_id from (select @id:='0',
+        '',dept_id dept from cy_dept_info,(select '' union all select '' union all select '' union all
+        select '' union all select '') kong where belong_dept_id in (<include refid="getDeptsByUser" />)
+        or dept_id in (<include refid="getDeptsByUser" />)) digui union select b.dept_id dept_id,b.parent_id
+        parent_id from (select dept_id,parent_id from cy_dept_info where belong_dept_id in
+        (<include refid="getDeptsByUser" />) or dept_id in (<include refid="getDeptsByUser" />)) a
+        left join cy_dept_info b on b.dept_id like concat(a.dept_id,'%') order by dept_id) t1 left join
+        cy_dept_info t2 on t1.dept_id=t2.dept_id
+
+
+    </select>
+    <!-- lixun -->
+
+</mapper>

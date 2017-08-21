@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.userProfile.dao.UserProfileMapper">
+	<resultMap type="com.cy.core.userProfile.entity.UserProfile" id="userProfileResultMap">
+		<!--<result column="picture" property="picture" />-->
+		<result column="picture" property="pictureUrl" />
+		<result column="accountNum" property="accountNum" />
+		<result column="password" property="password" />
+		<result column="name" property="name" />
+		<result column="phoneNum" property="phoneNum" />
+		<result column="address" property="address" />
+		<result column="sign" property="sign" />
+		<result column="intrestType" property="intrestType" />
+		<result column="channels" property="channels" />
+		<result column="email" property="email" />
+		<result column="authenticated" property="authenticated" />
+		<result column="sex" property="sex" />
+		<result column="groupName" property="groupName" />
+		<result column="baseInfoId" property="baseInfoId" />
+		<result column="classes" property="classes"/>
+		<result column="workUtil" property="workUtil"/>
+		<result column="profession" property="profession"/>
+		<result column="hobby" property="hobby"/>
+		<result column="position" property="position"/>
+		<result column="mu_longitud" property="mu_longitud"/>
+		<result column="mu_latitude" property="mu_latitude"/>
+		<result column="gps_time" property="gps_time"/>
+		<result column="alumniId" property="alumni_id"/>
+		<result column="alumni_name" property="alumniName" />
+		<result column="status" property="status" />
+		<result column="user_alumni_id" property="userAlumniId" />
+		<result column="curr_alumni_id" property="currAlumniId" />
+		<result column="is_from_app" property="isFromApp" />
+		<result column="auth_err_num" property="authErrNum" />
+		<result column="auth_err_time" property="authErrTime" />
+		<result column="is_changed_sex" property="isChangedSex" />
+		<result column="birthday" property="birthday" />
+		<result column="memberCount" property="memberCount"/>
+		<result column="is_activated" property="isActivated"/>
+		<result column="is_one_key_auth" property="isOneKeyAuth"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+	<resultMap type="com.cy.core.alumni.entity.UserAlumni" id="userAlumniResultMap">
+		<id column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="alumni_id" property="alumniId" />
+		<result column="status" property="status" />
+		<result column="join_time" property="joinTime" />
+		<result column="leave_time" property="leaveTime" />
+	</resultMap>
+
+	<select id="countUserProfile" parameterType="map" resultType="long">
+		select count(t.accountNum) from cy_userprofile t
+		<where>
+			<if test="accountNum!=null and accountNum!=''">
+				t.accountNum=#{accountNum}
+			</if>
+			<if test="name!=null and name!=''">
+				and t.name like concat('%',#{name},'%')
+			</if>
+		</where>
+	</select>
+	<select id="countByPhoneNum" parameterType="string" resultType="long">
+		SELECT count(t.accountNum) FROM cy_userprofile t WHERE t.phoneNum=#{phoneNum}
+	</select>
+	<select id="countByEmail" parameterType="string" resultType="long">
+		SELECT count(t.accountNum) FROM cy_userprofile t WHERE t.email = #{email}
+	</select>
+	<select id="countUserProfileByBaseInfoId" parameterType="map"
+		resultType="long">
+		select count(t.accountNum) from cy_userprofile t
+		<where>
+			<if test="baseInfoId!=null and baseInfoId!=''">
+				t.baseInfoId like concat('%',#{baseInfoId},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectUserProfileList" parameterType="map"
+		resultMap="userProfileResultMap">
+		select * from cy_userprofile t
+		<where>
+			<if test="accountNum!=null and accountNum!=''">
+				t.accountNum=#{accountNum}
+			</if>
+			<if test="name!=null and name!=''">
+				and t.name like concat('%',#{name},'%')
+			</if>
+			<if test="phoneNum!=null and phoneNum!=''">
+				and t.phoneNum = #{phoneNum}
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+	<select id="selectUserByName" parameterType="map"
+		resultMap="userProfileResultMap">
+		select * from cy_userprofile t
+		<where>
+			<if test="name!=null and name!=''">
+				t.name like concat('%',#{name},'%')
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+
+	<select id="selectAlumni" parameterType="map" resultMap="userProfileResultMap">
+		select	*
+		from cy_userprofile t
+		where t.baseInfoId is not null and
+		t.baseInfoId!=''
+		<if test="phoneNum!=null and phoneNum!=''">
+			and t.phoneNum LIKE concat('%',#{phoneNum},'%')
+		</if>
+		<if test="name!=null and name!=''">
+			and t.name LIKE concat('%',#{name},'%')
+		</if>
+		<if test="accountList!=null">
+			and t.accountNum in
+			<foreach collection="accountList" item="id" open="("
+					 separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+		<if test="entranceTimeEnd!=null and entranceTimeEnd!=''">
+			and t.accountNum in (select i.accountNum from cy_user_info i where
+			DATE_FORMAT(i.entranceTime, '%Y') &lt;= #{entranceTimeEnd} and DATE_FORMAT(i.entranceTime, '%Y')  &gt;=#{entranceTimeStart})
+		</if>
+		<if test="sex!=null and sex!=''">
+			and t.sex=#{sex}
+		</if>
+		<if test="profession!=null and profession!=''">
+			and t.profession like concat('%',#{profession},'%')
+		</if>
+		<if test="address!=null and address!=''">
+			and t.address like concat('%',#{address},'%')
+		</if>
+	</select>
+
+	<!-- 新增模糊查询 性别(sex)，年龄(age)，行业(profession)，所在地(address)- -->
+	<select id="selectUserByQuery" parameterType="map"
+		resultMap="userProfileResultMap">
+		select * from cy_userprofile t
+		<where> 1=1
+			<if test="accountNum!=null and accountNum!='' and min_longitud==null">
+				AND t.accountNum = #{accountNum}
+			</if>
+			<if test="name!=null and name!=''">
+				AND t.name like concat('%',#{name},'%')
+				<!-- name = #{name} -->
+			</if>
+			<if test="sex!=null and sex!=''">
+				and t.sex = #{sex}
+			</if>
+			<if test="profession!=null and profession!=''">
+				and t.profession like concat('%',#{profession},'%')
+			</if>
+			<if test="address!=null and address!=''">
+				and t.address like concat('%',#{address},'%')
+			</if>
+			<!-- 新增经度纬度查询附近人功能,按照距离升序 -->
+			<if
+				test="min_longitud!=null and max_longitud!=null and min_latitude!=null and max_latitude!= null">
+				<![CDATA[
+				and t.mu_longitud > #{min_longitud}
+            	and t.mu_longitud < #{max_longitud}
+            	and t.mu_latitude > #{min_latitude}
+            	and t.mu_latitude < #{max_latitude}
+            	and t.accountNum <> #{accountNum}
+            	and t.mu_longitud is not null and mu_longitud!=''
+            	and t.mu_latitude is not null and mu_latitude!=''
+            	order by ACOS(SIN((#{mu_latitude} * 3.1415) / 180 ) * SIN((t.mu_latitude * 3.1415) / 180 )
+	            +COS((#{mu_latitude} * 3.1415) / 180 ) * COS((t.mu_latitude * 3.1415) / 180 )
+	            *COS((#{mu_longitud} * 3.1415) / 180 - (t.mu_longitud * 3.1415) / 180 ) )
+	            * 6380 asc
+            	]]>
+			</if>
+
+		</where>
+		limit #{start},#{rows}
+	</select>
+
+	<select id="getUserProfileByGroupId" parameterType="string"
+		resultMap="userProfileResultMap">
+		select * from cy_userprofile t where t.groupName like
+		concat('%',#{groupId},'%')
+	</select>
+
+	<select id="selectNearPeople" parameterType="map"
+		resultMap="userProfileResultMap">
+		select * from cy_userprofile t where <![CDATA[ mu_longitud >
+		#{min_longitud}
+		and t.mu_longitud < #{max_longitud}
+		and t.mu_latitude > #{min_latitude}
+		and t.mu_latitude < #{max_latitude}
+		and t.accountNum <> #{accountNum}
+		and t.mu_longitud is not null and t.mu_longitud!=''
+		and t.mu_latitude is not null and t.mu_latitude!=''
+		and DATE_FORMAT(t.gps_time,'%Y-%m-%d')=DATE_FORMAT(now(),'%Y-%m-%d')
+		order by ACOS(SIN((#{mu_latitude} * 3.1415) / 180 ) * SIN((t.mu_latitude *
+		3.1415) / 180 )
+		+COS((#{mu_latitude} * 3.1415) / 180 ) * COS((t.mu_latitude * 3.1415) / 180 )
+		*COS((#{mu_longitud} * 3.1415) / 180 - (t.mu_longitud * 3.1415) / 180 )
+		)
+		* 6380 asc
+		limit 0,100
+		]]>
+	</select>
+
+	<select id="selectAll" resultMap="userProfileResultMap">
+		select * from cy_userprofile t
+	</select>
+	<insert id="save" parameterType="com.cy.core.userProfile.entity.UserProfile"
+		useGeneratedKeys="true" keyProperty="accountNum">
+		insert into
+		cy_userprofile(picture,password,name,phoneNum,sex,address,sign,intrestType,
+		channels,email,baseInfoId,birthday,workUtil,`position`,is_activated,is_one_key_auth)
+		values(#{pictureUrl},#{password},#{name},#{phoneNum},#{sex},#{address},#{sign},#{intrestType},
+		#{channels},#{email},#{baseInfoId},#{birthday},#{workUtil},#{position},#{isActivated},#{isOneKeyAuth})
+	</insert>
+	
+	<insert id="savecheck" parameterType="com.cy.core.userProfile.entity.UserProfile"
+		useGeneratedKeys="true" keyProperty="accountNum">
+		insert into
+		cy_userprofile(picture,password,name,phoneNum,sex,address,sign,intrestType,
+		channels,email,baseInfoId,birthday,workUtil,`position`,is_activated,is_one_key_auth)
+		select #{pictureUrl},#{password},#{name},#{phoneNum},#{sex},#{address},#{sign},#{intrestType},
+		#{channels},#{email},#{baseInfoId},#{birthday},#{workUtil},#{position},#{isActivated},#{isOneKeyAuth}
+		FROM DUAL WHERE NOT EXISTS(SELECT phoneNum FROM cy_userprofile WHERE phoneNum=#{phoneNum});
+	</insert>
+	
+	<!-- 标记为APP端校友组织管理员 -->
+	<update id="updatePosition" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile set `position`='99999999'	where phoneNum=#{phoneNum}
+	</update>
+	
+	
+	<select id="selectById" parameterType="string" resultMap="userProfileResultMap">
+		select
+		*
+		from cy_userprofile t where t.accountNum=#{accountNum}
+	</select>
+
+	<!-- 根据accountNum集合查询userProfile的accountNum,groupName -->
+	<select id="selectGroupInfoByAccountNumList" parameterType="list"
+		resultMap="userProfileResultMap">
+		select t.accountNum,t.groupName
+		from cy_userprofile t where t.accountNum in
+		<foreach collection="list" item="accountList" open="("
+			separator="," close=")">
+			#{accountList}
+		</foreach>
+	</select>
+
+	<!-- 根据accountNum集合批量修改userProfile的groupName -->
+
+
+
+
+	<delete id="delete" parameterType="list">
+		delete from cy_userprofile where accountNum in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<delete id="deleteByAccountNum" parameterType="string">
+		DELETE FROM cy_userprofile WHERE accountNum=#{accountNum}
+	</delete>
+	<update id="updateAuthenticated" parameterType="map">
+		update
+		cy_userprofile set authenticated=#{authenticated}
+		where
+		accountNum=#{accountNum}
+	</update>
+	<update id="updateGroup" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile set
+		groupName=#{groupName}
+		where accountNum=#{accountNum}
+	</update>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile
+		<set>
+			<if test="pictureUrl!=null and pictureUrl!=''">
+				picture=#{pictureUrl},
+			</if>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="birthday!=null and birthday!=''">
+				birthday=#{birthday},
+			</if>
+			<if test="phoneNum!=null and phoneNum!=''">
+				phoneNum=#{phoneNum},
+			</if>
+			<if test="isChangedSex!=null and isChangedSex!=''">
+				is_changed_sex=#{isChangedSex},
+			</if>
+		    <if test="sex!=null and sex!=''">
+			   sex=#{sex},
+			</if>
+			<if test="sign!=null and sign!=''">
+				sign=#{sign},
+			</if>
+			<if test="intrestType!=null and intrestType!=''">
+				intrestType=#{intrestType},
+			</if>
+			<if test="channels!=null and channels!=''">
+				channels=#{channels},
+			</if>
+			<if test="email!=null and email!=''">
+				email=#{email},
+			</if>
+			<if test="address!=null and address!=''">
+				address=#{address},
+			</if>
+			<if test="baseInfoId!=null">
+				baseInfoId=#{baseInfoId},
+			</if>
+			<if test="groupName!=null">
+				groupName=#{groupName},
+			</if>
+			<if test="authenticated!=null and authenticated!=''">
+				authenticated=#{authenticated},
+			</if>
+			<if test="classes!=null">
+				classes=#{classes},
+			</if>
+			<!-- 新增的字段 -->
+			<if test="workUtil!=null and workUtil!=''">
+				workUtil=#{workUtil},
+			</if>
+			<if test="profession!=null and profession!=''">
+				profession=#{profession},
+			</if>
+			<if test="hobby!=null and hobby!=''">
+				hobby=#{hobby},
+			</if>
+			<if test="position!=null and position!=''">
+				`position`=#{position},
+			</if>
+			<if test="mu_longitud!=null and mu_longitud!=0.0 and mu_latitude!=null and mu_latitude!=0.0">
+				mu_longitud=#{mu_longitud},mu_latitude=#{mu_latitude},
+			</if>
+			<if test="gps_time!=null and gps_time!=''">
+				gps_time=#{gps_time},
+			</if>
+			<if test="alumni_id>0">
+				alumni_id=#{alumni_id},
+			</if>
+			<if test='isActivated != null and  isActivated != ""'>
+				is_activated = #{isActivated},
+			</if>
+			<if test='isOneKeyAuth != null and isOneKeyAuth != ""' >
+				is_one_key_auth = #{isOneKeyAuth}
+			</if>
+		</set>
+		where accountNum=#{accountNum}
+	</update>
+
+	<update id="updateGps" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile set
+		mu_longitud=#{mu_longitud},mu_latitude=#{mu_latitude},gps_time=#{gps_time}
+		where accountNum=#{accountNum}
+	</update>
+
+	<update id="updatePhoto" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile set
+		picture=#{pictureUrl} where accountNum=#{accountNum}
+	</update>
+
+	<!-- 根据accountNum查询用户profile信息 -->
+	<select id="selectByAccountNum" parameterType="string"
+		resultMap="userProfileResultMap">
+		SELECT u.*, GROUP_CONCAT(ua.`alumni_id`) alumniId
+		FROM cy_userprofile u
+		LEFT JOIN cy_user_alumni ua ON ua.`user_id` = u.`accountNum`
+		WHERE u.accountNum=#{accountNum} or u.phoneNum=#{accountNum} or u.email=#{accountNum}
+	</select>
+	<!-- alumniId是1,2,3,4则查出所有的人 -->
+	<select id="getAllUsers"
+			resultMap="userProfileResultMap">
+		select *
+		from cy_userprofile
+	</select>
+	<select id="selectByBaseInfoId" parameterType="string"
+		resultMap="userProfileResultMap">
+		select *
+		from cy_userprofile t where t.baseInfoId like
+		concat('%',#{baseInfoId},'%')
+	</select>
+	
+	<select id="selectByPhoneNum" parameterType="string" resultMap="userProfileResultMap">
+		select * from cy_userprofile t where t.phoneNum=#{phoneNum}
+	</select>
+	
+	<select id="selectByPhoneNumDetail" parameterType="map" resultMap="userProfileResultMap">
+		SELECT t.picture,t.email,t.create_time,t.accountNum,t.`name`,
+		t.phoneNum,t.address,sex,t.workUtil,t.profession,
+		t.address,t.groupName, 
+		t.alumni_id,
+		 (SELECT a2.alumniName FROM cy_alumni a2 WHERE t.alumni_id=a2.alumniId) alumni_name
+		 FROM cy_userprofile t
+		 WHERE  t.phoneNum=#{phoneNum} and alumni_id=#{aluid}
+	</select>
+
+	
+	<update id="clearBaseInfoId" parameterType="map">
+		update cy_userprofile
+		set baseInfoId=#{baseInfoId},groupName=#{groupName},classes=#{classes} where
+		accountNum=#{accountNum}
+	</update>
+	<update id="updateBase" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile set sex=#{sex},name=#{name}
+		<if test="newBaseInfoId!=null and newBaseInfoId!=''">
+			,baseInfoId=#{newBaseInfoId}
+		</if>
+		<if test="groupName!=null and groupName!=''">
+			,groupName=#{groupName}
+		</if>
+		<if test="classes!=null and classes!=''">
+			,classes=#{classes}
+		</if>
+		where baseInfoId like concat('%',#{baseInfoId},'%')
+	</update>
+	<update id="updatePassword" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		update cy_userprofile
+		set password=#{password} where accountNum=#{accountNum}
+	</update>
+	
+	<!-- 根据多个accountNum查询 -->
+	<select id="selectByAccountNums" parameterType="list" resultMap="userProfileResultMap">
+		select * from cy_userprofile t where t.accountNum in
+		<foreach collection="list" open="(" separator="," close=")"
+			item="ids">
+			#{ids}
+		</foreach>
+	</select>
+
+	<!-- lixun 未认证班级 -->
+	<select id="selectUnauthorizedClass" parameterType="string" resultMap="userProfileResultMap">
+		<!-- select distinct user_id baseInfoId,c.full_name classes from cy_user_info a
+		inner join cy_userprofile b on b.name=a.user_name
+		left join cy_dept_info c on left(a.user_id,16)=c.dept_id
+		where FIND_IN_SET(a.user_id,b.baseInfoId)=0
+		and a.user_name=(select name from cy_userprofile where accountNum=#{accountNum}) and (a.accountNum is NULL OR  TRIM(a.accountNum) = '') -->
+		SELECT
+			user_id baseInfoId,
+			c.full_name classes,
+			CASE WHEN a.sex='女' THEN '1' WHEN a.sex='男' THEN '0' ELSE '' END sex,
+			(SELECT COUNT(cui.user_id) FROM cy_user_info cui WHERE cui.user_id LIKE CONCAT(LEFT (a.user_id, 16), '%')  AND cui.checkFlag = 1) memberCount
+		FROM
+			cy_user_info a
+		LEFT JOIN cy_dept_info c ON LEFT (a.user_id, 16) = c.dept_id
+		WHERE
+		a.checkFlag = 1 AND c.`status` = '20'
+		AND user_name = (
+			SELECT
+				NAME
+			FROM
+				cy_userprofile
+			WHERE
+				accountNum = #{accountNum}
+		)
+		AND (
+			a.accountNum IS NULL
+			OR TRIM(a.accountNum) = ''
+		)
+		AND
+			LEFT (a.user_id, 16) NOT IN
+			(
+				SELECT LEFT(user_id, 16)
+				FROM cy_user_info
+				WHERE accountNum = #{accountNum} AND checkflag='1'
+			)
+		GROUP BY c.dept_id
+		<!--AND
+			SUBSTRING(a.user_id, 11, 4) NOT IN
+			(
+				SELECT SUBSTRING(user_id, 11, 4)
+				FROM cy_user_info
+				WHERE accountNum = #{accountNum} AND checkflag='1'
+			)-->
+	</select>
+
+	<select id="selectByDeptFormUserProfile" parameterType="map" resultMap="userProfileResultMap">
+		SELECT t.accountNum,t.`name`,t.phoneNum,t.address,sex,t.workUtil,t.profession,t.address,t.groupName,
+		(SELECT a1.alumniId FROM cy_alumni a1 WHERE ua.alumni_id=a1.alumniId) alumni_id,
+		(SELECT a2.alumniName FROM cy_alumni a2 WHERE ua.alumni_id=a2.alumniId) alumni_name,
+		(#{currAlumniId}) curr_alumni_id,
+		ua.status,ua.id AS user_alumni_id
+		FROM cy_userprofile t
+		JOIN cy_user_alumni ua ON ua.user_id = t.accountNum
+		AND ua.del_flag != '1'
+		WHERE
+		1=1
+			<if test="currAlumniId != null and currAlumniId != ''">
+				AND ua.alumni_id IN (
+					SELECT a.alumniId
+					FROM cy_alumni a
+					WHERE a.alumniId = #{currAlumniId}
+						OR a.sequence LIKE CONCAT(
+							(SELECT sequence FROM cy_alumni WHERE alumniId = #{currAlumniId}),'.%'
+						)
+				)
+			</if>
+			<if test="aluid != null and aluid != ''">
+				AND ua.alumni_id IN (
+					SELECT a.alumniId
+					FROM cy_alumni a
+					WHERE a.alumniId = #{aluid}
+						OR a.sequence LIKE CONCAT(
+							(SELECT sequence FROM cy_alumni WHERE alumniId = #{aluid}),'.%'
+						)
+				)
+			</if>
+		<if test="userName!=null and userName!=''">
+			and name like concat('%',#{userName},'%')
+		</if>
+		<if test="userAlStatus!=null and userAlStatus!=''">
+			and ua.status=#{userAlStatus}
+		</if>
+		limit #{start},#{rows}
+	</select>
+	
+	    <!-- 按校友组织查询 -->
+	<select id="selectByDeptFormAlumni" parameterType="map" resultMap="userProfileResultMap">
+		SELECT t.picture,t.email,t.create_time,t.accountNum,t.`name`,t.phoneNum,t.address,sex,t.workUtil,t.profession,t.address,t.groupName,
+		(SELECT a1.alumniId FROM cy_alumni a1 WHERE ua.alumni_id=a1.alumniId) alumni_id,
+		(SELECT a2.alumniName FROM cy_alumni a2 WHERE ua.alumni_id=a2.alumniId) alumni_name,
+		(#{currAlumniId}) curr_alumni_id,ua.status,ua.id AS user_alumni_id
+		FROM cy_userprofile t
+		JOIN cy_user_alumni ua ON ua.user_id = t.accountNum		
+		AND ua.del_flag != '1'
+		WHERE ifnull(phoneNum,0)!='99999999' AND ua.alumni_id IN (
+					SELECT a.alumniId
+					FROM cy_alumni a
+					WHERE a.alumniId = #{aluid}
+						OR a.sequence LIKE CONCAT(
+							(SELECT sequence FROM cy_alumni WHERE alumniId = #{aluid}),'.%'
+						)
+				)
+		
+		<if test="userAlStatus!=null and userAlStatus!=''">
+			and ua.status=#{userAlStatus}
+		</if>
+		<if test="userAlStatus==null or userAlStatus==''">
+			and ua.status!='5' and  ua.status!='10'
+		</if>
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="countByDeptFormAlumni" parameterType="map" resultType="long">
+		SELECT count(1)
+		FROM cy_userprofile t
+		JOIN cy_user_alumni ua ON ua.user_id = t.accountNum AND ua.del_flag != '1'
+		WHERE ifnull(phoneNum,0)!='99999999'
+			AND ua.alumni_id IN (
+			SELECT a.alumniId
+			FROM cy_alumni a
+			WHERE a.alumniId = #{aluid}
+			OR a.sequence LIKE CONCAT(
+			(SELECT sequence FROM cy_alumni WHERE alumniId = #{aluid}),'.%'
+			)
+			)	
+		<if test="userAlStatus!=null and userAlStatus!=''">
+			and ua.status=#{userAlStatus}
+		</if>
+		<if test="userAlStatus==null or userAlStatus==''">
+			and ua.status!='5' and  ua.status!='10'
+		</if>
+	</select>
+	
+	
+	<select id="countByDeptFormUserProfile" parameterType="map" resultType="long">
+		SELECT count(1)
+		FROM cy_userprofile t
+		JOIN cy_user_alumni ua ON ua.user_id = t.accountNum AND ua.del_flag != '1'
+		WHERE ifnull(phoneNum,0)!='99999999'
+		<if test="currAlumniId != null and currAlumniId != ''">
+			AND ua.alumni_id IN (
+			SELECT a.alumniId
+			FROM cy_alumni a
+			WHERE a.alumniId = #{currAlumniId}
+			OR a.sequence LIKE CONCAT(
+			(SELECT sequence FROM cy_alumni WHERE alumniId = #{currAlumniId}),'.%'
+			)
+			)
+		</if>
+		<if test="aluid != null and aluid != ''">
+			AND ua.alumni_id IN (
+			SELECT a.alumniId
+			FROM cy_alumni a
+			WHERE a.alumniId = #{aluid}
+			OR a.sequence LIKE CONCAT(
+			(SELECT sequence FROM cy_alumni WHERE alumniId = #{aluid}),'.%'
+			)
+			)
+		</if>
+		<if test="userName!=null and userName!=''">
+			and name like concat('%',#{userName},'%')
+		</if>
+		<if test="userAlStatus!=null and userAlStatus!=''">
+			and ua.status=#{userAlStatus}
+		</if>
+	</select>
+ 	
+    <!-- 修改用户组织状态 -->
+	<update id="checkInitiate" parameterType="map">
+		UPDATE cy_user_alumni SET `status`=#{status} WHERE id=#{userAlumniId}
+	</update>
+
+    <!-- 批量用户组织状态 -->
+	<update id="updatealumnistatusbatch" parameterType="map"  >  
+	   UPDATE cy_user_alumni SET `status`=#{status}
+	    WHERE alumni_id=#{userAlumniId}  and  user_id in   
+        <foreach collection="ids" item="item" index="index"  open="(" separator="," close=")">  
+            #{item}  
+        </foreach>  
+	  </update>
+  
+    <!-- 修改用户组织状态 -->
+    <update id="updatealumnistatus" parameterType="map">
+		UPDATE cy_user_alumni SET `status`=#{status}
+		 WHERE user_id=#{userId} and alumni_id=#{userAlumniId} 
+	</update>
+
+
+	<select id="selectAlumniStatusById" parameterType="string" resultMap="userAlumniResultMap">
+		SELECT * FROM cy_user_alumni WHERE id=#{id}
+	</select>
+    <select id="queryUserAlumni" parameterType="map" resultType="map">
+        SELECT
+          id AS id ,
+          user_id AS userId ,
+          alumni_id AS alumniId ,
+          status AS status
+        FROM cy_user_alumni ua
+        WHERE ua.del_flag != '1'
+        <if test="accountNum != null and accountNum != ''">
+            AND user_id = #{accountNum}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND user_id = #{userId}
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+            AND alumni_id = #{alumniId}
+        </if>
+    </select>
+
+	<!-- 更新认证错误信息 -->
+	<update id="updateAuthErr" parameterType="com.cy.core.userProfile.entity.UserProfile">
+		UPDATE cy_userprofile
+		SET auth_err_num = #{authErrNum},
+		 auth_err_time = now()
+		WHERE
+			accountNum = #{accountNum}
+	</update>
+
+	<!-- 根据用户编号获取用户认证信息 -->
+	<select id="selectBaseInfo" parameterType="string" resultType="map">
+		SELECT
+			GROUP_CONCAT(u.user_id) baseInfoId,
+			GROUP_CONCAT(d.full_name SEPARATOR '_') groupName,
+			GROUP_CONCAT(d.dept_id, 16) classes
+		FROM
+			cy_user_info u
+		JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id AND d.`status` = '20'
+		WHERE
+			u.checkflag = '1' and u.accountNum =  #{accountNum}
+	</select>
+
+	<select id="getUsersByAlumniId" parameterType="string" resultMap="userProfileResultMap">
+		select * from cy_userprofile t where t.alumni_id=#{alumniId}
+	</select>
+
+	<select id="selectByPhoneNumOrEmail" parameterType="map" resultMap="userProfileResultMap">
+		SELECT u.* FROM cy_userprofile u
+		WHERE
+		<choose>
+			<when test='phoneNum != null and phoneNum != "" and email != null and email != ""'>
+				u.phoneNum=#{phoneNum} OR u.email = #{email}
+			</when>
+			<otherwise>
+				<if test='phoneNum != null and phoneNum != ""'>
+					u.phoneNum=#{phoneNum}
+				</if>
+				<if test='email != null and email != ""'>
+					u.email=#{email}
+				</if>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="countAuthenticatedUserProfile" parameterType="String" resultType="long">
+		select count(1) from cy_userprofile t left join cy_user_info i
+		on t.accountNum = i.accountNum
+		where
+		left(i.user_id,14) = #{baseInfoIdSub}
+	</select>
+</mapper>

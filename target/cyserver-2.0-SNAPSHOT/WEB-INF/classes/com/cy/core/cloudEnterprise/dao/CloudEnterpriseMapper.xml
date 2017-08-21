@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.cloudEnterprise.dao.CloudEnterpriseMapper">
+<resultMap id="enterpriseResultMap" type="com.cy.core.cloudEnterprise.entity.CloudEnterprise">
+    <id column="id" property="id"/>
+    <result column="name" property="name" />
+    <result column="logo" property="logo" />
+    <result column="poster_pic" property="posterPic" />
+    <result column="slogan" property="slogan" />
+    <result column="description" property="description" />
+    <result column="type" property="type" />
+    <result column="main_business" property="mainBusiness" />
+    <result column="address" property="address" />
+    <result column="website" property="website" />
+    <result column="summary" property="summary" />
+    <result column="service_area" property="serviceArea" />
+    <result column="linkman" property="linkman" />
+    <result column="contact_number" property="contactNumber" />
+    <result column="click_number" property="clickNumber" />
+    <result column="create_by" property="createBy" />
+    <result column="create_date" property="createDate" />
+    <result column="update_by" property="updateBy" />
+    <result column="update_date" property="updateDate" />
+    <result column="remarks" property="remarks" />
+    <result column="del_flag" property="delFlag" />
+    <result column="longitude" property="longitude" />
+    <result column="latitude" property="latitude"/>
+    <result column="location_desc" property="locationDesc"/>
+    <result column="province" property="province"/>
+    <result column="city" property="city"/>
+    <result column="recruit_email" property="recruitEmail"/>
+    <result column="financing_stage" property="financingStage"/>
+    <result column="status" property="status"/>
+    <result column="bus_license_url" property="busLicenseUrl"/>
+    <result column="industry" property="industry"/>
+    <result column="cloud_id" property="cloudId"/>
+
+    <result column="countEntrepreneur" property="countEntrepreneur"/>
+
+</resultMap>
+    <select id="selectEnterprise" parameterType="map" resultMap="enterpriseResultMap">
+        SELECT ce.*,
+        (SELECT count(*) FROM cloud_entrepreneur e WHERE e.enterprise_id = ce.cloud_id AND (e.status ='20'OR e.status ='25')AND e.del_flag ='0')AS countEntrepreneur
+        FROM cloud_enterprise ce
+        WHERE ce.del_flag ='0'
+        <if test="id != null and id != ''" >
+            AND ce.id = #{id}
+        </if>
+        <if test="name != null and name != ''" >
+            AND ce.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="industry != null and industry != ''" >
+            AND ce.industry LIKE CONCAT('%', #{industry} ,'%')
+        </if>
+        <if test="type !=null and type != '' ">
+            AND ce.type = #{type}
+        </if>
+        <if test="address !=null and address != '' ">
+            AND ce.address LIKE CONCAT('%', #{address} ,'%')
+        </if>
+        <if test="website !=null and website != '' ">
+            AND ce.website = #{website}
+        </if>
+        <if test="mainBusiness !=null and mainBusiness != '' ">
+            AND ce.main_business = #{mainBusiness}
+        </if>
+        <if test="posterPic !=null and posterPic != '' ">
+            AND poster_pic = #{posterPic}
+        </if>
+        <if test="linkman !=null and linkman != '' ">
+            AND ce.linkman LIKE CONCAT('%', #{linkman} ,'%')
+        </if>
+        <if test="contactNumber !=null and contactNumber != '' ">
+            AND ce.contact_number LIKE CONCAT('%', #{contactNumber} ,'%')
+        </if>
+        <if test="cloudId !=null and cloudId != '' ">
+            AND ce.cloud_id = #{cloudId}
+        </if>
+        <if test="status !=null and status != '' ">
+            AND ce.status= #{status}
+        </if>
+        <if test="busLicenseUrl !=null and busLicenseUrl != '' ">
+            AND ce.bus_license_url= #{busLicenseUrl}
+        </if>
+        <if test="statuses !=null and statuses != '' ">
+            AND find_in_set(ce.status,#{statuses})
+        </if>
+        <if test="province !=null and province != '' ">
+            AND ce.province = #{province}
+        </if>
+        <if test="city !=null and city != '' ">
+            AND ce.city = #{city}
+        </if>
+        <choose>
+            <when test='orderFlag == 0 or orderFlag == "0"'>
+                ORDER BY distance ASC
+            </when>
+            <otherwise>
+                ORDER BY ce.update_date DESC
+            </otherwise>
+        </choose>
+        <if test='isNotLimit != "1" '>
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="getByCloudId" parameterType="string" resultMap="enterpriseResultMap">
+        SELECT ce.*
+        FROM cloud_enterprise ce
+        WHERE ce.del_flag != '1' AND ce.cloud_id=#{cloudId}
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(id)
+        FROM cloud_enterprise
+        WHERE del_flag = '0'
+        <if test="name != null and name != ''" >
+            AND name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="type !=null and type != '' ">
+            AND type = #{type}
+        </if>
+        <if test="address !=null and address != '' ">
+            AND address LIKE CONCAT('%', #{address} ,'%')
+        </if>
+        <if test="website !=null and website != '' ">
+            AND website = #{website}
+        </if>
+        <if test="mainBusiness !=null and mainBusiness != '' ">
+            AND main_business = #{mainBusiness}
+        </if>
+        <if test="posterPic !=null and posterPic != '' ">
+            AND poster_pic = #{posterPic}
+        </if>
+        <if test="linkman !=null and linkman != '' ">
+            AND linkman LIKE CONCAT('%', #{linkman} ,'%')
+        </if>
+        <if test="contactNumber !=null and contactNumber != '' ">
+            AND contact_number LIKE CONCAT('%', #{contactNumber} ,'%')
+        </if>
+        <if test="status !=null and status != '' ">
+            AND status= #{status}
+        </if>
+        <if test="busLicenseUrl !=null and busLicenseUrl != '' ">
+            AND bus_license_url= #{busLicenseUrl}
+        </if>
+        <if test="statuses !=null and statuses != '' ">
+            AND find_in_set(status,#{statuses})
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterprise">
+        INSERT INTO cloud_enterprise (
+        id,
+        name,
+        logo,
+        poster_pic,
+        slogan,
+        description,
+        type,
+        main_business,
+        address,
+        website,
+        summary,
+        service_area,
+        linkman,
+        contact_number,
+        click_number,
+        longitude,
+        latitude,
+        location_desc,
+        province,
+        city,
+        recruit_email,
+        financing_stage,
+        status,
+        bus_license_url,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag,
+        industry,
+        cloud_id
+        )
+        VALUES (
+        #{id},
+        #{name},
+        #{logo},
+        #{posterPic},
+        #{slogan},
+        #{description},
+        #{type},
+        #{mainBusiness},
+        #{address},
+        #{website},
+        #{summary},
+        #{serviceArea},
+        #{linkman},
+        #{contactNumber},
+        #{clickNumber},
+        #{longitude},
+        #{latitude},
+        #{locationDesc},
+        #{province},
+        #{city},
+        #{recruitEmail},
+        #{financingStage},
+        #{status},
+        #{busLicenseUrl},
+        now(),
+        #{updateBy},
+        now(),
+        #{createBy},
+        #{remarks},
+        #{delFlag},
+        #{industry},
+        #{cloudId}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterprise" >
+        UPDATE cloud_enterprise SET
+        <if test="name !=null and name != '' ">
+            name = #{name},
+        </if>
+        <if test="logo !=null and logo != '' ">
+            logo = #{logo},
+        </if>
+        <if test="posterPic !=null and posterPic != '' ">
+            poster_pic = #{posterPic},
+        </if>
+        <if test="slogan !=null and slogan != '' ">
+            slogan = #{slogan},
+        </if>
+        <if test="description !=null and description != '' ">
+            description = #{description},
+        </if>
+        <if test="type !=null and type != '' ">
+            type = #{type},
+        </if>
+        <if test="mainBusiness !=null and mainBusiness != '' ">
+            main_business = #{mainBusiness},
+        </if>
+        <if test="address !=null and address != '' ">
+            address = #{address},
+        </if>
+        <if test="province !=null and province != '' ">
+            province = #{province},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+
+        <if test="longitude !=null and longitude != '' ">
+            longitude = #{longitude},
+        </if>
+        <if test="latitude !=null and latitude != '' ">
+            latitude = #{latitude},
+        </if>
+        <if test="locationDesc !=null and locationDesc != '' ">
+            location_desc = #{locationDesc},
+        </if>
+        <if test="website !=null and website != '' ">
+            website = #{website},
+        </if>
+        <if test="summary !=null and summary != '' ">
+            summary = #{summary},
+        </if>
+        <if test="serviceArea !=null and serviceArea != '' ">
+            service_area = #{serviceArea},
+        </if>
+        <if test="linkman !=null and linkman != '' ">
+            linkman = #{linkman},
+        </if>
+        <if test="contactNumber !=null and contactNumber != '' ">
+            contact_number = #{contactNumber},
+        </if>
+        <if test="clickNumber !=null and clickNumber != '' ">
+            click_number = #{clickNumber},
+        </if>
+        <if test="recruitEmail !=null and recruitEmail != '' ">
+            recruit_email = #{recruitEmail},
+        </if>
+        <if test="financingStage !=null and financingStage != '' ">
+            financing_stage = #{financingStage},
+        </if>
+        <if test="status !=null and status != '' ">
+            status = #{status},
+        </if>
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="industry !=null and industry != '' ">
+            industry = #{industry},
+        </if>
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+    <update id="updateByCloudId" parameterType="com.cy.core.cloudEnterprise.entity.CloudEnterprise" >
+        UPDATE cloud_enterprise SET
+        <if test="name !=null and name != '' ">
+            name = #{name},
+        </if>
+        <if test="logo !=null and logo != '' ">
+            logo = #{logo},
+        </if>
+        <if test="posterPic !=null and posterPic != '' ">
+            poster_pic = #{posterPic},
+        </if>
+        <if test="slogan !=null and slogan != '' ">
+            slogan = #{slogan},
+        </if>
+        <if test="description !=null and description != '' ">
+            description = #{description},
+        </if>
+        <if test="type !=null and type != '' ">
+            type = #{type},
+        </if>
+        <if test="mainBusiness !=null and mainBusiness != '' ">
+            main_business = #{mainBusiness},
+        </if>
+        <if test="address !=null and address != '' ">
+            address = #{address},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+        <if test="website !=null and website != '' ">
+            website = #{website},
+        </if>
+        <if test="summary !=null and summary != '' ">
+            summary = #{summary},
+        </if>
+        <if test="serviceArea !=null and serviceArea != '' ">
+            service_area = #{serviceArea},
+        </if>
+        <if test="linkman !=null and linkman != '' ">
+            linkman = #{linkman},
+        </if>
+        <if test="contactNumber !=null and contactNumber != '' ">
+            contact_number = #{contactNumber},
+        </if>
+        <if test="clickNumber !=null and clickNumber != '' ">
+            click_number = #{clickNumber},
+        </if>
+        <if test="recruitEmail !=null and recruitEmail != '' ">
+            recruit_email = #{recruitEmail},
+        </if>
+        <if test="financingStage !=null and financingStage != '' ">
+            financing_stage = #{financingStage},
+        </if>
+        <if test="status !=null and status != '' ">
+            status = #{status},
+        </if>
+        <if test="longitude !=null and longitude != '' ">
+            longitude = #{longitude},
+        </if>
+        <if test="latitude !=null and latitude != '' ">
+            latitude = #{latitude},
+        </if>
+        <if test="locationDesc !=null and locationDesc != '' ">
+            location_desc = #{locationDesc},
+        </if>
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="industry !=null and industry != '' ">
+            industry = #{industry},
+        </if>
+        update_date = #{updateDate}
+        WHERE cloud_id = #{cloudId}
+    </update>
+    <update id="delete" parameterType="list">
+        update cloud_enterprise SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+    <update id="deleteByCloudId" parameterType="string">
+        UPDATE cloud_enterprise SET  del_flag = 1 WHERE cloud_id = #{cloudId}
+    </update>
+</mapper>

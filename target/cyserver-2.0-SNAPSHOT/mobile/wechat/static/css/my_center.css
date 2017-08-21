@@ -1,0 +1,534 @@
+/*个人中心*/
+
+.my_banner_box{
+    background-image:url(../img/top_bg@3x.png);
+    background-size:cover;
+    background-repeat: no-repeat;
+}
+
+.avatar_wrap{
+    margin:40px 0 35px;
+
+}
+
+.user_pic_preview{
+    width: 90px;
+    height: 90px;
+}
+.user_pic{
+    width: 90px;
+    height: 90px;
+    border:2px solid rgba(255,255,255,0.8);
+}
+.title_wrap{
+    bottom:0;
+    left:0;
+    background:rgba(0,0,0,.66);
+    width:100%;
+    height:32px;
+}
+
+/*认证标示 */
+.verify_flag{
+    position: absolute;
+    right: 2px;
+    bottom: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #2b2b2b;
+    color: #2b2b2b;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 22px;
+    text-align: center;
+}
+
+.verify_flag_small{
+    position: absolute;
+    right: 2px;
+    bottom: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #2b2b2b;
+    color: #2b2b2b;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 12px;
+    text-align: center;
+}
+.verify_icon_small{
+    position: absolute;
+    top:0px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+
+}
+.verify_icon{
+    position: absolute;
+    bottom: 10px;
+    right: 2px;
+    width: 25px;
+    height: 25px;
+}
+
+/*选项卡*/
+
+.menu_table {
+    width: 100%;
+    background-color: #ffffff;
+    overflow: hidden;
+    border-top: 1px #cfcfcf solid;
+    border-left: 1px #cfcfcf solid;
+}
+.menu_table td {
+    border-right: 1px #cfcfcf solid;
+    border-bottom: 1px #cfcfcf solid;
+    width: 25%;
+    height: 108px;
+    text-align: center;
+}
+.menu_table td > .menu {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    border-radius:16px;
+    margin: 0 auto;
+    vertical-align: middle;
+}
+.item1 {background-color: #f6b55c;}
+.item2 {background-color: #09ca90;}
+.item3 {background-color: #f3625c;}
+.item4 {background-color: #6396ea;}
+
+.menu_table td > .menu > img {
+    width: 20px;
+    height: 20px;
+    margin: 15px auto;
+}
+.menu_table td .menu_name {
+    margin-top: 6px;
+    font-size: 16px;
+    color: #999;
+}
+
+.switch_btn{
+    position: fixed;
+    bottom: 0.3rem;
+    width: 90%;
+    margin-left: 5%;
+    height:0.82rem;
+    border-radius: 5px;
+    background-color:#3499da;
+    text-align: center;
+}
+
+/*编辑姓名*/
+.bottom_border{
+    /*border-bottom:1px solid #6396ae;*/
+    border-bottom:1px solid #ddd;
+}
+
+/*横线+中间文字*/
+.border_box{
+    padding:10px 20px;
+}
+.border_box .with_line{
+    width:100%;
+    margin: 0 auto;
+    position:relative;
+    text-align: center;
+}
+.border_box .with_line:before{
+    content:"";
+    border-top:1px solid #cfcfcf;
+    display: block;
+    position:absolute;
+    width:120px;
+    top:10px;
+    left:0;
+}
+.border_box .with_line:after{
+    content:"";
+    border-top:1px solid #cfcfcf;
+    display: block;
+    position:absolute;
+    width:120px;
+    top:10px;
+    right:0;
+}
+
+
+/*学习经历*/
+.jingli_box{
+    border-radius: 5px;
+    width: 100%;
+    background: #fff;
+    overflow: hidden;
+}
+.jingli_box th{
+    border-bottom: 1px solid #eee;
+    padding: 6px 0;
+    font-size: 14px;
+}
+.jingli_box td{
+    padding: 6px 0;
+    text-align: center;
+    font-size: 12px;
+}
+
+/*好友详情*/
+.detail_box{
+    margin: 10px;
+    border-radius: 5px;
+    background: #fff;
+    padding-bottom: 10px;
+}
+.friends_xinxi{
+    padding:10px 20px;
+    padding-bottom: 0px;
+}
+.friends_xinxi>div{
+    line-height: 25px;
+    font-size: 14px;
+}
+.xinxilist{
+    padding-left: 23px;
+}
+.xuebi_png{
+    width: 15px;
+    top: 0px;
+    left: 0;
+}
+.class_xinxi{
+    padding: 10px;
+    margin:5px 30px;
+    border-radius: 5px;
+    background: #ebebeb;
+}
+.class_xinxi .landian{
+    top: 13px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+.wenzixx{
+    padding-left: 15px;
+}
+.zhuangtai{
+    margin: 10px;
+    border-radius: 5px;
+    background: #fff;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-size: 14px;
+    color: #419edd;
+}
+
+
+/*搜索框样式*/
+input[type=search]{
+    border-radius: 5px;
+    border: 1px solid #ebebeb;//必须对默认的border:2px inset覆盖，要不然下面的样式也是白搭
+    width: 98%;
+    height: 30px;
+    outline: none;
+}
+
+input[type=search]::-webkit-search-cancel-button{
+    -webkit-appearance: none;//此处只是去掉默认的小×
+}
+
+/*input[type=search]::-webkit-search-cancel-button{*/
+    /*-webkit-appearance: none;*/
+    /*position: relative;*/
+    /*height: 20px;*/
+    /*width: 20px;*/
+    /*border-radius: 50%;*/
+    /*background-color: #999999;*/
+    /*content: '×';*/
+    /*color: #fff;*/
+/*}*/
+
+/*input[type=search]::-webkit-search-cancel-button:after{*/
+    /*content: '×';*/
+    /*right:1px;*/
+    /*top: 2px;*/
+    /*font-size: 15px;*/
+    /*color: #fff;*/
+    /*font-family: 宋体;*/
+    /*position: absolute;*/
+    /*display: block;*/
+    /*!*background: #6e6e6e;*!*/
+    /*width: 20px;*/
+    /*height: 20px;*/
+    /*line-height: 18px;*/
+    /*text-align: center;*/
+    /*border-radius: 50%;*/
+/*}*/
+
+.input_wai {
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    background: #fff;
+}
+.top-input {
+    box-sizing: border-box;
+    width: 100%;
+    height: 32px;
+    outline: none;
+    border: 1px solid #cbcbcb;
+    background: #ebebeb;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    padding-left: 25px;
+    transition: all 0.4s ease 0s;
+}
+
+/*信息认证_手动输入*/
+.text_item{
+    font-size:14px;
+    color:#3498db;
+}
+
+.show_item{
+    color:#262626;
+    border:1px solid #3498db;
+}
+.input_item{
+    border:1px solid #3498db;
+    border-radius:10px;
+}
+.auto_input{
+    text-align: right;
+}
+
+/*信息认证_9选3*/
+.name_wrap{
+    text-align: center;
+    font-size:16px;
+}
+.name_row{
+    display: flex;
+    padding: 10px 0;
+}
+.name_item{
+    flex:1;
+}
+.tip_txt{
+    color: #3498db;
+    text-align: center;
+}
+.others{
+    text-decoration: none;
+}
+.others:active{
+    color: #3498db;
+}
+
+.label_bg{
+    margin: 0 auto;
+    width: 95%;
+    display: block;
+}
+
+.name_item span{
+    cursor: pointer;
+
+    /*最多显示4个字*/
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+
+.checkedLabel{
+    background: #3498db;
+    color: #FFFFFF;
+}
+
+input[type=checkbox] {
+    display: none;
+}
+
+
+/*信息认证_选择录入*/
+.select_item{
+    border:1px solid #3498db;
+    position: relative;
+
+}
+.select_item:after{
+    content: '∨';
+    position: absolute;
+    top: 3px;
+    border-top-right-radius: 5px;
+    right: 3px;
+    border-bottom-right-radius: 5px;
+    width: 35px;
+    height: 32px;
+    background: #3498db;
+    line-height: 32px;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    font-family: "微软雅黑", Arial, "宋体";
+}
+
+
+.select_box{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    outline: none;
+    border: 0 none;
+    position: relative;
+    width: 100%;
+    /*color:#3498db;*/
+    background: none;
+    background-color: transparent;
+    z-index: 99;
+    overflow: hidden;
+
+}
+
+/* 我的好友 提示框*/
+.friends_confirm{
+    background-color: #fff;
+    border-radius: 10px;
+    z-index: 9999;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    margin: -168px 21px 0px -168px;
+    -webkit-transition-duration: 0.4s;
+    display: none;
+
+}
+.confirm_title{
+    padding:10px 20px;
+    text-align: center;
+    font-size:16px;
+    color:#262626;
+    border-bottom:1px solid #999;
+}
+
+.friend_list{
+    padding:10px;
+    overflow:hidden;
+}
+
+.friend_item{
+    float:left;
+    width:33%;
+}
+
+.friend_avatar_wrap{
+    position:relative;
+    margin: 0 auto;
+}
+.avatar_box{
+    position:relative;
+    text-align: center;
+}
+.friend_avatar{
+    border: 1px solid transparent;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+.chk_flag{
+    bottom: 12px;
+    right: 24px;
+    position: absolute;
+    background-color: #3598db;
+    border: 1px solid transparent;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.friend_name{
+    font-size:12px;
+    color:#262626;
+    text-align: center;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+.verify_btn{
+    font-size:16px;
+    color:#fefefe;
+    background-color:#3498db;
+    padding:10px 20px;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    text-align: center;
+}
+
+/*定义遮罩层*/
+.friends_mask{
+    z-index:9998;
+    position: fixed;
+    width:100%;
+    height:100%;
+    background: #000000;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    display: none;
+
+}
+
+/*我的分会*/
+.alu_wrap{
+    width:100%;
+    background-color: #ebebeb;
+}
+
+.alu_box{
+    box-sizing:border-box;
+    width:100%;
+    background-color: #fff;
+    margin-bottom:25px;
+
+}
+.alu_title{
+    border-bottom: 5px solid #ebebeb;
+}
+
+.alu_title div{
+    padding:12px 10px;
+    font-size:16px;
+}
+
+.alumni_list{
+    box-sizing:border-box;
+
+}
+.alumni_list li{
+
+}
+
+.alumni_list li:not(:last-child) {
+    border-bottom:1px solid #ebebeb;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

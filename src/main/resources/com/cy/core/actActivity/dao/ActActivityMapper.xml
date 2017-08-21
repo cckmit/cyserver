@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.actActivity.dao.ActActivityMapper">
+    <resultMap type="com.cy.core.actActivity.entity.ActActivity" id="ActActivityMap">
+        <id column="id" property="id" />
+        <result column="name"  property="name"/>
+        <result column="type"  property="type"/>
+        <result column="start_time"  property="startTime"/>
+        <result column="end_time"  property="endTime"/>
+        <result column="sign_up_end_time"  property="signUpEndTime"/>
+        <result column="sign_up_start_time"  property="signUpStartTime"/>
+        <result column="introduction"  property="introduction"/>
+        <result column="pic"  property="pic"/>
+        <result column="organizer"  property="organizer"/>
+        <result column="sort"  property="sort"/>
+        <result column="del_flag"  property="delFlag"/>
+        <result column="create_by"  property="createBy"/>
+
+        <result column="create_date"  property="createDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="remarks"  property="remarks"/>
+        <result column="applicantCount"  property="applicantCount"/>
+        <result column="winningCount"  property="winningCount"/>
+    </resultMap>
+    <sql id="base_culomn">
+        ac.id,ac.name,ac.type,ac.start_time AS startTime,ac.end_time AS endTime, ac.sign_up_start_time AS signUpStartTime,ac.sign_up_end_time AS signUpEndTime,ac.introduction,ac.pic,ac.organizer,ac.del_flag AS delFlag,ac.create_by AS createBy,ac.create_date AS createDate,ac.update_by AS updateBy,ac.update_date AS updateDate,ac.remarks,ac.sort,(select count(ap.id) from act_activity_applicant ap where ap.activity_id = ac.id) AS applicantCount,(select count(aw.id) from act_activity_winning aw where aw.activity_id = ac.id) AS winningCount
+    </sql>
+    <insert id="insert" parameterType="com.cy.core.actActivity.entity.ActActivity">
+        INSERT INTO act_activity (
+        id,
+        name,
+        type,
+        start_time,
+        end_time,
+        sign_up_end_time,
+        sign_up_start_time,
+        introduction,
+        pic,
+        organizer,
+        sort,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        VALUES (
+        #{id},
+        #{name},
+        #{type},
+        #{startTime},
+        #{endTime},
+        #{signUpEndTime},
+        #{signUpStartTime},
+        #{introduction},
+        #{pic},
+        #{organizer},
+        #{sort},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.actActivity.entity.ActActivity" >
+        UPDATE act_activity
+        <set>
+        <if test=" name !=null and name != '' ">
+          name=#{name},
+        </if>
+        <if test=" type !=null and type != '' ">
+        type=#{type},
+        </if>
+        <if test=" startTime !=null and startTime != '' ">
+          start_time=#{startTime},
+        </if>
+        <if test=" endTime !=null and endTime != '' ">
+          end_time=#{endTime},
+        </if>
+        <if test=" signUpEndTime !=null and signUpEndTime != '' ">
+          sign_up_end_time=#{signUpEndTime},
+        </if>
+        <if test=" signUpStartTime !=null and signUpStartTime != '' ">
+          sign_up_start_time=#{signUpStartTime},
+        </if>
+        <if test=" introduction !=null and introduction != '' ">
+          introduction=#{introduction},
+        </if>
+        <if test=" pic !=null and pic != '' ">
+          pic=#{pic},
+        </if>
+        <if test=" organizer !=null and organizer != '' ">
+          organizer=#{organizer},
+        </if>
+        <if test=" sort !=null and sort != '' ">
+          sort=#{sort},
+        </if>
+        <if test=" delFlag !=null and delFlag != '' ">
+          del_flag = #{delFlag},
+        </if>
+        <if test=" updateDate !=null and updateDate != '' ">
+          update_date = #{updateDate},
+        </if>
+        <if test=" updateBy !=null and updateBy != '' ">
+          update_by = #{updateBy},
+        </if>
+        <if test=" remarks !=null and remarks != '' ">
+            remarks = #{remarks}
+        </if>
+        </set>
+		WHERE id = #{id}
+    </update>
+    <select id="selectById" parameterType="string" resultMap="ActActivityMap">
+      SELECT
+        <include refid="base_culomn"/>
+        FROM act_activity ac
+      WHERE ac.id = #{id} AND ac.del_flag = '0'
+    </select>
+    <select id="selectAll" resultMap="ActActivityMap">
+        SELECT * FROM act_activity WHERE del_flag != '0'
+    </select>
+    <select id="selectList" parameterType="map" resultMap="ActActivityMap">
+       SELECT
+          <include refid="base_culomn"/>
+        FROM act_activity ac
+        WHERE ac.del_flag = '0'
+        <if test="keywords != null and keywords != ''">
+            AND ac.name like CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="timeStart != null and timeStart != ''">
+            AND ac.start_time >= #{timeStart}
+        </if>
+        <if test="timeEnd != null and timeEnd != ''">
+            AND ac.end_time &lt;= #{timeEnd}
+        </if>
+        <if test="signTimeStart != null and signTimeStart != ''">
+            AND ac.sign_up_start_time >= #{signTimeStart}
+        </if>
+        <if test="signTimeEnd != null and signTimeEnd != ''">
+            AND ac.sign_up_end_time &lt;= #{signTimeEnd}
+        </if>
+        <if test="sort != null and sort != ''">
+            order by #{sort}
+        </if>
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="selectCount" parameterType="map" resultType="long">
+        SELECT
+          count(ac.id)
+        FROM act_activity ac
+        WHERE ac.del_flag = '0'
+        <if test="keywords != null and keywords != ''">
+            AND ac.name like CONCAT('%',#{keywords},'%')
+        </if>
+        <if test="timeStart != null and timeStart != ''">
+            AND ac.start_time >= #{timeStart}
+        </if>
+        <if test="timeEnd != null and timeEnd != ''">
+            AND ac.end_time &lt;= #{timeEnd}
+        </if>
+        <if test="signTimeStart != null and signTimeStart != ''">
+            AND ac.sign_up_start_time >= #{signTimeStart}
+        </if>
+        <if test="signTimeEnd != null and signTimeEnd != ''">
+            AND ac.sign_up_end_time &lt;= #{signTimeEnd}
+        </if>
+    </select>
+
+    <update id="delete" parameterType="list">
+        update act_activity SET del_flag='1' where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

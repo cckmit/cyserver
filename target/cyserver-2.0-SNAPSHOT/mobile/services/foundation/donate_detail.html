@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>捐赠详情</title>
+    <link href="../../../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="css/donate.css" rel="stylesheet" type="text/css" />
+    <link href="../../../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../../jslib/hui/script/H.js" type="text/javascript"></script>
+    <script src="../../../jslib/zepto/zepto.min.js" type="text/javascript" ></script>
+    <script src="../../../jslib/xdomain.min.js" type="text/javascript"></script>
+    <script src="../../js/B.js" type="text/javascript" ></script>
+    <script src="../../js/jbase64.js" type="text/javascript"></script>
+    <script src="../../js/wechat.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jsAddress.js"></script>
+    <script src="../../../jslib/dropload/dropload.min.js" type="text/javascript" ></script>
+    <style>
+        .names_box{
+            justify-content:space-between;
+        }
+
+        #tops,#xiangmu{
+            -webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+            -moz-tap-highlight-color:rgba(0, 0, 0, 0);
+            -ms-tap-highlight-color:rgba(0, 0, 0, 0);
+            -o-tap-highlight-color:rgba(0, 0, 0, 0);
+            tap-highlight-color:rgba(0, 0, 0, 0);
+        }
+        .d_xiangmu_detail.detail_min img{
+            width:100%
+        }
+
+        #floatBox{
+            float:left;
+            position:relative;
+            width:100%;
+        }
+        .onFloat{
+            position:fixed;
+            _position:absolute;
+            top: -50px;
+            z-index: 999;
+            background: #ddd;
+            color: #555;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+            width: 98%;
+            margin-left: 1%;
+        }
+        .floatLink{
+            float: left;
+            margin-left: 10px
+        }
+        .floatButton{
+            float: right;
+            margin-right: 10px
+        }
+
+        b {display:inline-block; width:25px; height:2px; background: #ebebeb; font-size:0; line-height:0;vertical-align:middle;-webkit-transform: rotate(45deg);}
+        b:after { content:'.'; display:block; width:25px; height:2px; background: #ebebeb;-webkit-transform: rotate(-90deg);}
+    </style>
+</head>
+<body class="body_bg" style="width:100%">
+<div id="floatBox">
+    <div id="floatArea" class="onFloat">
+        <span class="floatLink jump_link">您的信息不够完善,</span><span class="jump_link" style="color:#1a7ee5">请尽快前去完善</span>
+        <span class="floatButton">关闭</span>
+    </div>
+</div>
+
+    <script type="text/html" id="topsbox">
+        <div class="m_banner_pic">
+            <img onerror="javascript:this.src='img/beijingtu@2x.png';" src="<%=B.getImageAbsoluteUrl(topsbox.projectPic_xd)%>">
+            <div class="m_banner_wenzi">
+                <%=topsbox.projectName%>
+            </div>
+            <div class="m_d_zhuangtai">
+                <%=topsbox.timeStatus%>
+            </div>
+            <!--<div style="position:absolute;  right: 26px; bottom: 42px; color:#ebebeb; ">
+                <span style="margin-right: 6px;font-size: 14px;">关注我</span><img style="width: 52px" src="img/jiantou.png">
+            </div>
+            <div style="position:absolute;right: 6px; bottom: 6px;" onclick="$('.ewm-manban').show();">
+                <img style="width: 30px; height: 30px; " src="../mobile/img/yige-ewm.png" />
+            </div>-->
+        </div>
+
+        <div class="ewm-manban" style=" display:none; position: fixed; z-index: 999999; top: 0; left: 0; right: 0; bottom: 0; background: rgba(1,1,1,0.5)">
+            <div style="width: 250px; height: 385px; position: absolute; top: 50%; left: 50%; margin-top: -192.5px; margin-left: -125px;text-align: center">
+                <img onerror="javascript:this.src='<%=B.serverUrl%>/project/projectAction!doNotNeedSessionAndSecurity_getErWeiMa.action?projectId=<%=topsbox.projectId%>';" style="width: 250px; height: 250px;" src="<%=B.getImageAbsoluteUrl(topsbox.evm)%>" />
+                <div style="margin-top: 20px"><b onclick="$('.ewm-manban').hide();"></b></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="tab_list H-flexbox-horizontal H-text-align-center H-padding-horizontal-both-5 H-line-height-normal H-theme-font-color-black
+            H-padding-vertical-both-10 H-box-sizing-border-box H-border-vertical-bottom-after H-theme-background-color-white">
+                <div class="H-flex-item">
+                    <span class="H-icon H-center-all H-font-size-14" >已筹善款</span>
+                    <label class="H-display-block H-font-size-12 H-margin-vertical-top-5 H-theme-font-color2">￥<%=returnFloat(topsbox.donationMoney)%></label>
+                </div>
+                <div class="H-flex-item">
+                    <span class="H-icon H-center-all H-font-size-14">捐款目标</span>
+                    <label class="H-display-block H-font-size-12 H-margin-vertical-top-5 H-theme-font-color2">￥<%=topsbox.target%></label>
+                </div>
+                <div class="H-flex-item">
+                    <span class="H-icon H-center-all H-font-size-14">捐款人数</span>
+                    <label class="H-display-block H-font-size-12 H-margin-vertical-top-5 H-theme-font-color2"><%=topsbox.countPeople%></label>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="d_title">
+            <img src="img/tubiao2@2x.png">
+            <span>项目详情</span>
+        </div>
+        <div class="xiangmu_box">
+            <div class="d_xiangmu_detail detail_min">
+                <%=topsbox.content%>
+            </div>
+            <div class="m_shousuo siangqing_ss">
+                <img src="img/genduo@2x.png">
+            </div>
+        </div>
+
+        <div class="d_title">
+            <img src="img/tubiao3@2x.png">
+            <span>项目进展</span>
+        </div>
+
+    </script>
+
+    <script type="text/html" id="xiangmubox">
+        <div class="jinzhan_box">
+            <div class="jinzhan_conter jinzan_xgao">
+                <%
+                if(xiangmubox.length==1){
+                %>
+                <!--开始的-->
+                <div class="jz_list">
+                    <div class="quan quan_activi">
+                        <div class="q_wai">
+                            <div class="q_ner"></div>
+                        </div>
+                        <div class="line_tt"></div>
+                    </div>
+                    <div class="jz_wenzi">
+                        <div class="H-flex-item">
+                            <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                                <span class="H-display-block H-flex-item H-text-align-left H-font-size-12"><span class="H-theme-font-color-666"><%=xiangmubox[0].costTime.split(' ')[0]%></span></span>
+                                <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-red H-font-size-12">￥<%=xiangmubox[0].costMoney%></span>
+                            </div>
+                            <div class="H-theme-font-color-666 H-margin-vertical-top-2 H-font-size-12 H-theme-background-color-eee H-padding-10 H-border-radius-5">
+                                <%=xiangmubox[0].description%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%
+                }
+                else if(xiangmubox.length==2){
+                %>
+                <!--最后的-->
+                <div class="jz_list">
+                    <div class="quan quan_activi">
+                        <div class="line_t"></div>
+                        <div class="q_wai">
+                            <div class="q_ner"></div>
+                        </div>
+                    </div>
+                    <div class="jz_wenzi">
+                        <div class="H-flex-item">
+                            <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                                <span class="H-display-block H-flex-item H-text-align-left H-font-size-12"><span class="H-theme-font-color-666"><%=xiangmubox[1].costTime.split(' ')[0]%></span></span>
+                                <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-red H-font-size-12" id=""><%=xiangmubox[1].costMoney%>元</span>
+                            </div>
+                            <div class="H-theme-font-color-666 H-margin-vertical-top-2 H-font-size-12 H-theme-background-color-eee H-padding-10 H-border-radius-5">
+                                <%=xiangmubox[1].description%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%
+                }
+                else if(xiangmubox.length>2){
+                    xiangmubox.splice(0, 1);
+                    xiangmubox.splice(xiangmubox.length-1, 1);
+                    for(var i in xiangmubox){
+                %>
+                        <!--中间的-->
+                        <div class="jz_list">
+                            <div class="quan quan_activi">
+                                <div class="line_s"></div>
+                                <div class="q_wai q_wai2">
+                                    <div class="q_ner q_ner2"></div>
+                                </div>
+                                <div class="line_ss"></div>
+                            </div>
+                            <div class="jz_wenzi">
+                                <div class="H-flex-item">
+                                    <div class="H-theme-font-color-999 H-font-size-14 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                                        <span class="H-display-block H-flex-item H-text-align-left H-font-size-12"><span class="H-theme-font-color-666"><%=xiangmubox[i].costTime.split(' ')[0]%></span></span>
+                                        <span class="H-display-block H-flex-item H-text-align-right H-theme-font-color-red H-font-size-12" id="times"><%=xiangmubox[i].costMoney%>元</span>
+                                    </div>
+                                    <div class="H-theme-font-color-666 H-margin-vertical-top-2 H-font-size-12 H-theme-background-color-eee H-padding-10 H-border-radius-5">
+                                        <%=xiangmubox[i].description%>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <%
+                    }
+                }
+                %>
+            </div>
+
+            <div class="m_shousuo jinzhan_ss">
+                <img src="img/genduo@2x.png">
+            </div>
+        </div>
+    </script>
+
+    <script type="text/html" id="alistbox">
+        <%
+        for(var i in alistbox.rows){
+        %>
+        <div tapmode="" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white H-vertical-middle list_aixin">
+            <div class="H-padding-horizontal-left-10 H-padding-vertical-both-5 aixin_touxiang">
+                <img onerror="javascript:this.src='img/beijingtu@2x.png';" src="<%=B.getImageAbsoluteUrl(alistbox.rows[i].picture)%>" class="H-vertical-align-middle H-border-radius-circle">
+            </div>
+            <div class="H-flex-item">
+                <div style="width: 100%; height: 50%; margin-top: 4px; position: relative;font-size: 13px;">
+                    <span class="H-padding-horizontal-both-8">
+                        <%if(alistbox.rows[i].anonymous != 1){%>
+                            <%=alistbox.rows[i].donorName%>
+                        <%}else{%>
+                            匿名
+                        <%}%>
+                    </span>
+                    <span class="H-icon H-padding-horizontal-right-10" style="color: #ff4f4f; position: absolute; right: 0">
+                        <%=alistbox.rows[i].itemNum%>
+                    </span>
+                </div>
+                <div style="width: 100%;min-height: 18px; margin-top:2px;margin-bottom: 4px; color: #737373;font-size: 12px; position: relative">
+                    <div class="H-padding-horizontal-both-8" style="width: 72%"><%=alistbox.rows[i].message%></div>
+                    <span class="H-icon H-padding-horizontal-right-10" style="position: absolute; right: 0; top:0" ><%=alistbox.rows[i].relativeTime%></span>
+                </div>
+            </div>
+        </div>
+        <%
+        }
+        %>
+    </script>
+
+    <div id="tops"> </div>
+    <div id="xiangmu"></div>
+
+    <div id="evm"></div>
+
+    <div class="d_title">
+        <img src="img/tubiao4@2x.png">
+        <span>爱心捐赠</span>
+        <div class="you_shumu">
+            <span class="anxin_shumu"></span>
+        </div>
+    </div>
+    <div class="content">
+        <div class="aixin_list">
+
+        </div>
+    </div>
+
+
+    <div style="width: 100%;height: 40px"></div>
+
+    <div class="jzan_box">
+
+    </div>
+
+
+
+
+    <!--点击我要捐赠触发的层-->
+    <div class="juanzeng_box" style="display: none">
+
+        <div class="juanzeng_content" style="height: 0">
+            <div class="juankuan_ner_box">
+
+                <div class="juazneng_title">
+                    请填写捐赠信息
+                    <div class="close_ceng">
+                        <i class="H-iconfont H-theme-font-color-333 H-icon-close H-font-size-14 H-vertical-middle"></i>
+                    </div>
+                </div>
+
+                <div class="jz_jianjie">
+                    <div class="jz_wenizs"></div> 
+                    <div class="jz_wenizc_wai"> 
+                        <textarea disabled class="jz_wenizc"> 
+
+                        </textarea>
+                    </div>
+                    <div class="jz_tongyi">
+                        <label> 
+                             <input id="yuedu" type="checkbox" class="H-checkbox H-checkbox-null H-vertical-align-middle H-font-size-18 H-theme-font-color8 H-border-radius-5" style="border: 1px solid #fa9641"> 
+                             我已同意并认可声明
+                         </label>
+                     </div> 
+                 </div> 
+                <div class="jz_biaodan_box">
+                    <div class="biaodan_center">
+                        <div class="names_box" id="isAlumni" style="display: none">
+                            <div class="name_left">是否本校校友:</div>
+                            <div class="yesOrNo">
+                                <span>是</span>
+                            </div>
+                        </div>
+                        <div class="jz_tongyi input_choose_box" style="display: none">
+                            <label>
+                                <input id="isInput" type="checkbox" class="H-checkbox H-checkbox-null H-vertical-align-middle H-font-size-18 H-theme-font-color8 H-border-radius-5" style="border: 1px solid #fa9641">
+                                手动输入 (勾选后,您可以手动输入班级信息)
+                            </label>
+                        </div>
+                        <div class="add_sp">
+                        </div>
+                        <div class="names_box class_input_box" style="display: none;">
+                            <div class="name_left">班级信息:</div>
+                            <div class="name_kuang mingzi">
+                                <input id='classInfo' type="text" />
+                            </div>
+                        </div>
+                        <div class="names_box">
+                            <div class="name_left">您的姓名:</div>
+                            <div class="name_kuang mingzi">
+                                <input id='name' type="text" />
+                            </div>
+                        </div>
+
+                        <div class="jz_tongyi">
+                            <label>
+                                <input id="niming" type="checkbox" class="H-checkbox H-checkbox-null H-vertical-align-middle H-font-size-18 H-theme-font-color8 H-border-radius-5" style="border: 1px solid #fa9641">
+                                匿名 (勾选后,您的姓名将不公开显示)
+                            </label>
+                        </div>
+
+                        <div class="names_box">
+                            <div class="name_left">手机号码:</div>
+                            <div class="name_kuang dianhua">
+                                <input id='mobile' type="tel" />
+                            </div>
+                        </div>
+
+                        <div class="names_box">
+                            <div class="name_left">电子邮箱:</div>
+                            <div class="name_kuang">
+                                <input id='emails' type="email" />
+                            </div>
+                        </div>
+
+                        <div class="names_box">
+                            <div class="name_left">您的性别:</div>
+                            <div class="name_kuang xingbie">
+                                <div class="nan_nv nande">
+                                    <i class="H-iconfont H-icon-man H-font-size-14 H-vertical-middle"></i>
+                                    <span>男</span>
+                                </div>
+                                <div class="nan_nv nvde">
+                                    <i class="H-iconfont H-icon-woman H-font-size-14 H-vertical-middle"></i>
+                                    <span>女</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="yuju">
+                            <div>捐赠祝福语</div>
+                            <textarea class="zhufuyu"></textarea>
+                        </div>
+
+                        <div class="names_box">
+                            <div class="name_left">捐赠金额:</div>
+                            <input id='yincangde' style="width:0px;height:0px;" type="radio" name="o">
+                            <div class="name_kuang qian_kuang">
+                                <input class="num_je" type="text" onkeyup="clearNoNum(this)"/>
+                            </div>
+                        </div>
+                        <div class="jine_list">
+                            <label>
+                                <input id='gd_jes' type="radio" name="o" class="H-radio H-radio-null H-vertical-align-middle H-font-size-18 H-theme-font-color4 H-border-radius-3"  value="100" style="border: 1px solid #fa9641">
+                                ￥ 100
+                            </label>
+                            <label>
+                                <input id='gd_jess' type="radio" name="o" class="H-radio H-radio-null H-vertical-align-middle H-font-size-18 H-theme-font-color4 H-border-radius-3" value="50" style="border: 1px solid #fa9641">
+                                ￥ 50
+                            </label>
+                            <label>
+                                <input id='gd_jesss' type="radio" name="o" class="H-radio H-radio-null H-vertical-align-middle H-font-size-18 H-theme-font-color4 H-border-radius-3" value="10" style="border: 1px solid #fa9641">
+                                ￥ 10
+                            </label>
+                        </div>
+
+
+
+                        <div class="fapiao_box">
+                            <div class="name_left">寄送发票:</div>
+                            <div class="shi_box bufa">
+                                <span>否</span>
+                                基金会将为您保存发票（一年）
+                            </div>
+                            <div class="shi_box faa fou_box">
+                                <span>是</span>
+                                请填写您的联系地址
+                            </div>
+                            <div class="tongxun_add" style="display: none;">
+                                <span></span>
+                                通讯地址
+                                <span></span>
+                            </div>
+
+                            <div class="add_ss" style="display: none;">
+                                <div class="ssq">
+                                    <div>省:</div>
+                                    <select id="Select1"></select>
+                                </div>
+                                <div class="ssq">
+                                    <div>市:</div>
+                                    <select id="Select2"></select>
+                                </div>
+                                <div class="ssq">
+                                    <div>区:</div>
+                                    <select id="Select3"></select>
+                                </div>
+                                <script type="text/javascript">
+                                    addressInit('Select1', 'Select2', 'Select3');
+                                </script>
+                            </div>
+                            <div class="xidz" style="display: none;">
+                                <input id="xxdd" type="text" placeholder="请输入详细地址" />
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="jk_buts">
+                    <div class="juankuans">捐款</div>
+                    <div class="quxiaos">取消</div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    // 接收url中的参数
+    var projectId = B.getUrlParamByName("projectId");
+    var accountNum = B.getUrlParamByName("accountNum");
+    if(accountNum == 'null' || !accountNum){
+        accountNum = localStorage.getItem("accountNum");
+    }else{
+        accountNum = B.getUrlParamByName("accountNum")
+    }
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+
+    if(openId && openId != 'null') {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        //$("title").html("捐赠动态详情");
+    }else{
+        //app或网页
+        //$("title").html('{"title":"捐赠动态详情","backUrl":"/foundation/donate_detail.html?accountNum=' + accountNum + '&projectId'+projectId+'","backTitle":"返回"}');
+        openId = '';
+        appId = '';
+    }
+
+    if(accountNum == 'null' || !accountNum){
+        accountNum = '';
+    }
+
+
+    $(function(){
+        H.tppl_flag = ["<%", "%>"];
+
+        B.ready(function(){
+            //查询项目详情
+            xiangmuXq();
+            //查询项目进度
+            xiangmuJd();
+            //爱心活动
+            aixinHd();
+            //获取个人信息
+            users();
+            /*if(accountNum == ''){
+                weixinInfo();
+                $('#isAlumni').show();
+                $('.input_choose_box').show();
+                showDept(0, '');
+            }else{
+                users();
+            }*/
+
+            //捐赠免责声明
+            shengming()
+
+
+
+        });
+
+
+
+        if(accountNum == ''){
+            var time=0.5;
+            var interval = setInterval(function () {
+                if(time <= 0){
+                    clearInterval(interval);
+                }
+
+                $('#floatArea').css('top', (-50 + ((0.5-time)/0.5*52))+'px');
+                time -= 0.01;
+            },10);
+            // 顶部提示绑定的浮动链接
+            var oDiv=document.getElementById("floatArea");
+            var HEIGHT=0,iE6;
+            var Y=oDiv;
+            while(Y){HEIGHT+=Y.offsetTop;Y=Y.offsetParent};
+            iE6=window.ActiveXObject&&!window.XMLHttpRequest;
+            if(!iE6){
+                window.onscroll=function()
+                {
+                    var s=document.body.scrollTop||document.documentElement.scrollTop;
+                    if(s>HEIGHT){
+                        oDiv.className="onFloat";
+                        if(iE6){
+                            oDiv.style.top=(s-HEIGHT)+"px";
+                        }
+                    }
+                };
+            }
+
+            $('.jump_link').click(function () {
+                location.href =  "regist_guide.html";
+            });
+
+            $('.floatButton').click(function () {
+                time = 0.5;
+                var interval = setInterval(function () {
+                    if(time <= 0){
+                        clearInterval(interval);
+                    }
+
+                    $('#floatArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                    time -= 0.01;
+                },10);
+            });
+        }
+    });
+
+    //查询项目详情
+    function xiangmuXq(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "271","content": {"id": \"'+projectId+'\", "accountNum":"'+accountNum+'", "openId":"'+openId+'", "appId":"'+appId+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                console.log(data);
+                console.log("data=" + JSON.stringify(data));
+                if(data && data.success && data.obj){
+                    var render = H.tppl(H.D("#topsbox").innerHTML);
+                    var result = render({topsbox:data.obj});
+
+                    $('#tops').html(result);
+                    $('.jz_wenizs').html((data.obj.organization?data.obj.organization:'')+'法律部声明');
+                    if(data.obj.timeStatus != "已结束"){
+                        $('.jzan_box').html('<div class="jz_di_anniu"><div class="wo_juanz">我要捐赠</div></div>');
+                    }
+
+                    // 自定義分享頁面
+                    if(openId && openId != 'null') {
+                        var title = data.obj.projectName ? data.obj.projectName : '';
+                        var desc = data.obj.introduction ? data.obj.introduction : '';
+                        var imgUrl = data.obj.projectPic_xd ? B.getImageAbsoluteUrl(data.obj.projectPic_xd) : '';
+                        var shareData = {
+                            title: title,
+                            desc: desc,
+                            link: location.href.split('?')[0]+'?projectId='+projectId,
+                            imgUrl: imgUrl
+                        };
+                        var myDonate = data.obj.currentDonate;
+                        if(myDonate != '0'){
+                            shareData.desc = '我为'+title+'捐赠了'+myDonate+'元';
+                        }
+                        mkShareInfo(location.href.split('#')[0], shareData, 0);
+                    }
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    //查询项目进度
+    function xiangmuJd(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "270","content": {"projectId": \"'+projectId+'\", "accountNum":"'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                //console.log(JSON.stringify(data));
+                if(data.obj){
+                    var render = H.tppl(H.D("#xiangmubox").innerHTML);
+                    var result = render({xiangmubox:data.obj});
+                    $('#xiangmu').html(result);
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    //爱心捐赠
+    function aixinHd(){
+        var page=1;
+        $('.content').dropload({
+            scrollArea : window,
+
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                domNoData  : '<div class="dropload-noData"> </div>'
+            },
+            loadDownFn : function(me){
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{
+                        jsonStr:'{"command": "73","content": {"projectId": \"'+projectId+'\","page": \"'+page+'\","rows": "3"}}'
+                    },
+                    dataType: 'json',
+                    success: function(data){
+                        if(!data.success ||data.obj.rows.length==0){
+                            if(page==1){
+                                $('.anxin_shumu').text('0');
+                            }
+                            $('.dropload-down').remove();
+                            me.lock();
+                            me.noData(true);
+
+                        }else{
+                            //console.log(data.obj.rows)
+                            if(page==1){
+                                if(data.obj.total>=99){
+                                    $('.anxin_shumu').text('99+');
+                                }else{
+                                    $('.anxin_shumu').text(data.obj.total);
+                                }
+
+                            }
+                            var render = H.tppl(H.D("#alistbox").innerHTML);
+                            var result = render({alistbox:data.obj});
+                            $('.aixin_list').append(result);
+                            page++;
+
+                        }
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                        me.unlock();
+                        me.noData(false);
+                    },
+                    error: function(xhr, type){
+                        // 即使加载出错，也得重置
+                        //me.resetload();
+                        me.noData(true);
+                    }
+                });
+            },
+            threshold : 50
+        });
+    }
+
+    //获取个人信息
+    function users(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                console.log(data)
+                if(data.obj){
+                    $('#name').attr('readonly', true);
+                    $('#name').css('border-bottom', 'none');
+                    if(data.obj.phoneNum && data.obj.phoneNum != '' && data.obj.phoneNum != 'null'){
+                        $('#mobile').attr('readonly', true);
+                        $('#mobile').css('border-bottom', 'none');
+                    }
+                    $('#name').val(data.obj.name);
+                    $('#mobile').val(data.obj.phoneNum);
+                    $('#emails').val(data.obj.email);
+                    if(data.obj.sex=='0'){
+                        $('.nande').addClass('nan_x');
+                        $('.xingbie').attr('sex','0');
+                    }else if(data.obj.sex=='1'){
+                        $('.nvde').addClass('nv_x');
+                        $('.xingbie').attr('sex','1');
+                    }
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    //捐赠免责声明
+    function shengming(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "269","content": { "type": "2" } }'
+            },
+            dataType: 'json',
+            success: function(data){
+                //console.log(JSON.stringify(data));
+                if(data.obj){
+                    $('.jz_wenizc').html(data.obj);
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+
+    //项目详情的收缩
+    $("#tops").on("click",'.siangqing_ss',function(){
+        if($('.d_xiangmu_detail').hasClass('detail_min')){
+            $('.d_xiangmu_detail').removeClass('detail_min');
+        }else{
+            $('.d_xiangmu_detail').addClass('detail_min');
+        }
+    });
+
+    //项目进展的收缩
+    $("#xiangmu").on("click",'.jinzhan_ss',function(){
+            if($('.jinzhan_conter').hasClass('jinzan_xgao')){
+            $('.jinzhan_conter').removeClass('jinzan_xgao');
+        }else{
+            $('.jinzhan_conter').addClass('jinzan_xgao');
+        }
+    })
+
+    //是否本校校友
+    $('.yesOrNo').click(function(){
+        if($(this).hasClass('noOrYes')){
+            $(this).removeClass('noOrYes');
+            $(this).find('span').text('是');
+            showDept(0, '');
+            $('.input_choose_box').show();
+        }else{
+            $(this).addClass('noOrYes');
+            $(this).find('span').text('否');
+            $('.add_sp').empty();
+            $('.input_choose_box').hide();
+        }
+    })
+
+    //点击我要捐赠
+    $('.jzan_box').click(function(){
+
+        // 背景 body禁止滚动
+       /* $('.body_bg').css('position','fixed');*/
+        $('.juanzeng_box').show();
+        $('.juanzeng_content').css('height','500px');
+    });
+
+    //点击取消
+    $('.quxiaos').click(function(){
+        $('.juanzeng_content').css('height','0px');
+        $('.juanzeng_box').hide();
+
+       /* $('.body_bg').css('position','initial');*/
+    })
+    $('.close_ceng').click(function(){
+        $('.juanzeng_content').css('height','0px');
+        $('.juanzeng_box').hide();
+
+       /* $('.body_bg').css('position','initial');*/
+    })
+
+
+    //选择性别
+    $('.nande').click(function(){
+       $(this).addClass('nan_x').siblings().removeClass('nv_x');
+       $('.xingbie').attr('sex','0')
+    })
+    $('.nvde').click(function(){
+        $(this).addClass('nv_x').siblings().removeClass('nan_x');
+        $('.xingbie').attr('sex','1')
+    })
+
+    //选择捐赠金额
+    $('.jine_list label').click(function(){
+        var vals = $(this).find("input[name='o']:checked").val();
+        $('.num_je').val(vals);
+    })
+    $('.num_je').click(function(){
+        $('#yincangde').click();
+    })
+
+    //点击匿名
+    $('#niming').click(function(){
+        if($('#niming').attr('flag')=='1'){
+            $('#niming').attr('flag','0');
+//            $('.faa').addClass('fou_box');
+//            $('.bufa ').addClass('fou_box');
+
+//            $('.faa').show();
+//            $('.tongxun_add').show();
+//            $('.add_ss').show();
+//            $('.xidz').show();
+        }else{
+            $('#niming').attr('flag','1');
+//            $('.faa').addClass('fou_box');
+//            $('.bufa ').removeClass('fou_box');
+
+            /*$('.faa').hide();
+            $('.tongxun_add').hide();
+            $('.add_ss').hide();
+            $('.xidz').hide();*/
+        }
+    });
+
+    $('#isInput').click(function () {
+        if($('#isInput').attr('flag')=='1'){
+            $('#isInput').attr('flag','0');
+            showDept(0, '');
+            $('.class_input_box').hide();
+        }else{
+            $('#isInput').attr('flag','1');
+            $('.add_sp').empty();
+            $('.class_input_box').show();
+        }
+    });
+
+    //点击是否要发票
+    $('.faa').click(function(){
+        $(this).removeClass('fou_box');
+        $('.bufa ').addClass('fou_box');
+        $('.tongxun_add').show();
+        $('.add_ss').show();
+        $('.xidz').show();
+    })
+    $('.bufa').click(function(){
+        $(this).removeClass('fou_box');
+        $('.faa ').addClass('fou_box');
+        $('.tongxun_add').hide();
+        $('.add_ss').hide();
+        $('.xidz').hide();
+    })
+
+
+
+    var jsonStr={
+        command: "230",
+        content: {
+            accountAppId: appId,
+            openId: openId,
+            projectId: projectId,
+            accountNum: accountNum,
+            donationType:"10",
+            money: "",
+            anonymous: "",
+            message: "",
+            remark: "",
+            payMethod:"10",
+            payType:""
+        }
+    }
+
+
+    //点击捐赠
+    $('.juankuans').click(function(){
+        var result = ($(".num_je").val().toString()).indexOf(".");
+
+        if ($("#yuedu").is(':checked')) {
+            if((result != -1)&&($(".num_je").val().length>10)) {
+                H.alert("捐赠金额太大哦")
+            }
+            if((result == -1)&&($(".num_je").val().length>7)) {
+                H.alert("捐赠金额最多七位数")
+            }else{
+                if((/^(?!0+(?:\.0+)?$)(?:[1-9]\d*|0)(?:\.\d{1,2})?$/.test($('.num_je').val()))){
+                    if(accountNum == ''){
+                        /*if(!$('.yesOrNo').hasClass('noOrYes')){
+                         if(!$('#dept_0').val() || $('#dept_0').val() == '0'){
+                         H.alert('请选择学校');
+                         return;
+                         }else if(!$('#dept_1').val() || $('#dept_1').val() == '0'){
+                         H.alert('请选择院系');
+                         return;
+                         }else if(!$('#dept_2').val() || $('#dept_2').val() == '0'){
+                         H.alert('请选择年纪');
+                         return;
+                         }else if(!$('#dept_3').val() || $('#dept_3').val() == '0'){
+                         H.alert('请选择班级');
+                         return;
+                         }else{
+                         jsonStr.content.x_school = $("#dept_0 option").eq($("#dept_0").attr("selectedIndex")).text();
+                         jsonStr.content.x_depart = $("#dept_1 option").eq($("#dept_1").attr("selectedIndex")).text();
+                         jsonStr.content.x_grade = $("#dept_2 option").eq($("#dept_2").attr("selectedIndex")).text();
+                         jsonStr.content.x_clazz = $("#dept_3 option").eq($("#dept_3").attr("selectedIndex")).text();
+                         jsonStr.content.flag = '1'
+                         }
+                         }else{
+                         jsonStr.content.flag = '0'
+                         }*/
+                        jsonStr.content.flag = '0';
+                    }
+                    jsonStr.content.x_name=$('#name').val();
+                    jsonStr.content.x_phone=$('#mobile').val();
+                    jsonStr.content.x_email=$('#emails').val();
+                    jsonStr.content.x_sex=$('.xingbie').attr('sex');
+                    jsonStr.content.message=$('.zhufuyu').val();
+                    jsonStr.content.money=$('.num_je').val()
+
+                    if ($("#niming").is(':checked')){
+                        jsonStr.content.anonymous='1';
+                    }else{
+                        jsonStr.content.anonymous='0';
+                    }
+                    if($('.faa').hasClass('fou_box')){
+                        var address='';
+                        //alert('不要发票'+names+'-'+address+'-'+phone+'-'+email+'-'+sexs+'-'+zhufuyus+'-'+jine)
+                        jsonStr.content.needInvoice='0';
+                        juanzeng();
+                    }else{
+                        var address1=$('#Select1').val();
+                        var address2=$('#Select2').val();
+                        var address3=$('#Select3').val();
+                        var address4=$('#xxdd').val();
+                        var address=address1+address2+address3+address4;
+                       /* alert(address);*/
+                        if(address4==''){
+                            H.alert('请填写详细地址');
+                        }else{
+                            jsonStr.content.x_address = address;
+                            jsonStr.content.needInvoice='1';
+                            juanzeng();
+                        }
+                    }
+                }else{
+                    H.alert('请填写正确金额');
+                }
+
+            }
+
+
+        }else{
+            H.alert('请阅读声明并勾选');
+        }
+    })
+
+    function showDept(level, pId) {
+        var deptType = '';
+        var showName = '';
+        switch (level){
+            case 0 : deptType = '';
+                showName = '学校';
+                break;
+            case 1 : deptType = 'schoolId';
+                showName = '院系';
+                break;
+            case 2 : deptType = 'collegeId';
+                showName = '年级';
+                break;
+            case 3 : deptType = 'gradeId';
+                showName = '班级';
+                break;
+            default : deptType = '';
+        }
+        B.ready(function () {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "211","content": {"level":"' + level + '", "'+deptType+'":"'+pId+'"}}'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    if(data && data.success && data.obj && data.obj.length>0){
+                        var listStr = '<div class="studyPath"><select id="dept_'+level+'"><option value="0">请选择'+showName+'</option>';
+                        for(var i in  data.obj){
+                            listStr += '<option value="'+data.obj[i].deptId+'">'+data.obj[i].deptName+'</option>';
+                        }
+                        listStr += '</select></div>';
+                        $('.add_sp').append(listStr);
+                        $('#dept_'+level).on('change', function() {
+                            if(level < 4){
+                                for(var j = (level+1); j < 4; j++){
+                                    $('#dept_'+j).parent().remove();
+                                }
+                            }
+                            if(this.value != 0){
+                                showDept(level+1, this.value);
+                            }
+                        })
+                    }
+                },
+                error: function (xhr, type) {
+
+                }
+            });
+        });
+    }
+
+    function weixinInfo(){
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "72","content": {"openId": "'+openId+'","accountAppId": "'+appId+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data && data.obj){
+                    if(data.obj.userName && data.obj.userName != ''){
+                        $('#name').val(data.obj.userName);
+                    }
+                    if(data.obj.userSex && data.obj.userSex != ''){
+                        if(data.obj.userSex == '0'){
+                            $('.nande').addClass('nan_x').siblings().removeClass('nv_x');
+                            $('.xingbie').attr('sex','0')
+                        }else if(data.obj.userSex == '1'){
+                            $('.nvde').addClass('nv_x').siblings().removeClass('nan_x');
+                            $('.xingbie').attr('sex','1')
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    //发送捐赠请求
+    function juanzeng(){
+
+        H.confirm(function (ret) {
+            if(ret.buttonIndex==1){
+                B.ready(function(){
+                    console.log('jsonStr-----------:'+JSON.stringify(jsonStr));
+                    $.ajax({
+                        type: 'POST',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr: JSON.stringify(jsonStr)
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log('jsonStr-----------222:'+JSON.stringify(jsonStr));
+                            console.log(data);
+                            if(data.success){
+                                window.location.href="order_detail.html?id=" + data.obj+"&state=0"
+                                /*var orderUrl = B.domain+"/foundation/order_detail.html?id=" + data.obj;
+                                if(openId == '' || openId == 'null' || !openId || openId ==null){
+                                    orderUrl = getAuthUrl(appId,orderUrl, B.domain+"/");
+                                }
+                                H.openWin("订单详情", orderUrl);*/
+                            }
+                        },
+                        error: function(xhr, type){
+                            // 加载出错
+                        }
+                    });
+                })
+            }else{
+                H.alert('您已经取消捐赠')
+            }
+        }, '确认提示：', '您确定要提交订单吗？提交后不可修改');
+
+    }
+    /*验证金额*/
+    function clearNoNum(obj){
+        obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+        obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数
+        if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+            obj.value= parseFloat(obj.value);
+        }
+    }
+    /*限制长度*/
+/*    function change(){
+        alert($(this).val())
+        var result = ($(this).val().toString()).indexOf(".");
+        if(result != -1) {
+            $(".num_je").attr('maxlength',10)
+        } else {
+            $(".num_je").attr('maxlength',7)
+        }
+    }*/
+
+    function returnFloat(value){
+        var value=Math.round(parseFloat(value)*100)/100;
+        var xsd=value.toString().split(".");
+        if(xsd.length==1){
+            value=value.toString()+".00";
+            return value;
+        }
+        if(xsd.length>1){
+            if(xsd[1].length<2){
+                value=value.toString()+"0";
+            }
+            return value;
+        }
+    }
+
+    var jsonStr1 = {
+        "title":"订单详情",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+
+
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr1});
+        return jsonStr1;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr1);
+        window.stub.jsMethod(str);
+        return jsonStr1;
+
+    }
+    function fallback() {
+
+        window.location.href="project_list.html?accountNum="+accountNum
+    }
+
+
+</script>
+</html>

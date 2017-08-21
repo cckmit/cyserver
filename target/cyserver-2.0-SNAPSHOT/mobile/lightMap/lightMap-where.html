@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>点亮地图</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    
+</head>
+<style type="text/css">
+	body{
+		width: 100%;
+		height: 100%;
+
+	}
+	img{
+		width: 100%;
+		height: 100%
+	}
+	.p1{
+		position: absolute;
+		top: 3rem;
+		text-align: center;
+		height: 4rem;
+		line-height: 4rem;
+		width: 100%
+	}
+	.p2{
+		position: absolute;
+		top: 7rem;
+		text-align: center;
+		height: 4rem;
+		line-height: 4rem;
+		width: 100%
+	}
+    .place,.count{
+        font-family: JLinXin;
+        font-size: 2rem;
+        color: #4F067A;
+    }
+    .foot{
+        width: 50%;
+        height: 3.5rem;
+        line-height: 3.5rem;
+        color: white;
+        background-color: #1b60c6;
+        left: 25%;
+        bottom:5%;
+        border-radius: 0.5rem;
+        text-align: center;
+        font-size: 1.1rem;
+        letter-spacing: 0.2rem;
+    }
+</style>
+ 
+
+<body>
+<img src="images/bg1.png"/>
+<p class="p1"><span>已成功点亮了</span>&nbsp;&nbsp;<span class="place"></span></p>
+<p class="p2">一共有&nbsp;&nbsp;<span class="count"></span>&nbsp;&nbsp;个校友和你一起点亮</p>
+<div class="fixed foot">已点亮</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script>
+    window.onload=function () {
+        var accountNum=B.getUrlParamByName("accountNum");
+        var place=localStorage.getItem("place");
+        $('.place').text(place);
+        $.ajax({
+            type:'post',
+            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "900","content": {"accountNum": "'+accountNum+'","address":"'+place+'"} }'
+            },
+            dataType:'json',
+            success:function(data){
+                console.log(data);
+                $('.count').text(data.obj)
+            },
+            error: function(xhr, type) {
+                console.log('Ajax error!');
+                // 即使加载出错，也得重置
+            }
+        });
+    }
+
+
+ /*   alert(name+department+grade+major)*/
+
+</script>
+ 
+</html>

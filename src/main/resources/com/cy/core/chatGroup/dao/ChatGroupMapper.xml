@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.chatGroup.dao.ChatGroupMapper">
+
+    <resultMap type="com.cy.core.chatGroup.entity.ChatGroup" id="chatGroupResultMap">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+		<result column="easemob_group_id" property="easemobGroupId"/>
+		<result column="photo" property="photo"/>
+		<result column="NAME" property="name"/>
+		<result column="introduction" property="introduction"/>
+		<result column="TYPE" property="type"/>
+		<result column="total" property="total"/>
+		<result column="maxusers" property="maxusers"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <select id="query" parameterType="com.cy.core.chatGroup.entity.ChatGroup" resultMap="chatGroupResultMap">
+        select c.*
+       	from cy_chat_group c
+        WHERE c.del_flag = '0'
+			<if test="id!= null and id!= ''">
+				and c.id= #{id}
+			</if>
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="easemobGroupId!= null and easemobGroupId!= ''">
+				and c.easemob_group_id= #{easemobGroupId}
+			</if>
+			<if test="photo!= null and photo!= ''">
+				and c.photo= #{photo}
+			</if>
+			<if test="name!= null and name!= ''">
+				and c.NAME= #{name}
+			</if>
+			<if test="introduction!= null and introduction!= ''">
+				and c.introduction= #{introduction}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="total!= null and total!= ''">
+				and c.total= #{total}
+			</if>
+			<if test="maxusers!= null and maxusers!= ''">
+				and c.maxusers= #{maxusers}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+			<if test="memberUserId!= null and memberUserId!= ''">
+				and c.id IN (
+					SELECT gu.group_id
+					FROM cy_chat_group_user gu
+					WHERE gu.user_id = #{memberUserId}
+				)
+			</if>
+        order by c.update_date desc
+		<if test="start != null and start != '' and rows != null and rows != ''">
+			limit #{start},#{rows}
+		</if>
+    </select>
+
+	<!-- 查询用户是否是群主或管理员 -->
+	<select id="isGroupAdmin" parameterType="map" resultType="java.lang.String">
+		SELECT
+			CASE type
+		WHEN '1' THEN
+			(
+				SELECT
+					ui.is_class_admin
+				FROM
+					cy_user_info ui
+				WHERE
+					LEFT (ui.user_id, 16) = (
+						SELECT
+							dg.dept_id
+						FROM
+							cy_chat_dept_group dg
+						JOIN cy_chat_group g ON dg.group_id = g.id
+						WHERE
+							g.id = #{groupId}
+						LIMIT 1
+					)
+				AND ui.accountNum = #{userId}
+			)
+		WHEN '0' THEN
+			(
+				SELECT
+					(user_id = #{userId})
+				FROM
+					cy_chat_group
+				WHERE
+					id = #{groupId}
+			)
+		ELSE '0'
+		END isAdmin
+		FROM
+			cy_chat_group
+		WHERE
+			id = #{groupId}
+	</select>
+
+	<!-- 查询群组信息接口 -->
+    <select id="queryGroupInterface" parameterType="com.cy.core.chatGroup.entity.ChatGroup" resultType="java.util.Map">
+		select
+		c.id AS groupId ,
+		c.easemob_group_id AS groupEasemobId ,
+		c.user_id AS userId ,
+		c.name AS groupName ,
+		cdg.dept_id AS deptId ,
+		c.type AS type ,
+		c.total AS memberNum
+		from cy_chat_group c
+		LEFT JOIN cy_chat_dept_group cdg ON cdg.group_id= c.id
+		WHERE c.del_flag = '0'
+			<if test="id!= null and id!= ''">
+				and c.id= #{id}
+			</if>
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="easemobGroupId!= null and easemobGroupId!= ''">
+				and c.easemob_group_id= #{easemobGroupId}
+			</if>
+			<if test="photo!= null and photo!= ''">
+				and c.photo= #{photo}
+			</if>
+			<if test="name!= null and name!= ''">
+				and c.NAME= #{name}
+			</if>
+			<if test="introduction!= null and introduction!= ''">
+				and c.introduction= #{introduction}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="total!= null and total!= ''">
+				and c.total= #{total}
+			</if>
+			<if test="maxusers!= null and maxusers!= ''">
+				and c.maxusers= #{maxusers}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+			<if test="memberUserId!= null and memberUserId!= ''">
+				and c.id IN (
+					SELECT gu.group_id
+					FROM cy_chat_group_user gu
+					WHERE gu.del_flag = '0' AND gu.user_id = #{memberUserId}
+				)
+			</if>
+        order by c.update_date desc
+    </select>
+
+    <select id="count" parameterType="com.cy.core.chatGroup.entity.ChatGroup" resultType="long">
+        select count(c.id) from cy_chat_group c
+        WHERE c.del_flag = '0'
+		<if test="userId!= null and userId!= ''">
+			and c.user_id= #{userId}
+		</if>
+		<if test="easemobGroupId!= null and easemobGroupId!= ''">
+			and c.easemob_group_id= #{easemobGroupId}
+		</if>
+		<if test="photo!= null and photo!= ''">
+			and c.photo= #{photo}
+		</if>
+		<if test="name!= null and name!= ''">
+			and c.NAME= #{name}
+		</if>
+		<if test="introduction!= null and introduction!= ''">
+			and c.introduction= #{introduction}
+		</if>
+		<if test="type!= null and type!= ''">
+			and c.TYPE= #{type}
+		</if>
+		<if test="total!= null and total!= ''">
+			and c.total= #{total}
+		</if>
+		<if test="maxusers!= null and maxusers!= ''">
+			and c.maxusers= #{maxusers}
+		</if>
+		<if test="createDate!= null and createDate!= ''">
+			and c.create_date= #{createDate}
+		</if>
+		<if test="createBy!= null and createBy!= ''">
+			and c.create_by= #{createBy}
+		</if>
+		<if test="updateDate!= null and updateDate!= ''">
+			and c.update_date= #{updateDate}
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			and c.update_by= #{updateBy}
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			and c.remarks= #{remarks}
+		</if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="chatGroupResultMap">
+        select c.*
+        from cy_chat_group c 
+       	where c.id=#{id} and c.del_flag='0'
+    </select>
+
+	<insert id="insert">
+		INSERT INTO cy_chat_group(
+			id,
+			user_id,
+			easemob_group_id,
+			photo,
+			NAME,
+			introduction,
+			TYPE,
+			total,
+			maxusers,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{easemobGroupId},
+			#{photo},
+			#{name},
+			#{introduction},
+			#{type},
+			#{total},
+			#{maxusers},
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.cy.core.chatGroup.entity.ChatGroup">
+        update cy_chat_group set 
+		<if test="userId!= null and userId!= ''">
+			user_id = #{userId} ,
+		</if>
+		<if test="easemobGroupId!= null and easemobGroupId!= ''">
+			easemob_group_id = #{easemobGroupId} ,
+		</if>
+		<if test="photo!= null and photo!= ''">
+			photo = #{photo} ,
+		</if>
+		<if test="name!= null and name!= ''">
+			name = #{name} ,
+		</if>
+		<if test="introduction!= null and introduction!= ''">
+			introduction = #{introduction} ,
+		</if>
+		<if test="type!= null and type!= ''">
+			TYPE = #{type} ,
+		</if>
+		<if test="total!= null and total!= ''">
+			total = #{total} ,
+		</if>
+		<if test="maxusers!= null and maxusers!= ''">
+			maxusers = #{maxusers} ,
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+			update_date = #{updateDate}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="list">
+        update cy_chat_group
+		set
+			del_flag=1,
+			update_date = now()
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+    <delete id="delete" parameterType="com.cy.core.chatGroup.entity.ChatGroup">
+        update cy_chat_group 
+        set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+        where id = #{id}
+    </delete>
+
+	<!--add by jiangling-->
+	<!--根据群组id查询群组-->
+	<select id="queryChatGroupById" parameterType="String" resultMap="chatGroupResultMap">
+		select c.*
+        from cy_chat_group c
+       	where c.id=#{id} and c.del_flag='0'
+	</select>
+	<!--add by jiangling-->
+	<!--更新del_flag-->
+	<update id="updateDelFlag" parameterType="String">
+		update cy_chat_group
+		set del_flag = 1,update_date = now()
+		where id = #{id}
+	</update>
+
+	<update id="updateGroupUserDelFlag" parameterType="map">
+		UPDATE cy_chat_group_user
+		SET del_flag = 1,
+		 update_date = NOW()
+		WHERE
+			group_id = #{groupId}
+		<if test=" userId != null and userId !='' ">
+			AND user_id = #{userId}
+		</if>
+	</update>
+</mapper>

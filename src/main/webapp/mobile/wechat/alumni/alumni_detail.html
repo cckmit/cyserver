@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>分会详情</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+    <style>
+        .user_box{
+            border-bottom:1px dashed #666;
+            height: 60px;
+            line-height: 60px;
+            background-color: #fff;
+        }
+        .flag{
+            display:inline-block;
+            background-color:#4d99db;
+            height:15px;
+
+        }
+        .rect{
+            width:20px;
+        }
+        .line{
+            width:5px;
+        }
+        .user_box_r{
+            justify-content: flex-end;
+            margin-right:10px;
+        }
+        .content_box{
+            padding:10px;
+            background-color: #fff;
+        }
+        .content_box div{
+            font-size:16px;
+            margin-bottom:10px;
+
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="alu_bg">
+
+        <div class="user_box H-flexbox-horizontal H-vertical-middle">
+            <div class="">
+                <span class="flag rect"></span>
+                <span class="flag line"></span>
+                <span style="color:#4d99db;">分会简介</span>
+            </div>
+            <div class="user_box_r H-flex-item H-flexbox-horizontal">
+                <span class="H-icon H-padding-horizontal-right-5">
+                    <i class="H-iconfont H-icon-user H-theme-font-color-ddd H-font-size-14 H-vertical-middle"></i>
+                </span>
+                <span class="username H-margin-horizontal-right-10"></span>
+                <span class="H-icon H-padding-horizontal-right-5">
+                    <i class="H-iconfont H-icon-phone H-theme-font-color-ddd H-font-size-14 H-vertical-middle"></i>
+                </span>
+                <span class="phone"></span>
+            </div>
+        </div>
+
+        <div class="content_box">
+            <div class="content_title H-text-align-center"></div>
+            <div class="content_detail">
+
+            </div>
+
+            <!--btn-->
+            <div class="H-flexbox-horizontal btn">
+                <button onclick="dealRequest('20')" class="H-button H-flex-item H-font-size-15 H-outline-none H-padding-vertical-both-8 H-padding-horizontal-both-20
+                H-theme-background-color1 H-theme-font-color-white H-theme-border-color1" style="margin-right: 10px;">同意加入</button>
+
+                <button onclick="dealRequest('40')" class="H-button H-flex-item H-font-size-15 H-outline-none H-padding-vertical-both-8 H-padding-horizontal-both-20
+                H-theme-background-color1 H-theme-font-color-white H-theme-border-color1">拒绝加入</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+    var alumniId = B.getUrlParamByName("alumniId");
+    var status = B.getUrlParamByName("status"); //判断来自的状态
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("alumni/alumni_list.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '班級列表',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+
+    }
+    
+    $(function () {
+
+        loadUserInfo();
+
+        loadAlumniDetail();
+
+        //是否已经收到请求
+        if(status != 5){
+            $('.btn').css('display', 'none');
+        }
+    })
+
+    // 初始化用户信息
+    function loadUserInfo() {
+//        console.log('{"command": "27","content": {"accountNum": "' + accountNum + '"}}');
+        B.ready(function () {
+            $.ajax({
+            type: "post",
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+            },
+            dataType: "json",
+            success: function(data){
+                if (data && data.success) {
+
+                    $(".username").text(data.obj.name);
+                    $(".phone").text(data.obj.phoneNum);
+                }
+            }
+        });
+        })
+    }
+
+    function loadAlumniDetail(){
+        B.ready(function() {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "240","content": {"alumniId":"' + alumniId + '"}}'
+                },
+
+                dataType: 'json',
+                success: function (data) {
+                    //console.log("------" + JSON.stringify(data));
+                    if(data && data.obj){
+                        if(data.obj.alumniName && data.obj.alumniName != '')
+                            $('.content_title').html(data.obj.alumniName);
+
+                        if(data.obj.introduction && data.obj.introduction != '')
+                            $('.content_detail').html(data.obj.introduction);
+
+                    }
+                }
+            });
+        });
+    }
+
+    //处理请求,是否要加入分会还是决绝加入分会
+    function dealRequest(status) {
+
+        B.ready(function () {
+            console.log('{"command": "208","content": {"accountNum": "' + accountNum + '", "alumniId":"'+alumniId+'", "status":"'+status+'"}}')
+
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "208","content": {"accountNum": "' + accountNum + '", "alumniId":"'+alumniId+'", "status":"'+status+'"}}'
+                },
+                dataType: "json",
+                success: function(data){
+                    if (data && data.success) {
+                        H.alertTipForSuccuss(function () {
+                            //跳转到我的分会列表
+                            H.openWin("我的分会","alumni_list.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+'&fromFoundation='+fromFoundation);
+
+                        },data.msg);
+                    }else{
+                        H.alert(data.msg);
+                    }
+                }
+            });
+        })
+
+    }
+
+
+
+
+</script>

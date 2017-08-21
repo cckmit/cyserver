@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.weiXin.dao.WeiXinUserMapper">
+    <resultMap type="com.cy.core.weiXin.entity.WeiXinUser" id="weiXinUserResultMap">
+        <id column="id" property="id" />
+        <result column="account_num"  property="accountNum"/>
+        <result column="openid"  property="openid"/>
+        <result column="nickname"  property="nickname"/>
+        <result column="sex"  property="sex"/>
+        <result column="language"  property="language"/>
+        <result column="city"  property="city"/>
+        <result column="province"  property="province"/>
+        <result column="country"  property="country"/>
+        <result column="headimgurl"  property="headimgurl"/>
+        <result column="is_follow"  property="isFollow"/>
+        <result column="account_id"  property="accountId"/>
+        <result column="del_flag"  property="delFlag"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="remarks"  property="remarks"/>
+        <result column="account_app_id"  property="accountAppId"/>
+        <result column="longitude"  property="longitude"/>
+        <result column="latitude"  property="latitude"/>
+        <result column="position_desc"  property="positionDesc"/>
+        <result column="accountName"  property="accountName"/>
+        <result column="userName"  property="userName"/>
+        <result column="allPath"  property="allPath"/>
+        <result column="accountType"  property="accountType"/>
+        <result column="local_head_image"  property="localHeadImage"/>
+    </resultMap>
+    <select id="selectWeiXinUser" parameterType="map" resultMap="weiXinUserResultMap">
+        SELECT wu.*,
+        wa.account_app_id,
+        wa.account_name AS accountName,
+        wa.account_type AS accountType,
+        cu.name AS userName,
+        cu.groupName AS allPath
+        FROM weixin_user wu
+        LEFT JOIN weixin_account wa ON  wa.id = wu.account_id AND wa.account_app_id = wu.account_app_id AND wa.del_flag = '0'
+        LEFT JOIN cy_userprofile cu ON cu.accountNum = wu.account_num
+        WHERE wu.del_flag != '1'
+        <if test="openid !=null and openid != '' ">
+            AND wu.openid = #{openid}
+        </if>
+        <if test="accountAppId !=null and accountAppId != '' ">
+            AND wu.account_app_id = #{accountAppId}
+        </if>
+        <if test="accountNum != null and accountNum != ''">
+            AND wu.account_num = #{accountNum}
+        </if>
+        <if test="nickname != null and nickname != ''" >
+            AND wu.nickname LIKE CONCAT('%', #{nickname} ,'%')
+        </if>
+        <if test="city != null and city != ''">
+            AND wu.city = #{city}
+        </if>
+        <if test="sex != null and sex != ''">
+            AND wu.sex = #{sex}
+        </if>
+        <if test="language != null and language != ''">
+            AND wu.language = #{language}
+        </if>
+        <if test="isFollow != null and isFollow != ''">
+            AND wu.is_follow = #{isFollow}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            AND wu.account_id = #{accountId}
+        </if>
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="weiXinUserResultMap">
+        SELECT
+        wu.*,
+        wa.account_app_id,
+        wa.account_name AS accountName,
+        cu.name AS userName,
+        cu.groupName AS allPath
+        FROM weixin_user wu
+        LEFT JOIN weixin_account wa ON  wa.id = wu.account_id AND wa.del_flag != '1'
+        LEFT JOIN cy_userprofile cu ON cu.accountNum = wu.account_num
+        WHERE wu.id = #{id}
+    </select>
+    <select id="countWeiXinUser" parameterType="map" resultType="long">
+        select count(wu.id)
+        FROM weixin_user wu
+        LEFT JOIN weixin_account wa ON  wa.id = wu.account_id AND wa.account_app_id = wu.account_app_id AND wa.del_flag = '0'
+        WHERE wu.del_flag = '0'
+        <if test="openid !=null and openid != '' ">
+            AND wu.openid = #{openid}
+        </if>
+        <if test="accountAppId !=null and accountAppId != '' ">
+            AND wu.account_app_id = #{accountAppId}
+        </if>
+        <if test="accountNum != null and accountNum != ''">
+            AND wu.account_num = #{accountNum}
+        </if>
+        <if test="nickname != null and nickname != ''" >
+            AND wu.nickname LIKE CONCAT('%', #{nickname} ,'%')
+        </if>
+        <if test="city != null and city != ''">
+            AND wu.city = #{city}
+        </if>
+        <if test="sex != null and sex != ''">
+            AND wu.sex = #{sex}
+        </if>
+        <if test="language != null and language != ''">
+            AND wu.language = #{language}
+        </if>
+        <if test="isFollow != null and isFollow != ''">
+            AND wu.is_follow = #{isFollow}
+        </if>
+        <if test="accountId != null and accountId != ''">
+            AND wu.account_id = #{accountId}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.cy.core.weiXin.entity.WeiXinUser">
+        INSERT INTO weixin_user (
+        id,
+        account_num,
+        openid,
+        nickname,
+        sex,
+        language,
+        city,
+        province,
+        country,
+        headimgurl,
+        is_follow,
+        account_id,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag,
+        account_app_id,
+        longitude,
+        latitude,
+        position_desc,
+        local_head_image
+        )
+        VALUES (
+        #{id},
+        #{accountNum},
+        #{openid},
+        #{nickname},
+        #{sex},
+        #{language},
+        #{city},
+        #{province},
+        #{country},
+        #{headimgurl},
+        #{isFollow},
+        #{accountId},
+        now(),
+        #{updateBy},
+        now(),
+        #{createBy},
+        #{remarks},
+        #{delFlag},
+        #{accountAppId},
+        #{longitude},
+        #{latitude},
+        #{positionDesc},
+        #{localHeadImage}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.weiXin.entity.WeiXinUser" >
+        UPDATE weixin_user SET
+        <choose>
+            <when test='isRemoveBinding != "1" and accountNum !=null and accountNum != ""'>
+                account_num = #{accountNum},
+            </when>
+            <when test='isRemoveBinding == "1"'>
+                account_num = #{accountNum} ,
+            </when>
+        </choose>
+
+        <if test="openid !=null and openid != '' ">
+            openid = #{openid},
+        </if>
+        <if test="nickname !=null and nickname != '' ">
+             nickname = #{nickname},
+        </if>
+        <if test="sex !=null and sex != '' ">
+             sex = #{sex},
+        </if>
+        <if test="language !=null and language != '' ">
+             language = #{language},
+        </if>
+        <if test="city !=null and city != '' ">
+             city = #{city},
+        </if>
+        <if test="province !=null and province != '' ">
+             province = #{province},
+        </if>
+        <if test="country !=null and country != '' ">
+             country = #{country},
+        </if>
+        <if test="headimgurl !=null and headimgurl != '' ">
+             headimgurl = #{headimgurl},
+        </if>
+        <if test="isFollow !=null and isFollow != '' ">
+             is_follow = #{isFollow},
+        </if>
+        <if test="accountId !=null and accountId != '' ">
+             account_id = #{accountId},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+             del_flag = #{delFlag},
+        </if>
+
+        <if test="updateBy !=null and updateBy != '' ">
+             update_by = #{updateBy},
+        </if>
+        <if test="createDate !=null and createDate != '' ">
+             create_date = #{createDate},
+        </if>
+        <if test="createBy !=null and createBy != '' ">
+            create_by = #{createBy},
+        </if>
+
+        <if test="remarks !=null and remarks != '' ">
+             remarks = #{remarks},
+        </if>
+        <if test="accountAppId !=null and accountAppId != '' ">
+           account_app_id = #{accountAppId},
+        </if>
+        <if test="longitude !=null and longitude != '' ">
+            longitude = #{longitude},
+        </if>
+
+        <if test="latitude !=null and latitude != '' ">
+            latitude = #{latitude},
+        </if>
+        <if test="positionDesc !=null and positionDesc != '' ">
+            position_desc = #{positionDesc},
+        </if>
+        <if test="localHeadImage !=null and localHeadImage != '' ">
+            local_head_image = #{localHeadImage},
+        </if>
+         update_date = #{updateDate}
+		WHERE id = #{id}
+    </update>
+</mapper>

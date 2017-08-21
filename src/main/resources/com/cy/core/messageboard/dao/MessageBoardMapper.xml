@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.messageboard.dao.MessageBoardMapper">
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+	<select id="pullMessageList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select 
+			m.*,
+			IFNULL(u.name,'') as messageUserName,
+			IFNULL(u.picture,'') as messageUserImageURL 
+		from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+		<where>
+			<if test="messageType!=null and messageType!='' and messageType != 0">
+				and m.messageType = #{messageType} and m.messageFatherId = 0
+			</if>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and m.messageId = #{messageId}
+			</if>
+			<if test="messageFatherId!=null and messageFatherId!='' and messageFatherId != 0">
+				and m.messageFatherId = #{messageFatherId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and m.messageUserId = #{messageUserId} and m.messageFatherId = 0
+			</if>
+
+			
+			and m.deleteStatus = 0 and m.checkStatus = 1 order by m.messageId desc limit #{currentRow},#{incremental} 
+		</where>
+	</select>
+	
+	
+	<select id="pullReplyMessageList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select 
+			m.*,
+			IFNULL(u.name,'') as messageUserName,
+			IFNULL(u.picture,'') as messageUserImageURL 
+		from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum  
+		<where>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and (m.messageId = #{messageId} or m.messageFatherId = #{messageFatherId})
+			</if>
+			and m.deleteStatus = 0 and m.checkStatus = 1 order by m.messageId limit #{currentRow},#{incremental} 
+		</where>
+	</select>
+	
+	
+	<select id="getCollectMessageList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+		<where>
+			
+			<if test="collect!=null and collect!='' and collect != 0">
+				and m.messageId IN(select distinct messageId from cy_message_collect where messageUserId = #{messageUserId})
+			</if>
+			
+			and m.deleteStatus = 0 and m.checkStatus = 1 order by m.messageId desc limit #{currentRow},#{incremental} 
+		</where>
+	</select>
+	
+	
+	<select id="getMessageList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+		<where>
+			<if test="messageType!=null and messageType!='' and messageType != 0">
+				and m.messageType = #{messageType} and m.messageFatherId = 0
+			</if>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and m.messageId = #{messageId}
+			</if>
+			<if test="messageFatherId!=null and messageFatherId!='' and messageFatherId != 0">
+				and m.messageFatherId = #{messageFatherId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and m.messageUserId = #{messageUserId} and m.messageFatherId = 0
+			</if>
+			and m.deleteStatus = 0 and m.checkStatus = 1 order by m.messageTime desc
+		</where>
+	</select>
+	
+	
+	<select id="getContactList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+		<where>
+			<if test="messageType!=null and messageType!='' and messageType != 0">
+				and m.messageType = #{messageType}
+			</if>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and m.messageId = #{messageId}
+			</if>
+			<if test="messageFatherId!=null and messageFatherId!='' and messageFatherId != 0">
+				and m.messageFatherId = #{messageFatherId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and m.messageUserId = #{messageUserId}
+			</if>
+			and m.deleteStatus = 0 and m.checkStatus = 1 order by m.messageTime desc
+		</where>
+	</select>
+	
+	<select id="getMessageCount" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="long">
+		select count(messageId) from cy_message_board
+		<where>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and messageId = #{messageId}
+			</if>
+			<if test="messageFatherId!=null and messageFatherId!='' and messageFatherId != 0">
+				and messageFatherId = #{messageFatherId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and messageUserId = #{messageUserId} and messageFatherId = 0
+			</if>
+			and deleteStatus = 0 and checkStatus = 1
+		</where>
+	</select>
+	
+	
+	<select id="praiseCount" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="long">
+		select count(praiseId) from cy_message_praise
+		<where>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and messageId = #{messageId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and messageUserId = #{messageUserId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="collectCount" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="long">
+		select count(collectId) from cy_message_collect
+		<where>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and messageId = #{messageId}
+			</if>
+			<if test="messageUserId!=null and messageUserId!='' and messageUserId != 0">
+				and messageUserId = #{messageUserId}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+	
+	<insert id="praise" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		insert into cy_message_praise(messageUserId,messageId,praiseTime) value(#{messageUserId},#{messageId},now())
+	</insert>
+	
+	
+	<delete id="deletePraise" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		delete from cy_message_praise where messageUserId = #{messageUserId} and messageId = #{messageId}
+	</delete>
+	
+	
+	<insert id="collect" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		insert into cy_message_collect(messageUserId,messageId,collectTime) value(#{messageUserId},#{messageId},now())
+	</insert>
+	
+	<delete id="deleteCollect" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		delete from cy_message_collect where messageUserId = #{messageUserId} and messageId = #{messageId}
+	</delete>
+	
+	
+	<select id="getMessageDetail" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+		<where>
+			<if test="messageId!=null and messageId!='' and messageId != 0">
+				and m.messageId = #{messageId}
+			</if>
+			and m.deleteStatus = 0 and m.checkStatus = 1
+		</where>
+	</select>
+
+	<insert id="saveMessage" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		insert into
+		cy_message_board(
+			messageTitle,
+			messageContent,
+			replyMessageContent,
+			messageType,
+			messageTime,
+			messageUserId,
+			messageFatherId,
+			checkStatus,
+			checkTime,
+			checkUserId,
+			checkRemark,
+			messageBrowseQuantity,
+			messageUserIP,
+			deleteStatus
+		)
+		values(
+			#{messageTitle},
+			#{messageContent},
+			#{replyMessageContent},
+			#{messageType},
+			now(),
+			#{messageUserId},
+			#{messageFatherId},
+			#{checkStatus},
+			#{checkTime},
+			#{checkUserId},
+			#{checkRemark},
+			0,
+			#{messageUserIP},
+			0
+		)
+	</insert>
+	
+	<update id="updateMessage" parameterType="com.cy.core.messageboard.entity.MessageBoard">
+		update cy_message_board 
+		<set>
+			<if test="deleteStatus!=null and deleteStatus!=''">
+				deleteStatus = #{deleteStatus},
+			</if>
+			<if test="messageBrowseQuantity!=null and messageBrowseQuantity!=0">
+				messageBrowseQuantity = #{messageBrowseQuantity},
+			</if>
+			<if test="checkStatus!=null and checkStatus!=''">
+				checkStatus = #{checkStatus},
+			</if>
+			<if test="checkUserId!=null and checkUserId!=0">
+				checkUserId = #{checkUserId},
+			</if>
+			<if test="replyMessageContent!=null and replyMessageContent!=''">
+				replyMessageContent = #{replyMessageContent},
+			</if>
+			<if test="checkRemark!=null and checkRemark!=''">
+				checkRemark = #{checkRemark},
+			</if>
+			<if test="checkTime!=null and checkTime!=''">
+				checkTime = #{checkTime},
+			</if>
+		</set>
+		where messageId = #{messageId}
+	</update>
+	<select id="countMessage" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="long">
+		select count(messageId) from
+		cy_message_board m
+		LEFT JOIN cy_userprofile u ON m.messageUserId = u.accountNum
+		where m.deleteStatus = 0
+
+		<if test="messageTitle!=null and messageTitle!=''">
+			and m.messageTitle LIKE concat('%', #{messageTitle},'%')
+		</if>
+		<if test="messageUserName!=null and messageUserName!=''">
+			and u.name LIKE concat('%', #{messageUserName},'%')
+		</if>
+		<if test="messageType!=null and messageType!='' and messageType != 0">
+			and m.messageType = #{messageType}
+		</if>
+		<choose>
+			<when test="checkStatus == '-1'">
+				and m.checkStatus = '0'
+			</when>
+			<when test="checkStatus!= null and checkStatus!=''">
+				and m.checkStatus = #{checkStatus}
+			</when>
+		</choose>
+		
+	</select>
+	<select id="selectMessageBoardList" parameterType="com.cy.core.messageboard.entity.MessageBoard" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m
+		LEFT JOIN cy_userprofile u ON m.messageUserId = u.accountNum
+		where m.deleteStatus = 0
+		<if test="messageUserName!=null and messageUserName!=''">
+			and u.name LIKE concat('%', #{messageUserName},'%')
+		</if>
+		<if test="messageTitle!=null and messageTitle!=''">
+			and m.messageTitle LIKE concat('%', #{messageTitle},'%')
+		</if>
+		<if test="messageType!=null and messageType!='' and messageType != 0">
+			and m.messageType = #{messageType}
+		</if>
+		<choose>
+			<when test="checkStatus == '-1'">
+				and m.checkStatus = '0'
+			</when>
+			<when test="checkStatus!= null and checkStatus!=''">
+				and m.checkStatus = #{checkStatus}
+			</when>
+		</choose>
+		order by messageTime desc
+		limit #{start},#{rows}
+	</select>
+	<update id="updateDeleteStatus" parameterType="list">
+		update cy_message_board set deleteStatus=1 where messageId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</update>
+	<select id="selectById" parameterType="long" resultType="com.cy.core.messageboard.entity.MessageBoard">
+		select m.*,IFNULL(u.name,'') as messageUserName,IFNULL(u.picture,'') as messageUserImageURL from 
+			cy_message_board m LEFT JOIN cy_userprofile u
+		on 
+			m.messageUserId = u.accountNum 
+			where  messageId = #{id}
+	</select>
+</mapper>

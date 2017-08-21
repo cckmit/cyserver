@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <title>校友会</title>
+    <!--避免IE使用兼容模式-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--使用webkit内核-->
+    <meta name="renderer" content="webkit">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="校友会" name="description"/>
+    <meta content="校友会" name="author"/>
+    <!--引入css文件-->
+    <link href="../../css/style.css" type="text/css" rel="stylesheet" />
+    <link href="../../css/responsiveslides.css" type="text/css" rel="stylesheet"  />
+    <style type="text/css">
+
+        /* 本例子css */
+        .picMarquee-left{ overflow:hidden; position:relative;}
+        .picMarquee-left .bd{ padding:10px; background-color: #FFFFFF;}
+        .picMarquee-left .bd ul{ overflow:hidden; zoom:1; }
+        .picMarquee-left .bd ul li{ margin:0 5px; float:left; display: inline-block; _display:inline-block; overflow:hidden; text-align:center;  }
+        .picMarquee-left .bd ul li .pic{ text-align:center; }
+        .picMarquee-left .bd ul li .pic img{ width:200px; height:130px; display:block; }
+    </style>
+
+    <!--引入js文件-->
+    <script src="../../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="../../js/jquery.SuperSlide.2.1.1.js" type="text/javascript"></script>
+    <script src="../../js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../../js/B.js" type="text/javascript"></script>
+    <script src="../../js/responsiveslides.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/interfacepath.js"></script>
+    <script src="../../js/G.js"></script>
+    <script src="../../fenhui/fenhuiPublic/public.js"></script>
+
+</head>
+
+<body>
+<!--这是顶部::start-->
+<div id="head" class="head_top">
+    <!--顶部线条::start-->
+    <div class="lines">
+        <div id="top_line"></div>
+    </div>
+    <!--顶部线条::end-->
+
+    <div class="header_nav">
+        <div class="topNav_box">
+            <p class="topNav">
+					<span style="float: left;">
+						<a onclick="open_tkLogin()" class="login_tk_dl" href="javascript:;">
+							校友登录
+						</a>
+						<a class="login_tk_dlh user_center" href="javascript:;">
+							欢迎:<span class="dl_user_name">这个人</span>
+							<img class="user_avatar" src="" />
+						</a>
+						|
+                        <a class="login_tk_dlh" style="padding:0 15px;" onclick="logoutConfirm();" href="javascript:;">
+							退出
+						</a>
+						<a class="login_tk_dl zhuce_tk" href="javascript:;">立即注册</a>
+					</span>
+                <a href="javascript:;">欢迎进入:<span class="fenhui_dq"></span>!</a>|
+                <a class="xiaoyou_zhuzu" href="../../alumni/xyh.html">校友组织</a>|
+                <a class="fenhuiXinxi" href="../../alumni/xyhi.html">分会信息</a>
+                <!--|<a href="jacascript:;">爱心捐赠</a>-->
+            </p>
+        </div>
+    </div>
+
+    <div class="header_content">
+        <!--顶部背景图片::start-->
+        <div id="top_bg" align="center">
+            <img class="bannerPic" src="../../image/logo_gzkjxy.png" />
+        </div>
+        <!--顶部背景图片::end-->
+        <!--顶部导航条::start-->
+        <div id="top_nav_bg">
+            <div id="top_nav">
+                <ul id="nav">
+                    <li>
+                        <a class="indexSrc" href="">首页</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--顶部导航条::end-->
+    </div>
+</div>
+<!--这是顶部::end-->
+
+    <div class="tankuangdenglu">
+        <div class="dengluTank">
+            <div class="login_tankuang">
+                <div class="login_denglu">
+                    <div class="login_title">
+                        校友信息系统平台入口
+                        <a onclick="close_tkLogin()" class="close_anniu" href="javascript:;"> x </a>
+                    </div>
+                    <div class="denglu_jiemian">
+                        <p><span>手机号</span><input placeholder="请输入您的账号" type="text" name="UserName" id="UserName1" class="login_input radius"></p>
+                        <p><span>密　码</span><input placeholder="请输入您的密码" type="password" name="PassWord" id="PassWord1" class="login_input radius"></p>
+                        <span id="loginMsg" style="position: absolute; top: 60px;"></span>
+                        <p class="mid">
+                            <input type="button" class="liji_login" name="submit_btn" onclick="login_tk()" id="" value="立即登录">
+                            <!--<a href="register.html" class="zhuce_tk">我要注册</a>-->
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--退出登录出框-->
+<div>
+    <div class="logout_tankuaung">
+        <!--定义弹出框-->
+        <div class="theme-pop">
+            <div class="theme-poptit">
+                <a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+                <h3>警告</h3>
+            </div>
+            <div class="theme-popbod dform">
+                <p style="margin-top: 18px; font-size: 13px;">确认退出登录？</p>
+                <div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+                    <input style="width: 70px; float:left;" class="confirmBtn" onclick="logout()" value=" 确认退出 " />
+                    <input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+                </div>
+            </div>
+        </div>
+        <div class="theme-pop-mask"></div>
+    </div>
+</div>
+
+
+<div class="footer">
+    <!--顶部线条::start-->
+    <div id="footer_line">Copyright © 广州科技贸易职业学院</div>
+    <!--顶部线条::end-->
+</div>
+
+</body>
+
+</html>
+

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.report.dao.ReportMapper">
+	<resultMap type="com.cy.core.report.entity.Report" id="reportResultMap">
+		<id column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="buss_id" property="bussId" />
+		<result column="content" property="content" />
+		<result column="buss_type" property="bussType" />
+		<result column="handle_user_id" property="handleUserId" />
+		<result column="handle_status" property="handleStatus"/>
+		<result column="handle_desc" property="handleDesc"/>
+		<result column="remarks" property="remarks"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_date" property="createDate" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_date" property="updateDate" />
+		<result column="del_flag" property="delFlag" />
+		<result column="reportPerson" property="reportPerson" />
+		<result column="bussName" property="bussName" />
+		<result column="handerName" property="handerName" />
+	</resultMap>
+
+	<insert id="savereportActivityOrHuaxu" parameterType="com.cy.core.report.entity.Report">
+		insert into cy_report (id,user_id,buss_id,content,buss_type,create_by,create_date,update_by,update_date)
+		values (
+		#{id},
+		#{userId},
+		#{bussId},
+		#{content},
+		#{bussType},
+		#{createBy},
+		now(),
+		#{updateBy},
+		now())
+	</insert>
+
+
+	<select id="selectReportList" parameterType="map" resultMap="reportResultMap">
+		SELECT *
+		FROM cy_report
+		WHERE  del_flag != '1'
+		<if test="reportId != null and reportId != ''">
+			AND id = #{reportId}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND user_id = #{userId}
+		</if>
+		<if test="bussId != null and bussId != ''">
+			AND buss_id = #{bussId}
+		</if>
+		<if test="bussType != null and bussType != ''">
+			AND buss_type = #{bussType}
+		</if>
+		ORDER BY create_date DESC
+	</select>
+
+	<select id="findReportList" parameterType="map" resultMap="reportResultMap">
+		select cr.*,
+		cu.name AS reportPerson,
+		ce.title AS bussName,
+		cus.userName AS handerName
+		from cy_report cr
+		left join cy_userprofile cu on cu.accountNum = cr.user_id
+		left join cy_event ce on ce.id = cr.buss_id
+		left join cy_user cus on cr.handle_user_id = cus.userId
+		where cr.del_flag != '1'
+		<if test="id != null and id != ''">
+			AND cr.id = #{id}
+		</if>
+		<if test="reportPerson != null and reportPerson != ''">
+			AND cu.name like concat('%',#{reportPerson},'%')
+		</if>
+		<if test="handleStatus != null and handleStatus != ''">
+			AND cr.handle_status = #{handleStatus}
+		</if>
+		<if test="bussId != null and bussId != ''">
+			AND cr.buss_id = #{bussId}
+		</if>
+		<if test="bussType != null and bussType != ''">
+			AND cr.buss_type = #{bussType}
+		</if>
+		ORDER BY cr.create_date DESC
+		<if test="isNoLimit != 1">
+			LIMIT #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="count" parameterType="map" resultType="long">
+		select COUNT(1)
+		from cy_report cr
+		left join cy_userprofile cu on cu.accountNum = cr.user_id
+		left join cy_event ce on ce.id = cr.buss_id
+		where cr.del_flag != '1'
+		<if test="id != null and id != ''">
+			AND cr.id = #{id}
+		</if>
+		<if test="userId != null and userId != ''">
+			AND cr.user_id = #{userId}
+		</if>
+		<if test="bussId != null and bussId != ''">
+			AND cr.buss_id = #{bussId}
+		</if>
+		<if test="bussType != null and bussType != ''">
+			AND cr.buss_type = #{bussType}
+		</if>
+
+	</select>
+
+
+	<update id="update" parameterType="com.cy.core.report.entity.Report">
+		UPDATE cy_report SET
+		user_id=#{userId},
+		buss_id=#{bussId},
+		buss_type=#{bussType},
+		handle_user_id=#{handleUserId},
+		handle_status=#{handleStatus},
+		handle_desc=#{handleDesc},
+		update_by=#{updateBy},
+		remarks=#{remarks},
+		<if test="delFlag != null and delFlag != ''">
+			del_flag=#{delFlag},
+		</if>
+		update_date=#{updateDate}
+		WHERE id=#{id}
+	</update>
+
+</mapper>

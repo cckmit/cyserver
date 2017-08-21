@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.activityApplicant.dao.ActivityApplicantMapper">
+    <resultMap type="com.cy.core.activityApplicant.entity.ActivityApplicant" id="activityApplicantResultMap">
+        <id column="id" property="id"/>
+        <result column="activity_id" property="activityId"/>
+        <result column="weixin_app_id" property="weixinAppId"/>
+        <result column="open_id" property="openId"/>
+        <result column="headimgurl" property="headSrc"/>
+        <result column="name" property="name"/>
+        <result column="telephone" property="telephone"/>
+        <result column="is_winning" property="isWinning"/>
+
+        <result column="awardsName"  property="awardsName"/>
+        <result column="prizeName"  property="prizeName"/>
+        <result column="prizeSrc"  property="prizeSrc"/>
+
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.cy.core.activityApplicant.entity.ActivityApplicant">
+        INSERT INTO act_activity_applicant (
+        id,
+        activity_id,
+        weixin_app_id,
+        open_id,
+        head_src,
+        name,
+        telephone,
+        is_winning,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        VALUES (
+        #{id},
+        #{activityId},
+        #{weixinAppId},
+        #{openId},
+        #{headSrc},
+        #{name},
+        #{telephone},
+        #{isWinning},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.activityApplicant.entity.ActivityApplicant">
+        UPDATE act_activity_applicant SET
+        activity_id=#{activityId},
+        weixin_app_id=#{weixinAppId},
+        open_id=#{openId},
+        head_src=#{headSrc},
+        name=#{name},
+        telephone=#{telephone},
+        is_winning=#{isWinning},
+        del_flag = #{delFlag},
+        update_date = #{updateDate},
+        update_by = #{updateBy},
+        remarks = #{remarks}
+		WHERE id = #{id}
+    </update>
+    <select id="selectApplicantDetail" parameterType="map" resultMap="activityApplicantResultMap">
+        SELECT
+        aa.*,ap.name AS awardsName,ap.prize_name AS prizeName ,ap.prize_src AS prizeSrc
+        FROM act_activity_applicant aa
+        LEFT JOIN act_activity_winning aw ON aw.activity_id = aa.activity_id AND aw.applicant_id = aa.id AND aw.del_flag
+        ='0'
+        LEFT JOIN act_activity_prize ap ON ap.activity_id = aa.activity_id AND ap.id = aw.awards_id AND ap.del_flag =
+        '0'
+        WHERE
+        aa.del_flag != '1'
+        <if test="id != null and id != ''">
+            AND aa.id = #{id}
+        </if>
+        <if test="activityId != null and activityId != ''">
+            AND aa.activity_id = #{activityId}
+        </if>
+        <if test="openId != null and openId != ''">
+            AND aa.open_id = #{openId}
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND aa.telephone = #{telephone}
+        </if>
+    </select>
+    <select id="selectAll" resultMap="activityApplicantResultMap">
+        SELECT * FROM act_activity_applicant WHERE del_flag != '1'
+    </select>
+
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(id)
+        FROM act_activity_applicant
+        WHERE del_flag = '0'
+        <if test="activityId != null and activityId != ''">
+            AND activity_id = #{activityId}
+        </if>
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND telephone = #{telephone}
+        </if>
+        <if test="createDate != null and createDate != ''">
+            AND create_date >= #{createDate}
+        </if>
+    </select>
+
+    <select id="selectList" parameterType="map" resultMap="activityApplicantResultMap">
+        SELECT
+        aaa.*,wu.headimgurl
+        FROM act_activity_applicant aaa
+        LEFT JOIN weixin_user wu ON wu.openid = aaa.open_id
+        WHERE aaa.del_flag = '0'
+        <if test="activityId != null and activityId != ''">
+            AND aaa.activity_id = #{activityId}
+        </if>
+        <if test="openId != null and openId != ''">
+            AND aaa.open_id = #{openId}
+        </if>
+        <if test="name != null and name != ''">
+            AND aaa.name = #{name}
+        </if>
+        <if test="openId != null and openId != ''">
+            AND open_id = #{openId}
+        </if>
+        <if test="telephone != null and telephone != ''">
+            AND aaa.telephone = #{telephone}
+        </if>
+        <if test="isWinning != null and isWinning != ''">
+            AND aaa.is_winning = #{isWinning}
+        </if>
+        <if test="createDate != null and createDate != ''">
+            AND aaa.create_date >= #{createDate}
+        </if>
+        ORDER BY aaa.create_date DESC
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+
+    </select>
+
+    <update id="updateIsWinning" parameterType="String">
+        UPDATE act_activity_applicant SET is_winning = '1' WHERE id= #{id}
+    </update>
+</mapper>

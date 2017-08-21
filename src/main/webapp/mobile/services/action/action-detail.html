@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>活动详情</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" type="text/css" href="css/plan-detail.css" />
+	 
+    
+    
+</head>
+
+<body position="relative">
+	<div class="meng absolute dis-n"></div>
+	<div class="sign absolute dis-n">
+		<p>
+			输入校验码即可签到报名
+			<span class="dis-in close f-r">关闭</span>
+		</p>
+		<div class="sign-inp">
+			<input type="text" name="" placeholder="请输入校验码" />
+			<span class="sure dis-in">确认</span>		
+		</div>
+	</div>
+	<div class="live-int absolute dis-n">报名成功</div>
+	<div class="act-join absolute dis-n">
+		<p class="act-n">确认要报名该活动吗？</p>
+		<p class="act-sel"><span class="act-su f-r">确认</span><span class="act-cl f-r">取消</span></p>
+	</div>
+	<div class="act-join1 absolute dis-n">
+		<p class="act-n1">确认要取消报名该活动吗？</p>
+		<p class="act-sel1"><span class="act-su1 f-r">确认</span><span class="act-cl1 f-r">取消</span></p>
+	</div>
+	<div class="act-join2 absolute dis-n">
+		<p class="act-n2">确认要删除该活动吗？</p>
+		<p class="act-sel2"><span class="act-su2 f-r">确认</span><span class="act-cl2 f-r">取消</span></p>
+	</div>
+	<main>
+		<div class="box1"></div>
+		<div class="box2"></div>
+
+
+	</main>
+	<footer class="dis-n">
+		<!--<div class="f-l collect dis-n">
+			<img  src="images/collect.png" alt=""/><span>收藏</span>
+		</div>
+		<div class="f-l collect-no dis-n">
+			<img  src="images/sch.png" alt=""/><span>收藏</span>
+		</div>-->
+		<div class="f-l comment"><img src="images/mess.png" alt=""/><span>评论</span></div>
+		<div class=" f-l pl-state dis-n"><img src="images/ren.png" alt=""/><span>参与活动</span></div>
+		<div class=" f-l pl-state1 dis-n"><img src="images/ren.png" alt=""/><span>取消报名</span></div>
+		<div class=" f-l pl-state2 dis-n"><img src="images/ren.png" alt=""/><span>报名未开始</span></div>
+		<div class=" f-l pl-state3 dis-n"><img src="images/ren.png" alt=""/><span>报名已结束</span></div>
+		<div class=" f-l pl-state4 dis-n"><img src="images/ren.png" alt=""/><span>活动已结束</span></div>
+
+	</footer>
+	<div class="mess-inp dis-n">
+		<input class="inp_box f-l" type="text" name="" placeholder="评论"/>
+		<span class="f-l dis-in mess-send">发送</span>
+	</div>
+
+	<div class="delplan dis-n">
+
+		<div class="f-l comment"><img src="images/mess.png" alt=""/><span>评论</span></div>
+		<div class=" f-l delbtn"><img src="images/del.png" alt=""/><span>删除活动</span></div>
+
+
+	</div>
+	 
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script> 
+<script type="text/javascript" src="js/jquery.timeago.js"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	window.onload=function () {
+		var eventId= B.getUrlParamByName('eventId');
+		var accountNum=B.getUrlParamByName('accountNum');
+		localStorage.setItem("accountNum",accountNum);
+		/*加载详情*/
+		loadplan(eventId,accountNum);
+		/*加载评论*/
+		loadcomment(eventId,accountNum);
+
+
+		/*成员详情跳转*/
+		$("body").on('touchstart touchmove touchend',".pm-img", function(event) {
+			var flag = false;
+			switch(event.type) {
+				case 'touchstart':
+					falg = false;
+					break;
+				case 'touchmove':
+					falg = true;
+					break;
+				case 'touchend':
+					if( !falg ) {
+						console.log('点击');
+						enter(eventId)
+
+					} else {
+						console.log('滑动');
+					}
+					break;
+			}
+		});
+
+		/*加入群聊*/
+		$("body").on('touchstart touchmove touchend',".chat", function(event) {
+			var flag = false;
+			switch(event.type) {
+				case 'touchstart':
+					falg = false;
+					break;
+				case 'touchmove':
+					falg = true;
+					break;
+				case 'touchend':
+					if( !falg ) {
+						console.log('点击');
+
+						var groupEasemobId = localStorage.getItem('groupEasemobId');
+						var groupTitle = localStorage.getItem('groupTitle');
+						var groupId = localStorage.getItem('groupId');
+
+						var u = navigator.userAgent, app = navigator.appVersion;
+						var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //g
+						var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+						if (isAndroid) {
+							var jsonStr= {
+								"groupEasemobId":groupEasemobId,
+								"groupTitle":groupTitle,
+								"groupId":groupId
+							}
+							var str = JSON.stringify(jsonStr);
+							window.stub.goGroupChatActivity(str);
+						}
+						if (isIOS) {
+							var jsonStr = {
+								"groupEasemobId":groupEasemobId,
+								"groupTitle":groupTitle,
+								"groupId":groupId
+							}
+							window.webkit.messageHandlers.groupMessage.postMessage({body: jsonStr});
+						}
+
+					} else {
+						console.log('滑动');
+					}
+					break;
+			}
+		});
+		/*花絮详情*/
+		$("body").on('touchstart touchmove touchend',".ps-sp2", function(event) {
+			var flag = false;
+			switch(event.type) {
+				case 'touchstart':
+					falg = false;
+					break;
+				case 'touchmove':
+					falg = true;
+					break;
+				case 'touchend':
+					if( !falg ) {
+						console.log('点击');
+						window.location.href="feature.html?eventId="+eventId
+
+					} else {
+						console.log('滑动');
+					}
+					break;
+			}
+		});
+
+		/*签到*/
+		$("body").on('touchstart touchmove touchend',".ewm", function(event) {
+			var flag = false;
+			switch(event.type) {
+				case 'touchstart':
+					falg = false;
+					break;
+				case 'touchmove':
+					falg = true;
+					break;
+				case 'touchend':
+					if( !falg ) {
+						console.log('点击');
+						$('.meng').fadeIn(400);
+						$(".sign").fadeIn(600);
+					} else {
+						console.log('滑动');
+					}
+					break;
+			}
+		});
+		$('.sure').click(function(){
+			var val = $('.sign-inp input').val();
+			var code = localStorage.getItem('signCode');
+			if(val==code){
+				sign(eventId,accountNum);
+			}else{
+				$('.live-int').html('验证码有误')
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+			}
+
+		});
+
+		$('.close').click(function(){
+			$('.meng').fadeOut(400);
+			$(".sign").fadeOut(600);
+		});
+
+		/*评论*/
+		$('.comment').click(function(){
+
+			var isme = localStorage.getItem('isOwner');
+
+			if(isme=='true'){
+
+				$('.delplan').hide(200);
+			}else{
+				$('footer').hide(200);
+			}
+
+			$('.mess-inp').show(600);
+			$('.inp_box').click();
+			$('.inp_box').focus();
+		})
+		$('.mess-send').click(function(){
+			var val = $('.inp_box').val().trim();;
+			if(val==""){
+				$('.live-int').html('评论不能为空')
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+			}else{
+				zpl(eventId,accountNum,val)
+			}
+
+		})
+
+		/*收藏*/
+		$('.collect').click(function(){
+			collect(eventId,accountNum)
+		})
+		/*取消收藏*/
+		$('.collect-no').click(function(){
+			collectno(eventId,accountNum)
+		})
+		/*报名活动*/
+		$('.pl-state').click(function(){
+			$('.meng').fadeIn(400);
+			$(".act-join").fadeIn(600);
+		});
+		$('.act-su').click(function(){
+
+			join(eventId,accountNum)
+
+
+		});
+		/*取消*/
+		$('.act-cl').click(function(){
+			$('.meng').fadeOut(400);
+			$(".act-join").fadeOut(600);
+		});
+		/*取消报名*/
+		$('.pl-state1').click(function(){
+			$('.meng').fadeIn(400);
+			$(".act-join1").fadeIn(600);
+
+		});
+		$('.act-su1').click(function(){
+			quit(eventId,accountNum)
+		});
+		$('.act-cl1').click(function(){
+			$('.meng').fadeOut(400);
+			$(".act-join1").fadeOut(200);
+		});
+		/*删除活动*/
+		$('.delbtn').click(function(){
+			$('.meng').fadeIn(400);
+			$(".act-join2").fadeIn(600);
+
+		});
+		$('.act-su2').click(function(){
+			delplan(eventId,accountNum)
+		});
+		$('.act-cl2').click(function(){
+			$('.meng').fadeOut(400);
+			$(".act-join2").fadeOut(200);
+		});
+
+
+	};
+	/*获取计划详情*/
+	function loadplan(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+
+				jsonStr: '{"command": "214","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				if(data.success==true) {
+					localStorage.setItem('groupEasemobId', data.obj.groupEasemobId);
+					localStorage.setItem('groupTitle', data.obj.groupTitle);
+					localStorage.setItem('groupId', data.obj.groupId);
+
+
+					localStorage.setItem('signCode', data.obj.signCode);
+					localStorage.setItem('isOwner', data.obj.isOwner);
+					localStorage.setItem('type', data.obj.type);
+					var numcount = "";
+					var state = "";
+					var result = "";
+					var name = "";
+					if (data.obj.maxPeople == 0) {
+						numcount = "无上限";
+					} else {
+						numcount = data.obj.members.length + "/" + data.obj.maxPeople
+					}
+					if (data.obj.nowStatus.indexOf("进行中") >= 0 || data.obj.nowStatus.indexOf("报名中") >= 0) {
+						state = '<p class="mess_state "><span class="dis-in" style="background: #68D567">' + data.obj.nowStatus + '</span></p>'
+					}
+					if (data.obj.nowStatus.indexOf("已结束") >= 0 || data.obj.nowStatus.indexOf("已截止") >= 0) {
+						state = '<p class="mess_state "><span class="dis-in" style="background: #FF9A4D;">' + data.obj.nowStatus + '</span></p>'
+					}
+					if (data.obj.nowStatus.indexOf("未开始") >= 0) {
+						state = ' <p class="mess_state "><span class="dis-in" style="background: #57B1FB">' + data.obj.nowStatus + '</span></p>'
+					}
+					if (data.obj.userProfile) {
+						name = data.obj.userProfile.name
+					} else {
+						name = data.obj.user.userName
+					}
+
+					result += '<div class="h-img"><img onerror="nofind1()" src="' + B.imageServiceHttp + data.obj.pic_xd + '" alt=""></div>' +
+					'<p class="p-tit"><span class="dis-in f-l text-hide-1">' + data.obj.title + '</span>' +
+					'<img class="f-r ewm" src="images/qiandao.png" alt=""><img class="f-r yqd dis-n" src="images/yqd.png" alt=""></p>' +
+					'<p class="p-name"><span class="dis-in f-l">发起人:</span>' +
+					'<span class="dis-in f-l">' + name + '</span></p>' + state +
+					'<div class="mess-box"><p class="p-mess">' +
+					'<img src="images/time.png" alt=""><span >' + data.obj.startTime.substring(0, 10).replace(/\-/g, "/") + " - " + data.obj.endTime.substring(0, 10).replace(/\-/g, "/") + '</span></p>' +
+					'<p class="p-mess"><img style="width: 1.1rem;margin-right: .7rem;" src="images/place.png" alt=""><span >' + data.obj.place + '</span></p>' +
+					'<p class="p-mess"><img src="images/math.png" alt=""><span>' + "报名人数:" + numcount + '</span></p></p></div>';
+					$('.box1').append(result);
+					/*计划详情*/
+					var result1 = "";
+					result1 += '<div class="p-detail">计划详情</div>' +
+					'<p class="det-cont"></p><p class="p-less dis-n">收起</p><p class="p-more dis-n">展开</p>';
+					$('.box1').append(result1);
+					if (data.obj.content.length > 60) {
+						$('.p-more').show();
+						$('.det-cont').html(data.obj.content.substring(0, 60) + " . . .")
+					} else {
+						$('.det-cont').html(data.obj.content)
+					}
+					/*展开收起*/
+					$('.p-more').click(function () {
+						$(this).hide();
+						$(this).siblings('.p-less').show();
+						$('.det-cont').html(data.obj.content)
+					})
+					$('.p-less').click(function () {
+						$(this).hide();
+						$(this).siblings('.p-more').show();
+						$('.det-cont').html(data.obj.content.substring(0, 60) + " . . .");
+					})
+					var result2 = "";
+					if (data.obj.cost == "" || data.obj.cost == "null" || data.obj.cost == undefined || data.obj.cost == "免费" || data.obj.cost == "0") {
+						result2 += '<div class="p-money"><span class="pm-sp1 f-l">费用</span>' + '<img class="pm-img1 f-r dis-n" src="images/down.png" alt=""/><img class="pm-img2 f-r" src="images/right.png" alt=""/>' +
+						'<span class="pm-sp2 f-r">免费</span></div>' +
+						'<p class="pm-det dis-n">' + data.obj.costMemo + '</p>';
+
+
+					} else {
+						result2 += '<div class="p-money"><span class="pm-sp1 f-l">费用</span>' + '<img class="pm-img1 f-r dis-n" src="images/down.png" alt=""/><img class="pm-img2 f-r" src="images/right.png" alt=""/>' +
+						'<span class="pm-sp2 f-r">' + data.obj.cost + "元" + '</span></div>' +
+						'<p class="pm-det dis-n">' + data.obj.costMemo + '</p>';
+
+					}
+					$('.box1').append(result2);
+					if (data.obj.costMemo == "" || !data.obj.costMemo) {
+						$('.pm-det,.pm-img1,.pm-img2').remove();
+					}
+
+					/*费用切换*/
+					$('.pm-img1').click(function () {
+						$(this).hide();
+						$('.pm-det').slideUp();
+						$('.pm-img2').show()
+					})
+					$('.pm-img2').click(function () {
+						$(this).hide();
+						$('.pm-img1').show();
+						$('.pm-det').slideDown()
+					})
+					/*报名成员*/
+					var result3 = "";
+					var list = "";
+					if (data.obj.members.length == 0) {
+						result3 += '<div class="p-math"><span class="pn-sp1 f-l">已报名成员</span><span class="pn-sp2 f-r">暂无人报名</span></div>'
+					} else {
+						for (var i = 0; i < data.obj.members.length; i++) {
+							if (i == 4) {
+								break;
+							} else {
+								list += '<img class="f-l" onerror="nofind()" src="' + B.imageServiceHttp + data.obj.members[i].picture + '" alt=" ">'
+							}
+
+						}
+						result3 += '<div class="p-math"><span class="pn-sp1 f-l">已报名成员</span><span class="chat f-r dis-in">进群</span></div>' +
+						'<div class="pm-img">' + list + '<span class="pn-sp2 f-r">' + "共" + data.obj.members.length + "人" + '</span>' + '</div>';
+					}
+
+					$('.box1').append(result3);
+					/*花絮和验证码*/
+					var result4 = "";
+					result4 += '<div class="p-show"><span class="ps-sp1 f-l">现场花絮</span><span class="ps-sp2 f-r">0条花絮</span></div>' +
+					'<div class="p-yzm"><span class="pc-sp1 f-l">验证码</span><span class="pc-sp2 f-r">' + (data.obj.signCode ? data.obj.signCode : "") + '</span></div>';
+					$('.box1').append(result4);
+					huaxu(eventId, accountNum);
+
+					/*判断进来的人身份*/
+					localStorage.setItem('isOwner', data.obj.isOwner);
+
+					/*判断是不是本人创建的*/
+					if (data.obj.isOwner == true) {
+						$('.delplan').show();
+						$('.ewm').hide();
+					}
+					if (data.obj.isOwner == false) {
+						input();
+						$('.p-yzm').hide();
+						if (data.obj.applyState == "0") {
+							$('.pl-state2,footer').show();
+							$('.ewm').hide();
+						} else if (data.obj.applyState == "1" && data.obj.isJoin == "0") {
+							$('.pl-state,footer').show();
+						} else if ((data.obj.applyState == "1" || data.obj.applyState == "2" ) && (data.obj.eventState == "0" || data.obj.eventState == "1" ) && (data.obj.isJoin == "1" || data.obj.isJoin == "3")) {
+							$('.pl-state1,footer').show();
+						} else if (data.obj.eventState == "2") {
+							$('.pl-state4,footer').show();
+							$('.ewm').hide();
+						} else if (data.obj.isJoin == "0" && data.obj.applyState == "2") {
+							$('.pl-state3,footer').show();
+							$('.ewm').hide();
+						}
+
+						if (data.obj.isJoin == "3" || data.obj.isJoin == "1") {
+							$('.chat').show()
+						} else if (data.obj.isJoin == "0") {
+							$('.chat').hide()
+						}
+						if (data.obj.isJoin == "3") {
+							$('.ewm').hide();
+							$('.yqd').show()
+						}
+
+
+					}
+
+					/*是否需要签到*/
+					if (!data.obj.signCode || data.obj.signCode == "" || data.obj.signCode == undefined) {
+						$('.ewm,.p-yzm').hide();
+					}
+				}
+				if(data.success==false) {
+					$('.live-int').html('数据加载失败');
+					$('.live-int').fadeIn(1000);
+					$('.live-int').fadeOut(1500);
+					setInterval(function(){
+						var state=B.getUrlParamByName('state');
+						if(state==0){
+							window.location.href="index.html?accountNum="+accountNum;
+						}else if(state==1){
+							window.location.href="my-plan.html?accountNum="+accountNum
+						}else if(state==2){
+							window.location.href="my-create.html?accountNum="+accountNum
+						}else{
+							window.location.href="index.html?accountNum="+accountNum;
+						}
+					},2000)
+				}
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+
+	/*获取花絮总条数*/
+	function huaxu(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr: '{"command": "287","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data)
+				$('.ps-sp2').html(data.obj+"条花絮")
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+
+
+	/*获取评论列表*/
+	function loadcomment(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+
+				jsonStr:'{"command": "284","content": {"eventId": "'+eventId+'","userId": "'+accountNum+'"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				var result="";
+				if(data.success==false){
+					result+='<div class="p-comment"><span class="pc-sp1 f-l">评论</span><span class="pc-sp2 f-r">暂无评论</span></div>'
+					$('.box2').append(result)
+				}else{
+					result+='<div class="p-comment"><span class="pc-sp1 f-l">评论</span><span class="pc-sp2 f-r">'+data.obj.length+"条评论"+'</span></div>'
+					for(var i=0;i<data.obj.length;i++){
+						result+='<div class="pc-box"><p class="pc-mess"><img class="f-l" onerror="nofind()" src="' + B.imageServiceHttp + data.obj[i].userPic+ '" alt="">'+
+						'<span class="pc-name f-l">'+data.obj[i].userName+'</span><abbr class="timeago time1 f-r" title="'+data.obj[i].createTime+'"></abbr></p>'+
+						'<p class="pc-cont">'+data.obj[i].comment+ '</p></div>'
+					}
+					$('.box2').empty();
+					$('.box2').append(result);
+					jQuery("abbr.timeago").timeago();
+				}
+
+
+
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+	/*主评论*/
+	function zpl(eventId,accountNum,content){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{"command": "285","content": {"eventId":"'+eventId+'","userId": "'+accountNum+'","action": "0","comment": "'+content+'"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				var isme = localStorage.getItem('isOwner');
+				if(isme=='true'){
+					$('.delplan').show(600);
+				}else{
+					$('footer').show(600);
+				}
+				$('.mess-inp').hide(200);
+				$('.inp_box').val("");
+				$('.live-int').html('评论成功');
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+
+				loadcomment(eventId,accountNum)
+
+
+
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+				$('.live-int').html('评论失败')
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+
+			}
+		});
+	}
+
+   /*报名活动*/
+	function join(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr: '{"command": "215","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				if(data.success==false){
+					$('.meng').fadeOut(400);
+					$(".act-join").fadeOut(200);
+					$('.live-int').html(data.msg);
+					$('.live-int').fadeIn(1000);
+					$('.live-int').fadeOut(1500);
+				}
+				if(data.success==true){
+					$('.meng').fadeOut(400);
+					$(".act-join").fadeOut(200);
+					$('.live-int').html(data.msg);
+					$('.live-int').fadeIn(1000);
+					$('.live-int').fadeOut(1500);
+					if(data.msg.indexOf("成功")>0){
+						person(eventId,2);
+						$('.pl-state').hide();
+						$('.pl-state1').show();
+						var groupId = localStorage.getItem('groupId');
+						joinChat(accountNum,groupId);
+					}
+
+
+
+				}
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+	/*取消报名活动*/
+	function quit(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr: '{"command": "244","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				$('.pl-state1').hide();
+				$('.pl-state').show();
+				$('.meng').fadeOut(400);
+				$(".act-join1").fadeOut(200);
+				$('.live-int').html(data.msg);
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+				var groupId = localStorage.getItem('groupId');
+				quitChat(accountNum,groupId)
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+	/*删除活动*/
+	function delplan(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr: '{"command": "216","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				var groupId = localStorage.getItem('groupId');
+				deleteChat(accountNum,groupId)
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+	/*签到接口*/
+	function sign(eventId,accountNum){
+		$.ajax({
+			type: "post",
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{"command": "409", "content": {"eventId":"'+eventId+'","accountNum": "'+accountNum+'" } }'
+			},
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+				if(data.success==true){
+					var groupId = localStorage.getItem('groupId');
+					signAct(accountNum,groupId)
+				}
+				if(data.success==false){
+					$('.meng').fadeOut(400);
+					$(".sign").fadeOut(600);
+					$('.live-int').html(data.msg);
+					$('.live-int').fadeIn(1000);
+					$('.live-int').fadeOut(1500);
+				}
+			},
+			error: function(xhr, type) {
+				console.log('Ajax error!');
+
+			}
+		});
+	}
+
+
+	/* 加入群聊*/
+	function joinChat(accountNum,groupId){
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{ "command": "56", "content": { "groupId": "'+groupId+'","userId": "'+accountNum+'"}}'
+			},
+			dataType: 'json',
+			success: function(data){
+
+				if(data.success==true){
+					console.log(data);
+					var u = navigator.userAgent, app = navigator.appVersion;
+					var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //g
+					var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+
+					var groupEasemobId = localStorage.getItem('groupEasemobId');
+					var groupTitle = localStorage.getItem('groupTitle');
+					var groupId = localStorage.getItem('groupId');
+					if (isAndroid) {
+						var jsonStr= {
+							"groupEasemobId":groupEasemobId,
+							"groupTitle":groupTitle,
+							"groupId":groupId
+						}
+						var str = JSON.stringify(jsonStr);
+						window.stub.saveGroupMessage(str);
+					}
+					if (isIOS) {
+						window.webkit.messageHandlers.saveGroupMessage.postMessage();
+					}
+
+				}
+			},
+			error: function(xhr, type){
+				consoe.log("error")
+			}
+		});
+
+	}
+	/* 签到报名加入群聊*/
+	function signAct(accountNum,groupId){
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{ "command": "56", "content": { "groupId": "'+groupId+'","userId": "'+accountNum+'"}}'
+			},
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+				if(data.success==true){
+					$('.pl-state').hide();
+					$('.pl-state1').show();
+					$('.meng').fadeOut(400);
+					$(".sign").fadeOut(600);
+					$('.live-int').html("签到成功");
+					$('.live-int').fadeIn(1000);
+					$('.live-int').fadeOut(1500);
+				}
+			},
+			error: function(xhr, type){
+				consoe.log("error")
+			}
+		});
+
+	}
+
+	/* 退出群聊*/
+	function quitChat(accountNum,groupId){
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{ "command": "57", "content": { "groupId": "'+groupId+'","userId": "'+accountNum+'"}}'
+			},
+			dataType: 'json',
+			success: function(data){
+				console.log(data)
+				if(data.success==true){
+					var eventId =  B.getUrlParamByName('eventId')
+					person(eventId,1);
+				}else{
+					console.log(data)
+				}
+			},
+			error: function(xhr, type){
+				consoe.log("error")
+			}
+		});
+
+	}
+	/* 删除群聊*/
+	function deleteChat(accountNum,groupId){
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{ "command": "47", "content": { "groupId": "'+groupId+'","userId": "'+accountNum+'"}}'
+			},
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+				$('.meng').fadeOut(400);
+				$(".act-join2").fadeOut(600);
+				$('.live-int').html("删除成功");
+				$('.live-int').fadeIn(1000);
+				$('.live-int').fadeOut(1500);
+				setTimeout(function(){
+					var state=B.getUrlParamByName('state');
+					if(state==2){
+						window.location.href="my-create.html?accountNum="+accountNum;
+					}else{
+						window.location.href="index.html?accountNum="+accountNum;
+					}
+
+				},2000)
+			},
+			error: function(xhr, type){
+				consoe.log("error")
+			}
+		});
+
+	}
+
+	/*更新报名成员*/
+	function person(eventId,state){
+		//报名人列表
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{"command": "219","content": {"eventId": "'+eventId+'" }}'
+			},
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+				var person = "";
+				var list = "";
+				var result = "";
+				if(data.obj.length==0){
+					person ='<span class="pn-sp1 f-l">已报名成员</span><span class="pn-sp2 f-r">暂无人报名</span>';
+					$('.p-math').html(person);
+					$('.pm-img').remove();
+				}else{
+					for(var i=0;i<data.obj.length;i++){
+						if(i>5){
+							break
+						}else{
+							list+='<img class="f-l" onerror="nofind()" src="' + data.obj[i].picture+ '" alt=" ">'
+						}
+					}
+					person = '<span class="pn-sp1 f-l">已报名成员</span><span class="chat f-r dis-in">进群</span>'
+					$('.p-math').html(person);
+					$('.pm-img').remove();
+
+					result='<div class="pm-img">'+list+ '<span class="pn-sp2 f-r">'+"共"+data.obj.length+"人"+'</span>'+ '</div>';
+					$('.p-math').after(result);
+					if(state==1){
+						$('.chat').hide();
+					}else{
+						$('.chat').show();
+					}
+
+				}
+
+
+			},
+			error: function(xhr, type){
+			}
+		});
+
+
+
+	}
+
+	/*判断是否报名*/
+	function enter(eventId){
+		//报名人列表
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data:{
+				jsonStr:'{"command": "219","content": {"eventId": "'+eventId+'" }}'
+			},
+			dataType: 'json',
+			success: function(data){
+				console.log(data);
+				var accountNum = B.getUrlParamByName('accountNum');
+				for(var i=0;i<data.obj.length;i++){
+					if(data.obj[i].accountNum==accountNum){
+						window.location.href="personnel.html?eventId="+eventId;
+						break;
+					}else if((i==data.obj.length-1)&&data.obj[i].accountNum!==accountNum){
+						$('.live-int').html("请先报名")
+						$('.live-int').fadeIn(500);
+						$('.live-int').fadeOut(1000);
+					}
+				}
+
+			},
+			error: function(xhr, type){
+			}
+		});
+
+
+
+	}
+
+
+
+
+
+
+
+	/*ios解决input*/
+	function input() {
+		 $('.inp_box').click(function () {
+			 var bfscrolltop = document.body.scrollTop;//获取软键盘唤起前浏览器滚动部分的高度
+			 $(".inp_box").focus(function () {//在这里‘input.inputframe’是我的底部输入栏的输入框，当它获取焦点时触发事件
+				 interval = setInterval(function () {//设置一个计时器，时间设置与软键盘弹出所需时间相近
+					 document.body.scrollTop = document.body.scrollHeight;//获取焦点后将浏览器内所有内容高度赋给浏览器滚动部分高度
+				 }, 100)
+			 }).blur(function () {//设定输入框失去焦点时的事件
+				 clearInterval(interval);//清除计时器
+				 document.body.scrollTop = bfscrolltop;//将软键盘唤起前的浏览器滚动部分高度重新赋给改变后的高度
+			 });
+
+		 })
+		 $("body").on("touchmove", 'main', function () {
+			 $('.inp_box').blur();
+			 $('.mess-inp').fadeOut(200);
+			 var isme = localStorage.getItem('isOwner');
+
+			 if(isme=='true'){
+
+				 $('.delplan').fadeIn(1000)
+			 }else{
+				 $('footer').fadeIn(1000)
+			 }
+
+		 });
+	 }
+
+
+
+	/*找不到图片*/
+	function nofind(){
+		var img=event.srcElement;
+		img.src="images/userPhoto.png";
+		img.onerror=null; /*控制不要一直跳动*/
+	}
+	function nofind1(){
+		var img=event.srcElement;
+		img.src="images/nofind.png";
+		img.onerror=null; /*控制不要一直跳动*/
+	}
+
+
+
+
+
+	/*返回*/
+	var jsonStr = {
+		"title":"活动详情",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback()"
+		}
+	}
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+		return jsonStr;
+
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStr);
+		window.stub.jsMethod(str);
+		return jsonStr;
+
+	}
+	function fallback() {
+		var state=B.getUrlParamByName('state');
+		var accountNum=B.getUrlParamByName('accountNum');
+
+		if(state==0){
+			window.location.href="index.html?accountNum="+accountNum;
+		}else if(state==1){
+			window.location.href="my-plan.html?accountNum="+accountNum
+		}else if(state==2){
+			window.location.href="my-create.html?accountNum="+accountNum
+		}else{
+			window.history.back();
+		}
+
+	}
+
+
+</script>
+</html>

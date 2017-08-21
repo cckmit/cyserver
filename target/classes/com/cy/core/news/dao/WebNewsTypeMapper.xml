@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.news.dao.WebNewsTypeMapper">
+
+	<!-- 查询新闻类别并分页 -->
+	<select id="query" parameterType="map" resultType="com.cy.core.news.entity.NewsType">
+		SELECT nt.*,
+		(SELECT al.alumniName FROM cy_alumni al WHERE nt.dept_id=al.alumniId) deptName
+		FROM cy_web_news_type nt
+		<where>
+			<if test="parent_id!=null and parent_id>=0">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=''">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=''">
+				and origin = #{origin}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and dept_id = #{deptId}
+			</if>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName like concat('%',#{cityName},'%')
+			</if>
+			<if test="pids != null and pids != ''">
+				and find_in_set(parent_id,#{pids})
+			</if>
+		</where>
+		<!--<if test="start!=null and rows!=null">
+		order by origin,cityName,orderNum limit #{start},#{rows}
+		</if>-->
+		order by orderNum
+	</select>
+	
+	<select id="getByName" parameterType="string" resultType="com.cy.core.news.entity.NewsType">
+		select * from cy_web_news_type where name=#{name}
+	</select>
+	
+	<!-- 查询数量条数 -->
+	<select id="count" parameterType="map" resultType="java.lang.Integer">
+		select count(*) from cy_web_news_type
+		<where>
+			<if test="parent_id!=null and parent_id>=0">
+				and parent_id = #{parent_id}
+			</if>
+			<if test="type!=null and type!=''">
+				and type = #{type}
+			</if>
+			<if test="origin!=null and origin!=''">
+				and origin = #{origin}
+			</if>
+			<if test="deptId!=null and deptId!=''">
+				and dept_id = #{deptId}
+			</if>
+			<if test="name!=null and name!=''">
+				and name like concat('%',#{name},'%')
+			</if>
+			<if test="cityName!=null and cityName!=''">
+				and cityName like concat('%',#{cityName},'%')
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查询新闻类别的详细信息 -->
+	<select id="getById" parameterType="string" resultType="com.cy.core.news.entity.NewsType">
+		select t.*,p.`name`as parent_name,n.title as newsTitle,n.content as newsContent  
+		from cy_web_news_type  t
+		LEFT JOIN cy_web_news_type p ON t.parent_id = p.id
+		LEFT JOIN cy_news n on t.id= n.categoryWeb and t.type=3
+		where t.id = #{id};
+	</select>
+	
+	<!-- 新闻栏目新增 -->
+	<insert id="save" parameterType="com.cy.core.news.entity.NewsType">
+		insert into cy_web_news_type(id,parent_id,name,type,url,orderNum,origin,cityName,isMain,isNavigation,dept_id)
+		values(#{id},#{parent_id},#{name},#{type},#{url},#{orderNum},#{origin},#{cityName},#{isMain},#{isNavigation},#{deptId})
+	</insert>
+	
+	<select id="getNewId" resultType="long">
+        select LAST_INSERT_ID()
+    </select>
+    
+	<!-- 新闻栏目删除,根据id -->
+	<delete id="deleteById" parameterType="list">
+		delete from cy_web_news_type where id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<!-- 新闻栏目删除,根据父id -->
+	<delete id="deleteByPid" parameterType="list">
+		delete from cy_web_news_type where parent_id in
+		<foreach collection="list" open="(" close=")" item="ids" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	<!-- 新闻栏目更新 -->
+	<update id="update" parameterType="com.cy.core.news.entity.NewsType" >
+		update cy_web_news_type set
+	 		name=#{name},
+	 		parent_id=#{parent_id},
+	 		type=#{type},
+	 		url=#{url},
+	 		origin=#{origin},
+	 		orderNum=#{orderNum},
+		 	cityName = #{cityName},
+		 	isMain = #{isMain},
+			<if test="deptId != null and deptId != ''">
+				dept_id = #{deptId},
+			</if>
+		 	isNavigation = #{isNavigation}
+		 where id = #{id}
+	</update>
+	
+	<insert id="saveNews" parameterType="com.cy.core.news.entity.News">
+		insert into cy_news(title,content,createTime,channelName,categoryWeb)
+		values(#{title},#{content},now(),#{channelName},#{categoryWeb})
+	</insert>
+	<update id="updateNews" parameterType="com.cy.core.news.entity.News">
+		update cy_news set title=#{title},content=#{content} where categoryWeb=#{categoryWeb}
+	</update>
+	<delete id="deleteNews" parameterType="string">
+		delete n
+		from cy_news n inner join cy_web_news_type t on n.categoryWeb = t.id
+		where t.id=#{typeId} and t.type=3
+	</delete>
+</mapper>

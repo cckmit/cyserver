@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.sms.dao.MsgSendMapper">
+	<resultMap type="com.cy.core.sms.entity.MsgSend" id="msgSendResultMap">
+		<id column="msg_id" property="msgId" />
+		<result column="dept_id" property="deptId" />
+		<result column="staff_id" property="staffId" />
+		<result column="telphone" property="telphone" />
+		<result column="content" property="content" />
+		<result column="statues" property="statues" />
+		<result column="sendtime" property="sendtime" />
+		<result column="msg_type" property="msgType" />
+		<result column="countNumber" property="countNumber" />
+		<result column="messagegroup" property="messagegroup" />
+		<result column="receivetime" property="receivetime" />
+		<result column="errorcode" property="errorCode" />
+		<result column="userAccount" property="userAccount"/>
+	</resultMap>
+	<insert id="insertMsg" parameterType="com.cy.core.sms.entity.MsgSend">
+		insert into
+		cy_msg_send(dept_id,staff_id,telphone,content,statues,sendtime,msg_type,countNumber,messagegroup,receivetime,errorcode)
+		values(#{deptId},#{staffId},#{telphone},#{content},#{statues},#{sendtime},#{msgType},#{countNumber},#{messagegroup},#{receivetime},#{errorCode});
+	</insert>
+	<update id="updateByPM" parameterType="com.cy.core.sms.entity.MsgSend">
+		update cy_msg_send
+		<set>
+			<if test="deptId!=null and deptId!=''">
+				dept_id=#{deptId},
+			</if>
+			<if test="staffId!=null and staffId!=0">
+				staff_id=#{staffId},
+			</if>
+			<if test="content!=null and content!=''">
+				content=#{content},
+			</if>
+			<if test="statues!=null">
+				statues=#{statues},
+			</if>
+			<if test="sendtime!=null">
+				sendtime=#{sendtime},
+			</if>
+			<if test="msgType!=null and msgType!=0">
+				msg_type=#{msgType},
+			</if>
+			<if test="countNumber!=null and countNumber!=0">
+				countNumber=#{countNumber},
+			</if>
+			<if test="receivetime!=null">
+				receivetime=#{receivetime},
+			</if>
+			<if test="errorCode!=null and errorCode!=''">
+				errorcode=#{errorCode}
+			</if>
+		</set>
+		where telphone=#{telphone} and messagegroup=#{messagegroup}
+	</update>
+	<update id="updateStatusReport" parameterType="com.cy.core.sms.entity.MsgSend">
+		update cy_msg_send set statues=#{statues},receivetime=#{receivetime},errorcode=#{errorCode} 
+		where telphone=#{telphone} and messagegroup=#{messagegroup}
+	</update>
+	<update id="updateStatus" parameterType="com.cy.core.sms.entity.MsgSend">
+		update cy_msg_send set statues=#{statues},messagegroup=#{smsID}
+		where msg_id=#{msgId}
+	</update>
+	<select id="selectTopMsgId" parameterType="int" resultMap="msgSendResultMap">
+	select
+	msg_id,telphone,content,messagegroup
+	from cy_msg_send where statues=9 and msg_id>#{msgId} order by msg_id
+	asc limit 0,500
+	</select>
+	<insert id="insertMsgSend" parameterType="com.cy.core.sms.entity.MsgSend">
+		insert into
+		cy_msg_send(dept_id,staff_id,telphone,content,statues,sendtime,msg_type,countNumber,messagegroup,receivetime,errorcode)
+		values(#{deptId},#{staffId},#{telphone},#{content},#{statues},#{sendtime},#{msgType},#{countNumber},#{messagegroup},#{receivetime},#{errorCode});
+	</insert>
+	<select id="countOutBox" parameterType="map" resultType="long">
+		SELECT
+		count(msg_id) from cy_msg_send
+		<where>
+			<if test="telphone!=null">
+				telphone like concat('%',#{telphone},'%')
+			</if>
+			<if test="staffId!=null">
+				and staff_id=#{staffId}
+			</if>
+		</where>
+	</select>
+	<select id="selectOutBox" parameterType="map"
+			resultMap="msgSendResultMap">
+		SELECT s.*,u.userAccount FROM cy_msg_send s
+		LEFT JOIN cy_user u ON s.staff_id = u.userId
+		LEFT JOIN cy_alumni a ON s.dept_id =a.alumniId
+		<where>
+			<if test="telphone!=null">
+				s.telphone like concat('%',#{telphone},'%')
+			</if>
+			<if test="staffId!=null">
+				and s.staff_id=#{staffId}
+			</if>
+			<if test="deptId!=null">
+				and s.dept_id=#{deptId}
+			</if>
+			<if test="sentStatus!=null and sentStatus!=''">
+				and s.statues = (#{sentStatus} + 0)
+			</if>
+			<if test="msgTypeQuery!=null and msgTypeQuery!=''">
+				and s.msg_type = (#{msgTypeQuery} + 0)
+			</if>
+			<if test="sentStartTime != null and sentStartTime != ''">
+				and s.sendtime >= #{sentStartTime}
+			</if>
+			<if test="sentEndTime != null and sentEndTime != ''">
+				and <![CDATA[s.sendtime <= #{sentEndTime}]]>
+			</if>
+		</where>
+		ORDER BY s.sendtime DESC limit
+		#{start},#{rows}
+	</select>
+	<select id="selectByMsgGroup" parameterType="string" resultMap="msgSendResultMap"
+			useCache="false">
+		select telphone,statues,errorcode from cy_msg_send where
+		messagegroup = #{messagegroup}
+	</select>
+	<select id="selectByMGAndTel" parameterType="map" resultMap="msgSendResultMap"
+			useCache="false">
+		select * from cy_msg_send where messagegroup =
+		#{messagegroup} and telphone = #{telphone}
+	</select>
+	<select id="selectByDate" parameterType="map" resultMap="msgSendResultMap"
+			useCache="false">
+		select * from cy_msg_send where <![CDATA[sendtime<#{endtime}]]>
+	</select>
+	<delete id="deleteByDate" parameterType="map">
+		delete from cy_msg_send where <![CDATA[sendtime<#{endtime}]]>
+	</delete>
+</mapper>

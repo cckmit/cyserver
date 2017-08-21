@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.serv.dao.ServMapper">
+
+    <resultMap type="com.cy.core.serv.entity.Serv" id="servResultMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="region" property="region"/>
+        <result column="type" property="type"/>
+        <result column="category" property="category"/>      
+        <result column="accountNum" property="accountNum"/>
+        <result column="userId" property="userId"/>
+        <result column="createTime" property="createTime"/>
+        <result column="auditStatus" property="auditStatus"/>
+        <result column="auditOpinion" property="auditOpinion"/>
+        <result column="auditUserId" property="auditUserId"/>
+        <result column="auditTime" property="auditTime"/>
+        <result column="status" property="status"/>
+        <result column="replyNum" property="replyNum"/>
+        <result column="complaintNum" property="complaintNum"/>
+        <result column="alumniName" property="alumniName"/>
+        <result column="dept_id" property="dept_id"/>
+        <result column="dept_name" property="dept_name"/>
+        <association column="userId" property="user" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+			<result column="telephone" property="telephone" />
+		</association>
+		<association column="accountNum" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="accountNum" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+		<collection property="picList" resultMap="servPicResultMap" />
+    </resultMap>
+    
+    <resultMap type="com.cy.core.serv.entity.ServPic" id="servPicResultMap">
+    	<id column="servPicId" property="id"/>
+        <result column="serviceId" property="serviceId"/>
+        <!--<result column="pic" property="pic"/>-->
+        <result column="pic" property="picUrl"/>
+    </resultMap>
+    
+    <resultMap type="com.cy.core.serv.entity.ServComment" id="servCommentResultMap">
+        <id column="id" property="id"/>
+        <result column="serviceId" property="serviceId"/>
+        <result column="content" property="content"/>
+        <result column="type" property="type"/>
+        <result column="accountNum" property="accountNum"/>
+        <result column="userId" property="userId"/>
+        <result column="createTime" property="createTime"/>
+        <result column="status" property="status"/>
+		<association column="userId" property="user" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+			<result column="telephone" property="telephone" />
+		</association>
+		<association column="accountNum" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="accountNum" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+    
+    <resultMap type="com.cy.core.serv.entity.ServComplaint" id="servComplaintResultMap">
+        <id column="id" property="id"/>
+        <result column="serviceId" property="serviceId"/>
+        <result column="reason" property="reason"/>
+        <result column="accountNum" property="accountNum"/>
+        <result column="createTime" property="createTime"/>
+		<association column="accountNum" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="accountNum" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+
+
+    <sql id="userProfileFrom">
+        (
+            SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+            FROM cy_userprofile t
+        )
+    </sql>
+
+    <select id="query" parameterType="map" resultMap="servResultMap">
+    	select tmp.*,count(complaint.serviceId) as complaintNum from
+	    (
+	        select s.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,a.alumniName,d.dept_name,count(comm.serviceId) as replyNum
+	       	from cy_service s
+	       	left join cy_user u on s.userId=u.userId
+	       	left join cy_alumni a on u.dept_id = a.alumniId
+	       	left join cy_userprofile up on s.accountNum=up.accountNum
+	       	left join cy_service_comment comm on s.id = comm.serviceId
+	       	left join cy_dept_info d on s.dept_id = d.dept_id
+	        <where> s.status = 0
+	        	<if test="deptList!=null and deptList.size()>0">
+					<foreach collection="deptList" open="(" separator="or"
+						close=")" item="dept">
+						and s.dept_id = #{dept.deptId}
+					</foreach>
+				</if>
+	            <if test="title!=null and title!=''">
+	                and s.title like concat('%',#{title},'%')
+	            </if>
+	            <if test="type!=null and type!=''">
+	                and s.type = #{type}
+	            </if>
+	            <if test="category!=null and category!=''">
+	                and s.category = #{category}
+	            </if>
+	            <if test="region!=null and region!=''">
+	                and s.region like concat('%',#{region},'%')
+	            </if>  
+	            <if test="createFrom!=null and createFrom!=''">
+	                and <![CDATA[s.createTime >= #{createFrom}]]>
+	            </if>
+	            <if test="createTo!=null and createTo!=''">
+	                and <![CDATA[s.createTime <= #{createTo}]]>
+	            </if>
+	            <if test="auditStatus!=null and auditStatus!=''">
+	                and s.auditStatus = #{auditStatus} and s.type != 0
+	            </if>
+	            <if test="status!=null and status!=''">
+	                and s.status = #{status}
+	            </if>
+	            <if test="userId!=null and userId!=''">
+	                and s.userId = #{userId}
+	            </if>
+	        </where>
+	        group by s.id,comm.serviceId
+	    ) tmp
+	    left join cy_service_complaint complaint on tmp.id = complaint.serviceId
+	    group by tmp.id,complaint.serviceId
+        order by tmp.id desc
+        limit #{start},#{rows}
+    </select>
+
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(s.id) from cy_service s
+        <where>s.status = 0
+        	<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					and s.dept_id = #{dept.deptId}
+				</foreach>
+			</if>
+        	<if test="title!=null and title!=''">
+                and s.title like concat('%',#{title},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                and s.type = #{type}
+            </if>
+            <if test="category!=null and category!=''">
+                and s.category = #{category}
+            </if>
+            <if test="region!=null and region!=''">
+                and s.region like concat('%',#{region},'%')
+            </if>  
+            <if test="createFrom!=null and createFrom!=''">
+                and <![CDATA[s.createTime >= #{createFrom}]]>
+            </if>
+            <if test="createTo!=null and createTo!=''">
+                and <![CDATA[s.createTime <= #{createTo}]]>
+            </if>
+            <if test="auditStatus!=null and auditStatus!=''">
+                and s.auditStatus = #{auditStatus} and s.type != 0
+            </if>
+            <if test="status!=null and status!=''">
+                and s.status = #{status}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and s.userId = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" parameterType="long" resultMap="servResultMap">
+        select s.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,a.alumniName,p.serviceId,p.pic,d.dept_name
+       	from cy_service s
+       	left join cy_user u on s.userId=u.userId
+       	left join cy_alumni a on u.dept_id = a.alumniId
+       	left join cy_userprofile up on s.accountNum=up.accountNum
+       	left join cy_service_pic p on s.id=p.serviceId
+       	left join cy_dept_info d on s.dept_id = d.dept_id
+        where s.id=#{id}
+    </select>
+    
+    <insert id="add" parameterType="com.cy.core.serv.entity.Serv">
+        insert into cy_service (title, content, region, type, category, userId, accountNum, createTime, auditStatus, status, dept_id)
+        values (#{title}, #{content}, #{region}, #{type}, #{category}, #{userId}, #{accountNum}, Now(), #{auditStatus}, 0, #{dept_id})
+    </insert>
+
+	<select id="getNewId" resultType="long">
+        select LAST_INSERT_ID()
+    </select>
+    
+    <update id="update" parameterType="com.cy.core.serv.entity.Serv">
+        update cy_service
+        set	title=#{title},
+            content=#{content},
+            region=#{region},
+            dept_id=#{dept_id}
+        where id=#{id}
+    </update>
+    
+    <insert id="addPic" parameterType="map">
+        insert into cy_service_pic (serviceId, pic) values (#{serviceId}, #{pic})
+    </insert>
+    
+    <select id="getPicByServId" parameterType="long" resultType="string">
+        select pic from cy_service_pic
+		where serviceId = #{serviceId}
+    </select>
+    
+    <delete id="deletePic" parameterType="long">
+        delete from cy_service_pic where serviceId = #{serviceId}
+    </delete>
+    
+    <insert id="addReply" parameterType="map">
+        insert into cy_service_comment (serviceId, content, type, userId, createTime, status) 
+        values (#{serviceId}, #{content}, #{type}, #{userId}, Now(), 0)
+    </insert>
+    
+    <update id="audit" parameterType="com.cy.core.serv.entity.Serv">
+        update cy_service
+        set	auditStatus=#{auditStatus},
+            auditOpinion=#{auditOpinion},
+			auditUserId=#{auditUserId},
+           	auditTime=now()
+        where id=#{id}
+    </update>
+
+    <update id="delete" parameterType="list">
+        update cy_service set status=4 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </update>
+    <update id="deletex" parameterType="list">
+        update cy_service set status=3 where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </update>
+    
+    <update id="handleStatus" parameterType="map">
+        update cy_service
+        set	status=#{handleStatus}
+        where id=#{id}
+    </update>
+    
+    <select id="queryServComment" parameterType="map" resultMap="servCommentResultMap">
+		select c.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture
+		from cy_service_comment c
+		left join cy_user u on c.userId=u.userId
+		left join cy_userprofile up on c.accountNum=up.accountNum
+		where c.serviceId = #{serviceId}
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countServComment" parameterType="map" resultType="long">
+        select count(c.id) from cy_service_comment c
+		where c.serviceId = #{serviceId}
+    </select>
+    
+    <select id="queryServComplaint" parameterType="map" resultMap="servComplaintResultMap">
+		select c.*,up.name,up.phoneNum,up.picture
+		from cy_service_complaint c
+		left join cy_userprofile up on c.accountNum=up.accountNum
+		where c.serviceId = #{serviceId}
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countServComplaint" parameterType="map" resultType="long">
+        select count(c.id) from cy_service_complaint c
+		where c.serviceId = #{serviceId}
+    </select>
+    
+    <select id="getRegionOfUser" parameterType="long" resultType="string">
+        select a.region from cy_user u
+		inner join cy_alumni a on u.dept_id = a.alumniId
+		where u.userId = #{userId}
+    </select>
+</mapper>

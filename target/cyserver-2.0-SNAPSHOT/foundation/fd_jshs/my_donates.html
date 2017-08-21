@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的捐赠</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <link href="../jslib/hui/plugins/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .topdiv{
+            width: 100%;
+            position: relative;
+        }
+        .topdiv .banners{
+            width: 100%;
+            vertical-align: middle;
+        }
+        .zhaungtai{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        @media only screen and (min-width:768px){
+            .zhaungtai {
+                position: absolute;
+                top: 32px;
+                width: 100%;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+        }
+        .user_info{
+            position: absolute;
+            top: 46px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+
+        }
+        .touxiangbox{
+            position: relative;
+            width: 74px;
+            margin: 0 auto;
+            border-radius: 50%;
+            text-align: center;
+            background: rgba(255,255,255,0.5);
+        }
+
+        @media only screen and (min-width:320px) and (max-width: 360px){
+            .tx_box{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:360px) and (max-width: 375px){
+            .tx_box{
+                position: absolute;
+                top: 15px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:375px) and (max-width: 412px){
+            .tx_box{
+                position: absolute;
+                top: 21px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:412px) and (max-width: 414px){
+            .tx_box{
+                position: absolute;
+                top: 33px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:768px){
+            .tx_box{
+                position: absolute;
+                top: 164px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+
+
+        /*.tx_box{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+        }*/
+
+        .touxiang{
+            margin-top: 5px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+        }
+
+
+        .box_div{
+            position: relative;
+            margin: 0 auto;
+            width: 40%;
+            bottom: 0;
+            border: 1px solid #fa9641;
+            height: 24px;
+            border-radius: 12px;
+            display: flex;
+        }
+
+        .box_div div{
+            flex:1;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+        }
+
+        .ztlist0{
+            background: #fa9641;
+            color: #fff;
+            border-radius: 14px;
+        }
+        .ztlist{
+            color: #fefefe;
+        }
+
+
+        .container_box{
+            margin-top: 10px;
+            background: #fff;
+        }
+
+        .xm_list{
+            display: flex;
+            justify-content:center;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+        .left_div{
+            flex: 1;
+        }
+        .money_box{
+            margin: 14px 10px;
+            font-size: 14px;
+            color: #ff4f4f;
+        }
+        .titles{
+            font-size: 14px;
+            color: #262626;
+        }
+        .times{
+            font-size: 12px;
+            color: #999999;
+        }
+        .left_div{
+            padding: 5px 0;
+            margin-left: 10px;
+        }
+
+        .round_div{
+            position: absolute;
+            left: 0;
+            top: -4px;
+            width: 100%;
+        }
+        .half_round{
+            position: relative;
+            margin: 0 auto;
+            width: 60%;
+            height: 68px;
+            border-radius: 10px 10px 100% 100%/10px 10px 200% 200%;
+            background:#fa9641;
+        }
+
+
+        /*.draw_box{
+            position: absolute;
+            top: 62px;
+            height: 80px;
+            left: 0;
+            width: 100%;
+            padding: 0;
+            box-sizing: border-box;
+        }*/
+
+        @media only screen and (min-width:320px) and (max-width: 360px){
+            .draw_box{
+                position: absolute;
+                top: 62px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+
+
+        /*360*640 and */
+        @media only screen and (min-width:360px) and (max-width: 375px){
+            .draw_box{
+                position: absolute;
+                top: 80px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+
+        @media only screen and (min-width:375px) and (max-width: 412px){
+            .draw_box{
+                position: absolute;
+                top: 87px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:412px) and (max-width: 414px){
+            .draw_box{
+                position: absolute;
+                top: 100px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+
+        @media only screen and (min-width:414px) and (max-width: 768px){
+            .draw_box{
+                position: absolute;
+                top: 100px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+        @media only screen and (min-width:768px){
+            .draw_box{
+                position: absolute;
+                top: 230px;
+                height: 80px;
+                left: 0;
+                width: 100%;
+                padding: 0;
+                box-sizing: border-box;
+            }
+        }
+
+        .info_box_div{
+            position: relative;
+            margin: 0 auto;
+            background-color: #fff;
+            width: 80%;
+            border: 1px solid #fa9641;
+            height: 50px;
+            border-radius: 25px;
+            display: flex;
+        }
+        .name_div{
+            position: absolute;
+            width: 100%;
+            height: 14px;
+            line-height: 14px;
+            font-size: 12px;
+            top: 6px;
+            text-align:center;
+            color: #262626;
+        }
+        .info_div{
+            position: absolute;
+            top: 24px;
+            width: 100%;
+            height: 14px;
+            line-height: 14px;
+            font-size: 12px;
+            text-align:center;
+            color: #262626;
+        }
+        .yirenzheng{
+            display: inline-block;
+            margin-right: 20px;
+            width: 15%;
+            padding:3px 10px;
+            background: #efc51d;
+            color: #fefefe;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+        .weirenzheng{
+            background: #ebebeb;
+            padding: 3px;
+            color: #fefefe;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+        .info_div img{
+            width: 10px;
+        }
+        .image_area{
+            display: inline-block;
+            width: 14%;
+        }
+        .phone_num{
+            display: inline-block;
+            width: 30%;
+        }
+
+        .logout{
+            position: absolute;
+            right: 9px;
+            top: 14px;
+            padding:5px;
+            color: #fefefe;
+            background: rgba(0,0,0,0.3);
+            border-radius: 16px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        #floatBox{
+            float:left;
+            position:relative;
+            width:100%;
+        }
+        .onFloat{
+            position:fixed;
+            _position:absolute;
+            top: -50px;
+            z-index: 999;
+            background: #ddd;
+            color: #555;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+            width: 98%;
+            margin-left: 1%;
+        }
+        .floatLink{
+            float: left;
+            margin-left: 10px
+        }
+        .floatButton{
+            float: right;
+            margin-right: 10px
+        }
+    </style>
+
+</head>
+<body>
+
+<style>
+
+    .top_box{
+        position:relative;
+        top:0;
+        left:0;
+
+    }
+    .img_bg{
+        width:100%;
+    }
+
+    .top_tab{
+        position:absolute;
+        top:10px;
+        left:0;
+        display: flex;
+        text-align: center;
+        border:1px solid #fa9641;
+        border-radius:15px;
+
+    }
+    .top_tab li{
+        padding:3px 10px;
+        font-size:14px;
+        color:#fff;
+        border-radius: 15px;
+
+    }
+    .tab_chk{
+        background: #fa9641;
+    }
+    #floatBox, #activeBOx{
+        float:left;
+        position:relative;
+        width:100%;
+    }
+    .onFloat{
+        position:fixed;
+        _position:absolute;
+        top: -50px;
+        z-index: 999;
+        background: #ddd;
+        color: #555;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 10px;
+        width: 98%;
+        margin-left: 1%;
+    }
+    .floatLink, .activeLink{
+        float: left;
+        margin-left: 10px
+    }
+    .floatButton,.activeClose{
+        float: right;
+        margin-right: 10px
+    }
+</style>
+<div id="floatBox">
+    <div id="floatArea" class="onFloat">
+        <span class="floatLink jump_link">尚未登录,</span><span class="jump_link" style="color:#1a7ee5">请前去登录</span>
+        <span class="floatButton">关闭</span>
+    </div>
+</div>
+<div id="activeBox">
+    <div id="activeArea" class="onFloat">
+        <span class="activeLink jump_active">您的邮箱尚未验证,</span><span class="jump_active" onclick="getActiveEmail()" style="color:#1a7ee5">获取验证链接</span>
+        <span class="activeClose">关闭</span>
+    </div>
+</div>
+
+<div class="topdiv">
+    <img src="img/beijingtu-@3x.png" class="banners">
+    <div class="zhaungtai">
+        <div class="box_div">
+            <div class="ztlist ztlist0 yifukuan" style="pointer-events:none;">已支付</div>
+            <div class="ztlist weifukuan">未支付</div>
+        </div>
+        <div class="logout">切换账号</div>
+    </div>
+    <div class="user_info">
+        <div class="tx_box">
+            <div class="touxiangbox">
+                <img onerror="javascript:this.src='img/donate_avatar.png';" src="" class="touxiang">
+            </div>
+        </div>
+
+        <div class="draw_box">
+            <div class="round_div">
+                <div class="half_round"></div>
+            </div>
+            <div class="info_box_div">
+                <div class="name_div"></div>
+                <div class="info_div"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/html" id="juanz_box">
+
+    <%
+    for(var i in juanz_box){
+    %>
+    <div class="H-qq-item H-vertical-middle H-overflow-hidden" onclick='H.openWin("订单详情", "order_detail.html?id=<%=juanz_box[i].donationId%>")'>
+        <div class="H-flexbox-horizontal H-box-sizing-border-box H-theme-background-color-white H-border-vertical-bottom-after H-clear-both H-padding-horizontal-both-4 H-padding-vertical-both-6 H-touch-active">
+            <div class="left_div">
+                <%
+                if(juanz_box[i].project.projectName){
+                %>
+                <div class="H-text-show-row-1 titles"><%=juanz_box[i].project.projectName%></div>
+                <%
+                }else{
+                %>
+                <div class="H-text-show-row-1 titles" style="color:#ff4f4f">已下线的项目</div>
+                <%
+                }
+                %>
+                <%
+                if(juanz_box[i].payTime){
+                %>
+                <div class="times"><%=juanz_box[i].payTime.split(' ')[0]%></div>
+                <%
+                }else{
+                %>
+                <div class="times"><%=juanz_box[i].donationTime.split(' ')[0]%></div>
+                <%
+                }
+                %>
+            </div>
+            <div class="money_box">
+                <%=juanz_box[i].money%>元
+            </div>
+        </div>
+        <%
+        if(juanz_box[i].payStatus != 1){
+        %>
+        <div class="H-qq-menu H-vertical-middle H-position-relative H-overflow-hidden">
+            <div class="H-font-size-16 H-padding-horizontal-both-20 H-theme-background-color-red H-display-block H-theme-font-color-white white-space-nowrap" onclick="cancleDonate('<%=juanz_box[i].donationId%>',this)">删除</div>
+        </div>
+        <%
+        }
+        %>
+    </div>
+    <%
+    }
+    %>
+</script>
+
+
+<div class="content">
+    <div class="container_box">
+    </div>
+</div>
+
+
+</body>
+
+
+<!--js-->
+<script src="../jslib/hui/script/H.js" type="text/javascript"></script>
+<script src="../mobile/js/B.js" type="text/javascript" ></script>
+<script src="../jslib/xdomain.min.js" type="text/javascript"></script>
+<script src="../jslib/zepto/zepto.min.js" type="text/javascript"></script>
+<script src="../jslib/dropload/dropload.min.js" type="text/javascript"></script>
+<script src="../jslib/layer/layer.js" type="text/javascript"></script>
+<script src="../mobile/js/jbase64.js" type="text/javascript"></script>
+<script src="../mobile/js/wechat.js" type="text/javascript"></script>
+
+
+<script>
+
+    // 接收url中的参数
+    //    var projectId = B.getUrlParamByName("projectId");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+
+    var backUrl = '/foundation/my_donates.html';
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+//        if(!accountNum || accountNum == ''){
+//            var backUrl = B.encrypt("my_donates.html?ts=" + B.getRandomInt(4));
+//            H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+//
+//           H.confirm(function (ret) {
+//                if(ret.buttonIndex==1){
+//                    var backUrl = B.encrypt("my_donates.html?ts=" + B.getRandomInt(4));
+//                    H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+//                }
+//                else{
+//                    history.back();
+//                }
+//            }, '确认提示：', '尚未登陆，是否登陆账号？');
+//        }
+
+        var shareData = {
+            title: '我的捐赠',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+
+    }else{
+        openId = '';
+        if( !accountNum || accountNum == ''){
+            H.alert("您未登录，请先登录");
+        }
+    }
+
+    if(!appId || appId == '' || appId == 'null'){
+        appId = '';
+    }
+    if(!accountNum || accountNum == '' || accountNum == 'null'){
+        accountNum = '';
+    }
+
+
+    //判断是否被认证
+//    function checkVerify(){
+//
+//        B.ready(function(){
+//            $.ajax({
+//                type: "post",
+//                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//                data:{
+//                    jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+//                },
+//                dataType: "json",
+//                success: function(data){
+////                console.log(JSON.stringify(data));
+//
+//                    if (data && data.success) {
+//                        var userObj = data.obj;
+//                        //判断用户是否已经被认证
+//                        var isVerified;
+//
+//                        //判断用户是否已经认证
+//                        if(userObj && userObj.baseInfoId && userObj.baseInfoId !='null') {
+//                            //被认证
+//                            isVerified = '1';
+//
+//                        }else{
+//                            //未被认证
+//                            isVerified = '0';
+//
+//                        }
+//                        if(isVerified=='1'){
+//
+//                            //查询捐赠列表
+//                            juanzenglist('1');
+//
+//                        }else{
+//                            H.confirm(function (ret) {
+//                                if(ret.buttonIndex==1){
+//                                    H.openWin("班级认证", "../mobile/wechat/verify/class_list.html?accountNum="+accountNum+"&mod="+rnumber+"&fromFoundation=1");
+//                                }
+//                            }, '确认提示：', '尚未认证，是否前去认证？');
+//                        }
+//
+//                    }
+//
+//                }
+//            });
+//
+//        });
+//
+//    }
+
+
+
+    //页面初始化
+    $(function(){
+        //定义模板标签符
+        H.tppl_flag = ["<%","%>"];
+        B.ready(function(){
+
+            //查询个人资料
+//            userxinxi();
+//            checkVerify();
+            juanzenglist('1');
+
+
+            if(openId && openId != 'null' && accountNum == ''){
+                $(".logout").text("前去登录");
+            }else{
+                $(".logout").click(function () {
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "603","content": {"openid": "' + openId + '", "accountNum": "' + accountNum + '"}}'
+                        },
+                        dataType: "json",
+                        success: function(data){
+                            if (data && data.success) {
+                                localStorage.removeItem("accountNum");
+
+                                window.location.href = "/mobile/wechat/login.html?backUrl="+B.encrypt(backUrl);
+                            }
+                            else{
+                                layer.open({ content:"退出失败，请稍后再试！", skin:"msg", time:2 });
+                            }
+                        }
+                    });
+                });
+            }
+
+            if(accountNum == ''){
+                var time=0.5;
+                var interval = setInterval(function () {
+                    if(time <= 0){
+                        clearInterval(interval);
+                    }
+
+                    $('#floatArea').css('top', (-50 + ((0.5-time)/0.5*52))+'px');
+                    time -= 0.01;
+                },10);
+                // 顶部提示绑定的浮动链接
+                var oDiv=document.getElementById("floatArea");
+                var HEIGHT=0,iE6;
+                var Y=oDiv;
+                while(Y){HEIGHT+=Y.offsetTop;Y=Y.offsetParent};
+                iE6=window.ActiveXObject&&!window.XMLHttpRequest;
+                if(!iE6){
+                    window.onscroll=function()
+                    {
+                        var s=document.body.scrollTop||document.documentElement.scrollTop;
+                        if(s>HEIGHT){
+                            oDiv.className="onFloat";
+                            if(iE6){
+                                oDiv.style.top=(s-HEIGHT)+"px";
+                            }
+                        }
+                    };
+                }
+
+                $('.jump_link').click(function () {
+                    location.href = "/mobile/wechat/login.html?backUrl="+B.encrypt(backUrl);
+                });
+
+                $('.floatButton').click(function () {
+                    time = 0.5;
+                    var interval = setInterval(function () {
+                        if(time <= 0){
+                            clearInterval(interval);
+                        }
+
+                        $('#floatArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                        time -= 0.01;
+                    },10);
+                });
+            }
+
+        });
+
+
+        //已付款列表
+        $('.yifukuan').on('click',function(){
+            $(this).addClass('ztlist0 ').siblings().removeClass('ztlist0 ')
+            $('.container_box').empty();
+            $('.dropload-down').remove()
+            juanzenglist('1');
+            //$(this).css('pointer-events','none');
+            $('.weifukuan').css('pointer-events','auto');
+        });
+
+        //未付款的列表
+        $('.weifukuan').on('click',function(){
+            $(this).addClass('ztlist0 ').siblings().removeClass('ztlist0 ')
+            $('.container_box').empty();
+            $('.dropload-down').remove()
+            juanzenglist('0');
+            //$(this).css('pointer-events','none');
+            $('.yifukuan').css('pointer-events','auto');
+        });
+
+
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+
+    });
+
+
+
+    //查询个人资料
+//    function userxinxi(){
+//        $.ajax({
+//            type: 'POST',
+//            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//            data:{
+//                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+//            },
+//            dataType: 'json',
+//            success: function(data){
+//                //console.log(JSON.stringify(data));
+//                if(data.obj){
+//                    $('.touxiang').attr('src',B.getImageAbsoluteUrl(data.obj.picture_xd));
+//                    if(data.obj.name && data.obj.name != ''){
+//                        $('.name_div').text(data.obj.name);
+//                    }
+//
+//                    var userInfo = '';
+//                    if(data.obj.baseInfoId && data.obj.baseInfoId != ''){
+//                        userInfo += '<span class="yirenzheng">已认证</span>';
+//                    }else{
+//                        userInfo += '<span class="weirenzheng">未认证</span>';
+//                    }
+//
+//                    userInfo += '<span class="image_area">';
+//                    if(data.obj.sex && data.obj.sex != ''){
+//                        var uImg = '<img src="img/nv@3x.png">';
+//                        if(data.obj.sex == '0'){
+//                            uImg = '<img src="img/nan@3x.png">';
+//                        }
+//                        userInfo += uImg;
+//                    }
+//                    userInfo += '</span>';
+//                    if(data.obj.phoneNum && data.obj.phoneNum != ''){
+//                        userInfo += '<span class="phone_num">'+data.obj.phoneNum+'</span>';
+//                    }
+//                    $('.info_div').html(userInfo);
+//                }
+//            },
+//            error: function(xhr, type){
+//                // 加载出错
+//            }
+//        });
+//    }
+
+    //查询捐赠列表
+    function juanzenglist(payStatus){
+        var page=1;
+
+        $('.content').dropload({
+            scrollArea : window,
+            domDown : {
+                domClass   : 'dropload-down',
+                domRefresh : '<div class="dropload-refresh">↑上拉加载更多</div>',
+                domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                domNoData  : '<div class="dropload-noData"> </div>'
+            },
+            loadDownFn : function(me){
+                console.log('{"command": "72","content": {"accountNum": "'+accountNum+'","openId": "'+openId+'","accountAppId": "'+appId+'","payStatus":"'+payStatus+'","page":"'+page+'","rows":"6" }}')
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{
+                        jsonStr:'{"command": "72","content": {"accountNum": "'+accountNum+'","openId": "'+openId+'","accountAppId": "'+appId+'","payStatus":"'+payStatus+'","page":"'+page+'","rows":"6" }}'
+                    },
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        //加载个人信息
+                        if(page == 1 && payStatus == 1){
+                            if(data.obj.userPic){
+                                $('.touxiang').attr('src',B.getImageAbsoluteUrl(data.obj.userPic));
+                            }
+                            $('.touxiang').click(function () {
+                                if(accountNum != ''){
+                                    H.openWin("个人信息", "../mobile/wechat/personal.html?ts=" + B.getRandomInt(4)+"&accountNum="+accountNum+"&fromFoundation=1");
+                                }else if(openId != ''){
+                                    H.openWin("登录", "/mobile/wechat/login.html?backUrl="+B.encrypt(backUrl));
+                                }
+                            });
+
+                            if(accountNum == ''){
+                                $('.logout').click(function () {
+                                    H.openWin("登录", "/mobile/wechat/login.html?backUrl="+B.encrypt(backUrl));
+                                });
+                            }else{
+
+                                if(data.obj.isActivate == '0'){
+                                    var time=0.5;
+                                    var interval = setInterval(function () {
+                                        if(time <= 0){
+                                            clearInterval(interval);
+                                        }
+
+                                        $('#activeArea').css('top', (-50 + ((0.5-time)/0.5*52))+'px');
+                                        time -= 0.01;
+                                    },10);
+
+                                    // 顶部提示绑定的浮动链接
+                                    var oDiv=document.getElementById("activeArea");
+                                    var HEIGHT=0,iE6;
+                                    var Y=oDiv;
+                                    while(Y){HEIGHT+=Y.offsetTop;Y=Y.offsetParent};
+                                    iE6=window.ActiveXObject&&!window.XMLHttpRequest;
+                                    if(!iE6){
+                                        window.onscroll=function()
+                                        {
+                                            var s=document.body.scrollTop||document.documentElement.scrollTop;
+                                            if(s>HEIGHT){
+                                                oDiv.className="onFloat";
+                                                if(iE6){
+                                                    oDiv.style.top=(s-HEIGHT)+"px";
+                                                }
+                                            }
+                                        };
+                                    }
+
+
+                                    $('.activeClose').click(function () {
+                                        time = 0.5;
+                                        var interval = setInterval(function () {
+                                            if(time <= 0){
+                                                clearInterval(interval);
+                                            }
+
+                                            $('#activeArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                                            time -= 0.01;
+                                        },10);
+                                    });
+                                }
+                            }
+
+                            if(data.obj.userName && data.obj.userName != ''){
+                                $('.name_div').text(data.obj.userName);
+                            }
+
+                            var userInfo = '';
+                            if(accountNum != '' && data.obj.userName && data.obj.userName != ''){
+                                if(data.obj.userAuth && data.obj.userAuth != '' && data.obj.userAuth == '1'){
+                                    userInfo += '<span class="yirenzheng">已认证</span>';
+                                }else{
+                                    userInfo += '<span class="weirenzheng">未认证</span>';
+                                }
+                            }else{
+                                userInfo += '<span class="weirenzheng">未绑定</span>';
+                            }
+
+
+                            userInfo += '<span class="image_area">';
+                            if(data.obj.userSex && data.obj.userSex != ''){
+                                var uImg = '<img src="img/nv@3x.png">';
+                                if(data.obj.userSex == '0'){
+                                    uImg = '<img src="img/nan@3x.png">';
+                                }
+                                userInfo += uImg;
+                            }
+                            userInfo += '</span>';
+                            if(data.obj.userTel && data.obj.userTel != ''){
+                                userInfo += '<span class="phone_num">'+data.obj.userTel+'</span>';
+                            }
+                            $('.info_div').html(userInfo);
+                        }
+                        if(!data.success ||data.obj.rows.length==0){
+                            me.lock();
+                            me.noData(true);
+                        }else{
+                            var render = H.tppl(H.D("#juanz_box").innerHTML);
+
+                            var result = render({juanz_box:data.obj.rows});
+                            $('.container_box').append(result);
+                            page++;
+                        }
+
+                        // 每次数据加载完，必须重置
+                        me.resetload();
+                        me.unlock();
+                        me.noData(false);
+                    },
+                    error: function(xhr, type){
+                        // 即使加载出错，也得重置
+                        me.resetload();
+                        me.noData(true);
+                    }
+                });
+            },
+            threshold : 50
+        });
+
+    }
+
+
+    function cancleDonate(donationId, dom) {
+        event.stopPropagation();
+        B.ready(function(){
+            $.ajax({
+                type: "post",
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "280","content": { "donationId": "' + donationId + '"}}'
+                },
+                dataType: "json",
+                success: function (data) {
+                    if(data.success){
+                        $(dom).parent().parent().remove();
+                    }
+                }
+            });
+        });
+    }
+
+    function getActiveEmail() {
+        B.ready(function(){
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "279","content": { "accountNum": "' + accountNum + '"}}'
+                },
+                dataType: "json",
+                success: function(data){
+                    if (data && data.success) {
+                        layer.open({ content:data.msg, skin:"msg", time:5 });
+
+                        var time = 0.5;
+                        var interval = setInterval(function () {
+                            if(time <= 0){
+                                clearInterval(interval);
+                            }
+
+                            $('#activeArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                            time -= 0.01;
+                        },10);
+                    }
+                    else{
+                        layer.open({ content:"邮件发送失败，请稍后再试！", skin:"msg", time:2 });
+                    }
+                }
+            });
+        });
+    }
+
+
+    //################## 侧滑全部代码
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
+        }
+
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
+    }
+
+    var _startX = 0;
+    var _startY = 0;
+    var scrollHeight = 0;
+    var scrollWidth = 0;
+    var currentRange = 0;
+    var parentEle = null;
+    var direction = 1;
+
+    // 设置侧滑动画
+    function setScroll(parentElement, value, time) {
+        parentElement.firstElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+        parentElement.lastElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+    }
+
+    // 触摸开始
+    window.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            parentEle = H.getParents(event.target, "H-qq-item");
+            if (H.isElement(parentEle)) {
+
+                // 其他兄弟隐藏
+                var siblings = H.siblings(parentEle);
+                for (var i = 0; i < siblings.length; i++) {
+                    var _siblingObj = siblings[i];
+                    setScroll(_siblingObj, 0, 0);
+                }
+
+                scrollHeight = parentEle.firstElementChild.clientHeight;
+                scrollWidth = H.D(".H-qq-menu", parentEle).clientWidth;
+
+                for (var j = 0; j < parentEle.lastElementChild.childNodes.length; j++) {
+                    var child = parentEle.lastElementChild.childNodes[j];
+                    if (H.isElement(child)) {
+                        child.style.cssText = "height:" + scrollHeight + "px;line-height:" + scrollHeight + "px;";
+                    }
+                }
+
+                currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+                _startX = touch.pageX;
+                _startY = touch.pageY;
+            }
+        }
+    }, false);
+    // 触摸过程
+    window.addEventListener("touchmove", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            direction = GetSlideDirection(_startX, _startY, touch.pageX, touch.pageY);
+            if (direction == 3 || direction == 4) {
+                event.preventDefault();
+                if (H.isElement(parentEle)) {
+                    var range = touch.pageX - _startX;
+                    if (range <= 0) {
+                        if (range - currentRange >= -scrollWidth && range - currentRange <= 0) {
+                            setScroll(parentEle, (range - currentRange), 0);
+                        }
+                    }
+                    else {
+                        if (range + currentRange <= 0) {
+                            setScroll(parentEle, (range + currentRange), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }, false);
+    // 触摸接触
+    window.addEventListener("touchend", function (event) {
+        var touch = event.targetTouches[0];
+        if (H.isElement(parentEle)) {
+            currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+            if (direction == 3 && (currentRange < 0)) {
+                setScroll(parentEle, -scrollWidth, 0.4);
+            }
+            else if (direction == 4 && currentRange < 80) {
+                setScroll(parentEle, 0, 0.4);
+            }
+            else {
+                setScroll(parentEle, 0, 0.4);
+            }
+        }
+    }, false);
+    // 点击
+    window.addEventListener("click", function (event) {
+        var parentEle = H.getParents(event.target, "H-qq-item");
+        if (H.isElement(parentEle)) {
+            setScroll(parentEle, 0, 0.4);
+        }
+    }, false);
+
+</script>
+</html>

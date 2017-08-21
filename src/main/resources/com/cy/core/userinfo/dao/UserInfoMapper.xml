@@ -1,0 +1,2486 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.userinfo.dao.UserInfoMapper">
+	<resultMap type="com.cy.core.userinfo.entity.UserInfo" id="userInfoResult">
+		<id column="user_id" property="userId" />
+		<result column="user_name" property="userName" />
+		<result column="tel_id" property="telId" />
+		<result column="pic_url" property="picUrl" />
+		<result column="sex" property="sex" />
+		<result column="remarks" property="remarks" />
+		<result column="aliasname" property="aliasname" />
+		<result column="studentnumber" property="studentnumber" />
+		<result column="card" property="card" />
+		<result column="accountNum" property="accountNum" />
+		<result column="nation" property="nation" />
+		<result column="political" property="political" />
+		<result column="nationality" property="nationality" />
+		<result column="birthday" property="birthday" />
+		<result column="entranceTime" property="entranceTime" />
+		<result column="graduationTime" property="graduationTime" />
+		<result column="email" property="email" />
+		<result column="qq" property="qq" />
+		<result column="weibo" property="weibo" />
+		<result column="personalWebsite" property="personalWebsite" />
+		<result column="mailingAddress" property="mailingAddress" />
+		<result column="residentialArea" property="residentialArea" />
+		<result column="workUnit" property="workUnit" />
+		<result column="name_pinyin" property="namePinyin" />
+		<result column="position" property="position" />
+		<result column="industryType" property="industryType" />
+		<result column="enterprise" property="enterprise" />
+		<result column="workTel" property="workTel" />
+		<result column="workAddress" property="workAddress" />
+		<result column="resume" property="resume" />
+		<result column="create_time" property="createTime" />
+		<result column="full_name" property="fullName" />
+		<result column="cardType" property="cardType" />
+		<result column="status" property="status" />
+		<result column="resourceArea" property="resourceArea" />
+		<result column="studentType" property="studentType" />
+		<result column="use_time" property="useTime" />
+		<result column="schoolName" property="schoolName" />
+		<result column="departName" property="departName" />
+		<result column="departAliasName" property="departAliasName" />
+		<result column="gradeName" property="gradeName" />
+		<result column="className" property="className" />
+		<result column="majorName" property="majorName" />
+		<result column="majorId" property="majorId" />
+		<result column="majorName" property="majorName" />
+		<result column="checkflag" property="checkFlag" />
+		<result column="checkIdea" property="checkIdea" />
+		<result column="residentialTel" property="residentialTel" />
+		<result column="schoolId" property="schoolId" />
+		<result column="departId" property="departId" />
+		<result column="gradeId" property="gradeId" />
+		<result column="classId" property="classId" />
+		<result column="mobile_local" property="mobileLocal" />
+		<result column="alumniId" property="alumniId" />
+		<result column="pic_url" property="picUrl" />
+		<result column="hobbies" property="hobbies" />
+		<result column="is_class_admin" property="isClassAdmin" />
+		<result column="is_from_app" property="isFromApp" />
+		<result column="friendStatus" property="friendStatus"/>
+		<result column="appFlag" property="appFlag"/>
+		<result column="is_one_key_auth" property="isOneKeyAuth"/>
+		<result column="is_one_key_join" property="isOneKeyJoin"/>
+	</resultMap>
+
+	<select id="countByDeptId" parameterType="map" resultType="long">
+		select count(distinct user_id) from
+		<if test="userId!=null and userId!=''">
+			cy_dept_info join cy_user_dept on userid=#{userId} and  (belong_dept_id=deptId or dept_id=deptid) join cy_user_info u on user_id like concat(dept_id,'%')
+		</if>
+		<if test="userId==null or userId==''">
+			cy_user_info u
+		</if>
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<!-- lixun 选择机构树/地区权限 -->
+			<if test="deptId2!=null and deptId2!=''">
+				and user_id like concat(#{deptId2},'%')
+			</if>
+			<!-- 有查看权限的院系id -->
+			<if test="hasPermissionDeptIds != null and hasPermissionDeptIds != ''">
+				AND find_in_set(left(user_id,16),#{hasPermissionDeptIds})
+			</if>
+
+			<if test="alumniId!=null and alumniId!=''">
+				and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{alumniId})
+				is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+				like @a ) end
+			</if>
+			<!-- lixun -->
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="isClassAdmin!=null and isClassAdmin!=''">
+				and is_class_admin = #{isClassAdmin}
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like
+				concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==1">
+				and (accountNum is not null and accountNum!='')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==0">
+				and (accountNum is null or accountNum='')
+			</if>
+		</where>
+	</select>
+<!--by sky 2017-7-6 修改left join方法为 substring-index处理字段  -->
+	<select id="selectByDeptId" parameterType="map" resultMap="userInfoResult">
+		select distinct u.*,
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		 m.majorName as	 majorName from
+		<if test="userId!=null and userId!=''">
+			<!-- 组织成员权限 归属于学院的所有学院 -->
+			cy_dept_info join cy_user_dept on userid=#{userId} and  (belong_dept_id=deptId or dept_id=deptid) join cy_user_info u on user_id like concat(dept_id,'%')
+		</if>
+		<if test="userId==null or userId==''">
+			cy_user_info u
+		</if>
+		left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id		
+		left join cy_major m on
+		m.majorId=u.majorId
+
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<!-- lixun 选择机构树/地区权限 -->
+			<if test="deptId2!=null and deptId2!=''">
+				<!-- 左边选的机构树 -->
+				and user_id like concat(#{deptId2},'%')
+			</if>
+			<!-- 有查看权限的院系id -->
+			<if test="hasPermissionDeptIds != null and hasPermissionDeptIds != ''">
+				AND find_in_set(left(user_id,16),#{hasPermissionDeptIds})
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				<!-- 地区权限 归属地,手机归属地,籍贯 任意一项匹配地区分会的地区 -->
+				and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{alumniId})
+				is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+				like @a ) end
+			</if>
+			<!-- lixun -->
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like
+				concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==1">
+				and (accountNum is not null and accountNum!='')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==0">
+				and (accountNum is null or accountNum='')
+			</if>
+
+		</where>
+		order by ${sort} ${order}
+		limit #{start},#{rows}
+	</select>
+
+
+
+
+
+	<select id="countByDeptIdNew" parameterType="map" resultType="long">
+		<!-- select count(1)
+		FROM (
+			SELECT
+			<choose>
+				<when test="alumniId != null and alumniId != ''">
+					(
+					select `status` FROM cy_user_alumni where del_flag != '1' AND alumni_id = #{alumniId} and user_id = u.accountNum
+					) alumniStatus ,
+				</when>
+				<otherwise>
+					'20' alumniStatus ,
+				</otherwise>
+			</choose>
+			u.*, d.dept_name AS className,
+			d1.dept_name AS gradeName,
+			d2.dept_name AS departName,
+			d3.dept_name AS schoolName,
+			m.majorName AS majorName
+			FROM
+			cy_user_info u
+			JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id
+			JOIN cy_dept_info d1 ON d1.DEPT_ID = LEFT (u.user_id, 14)
+			JOIN cy_dept_info d2 ON d2.DEPT_ID = LEFT (u.user_id, 10)
+			JOIN cy_dept_info d3 ON d3.DEPT_ID = LEFT (u.user_id, 6)
+			LEFT JOIN cy_major m ON m.majorId = u.majorId
+		) t -->
+		SELECT count(1)
+		FROM
+		cy_user_info u
+		JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id 
+		JOIN cy_dept_info d2 ON d2.DEPT_ID = LEFT (u.user_id, 10)
+		<!--  by sky 2017-7-6
+		JOIN cy_dept_info d1 ON d1.DEPT_ID = LEFT (u.user_id, 14)		
+		JOIN cy_dept_info d3 ON d3.DEPT_ID = LEFT (u.user_id, 6)
+		-->	
+		<where>(u.checkflag IS NULL OR u.checkflag != 2)
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+						 close=")" item="dept">
+					u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test='userNames != null and userNames !="" '>
+				and ${userNames}
+			</if>
+			<if test='studentNumbers != null and studentNumbers !="" '>
+				and ${studentNumbers}
+			</if>
+			<if test='telIds != null and telIds !="" '>
+				and ${telIds}
+			</if>
+			<if test='hasPhone!= null and hasPhone!="" and hasPhone == "1" '>
+				AND (tel_id IS NOT NULL AND TRIM(tel_id) != '')
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="checkFlag!=null and checkFlag!=''">
+				and checkflag = #{checkFlag}
+			</if>
+			<if test="checkPage!=null and checkPage!=''">
+				and (checkflag IS NULL OR checkflag=0)
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<!-- lixun 选择机构树/地区权限 -->
+			<!--<if test="deptId2!=null and deptId2!=''">
+				&lt;!&ndash; 左边选的机构树 &ndash;&gt;
+				and user_id like concat(#{deptId2},'%')
+			</if>-->
+			<!-- 有查看权限的院系id -->
+			<!--<if test="hasPermissionDeptIds != null and hasPermissionDeptIds != ''">
+				AND find_in_set(left(user_id,16),#{hasPermissionDeptIds})
+			</if>-->
+			<if test="deptId != null and deptId != ''">
+				AND u.user_id LIKE CONCAT(#{deptId}, '%')
+			</if>
+			<if test="currDeptId != null and currDeptId != ''">
+				AND d2.dept_id IN (SELECT dept_id from cy_dept_info WHERE dept_id = #{currDeptId} or belong_dept_id = #{currDeptId})
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				<!-- 地区权限 归属地,手机归属地,籍贯 任意一项匹配地区分会的地区 -->
+				and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{alumniId})
+				is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+				like @a ) end
+			</if>
+			<!-- lixun -->
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				AND(
+				residentialArea LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR mobile_local LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR resourceArea LIKE CONCAT('%',#{residentialArea}, '%' )
+				)
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==1">
+				and (accountNum is not null and accountNum!='')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==0">
+				and (accountNum is null or accountNum='')
+			</if>
+			<if test='sex != null and sex != ""'>
+				and (sex IS NULL OR sex=#{sex})
+			</if>
+		</where>
+	</select>
+
+	<select id="selectByDeptIdNew" parameterType="map" resultMap="userInfoResult">
+		<!-- SELECT *
+		FROM (
+			SELECT
+			<choose>
+				<when test="alumniId != null and alumniId != ''">
+					(
+					select `status` FROM cy_user_alumni where del_flag != '1' AND alumni_id = #{alumniId} and user_id = u.accountNum
+					) alumniStatus ,
+				</when>
+				<otherwise>
+					'20' alumniStatus ,
+				</otherwise>
+			</choose>
+			u.*, d.dept_name AS className,
+			d1.dept_name AS gradeName,
+			d2.dept_name AS departName,
+			d3.dept_name AS schoolName,
+			m.majorName AS majorName
+			FROM
+			cy_user_info u
+			JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id
+			JOIN cy_dept_info d1 ON d1.DEPT_ID = LEFT (u.user_id, 14)
+			JOIN cy_dept_info d2 ON d2.DEPT_ID = LEFT (u.user_id, 10)
+			JOIN cy_dept_info d3 ON d3.DEPT_ID = LEFT (u.user_id, 6)
+			LEFT JOIN cy_major m ON m.majorId = u.majorId
+		) t -->
+
+
+		SELECT
+		<choose>
+			<when test='currentAlumni != null and currentAlumni != ""'>
+				(
+				select `status` FROM cy_user_alumni where del_flag != '1' AND alumni_id = #{currentAlumni} and user_id = u.accountNum
+				) alumniStatus ,
+				(
+				select awr.`is_worked` FROM cy_alumni_wait_registers awr where awr.del_flag != '1' AND awr.is_worked = '0' AND awr.alumni_id = #{currentAlumni} and awr.user_id = u.user_id
+				) is_one_key_join,
+			</when>
+			<otherwise>
+				'20' alumniStatus ,
+			</otherwise>
+		</choose>
+		<!--by sky 2017-7-6  -->
+		u.*,d.full_name,
+	     trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		  m.majorName AS majorName
+		FROM
+		cy_user_info u
+		JOIN cy_dept_info d ON LEFT (u.user_id, 16) = d.dept_id		
+		JOIN cy_dept_info d2 ON d2.DEPT_ID = LEFT (u.user_id, 10)
+		LEFT JOIN cy_major m ON m.majorId = u.majorId
+		<where>(u.checkflag IS NULL OR u.checkflag != 2)
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test='userNames != null and userNames !="" '>
+				AND ${userNames}
+			</if>
+			<if test='studentNumbers != null and studentNumbers !="" '>
+				AND ${studentNumbers}
+			</if>
+			<if test='telIds != null and telIds !="" '>
+				AND ${telIds}
+			</if>
+			<if test='hasPhone!= null and hasPhone!="" and hasPhone == "1" '>
+				AND (tel_id IS NOT NULL AND TRIM(tel_id) != '')
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="checkFlag!=null and checkFlag!=''">
+				and checkflag = #{checkFlag}
+			</if>
+			<if test="checkPage!=null and checkPage!=''">
+				and (checkflag IS NULL OR checkflag=0)
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<!-- lixun 选择机构树/地区权限 -->
+			<!--<if test="deptId2!=null and deptId2!=''">
+				&lt;!&ndash; 左边选的机构树 &ndash;&gt;
+				and user_id like concat(#{deptId2},'%')
+			</if>-->
+			<!-- 有查看权限的院系id -->
+			<!--<if test="hasPermissionDeptIds != null and hasPermissionDeptIds != ''">
+				AND find_in_set(left(user_id,16),#{hasPermissionDeptIds})
+			</if>-->
+			<if test="deptId != null and deptId != ''">
+				AND u.user_id LIKE CONCAT(#{deptId}, '%')
+			</if>
+			<if test="currDeptId != null and currDeptId != ''">
+				AND d2.dept_id IN (SELECT dept_id from cy_dept_info WHERE dept_id = #{currDeptId} or belong_dept_id = #{currDeptId})
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				<!-- 地区权限 归属地,手机归属地,籍贯 任意一项匹配地区分会的地区 -->
+				and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{alumniId})
+				is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+				like @a ) end
+			</if>
+			<!-- lixun -->
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				AND(
+				residentialArea LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR mobile_local LIKE CONCAT('%', #{residentialArea}, '%' )
+				OR resourceArea LIKE CONCAT('%',#{residentialArea}, '%' )
+				)
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="accountNum != null and accountNum != ''">
+				and u.accountNum = #{accountNum}
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==1">
+				and (accountNum is not null and accountNum!='')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==0">
+				and (accountNum is null or accountNum='')
+			</if>
+			<if test='sex != null and sex != ""'>
+				and (sex IS NULL OR sex=#{sex})
+			</if>
+		</where>
+		<if test='isNotOrder != "1"'>
+			order by ${sort} ${order}
+		</if>
+		<if test='isNotLimit != "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+	<select id="countByDeptIdForAlumni" parameterType="map"
+		resultType="long">
+		SELECT COUNT(user_id) from (SELECT distinct u.* FROM
+		<!-- lixun 添加 -->
+			cy_user_info u
+		<if test="aluid!=null and isAlumni!='2' and zonghui==null">
+			left join cy_user_alumni ua on u.user_id=ua.user_id AND ua.del_flag != '1'
+			left join cy_alumni alu on ua.alumni_id=alu.alumniId
+		</if>
+		<!-- lixun -->
+		WHERE
+		u.accountNum
+		is NOT null and u.accountNum!=''
+		<!-- lixun 添加 -->
+		<if test="isAlumni=='1' and zonghui==null">
+			and alu.alumniId is not null
+		</if>
+		<if test="isAlumni=='0' and zonghui==null">
+			and alu.alumniId is null
+		</if>
+		<if test="aluid!=null and zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aluid})
+		</if>
+		<if test="aluid!=null and zonghui==1">
+			and u.user_id like concat( (select academyid from cy_alumni where alumniId=#{aluid} and academyid!='' and academyid is not null), '%' )
+		</if>
+		<if test="deptId!=null and aluid!=deptId">
+			<if test="zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptId})
+			</if>
+			and case (select main from cy_alumni where alumniId=#{deptId} )
+			when 1 then u.user_id like concat((select academyid from cy_alumni where alumniId=#{deptId}),'%')
+			else true end
+			and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{deptId})
+			is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+			like @a ) end
+
+		</if>
+		<!-- lixun -->
+		<if test="deptList!=null and deptList.size()>0">
+		and
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					 u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+		<if test="userName!=null and userName!=''">
+			and user_name like concat('%',#{userName},'%')
+		</if>
+		<if test="alumniId!=null and alumniId!=0">
+			and alumniId=#{alumniId}
+		</if>
+		<if test="deptId1!=null and deptId1!=''">
+			and u.user_id like concat(#{deptId1},'%')
+		</if>
+		<if test="studentType!=null and studentType!=''">
+			and studentType =#{studentType}
+		</if>
+		<if test="majorId!=null and majorId!=0">
+			and u.majorId =#{majorId}
+		</if>
+		<if test="industryType!=null and industryType!=''">
+			and industryType =#{industryType}
+		</if>
+		<if test="sex!=null and sex!=''">
+			and sex =#{sex}
+		</if>
+		<if test="birthday!=null and birthday!=''">
+			and date_format(birthday,'%Y') =#{birthday}
+		</if>
+		<if test="entranceTime!=null and entranceTime!=''">
+			and date_format(entranceTime,'%Y') =#{entranceTime}
+		</if>
+		GROUP BY u.accountNum
+		UNION ALL
+		select distinct u.*
+		from
+			cy_user_info u
+		<!-- lixun 添加 -->
+		<if test="aluid!=null and isAlumni!='2' and zonghui==null">
+			left join cy_user_alumni ua on u.user_id=ua.user_id
+			left join cy_alumni alu on ua.alumni_id=alu.alumniId
+		</if>
+		<!-- lixun -->
+		where (u.accountNum is NULL OR u.accountNum='')
+		<!-- lixun 添加 -->
+		<if test="isAlumni=='1' and zonghui==null">
+			and alu.alumniId is not null
+		</if>
+		<if test="isAlumni=='0' and zonghui==null">
+			and alu.alumniId is null
+		</if>
+		<if test="aluid!=null and zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aluid})
+		</if>
+		<if test="aluid!=null and zonghui==1">
+			and u.user_id like concat( (select academyid from cy_alumni where alumniId=#{aluid} and academyid!='' and academyid is not null), '%' )
+		</if>
+		<if test="deptId!=null and aluid!=deptId">
+			<if test="zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptId})
+			</if>
+			and case (select main from cy_alumni where alumniId=#{deptId} )
+			when 1 then u.user_id like concat((select academyid from cy_alumni where alumniId=#{deptId}),'%')
+			else true end
+			and case when (select @a:=concat(region,'%') from cy_alumni where  alumniId=#{deptId})
+			is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+			like @a ) end
+		</if>
+		<!-- lixun -->
+		<if test="deptList!=null and deptList.size()>0">
+		and
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					 u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+		<if test="userName!=null and userName!=''">
+			and user_name like concat('%',#{userName},'%')
+		</if>
+		<if test="alumniId!=null and alumniId!=0">
+			and alumniId=#{alumniId}
+		</if>
+		<if test="deptId1!=null and deptId1!=''">
+			and u.user_id like concat(#{deptId1},'%')
+		</if>
+		<if test="studentType!=null and studentType!=''">
+			and studentType =#{studentType}
+		</if>
+		<if test="majorId!=null and majorId!=0">
+			and u.majorId =#{majorId}
+		</if>
+		<if test="industryType!=null and industryType!=''">
+			and industryType =#{industryType}
+		</if>
+		<if test="sex!=null and sex!=''">
+			and sex =#{sex}
+		</if>
+		<if test="birthday!=null and birthday!=''">
+			and date_format(birthday,'%Y') =#{birthday}
+		</if>
+		<if test="entranceTime!=null and entranceTime!=''">
+			and date_format(entranceTime,'%Y') =#{entranceTime}
+		</if>
+		) uu
+	</select>
+
+	<select id="selectMainInAlumni" parameterType="long" resultType="long">
+		select main from cy_alumni where alumniid=#{id}
+	</select>
+
+	<select id="selectByDeptIdForAlumni" parameterType="map"
+		resultMap="userInfoResult">
+		select distinct
+		u.accountNum,GROUP_CONCAT(u.user_id) as
+		user_id,user_name,sex,tel_id,u.email,workUnit,position,residentialArea,GROUP_CONCAT(REPLACE(full_name,',','
+		'))
+		as full_name from
+		<!-- lixun 添加 -->
+			cy_user_info u
+		LEFT JOIN cy_dept_info ON
+		LEFT(u.user_id,16)=dept_id
+		<if test="aluid!=null and isAlumni!='2' and zonghui==null">
+			left join cy_user_alumni ua on u.user_id=ua.user_id
+			left join cy_alumni alu on ua.alumni_id=alu.alumniId
+		</if>
+		<!-- lixun -->
+
+		WHERE
+		u.accountNum is NOT null and
+		u.accountNum!=''
+		<!-- lixun 添加 -->
+		<if test="isAlumni=='1' and zonghui==null">
+			and alu.alumniId is not null
+		</if>
+		<if test="isAlumni=='0' and zonghui==null">
+			and alu.alumniId is null
+		</if>
+		<if test="aluid!=null and zonghui==null ">
+			<!-- 左树机构的下级 -->
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aluid})
+		</if>
+		<if test="aluid!=null and zonghui==1">
+			and u.user_id like concat( (select academyid from cy_alumni where alumniId=#{aluid} and academyid!='' and academyid is not null), '%' )
+		</if>
+		<if test="deptId!=null and deptId!=0 and aluid!=deptId">
+			<if test="zonghui==null">
+			<!-- 用户所在分会的下级 -->
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptId})
+			</if>
+			<!-- 学院权限 -->
+			and case (select main from cy_alumni where alumniId=#{deptId} )
+			when 1 then u.user_id like concat((select academyid from cy_alumni where alumniId=#{deptId}),'%')
+			else true end
+			<!-- 地区权限 归属地,手机归属地,籍贯 任意一项匹配地区分会的地区 -->
+			and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{deptId})
+			is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+			like @a ) end
+		</if>
+		<!-- lixun -->
+		<if test="deptList!=null and deptList.size()>0">
+		and
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					 u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+		<if test="userName!=null and userName!=''">
+			and user_name like concat('%',#{userName},'%')
+		</if>
+		<if test="alumniId!=null and alumniId!=0">
+			and alumniId=#{alumniId}
+		</if>
+		<if test="deptId1!=null and deptId1!=''">
+			and u.user_id like concat(#{deptId1},'%')
+		</if>
+		<if test="studentType!=null and studentType!=''">
+			and studentType =#{studentType}
+		</if>
+		<if test="majorId!=null and majorId!=0">
+			and u.majorId =#{majorId}
+		</if>
+		<if test="industryType!=null and industryType!=''">
+			and industryType =#{industryType}
+		</if>
+		<if test="sex!=null and sex!=''">
+			and sex =#{sex}
+		</if>
+		<if test="birthday!=null and birthday!=''">
+			and date_format(birthday,'%Y') =#{birthday}
+		</if>
+		<if test="entranceTime!=null and entranceTime!=''">
+			and date_format(entranceTime,'%Y') =#{entranceTime}
+		</if>
+		GROUP BY u.accountNum
+		UNION ALL
+		select distinct
+		u.accountNum,u.user_id,user_name,sex,tel_id,u.email,workUnit,position,residentialArea,REPLACE(full_name,',','
+		')
+		as full_name from
+			cy_user_info u
+		LEFT JOIN cy_dept_info ON
+		LEFT(u.user_id,16)=dept_id
+		<if test="aluid!=null and isAlumni!='2' and zonghui==null">
+			left join cy_user_alumni ua on u.user_id=ua.user_id
+			left join cy_alumni alu on ua.alumni_id=alu.alumniId
+		</if>
+		<!-- lixun -->
+		where (u.accountNum is NULL OR u.accountNum='')
+		<!-- lixun 添加 -->
+		<if test="isAlumni=='1' and zonghui==null">
+			and alu.alumniId is not null
+		</if>
+		<if test="isAlumni=='0' and zonghui==null">
+			and alu.alumniId is null
+		</if>
+
+		<if test="aluid!=null and zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{aluid})
+		</if>
+		<if test="aluid!=null and zonghui==1">
+			and u.user_id like concat( (select academyid from cy_alumni where alumniId=#{aluid} and academyid!='' and academyid is not null), '%' )
+		</if>
+		<if test="deptId!=null and aluid!=deptId">
+			<if test="zonghui==null">
+			and alu.sequence like (select concat(sequence,'%') from cy_alumni where alumniId=#{deptId})
+			</if>
+			and case (select main from cy_alumni where alumniId=#{deptId} )
+			when 1 then u.user_id like concat((select academyid from cy_alumni where alumniId=#{deptId}),'%')
+			else true end
+			and case when (select @a:=concat(region,'%') from cy_alumni where alumniId=#{deptId})
+			is null then true else (residentialArea like @a or mobile_local like @a or resourceArea
+			like @a ) end
+		</if>
+		<!-- lixun -->
+		<if test="deptList!=null and deptList.size()>0">
+			and
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					 u.user_id like concat(#{dept.deptId},'%')
+				</foreach>
+		</if>
+		<if test="userName!=null and userName!=''">
+			and user_name like concat('%',#{userName},'%')
+		</if>
+		<if test="alumniId!=null and alumniId!=0">
+			and alumniId=#{alumniId}
+		</if>
+		<if test="deptId1!=null and deptId1!=''">
+			and u.user_id like concat(#{deptId1},'%')
+		</if>
+		<if test="studentType!=null and studentType!=''">
+			and studentType =#{studentType}
+		</if>
+		<if test="majorId!=null and majorId!=0">
+			and u.majorId =#{majorId}
+		</if>
+		<if test="industryType!=null and industryType!=''">
+			and industryType =#{industryType}
+		</if>
+		<if test="sex!=null and sex!=''">
+			and sex =#{sex}
+		</if>
+		<if test="birthday!=null and birthday!=''">
+			and date_format(birthday,'%Y') =#{birthday}
+		</if>
+		<if test="entranceTime!=null and entranceTime!=''">
+			and date_format(entranceTime,'%Y') =#{entranceTime}
+		</if>
+		limit #{start},#{rows}
+	</select>
+	
+	<select id="selectUserInfoByName" parameterType="string" resultMap="userInfoResult">
+		select
+		accountNum,GROUP_CONCAT(user_id) as
+		user_id,user_name,sex,tel_id,email,workUnit,position,mailingAddress,GROUP_CONCAT(REPLACE(full_name,',','
+		'))
+		as full_name from cy_user_info LEFT JOIN cy_dept_info ON
+		LEFT(user_id,16)=dept_id WHERE
+		accountNum is NOT null and
+		accountNum!=''
+		and user_name=#{userName}
+		GROUP BY accountNum
+		UNION ALL
+		select
+		accountNum,user_id,user_name,sex,tel_id,email,workUnit,position,mailingAddress,REPLACE(full_name,',','
+		')
+		as full_name from
+		cy_user_info LEFT JOIN cy_dept_info ON
+		LEFT(user_id,16)=dept_id where (accountNum is NULL OR accountNum='')
+		and user_name=#{userName}
+	</select>
+	<select id="selectUserInfoByUserId" parameterType="String" resultMap="userInfoResult">
+		SELECT * FROM cy_user_info WHERE user_id=#{userId}
+	</select>
+	<select id="selectAllByDeptId" parameterType="string" resultMap="userInfoResult">
+		select * from cy_user_info where user_id like concat(#{deptId},'%') ORDER BY (user_id + 0) ASC
+	</select>
+	<delete id="delete" parameterType="list">
+		delete from cy_user_info where user_id in
+		<foreach collection="list" open="(" close=")" item="ids"
+			separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+	<delete id="deleteById" parameterType="string">
+		delete from cy_user_info where user_id = #{userId}
+	</delete>
+	<select id="selectByIds" parameterType="list" resultMap="userInfoResult">
+		select * from cy_user_info where user_id in
+		<foreach collection="list" open="(" close=")" item="ids"
+			separator=",">
+			#{ids}
+		</foreach>
+	</select>
+	<insert id="save" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		insert into
+		cy_user_info(USER_ID,USER_NAME,TEL_ID,SEX,remarks,aliasname,studentnumber,card,accountNum,nation,political,nationality,birthday,entranceTime,graduationTime,email,qq,weibo,personalWebsite,mailingAddress,residentialArea,workUnit,name_pinyin,position,industryType,enterprise,workTel,workAddress,resume,create_time,cardType,status,resourceArea,studentType,programLength,majorId,checkflag,residentialTel,is_class_admin,is_from_app,is_one_key_auth)
+		values(#{userId},#{userName},#{telId},#{sex},#{remarks},#{aliasname},#{studentnumber},#{card},#{accountNum},#{nation},#{political},#{nationality},#{birthday},#{entranceTime},#{graduationTime},#{email},#{qq},#{weibo},#{personalWebsite},#{mailingAddress},#{residentialArea},#{workUnit},#{namePinyin},#{position},#{industryType},#{enterprise},#{workTel},#{workAddress},#{resume},#{createTime},#{cardType},#{status},#{resourceArea},#{studentType},#{programLength},#{majorId},#{checkFlag},#{residentialTel},#{isClassAdmin},#{isFromApp},#{isOneKeyAuth})
+	</insert>
+	<!--Lixun 2017-5-12 多条插入提高效率-->
+	<insert id="multisave" parameterType="list">
+		insert into
+		cy_user_info(USER_ID,USER_NAME,TEL_ID,SEX,remarks,aliasname,studentnumber,card,accountNum,nation,political,nationality,birthday,entranceTime,graduationTime,email,qq,weibo,personalWebsite,mailingAddress,residentialArea,workUnit,name_pinyin,position,industryType,enterprise,workTel,workAddress,resume,create_time,cardType,status,resourceArea,studentType,programLength,majorId,checkflag,residentialTel,is_class_admin,is_from_app,is_one_key_auth)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.userId},#{item.userName},#{item.telId},#{item.sex},#{item.remarks},#{item.aliasname},#{item.studentnumber},#{item.card},#{item.accountNum},
+			#{item.nation},#{item.political},#{item.nationality},#{item.birthday},#{item.entranceTime},#{item.graduationTime},#{item.email},#{item.qq},#{item.weibo},
+			#{item.personalWebsite},#{item.mailingAddress},#{item.residentialArea},#{item.workUnit},#{item.namePinyin},#{item.position},#{item.industryType},
+			#{item.enterprise},#{item.workTel},#{item.workAddress},#{item.resume},#{item.createTime},#{item.cardType},#{item.status},#{item.resourceArea},
+			#{item.studentType},#{item.programLength},#{item.majorId},#{item.checkFlag},#{item.residentialTel},#{item.isClassAdmin},#{item.isFromApp},#{item.isOneKeyAuth})
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info set
+		aliasname=#{aliasname},sex=#{sex},birthday=#{birthday},tel_id=#{telId},email=#{email},qq=#{qq},
+		USER_NAME=#{userName},remarks=#{remarks},studentnumber=#{studentnumber},nation=#{nation},political=#{political},nationality=#{nationality},
+		birthday=#{birthday},entranceTime=#{entranceTime},graduationTime=#{graduationTime},weibo=#{weibo},personalWebsite=#{personalWebsite},
+		mailingAddress=#{mailingAddress},residentialArea=#{residentialArea},workUnit=#{workUnit},name_pinyin=#{namePinyin},position=#{position},
+		industryType=#{industryType},enterprise=#{enterprise},workTel=#{workTel},workAddress=#{workAddress},status=#{status},
+		resourceArea=#{resourceArea},studentType=#{studentType},programLength=#{programLength},residentialTel=#{residentialTel},alumniId=#{alumniId},
+		cardType=#{cardType},card=#{card}
+		<if test="majorId!=0">
+			,majorId=#{majorId}
+		</if>
+		<if test='accountNum=="0"'>
+			,accountNum=''
+		</if>
+		<if test="checkFlag!=null and checkFlag!='' and checkFlag!=0">
+			,checkflag=#{checkFlag}
+		</if>
+		<if test="newUserId!=null and newUserId!=''">
+			,user_id=#{newUserId}
+		</if>
+		<if test="isClassAdmin!=null and isClassAdmin!=''">
+			,is_class_admin=#{isClassAdmin}
+		</if>
+		<if test='isOneKeyAuth != null and isOneKeyAuth != "" '>
+			,is_one_key_auth = #{isOneKeyAuth}
+		</if>
+		<if test='accountNum=="0"'>
+			,accountNum=''
+		</if>
+		where user_id=#{userId}
+	</update>
+
+	<update id="updateFromUserProfile" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update
+		cy_user_info set
+		<if test="email!=null and email!='' ">
+			email=#{email},
+		</if>
+		<if test="sex!=null and sex!=''">
+			sex=#{sex},
+		</if>
+		<if test="residentialArea != null and residentialArea != ''">
+			residentialArea=#{residentialArea},
+		</if>
+		<if test="workUnit != null and workUnit != ''">
+			workUnit=#{workUnit},
+		</if>
+		<if test="position != null and position != ''">
+			position=#{position},
+		</if>
+		<if test="hobbies != null and hobbies != ''">
+			hobbies=#{hobbies},
+		</if>
+		<if test="industryType != null and industryType != ''">
+			industryType=#{industryType},
+		</if>
+		<if test="alumniId != null and alumniId != '' and alumniId != '0'">
+			alumniId=#{alumniId},
+		</if>
+		<if test="telId != null and telId != ''">
+			tel_id=#{telId},
+		</if>
+		<if test='isOneKeyAuth != null and isOneKeyAuth != "" '>
+			is_one_key_auth = #{isOneKeyAuth},
+		</if>
+		accountNum=#{accountNum}
+		where accountNum=#{accountNum}
+	</update>
+
+	<update id="updateAuthen2User" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info
+		set
+		tel_id=#{telId},alumniId=#{alumniId},accountNum=#{accountNum},pic_url=#{picUrl},use_time=#{useTime}
+		<if test='isOneKeyAuth != null and isOneKeyAuth != ""'>
+			,is_one_key_auth =#{isOneKeyAuth}
+		</if>
+		where user_id=#{userId}
+	</update>
+
+	<update id="updateAccountNum" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info
+		set accountNum=#{accountNum} where user_id=#{userId}
+	</update>
+
+	<!-- 根据accountNum更新userInfo -->
+	<update id="updateByAccountNum" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info
+		<set>
+			<if test="userName!=null and userName!= '' ">
+				user_name=#{userName},
+			</if>
+			<if test="telId !=null and telId!=''">
+				tel_id=#{telId},
+			</if>
+			<if test="sex !=null and sex=!''">
+				sex=#{sex},
+			</if>
+			<if test="email !=null and email!=''">
+				email=#{email},
+			</if>
+			<if test="residentialArea !=null and residentialArea!=''">
+				residentialArea=#{residentialArea},
+			</if>
+			<if test="workUnit !=null and workUnit!=''">
+				workUnit=#{workUnit},
+			</if>
+			<if test="industryType !=null and industryType!=''">
+				industryType=#{industryType},
+			</if>
+			<if test="position !=null and position!=''">
+				position=#{position},
+			</if>
+			<if test="alumniId !=null and alumniId!=''">
+				alumniId=#{alumniId},
+			</if>
+			<if test='isOneKeyAuth != null and isOneKeyAuth != ""'>
+				is_one_key_auth =#{isOneKeyAuth},
+			</if>
+			accountNum=#{accountNum}
+		</set>
+		where accountNum=#{accountNum}
+	</update>
+
+
+
+	<update id="updateOthers" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info set
+		<if test="majorId!=0">
+			majorId=#{majorId},
+		</if>
+		<if test="userName != null and userName != ''">
+			user_name = #{userName},
+		</if>
+		<if test="sex != null and sex != ''">
+			sex = #{sex},
+		</if>
+		<if test="studentType != null and studentType != ''">
+			studentType = #{studentType},
+		</if>
+		<if test="programLength != null and programLength != ''">
+			programLength = #{programLength},
+		</if>
+		<if test="studentnumber != null and studentnumber !=''">
+			studentnumber = #{studentnumber},
+		</if>
+		<if test="resourceArea != null and resourceArea != ''">
+			resourceArea = #{resourceArea},
+		</if>
+		<if test="resourceArea != null and resourceArea != ''">
+			resourceArea = #{resourceArea},
+		</if>
+		<if test="entranceTime != null and entranceTime != ''">
+			entranceTime = #{entranceTime},
+		</if>
+		<if test="graduationTime != null and graduationTime != ''">
+			graduationTime = #{graduationTime},
+		</if>
+		aliasname=#{aliasname},tel_id=#{telId},email=#{email},qq=#{qq},
+		remarks=#{remarks},nation=#{nation},political=#{political},nationality=#{nationality},
+		birthday=#{birthday},weibo=#{weibo},personalWebsite=#{personalWebsite},
+		mailingAddress=#{mailingAddress},residentialArea=#{residentialArea},workUnit=#{workUnit},
+		`position`=#{position},industryType=#{industryType},enterprise=#{enterprise},workTel=#{workTel},
+		workAddress=#{workAddress},status=#{status},residentialTel=#{residentialTel},card=#{card},cardType=#{cardType}
+		where user_id=#{userId}
+	</update>
+	<select id="selectByUserId" parameterType="string" resultMap="userInfoResult">
+		select u.*,
+		d.full_name,		
+		trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+		d.dept_id as classId,
+        trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+		LEFT(u.user_id,14) as gradeId,
+		trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+		LEFT(u.user_id,10) as departId,
+		 trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		LEFT(u.user_id,6) as schoolId,
+		<!--  by sky
+		d.dept_name as className,
+		d.dept_id as classId,
+		d1.dept_name as gradeName,
+		d1.dept_id as gradeId,
+		d2.dept_name	as		departName,
+		d2.dept_id as departId,
+		d3.dept_name as schoolName,
+		d3.dept_id as schoolId,
+		-->		
+		m.majorName as majorName
+		from cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN
+		cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info
+		d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON
+		d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on
+		m.majorId=u.majorId
+		where user_id=#{userId}
+	</select>
+	<select id="selectByUserIdLess" parameterType="string"
+		resultMap="userInfoResult">
+		select u.*,d.dept_name as className,
+		d.full_name
+		from
+		cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		where
+		user_id=#{userId}
+	</select>
+	<select id="selectUserByClassIdLess" parameterType="string"
+		resultMap="userInfoResult">
+		select u.*,d.dept_name as className, d.full_name
+		from cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id AND d.status = '20'
+		where user_id like concat(#{classId},'%') and u.checkflag = '1'
+	</select>
+
+	<!-- 获取班级下注册的正式校友编号字符串 -->
+	<select id="getUserInfosByClassId" parameterType="string"
+		resultType="string">
+		select DISTINCT group_concat(u.accountNum)
+		from cy_user_info u
+		where user_id like concat(#{classId},'%') and u.checkflag = '1' AND u.accountNum IS NOT NULL  AND trim(u.accountNum) != ''
+	</select>
+
+	<!-- 查询出某个人所在班级的所有的学生  郭亚斌 2016-8-22-->
+	<select id="selectUserByUserId" parameterType="string" resultMap="userInfoResult">
+     select u.*
+		from
+		cy_user_info u
+		where user_id LIKE CONCAT(LEFT(#{userId},16),'%')
+        AND user_id!=#{userId}
+	</select>
+
+	<select id="selectClassmates" parameterType="string" resultMap="userInfoResult">
+		SELECT
+			u.user_id,
+			u.user_name,
+			CASE WHEN u.accountNum IS NOT NULL AND u.accountNum != '' THEN (CASE WHEN p.sex='0' THEN '男' WHEN p.sex='1' THEN '女' ELSE u.sex END ) ELSE u.sex END sex,
+			p.phoneNum AS tel_id,
+			p.picture AS pic_url,
+			u.is_class_admin,
+			u.accountNum
+		FROM
+			cy_user_info u
+		LEFT JOIN cy_userprofile p ON u.accountNum = p.accountNum
+		WHERE u.user_id LIKE CONCAT(LEFT(#{userId}, 16),'%') AND u.checkflag = '1'
+	</select>
+
+	<select id="selectFriendsStatusInClassmates" parameterType="map" resultType="map">
+		SELECT
+		c.friend_id,
+		c.`status`,
+		c.applicant_flag
+		FROM
+		cy_chat_contacts c
+		WHERE
+		c.user_id = #{accountNum}
+		AND c.friend_id IN
+		<foreach collection="list" open="(" separator="," close=")"
+				 item="id">
+			#{id}
+		</foreach>
+	</select>
+
+	<select id="getUserInfoByUserIdForAlumni" parameterType="list"
+		resultMap="userInfoResult">
+		select u.*,	d.full_name,
+		<!-- by sky 2017-7-6
+		d.dept_name as className,
+		d.dept_id as classId,
+		d1.dept_name as gradeName,
+		d1.dept_id as gradeId,
+		d2.dept_name	as	departName,
+		d2.dept_id as departId,
+		d3.dept_name as schoolName,
+		d3.dept_id as schoolId,
+		 -->
+		trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+		d.dept_id as classId,
+        trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+		LEFT(u.user_id,14) as gradeId,
+		trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+		LEFT(u.user_id,10) as departId,
+		 trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		LEFT(u.user_id,6) as schoolId,
+		
+		m.majorName as majorName
+		from cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!--  
+		LEFT JOINcy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info		d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON		d3.DEPT_ID=LEFT(u.user_id,6)
+		-->
+		left join cy_major m on	m.majorId=u.majorId
+		where user_id in
+		<foreach collection="list" open="(" separator="," close=")"
+			item="ids">
+			#{ids}
+		</foreach>
+	</select>
+	
+	<select id="selectUserToGetTel" resultMap="userInfoResult">
+		select u.*,d.full_name
+		from cy_user_info u left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id where tel_id is not null and tel_id!=''
+	</select>
+
+	<!-- 新增查询所有手机号字段不为空或者邮箱不为空的用户，并且分页## -->
+	<select id="selectUserToGetTelPage" resultMap="userInfoResult">
+		select * from cy_user_info
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test='sex != null and sex != ""'>
+				and (sex IS NULL OR sex=#{sex})
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="userNameFull!=null and userNameFull!=''">
+				and user_name = #{userNameFull}
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="userIds != null and userIds != ''">
+				and find_in_set(user_id,#{userIds})
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like
+				concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+			<if test='accountNumForAuth!=null and accountNumForAuth != ""'>
+				AND (accountNum = #{accountNumForAuth} OR accountNum IS NULL or accountNum='') AND checkFlag != '2'
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==1">
+				and (accountNum is not null and accountNum!='')
+			</if>
+			<if test="regflag!=null and regflag!='' and regflag==0">
+				and (accountNum is null or accountNum='')
+			</if>
+			<if test="alumniId!=null and alumniId!=0">
+				and alumniId=#{alumniId}
+			</if>
+			<if test="phoneNotNull==true">
+				and tel_id is not null and tel_id!=''
+				group by tel_id
+			</if>
+			<if test="emailNotNull==true">
+				and email is not null and email!=''
+				group by email
+			</if>
+		</where>
+	</select>
+
+	<select id="selectUserToGetTelCount" parameterType="map"
+		resultType="long">
+		select count(user_id) from cy_user_info where 1 = 1
+		<if test="deptList!=null and deptList.size()>0">
+			<foreach collection="deptList" open="(" separator="or" close=")"
+				item="dept">
+				user_id like concat(#{dept.deptId},'%')
+			</foreach>
+		</if>
+		<if test="telId!=null and telId!=''">
+			and tel_id like concat('%',#{telId},'%')
+		</if>
+		<if test='sex != null and sex != ""'>
+			and (sex IS NULL OR sex=#{sex})
+		</if>
+		<if test="userName!=null and userName!=''">
+			and user_name like concat('%',#{userName},'%')
+		</if>
+		<if test="deptId1!=null and deptId1!=''">
+			and user_id like concat(#{deptId1},'%')
+		</if>
+		<if test="studentType!=null and studentType!=''">
+			and studentType =#{studentType}
+		</if>
+		<if test="majorId!=null and majorId!=0">
+			and majorId =#{majorId}
+		</if>
+		<if test="studentnumber!=null and studentnumber!=''">
+			and studentnumber like concat('%',#{studentnumber},'%')
+		</if>
+		<if test="residentialArea!=null and residentialArea!=''">
+			and residentialArea like
+			concat('%',#{residentialArea},'%')
+		</if>
+		<if test="workUnit!=null and workUnit!=''">
+			and workUnit like concat('%',#{workUnit},'%')
+		</if>
+		<if test="mailingAddress!=null and mailingAddress!=''">
+			and mailingAddress like concat('%',#{mailingAddress},'%')
+		</if>
+		<if test="phoneNotNull==true">
+			and tel_id is not null and tel_id!=''
+		</if>
+		<if test="emailNotNull==true">
+			and email is not null and email!=''
+		</if>
+	</select>
+
+
+
+	<select id="selectUserByClassIdAndName" parameterType="map"
+		resultMap="userInfoResult">
+		select user_id,card,accountNum,sex from cy_user_info where
+		user_id like concat(#{classId},'%') and user_name=#{userName}
+	</select>
+	<update id="updateUserAccountNum" parameterType="map">
+		update
+		cy_user_info set accountNum=#{accountNum} where user_id=#{userId}
+	</update>
+	<select id="selectAllProByUserId" parameterType="map" resultMap="userInfoResult">
+		select * from cy_user_info where user_id=#{userId}
+	</select>
+	<!--通过班级id或是否是班级管理员标志，查询用户-->
+	<select id="selectAllUserByClassId" parameterType="map"
+		resultMap="userInfoResult">
+		select * from cy_user_info where user_id like
+		concat(#{classId},'%')
+		<if test="isClassAdmin !=null and isClassAdmin !=''">
+			AND is_class_admin = #{isClassAdmin}
+		</if>
+	</select>
+	<select id="selectUserByClassId" parameterType="string"
+		resultMap="userInfoResult">
+		select * from cy_user_info where user_id like
+		concat(#{classId},'%')
+	</select>
+	<select id="selectCard" parameterType="map" resultMap="userInfoResult">
+		select user_id,user_name,tel_id,telpic_url,studentnumber,sex,card from
+		cy_user_info where user_id in
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</select>
+	<select id="selectByUserName" parameterType="map" resultMap="userInfoResult">
+		select
+		user_id,user_name,tel_id,telpic_url,studentnumber,sex,card,accountNum
+		from cy_user_info where user_name=#{userName}
+	</select>
+	<select id="selectByName" parameterType="string" resultMap="userInfoResult">
+		select
+		user_id,user_name,
+		full_name
+		from cy_user_info
+		left join
+		cy_dept_info
+		on dept_id=LEFT(user_id,16)
+		where user_name=#{name}
+	</select>
+	<select id="selectAlumni" parameterType="map" resultMap="userInfoResult">
+		select
+		*
+		from cy_user_info
+		where accountNum is not null and
+		accountNum!='' and user_name=#{name}
+		<if test="sex!=null and sex!=''">
+			and sex=#{sex}
+		</if>
+		<if test="profession!=null and profession!=''">
+			and industryType like concat('%',#{profession},'%')
+		</if>
+		<if test="address!=null and address!=''">
+			and residentialArea like concat('%',#{address},'%')
+		</if>
+	</select>
+	<select id="selectUserInClass" parameterType="map" resultType="long">
+		select count(user_id) from cy_user_info where user_id like
+		concat(#{classId},'%') and user_name in
+		<foreach collection="list" item="userName" open="(" separator=","
+			close=")">
+			#{userName}
+		</foreach>
+	</select>
+	<select id="selectUserInfo" parameterType="map" resultMap="userInfoResult">
+		select * from cy_user_info where user_id like concat(#{gmid},'%') and
+		user_name=#{name}
+	</select>
+	<update id="updateTelId" parameterType="map" flushCache="true">
+		update
+		cy_user_info set tel_id=#{telId},use_time=#{useTime} where
+		user_id=#{userId}
+	</update>
+	<select id="selectAll" resultMap="userInfoResult">
+		select u.*,
+		<!--  by sky 2017-7-6
+		d.dept_name as		className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName,
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		 m.majorName as majorName
+		 from cy_user_info u
+		 left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		 left join cy_major m on	m.majorId=u.majorId
+	</select>
+	<select id="countFor" parameterType="map" resultType="long">
+		select
+		count(user_id) from cy_user_info
+		<where>
+			1=1
+			<if test="checkFlag !=null and checkFlag!=''">
+				AND checkFlag =#{checkFlag}
+			</if>
+			<choose>
+				<when test="userId!=null and userId!=''">
+					AND user_id = #{userId}
+				</when>
+				<when test="userName!=null and userName!='' and (telId==null or telId=='')">
+					AND user_name = #{userName}
+				</when>
+				<when test="telId!=null and telId!='' and (userName==null or userName=='')">
+					AND tel_id = #{telId}
+				</when>
+				<otherwise>
+					AND user_name = #{userName}
+					AND tel_id = #{telId}
+				</otherwise>
+			</choose>
+		</where>
+	</select>
+	<select id="selectListFor" parameterType="map" resultMap="userInfoResult">
+		select	u.*,d.full_name,
+		<!-- 
+		 d1.dept_name as className,
+		 d2.dept_name as gradeName,
+		 d3.dept_name as departName,
+		 d4.dept_name as schoolName,
+	    -->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		m.majorName as majorName 
+		from cy_user_info u left join
+		cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!--  
+		LEFT JOIN cy_dept_info	d1 ON d1.DEPT_ID = LEFT(u.user_id,16)
+		LEFT JOIN cy_dept_info d2 ON		d2.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d3 ON		d3.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d4 ON		d4.DEPT_ID=LEFT(u.user_id,6)
+		-->		
+		LEFT JOIN cy_major m on	m.majorId=u.majorId
+		<where>
+			1=1
+			<if test="checkFlag !=null and checkFlag!=''">
+				AND checkFlag =#{checkFlag}
+			</if>
+			<choose>
+				<when test="userId!=null and userId!=''">
+					AND user_id = #{userId}
+				</when>
+				<when test="userName!=null and userName!='' and (telId==null or telId=='')">
+					AND user_name = #{userName}
+				</when>
+				<when test="telId!=null and telId!='' and (userName==null or userName=='')">
+					AND tel_id = #{telId}
+				</when>
+				<otherwise>
+					AND user_name = #{userName}
+					AND tel_id = #{telId}
+				</otherwise>
+			</choose>
+		</where>
+		limit #{start},#{rows}
+	</select>
+
+
+
+	<update id="updateIdea" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info set
+		checkIdea=#{checkIdea},
+		checkflag=#{checkFlag}
+		<if test=" useTime != null and useTime != '' ">
+			,use_time = #{useTime}
+		</if>
+		 where user_id=#{userId}
+	</update>
+	<delete id="deleteByDeptIdAll" parameterType="string">
+		delete from cy_user_info
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and residentialArea like
+				concat('%',#{residentialArea},'%')
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="isimport!=null">
+				and isimport=#{isimport}
+			</if>
+		</where>
+	</delete>
+	<select id="selectByDeptIdForExport" parameterType="map"
+		resultMap="userInfoResult">
+		select u.*,
+		<!--  by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName,
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		m.majorName as		majorName
+		from cy_user_info u
+		left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id		
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON
+		d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON
+		d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON
+		d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on
+		m.majorId=u.majorId
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like
+				concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+		</where>
+	</select>
+
+	<!-- 根据accountNum查询 -->
+	<select id="selectByAccountNum" parameterType="map" resultMap="userInfoResult">
+		select u.*,
+		<!--  by sky 2017-7-6
+		d.dept_name as className,
+		d1.dept_name as gradeName,
+		d2.dept_name as departName,
+		d3.dept_name as schoolName,
+		-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		m.majorName as	majorName
+		from cy_user_info u
+		left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id		
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON
+		d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON
+		d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON
+		d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on
+		m.majorId=u.majorId
+		where accountNum = #{accountNum}
+	</select>
+
+	<!-- 根据多个accountNum查询 -->
+	<select id="selectByAccountNums" parameterType="list"
+		resultType="com.cy.core.userinfo.entity.UserInfo">
+		select u.*,
+		d.dept_name as className,
+		d.full_name as fullName,
+		m.majorName as
+		majorName
+		from cy_user_info u
+		left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id
+		left join cy_major m on
+		m.majorId=u.majorId
+		where accountNum in
+		<foreach collection="list" open="(" close=")" item="ids"
+			separator=",">
+			#{ids}
+		</foreach>
+	</select>
+
+	<select id="selectByAccountNum2FullName" parameterType="map"
+		resultMap="userInfoResult">
+		select
+		u.user_id,u.user_name,u.sex,u.pic_url,u.residentialArea,
+		d.full_name
+		from cy_user_info u
+		left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id
+		where accountNum = #{accountNum}
+	</select>
+
+	<select id="selectMobileLocalIsNull" resultMap="userInfoResult">
+		select * from
+		cy_user_info where tel_id is not null and tel_id!='' and (mobile_local
+		is null or mobile_local='')
+	</select>
+
+	<update id="updateMobileLocal" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info
+		set mobile_local=#{mobileLocal} where user_id=#{userId}
+	</update>
+	<update id="updateBase" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info set
+		user_name=#{userName},sex=#{sex},studentType=#{studentType},
+		programLength=#{programLength},studentnumber=#{studentnumber},resourceArea=#{resourceArea},
+		entranceTime=#{entranceTime},graduationTime=#{graduationTime}
+		<if test="majorId!=0">
+			,majorId=#{majorId}
+		</if>
+		<if test="newUserId!=null and newUserId!=''">
+			,user_id=#{newUserId}
+		</if>
+		where user_id=#{userId}
+	</update>
+	<select id="selectByMobile" resultMap="userInfoResult">
+		select * from cy_user_info where tel_id is not null and tel_id!=''
+	</select>
+	<select id="selectByDeptIdAll" parameterType="map" resultMap="userInfoResult">
+		select u.*,d.full_name from cy_user_info u left join cy_dept_info d on
+		LEFT(u.user_id,16)=d.dept_id
+		<where>
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or"
+					close=")" item="dept">
+					user_id like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+			<if test="telId!=null and telId!=''">
+				and tel_id like concat('%',#{telId},'%')
+			</if>
+			<if test="userName!=null and userName!=''">
+				and user_name like concat('%',#{userName},'%')
+			</if>
+			<if test="deptId1!=null and deptId1!=''">
+				and user_id like concat(#{deptId1},'%')
+			</if>
+			<if test="studentType!=null and studentType!=''">
+				and studentType =#{studentType}
+			</if>
+			<if test="majorId!=null and majorId!=0">
+				and u.majorId =#{majorId}
+			</if>
+			<if test="studentnumber!=null and studentnumber!=''">
+				and studentnumber like concat('%',#{studentnumber},'%')
+			</if>
+			<if test="residentialArea!=null and residentialArea!=''">
+				and case when residentialArea is not null and
+				residentialArea!=''
+				then residentialArea like
+				concat('%',#{residentialArea},'%')
+				else
+				mobile_local like
+				concat('%',#{residentialArea},'%')
+				end
+			</if>
+			<if test="workUnit!=null and workUnit!=''">
+				and workUnit like concat('%',#{workUnit},'%')
+			</if>
+			<if test="mailingAddress!=null and mailingAddress!=''">
+				and mailingAddress like concat('%',#{mailingAddress},'%')
+			</if>
+			<if test="industryType!=null and industryType!=''">
+				and industryType like concat('%',#{industryType},'%')
+			</if>
+		</where>
+	</select>
+	<select id="selectBirthday" resultMap="userInfoResult">
+		select * from cy_user_info
+		where birthday=DATE_FORMAT(now(),'%Y-%m-%d') and tel_id!='' and tel_id
+		is not null
+	</select>
+	<update id="updatePhoto" parameterType="map">
+		update cy_user_info set
+		pic_url=#{picUrl} where accountNum = #{accountNum}
+	</update>
+	<update id="updateMobile" parameterType="com.cy.core.userinfo.entity.UserInfo">
+		update cy_user_info set tel_id=#{telId} where user_id=#{userId} and (tel_id is null or tel_id='')
+	</update>
+    <!--qpf 2016-07-18-->
+	<select id="countByAccountNum" resultType="long">
+		<!--已注册-->
+        SELECT COUNT(accountNum) FROM cy_user_info;
+	</select>
+    <select id="countByCheckFlag" resultType="long">
+        <!--取得联系-->
+        SELECT COUNT(1) FROM cy_user_info WHERE checkflag=1;
+    </select>
+    <select id="countByNoCheckFlag" resultType="long">
+        <!--未取得联系-->
+        SELECT COUNT(1) FROM cy_user_info WHERE checkflag IS NULL OR checkflag=0;
+    </select>
+
+    <!--qpf end-->
+
+	<!-- start liuzhen -->
+
+	<!-- 设置班级管理员 -->
+	<update id="updateClassAdmin" parameterType="map">
+		update cy_user_info set
+		is_class_admin=#{isClassAdmin} where
+		<choose>
+			<when test="userIds != null and userIds != ''">
+				find_in_set(user_id,#{userIds})
+			</when>
+			<otherwise>
+				user_id = #{userId}
+			</otherwise>
+		</choose>
+	</update>
+
+	<!-- start qpf -->
+	<!-- 通过学号查询该生信息 -->
+	<select id="selectUserByStudentNum" parameterType="String" resultMap="userInfoResult">
+		select u.*,d.dept_name as className,
+		d.full_name
+		from
+		cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		where studentnumber=#{studentnumber}
+	</select>
+	<!-- 通过身份证号查询该生信息 -->
+	<select id="selectUserByCard" parameterType="String" resultMap="userInfoResult">
+		select u.*,d.dept_name as className,
+		d.full_name
+		from
+		cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		where card=#{card}
+	</select>
+	<!-- 通过邀请码查询该生信息 -->
+	<select id="selectUserByInviteCode" parameterType="String" resultMap="userInfoResult">
+		select u.*,d.dept_name as className,
+			d.full_name
+			from cy_user_info u
+			left join cy_dept_info d on left(u.user_id,16)=d.dept_id
+			left join cy_invite_code i on i.invitee_id=u.user_id
+		where i.invite_code = #{inviteCode}
+	</select>
+
+
+	<!-- 查询该生账号 -->
+	<select id="selectAccountNumByUserId" parameterType="String" resultType="String">
+		SELECT accountNum FROM cy_user_info WHERE user_id=#{userId}
+	</select>
+
+	<update id="deleteAccountNumByUserId" parameterType="String">
+		UPDATE cy_user_info set accountNum=NULL, use_time=NULL, is_one_key_auth='0' WHERE user_id=#{userId}
+	</update>
+
+	<update id="deleteAccountNumByUserIdBase" parameterType="String">
+		UPDATE cy_user_info set accountNum=NULL, use_time=NULL WHERE user_id=#{userId}
+	</update>
+
+	<select id="selectClassNameByUserId" parameterType="String" resultType="String">
+		SELECT full_name FROM cy_dept_info WHERE dept_id=left(#{userId},16)
+	</select>
+
+	<update id="deleteGroupUser" parameterType="map">
+		UPDATE cy_chat_group_user
+		SET del_flag = '1'
+		WHERE user_id=#{accountNum} AND group_id in (SELECT group_id FROM cy_chat_dept_group WHERE dept_id=#{class})
+	</update>
+
+	<select id="getLearningExp" parameterType="String" resultType="map">
+		SELECT
+		u.user_id strStudyPathId,
+		d.dept_id classId ,
+		d.dept_name AS strClass,
+		j.majorName as majorName,
+		u.entranceTime AS entranceTime,
+		u.graduationTime AS graduationTime,
+		u.studentType AS studentType,
+		(SELECT dept_name FROM cy_dept_info WHERE dept_id=LEFT(u.user_id,6)) schoolName,
+		(SELECT dept_name FROM cy_dept_info WHERE dept_id = LEFT(u.user_id,10)) strDepart,
+		d.full_name AS fullStudyPath
+		FROM cy_user_info u
+		LEFT JOIN cy_dept_info d ON d.dept_id = LEFT(u.user_id,16) AND d.`status` = '20'
+		JOIN cy_userbase_info b ON u.user_id = b.user_id
+		LEFT JOIN cy_major j ON u.majorId=j.majorId
+		WHERE u.accountNum=#{accountNum}
+	</select>
+
+	<!-- 随机获取同班3名除自己以外且不跟自己重名的同学 -->
+	<select id="getClassMates" parameterType="String" resultType="String">
+		SELECT DISTINCT
+			user_name
+		FROM
+			cy_user_info
+		WHERE
+			user_id LIKE CONCAT(
+				LEFT (#{strStudyPathId}, 16),
+				'%'
+			)
+		AND user_id != #{strStudyPathId}
+		AND user_name != (SELECT user_name FROM cy_user_info WHERE user_id=#{strStudyPathId})
+		AND checkflag='1'
+		ORDER BY
+			rand()
+		LIMIT 5;
+	</select>
+
+	<!-- 随机获取6名虚拟名称 -->
+	<select id="findDummyName6" parameterType="map" resultType="string">
+		SELECT
+			name
+		FROM
+			cy_dummy_name
+		${dummyNameWhere}
+		ORDER BY
+			rand()
+		LIMIT #{limit}
+	</select>
+	<!-- end qpf-->
+
+
+
+
+
+
+
+	<!--************************************** 统计分析 **************************************-->
+	<!-- 统计校友数 -->
+	<select id="countUserInfo" parameterType="map" resultType="long">
+		SELECT count(1) FROM cy_user_info WHERE checkflag='1'
+		<!-- 是否已被认证 -->
+		<if test="isRegistered != null and isRegistered != ''">
+			<choose>
+				<when test='isRegistered == "0"'><!-- 否 -->
+					AND (accountNum IS NULL OR trim(accountNum) = '')
+				</when>
+				<when test='isRegistered == "1"'><!-- 是 -->
+					AND (accountNum IS NOT NULL AND trim(accountNum) != '')
+				</when>
+			</choose>
+		</if>
+		<!-- 是否已被挖掘 -->
+		<if test="isMining != null and isMining != ''">
+			<choose>
+				<when test='isMining == "0"'><!-- 否 -->
+					AND user_id NOT IN (
+						select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+                        <if test="month != null and month != ''">
+                            and
+                            date_format(d.create_date,'%Y-%m') = #{month}
+                        </if>
+					)
+				</when>
+				<when test='isMining == "1"'><!-- 是 -->
+					AND user_id IN (
+						select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+                        <if test="month != null and month != ''">
+                            and
+                            date_format(d.create_date,'%Y-%m') = #{month}
+                        </if>
+					)
+				</when>
+			</choose>
+		</if>
+		<if test="deptId != null and deptId != ''">
+			AND user_id LIKE concat(#{deptId},'%')
+		</if>
+		<if test="majorId != null and majorId != ''">
+			AND majorId = #{majorId}
+		</if>
+		<!-- 所在地 -->
+		<if test="area != null and area != ''">
+			AND (
+				<choose>
+					<when test='areaType == "1"'>
+						residentialArea LIKE concat(#{area},'%')
+					</when>
+					<when test='areaType == "2"'>
+						mobile_local LIKE concat(#{area},'%')
+					</when>
+					<when test='areaType == "3"'>
+						resourceArea LIKE concat(#{area},'%')
+					</when>
+					<otherwise>
+						residentialArea LIKE concat(#{area},'%')
+						OR mobile_local LIKE concat(#{area},'%')
+						OR resourceArea LIKE concat(#{area},'%')
+					</otherwise>
+				</choose>
+			)
+		</if>
+	</select>
+
+	<!-- 统计分析校友数据 -->
+	<select id="countAnalysisUserInfo" parameterType="map" resultType="map">
+		SELECT
+			s.dept_id schoolId ,
+			d.dept_id collegeId,
+			g.dept_id gradeId,
+			c.dept_id classId,
+			s.dept_name schoolName ,
+			d.dept_name collegeName,
+			g.dept_name gradeName,
+			c.dept_name className,
+			u.majorId ,
+			m.majorName majorName ,
+			CAST(count(u.user_id) AS CHAR) total
+<!-- 			count(u.user_id) total -->
+		FROM cy_user_info u
+		LEFT JOIN cy_major m ON m.majorId = u.majorId
+		JOIN cy_dept_info s ON left(u.user_id,6) = s.dept_id AND s.status = '20'
+		JOIN cy_dept_info d ON left(u.user_id,10) = d.dept_id AND d.status = '20'
+		JOIN cy_dept_info g ON left(u.user_id,14) = g.dept_id AND g.status = '20'
+		JOIN cy_dept_info c ON left(u.user_id,16) = c.dept_id AND c.status = '20'
+		WHERE u.checkflag='1'
+		<!-- 是否已被认证 -->
+			<if test="isRegistered != null and isRegistered != ''">
+				<choose>
+					<when test='isRegistered == "0"'><!-- 否 -->
+						AND (accountNum IS NULL OR trim(accountNum) = '')
+					</when>
+					<when test='isRegistered == "1"'><!-- 是 -->
+						AND (accountNum IS NOT NULL AND trim(accountNum) != '')
+					</when>
+				</choose>
+			</if>
+			<!-- 是否已被挖掘 -->
+			<if test="isMining != null and isMining != ''">
+				<choose>
+					<when test='isMining == "0"'><!-- 否 -->
+						AND user_id NOT IN (
+							select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+                            <if test="month != null and month != ''">
+                                and
+                                date_format(d.create_date,'%Y-%m') = #{month}
+                            </if>
+						)
+					</when>
+					<when test='isMining == "1"'><!-- 是 -->
+						AND user_id IN (
+							select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+                            <if test="month != null and month != ''">
+                                and
+                                date_format(d.create_date,'%Y-%m') = #{month}
+                            </if>
+						)
+					</when>
+				</choose>
+			</if>
+			<if test="deptId != null and deptId != ''">
+				AND user_id LIKE concat(#{deptId},'%')
+			</if>
+			<if test="majorId != null and majorId != ''">
+				AND u.majorId = #{majorId}
+			</if>
+		<if test="groupType != null and groupType != ''">
+			<choose>
+				<when test='groupType == "1"'><!-- 学校分组 -->
+					GROUP BY s.dept_id
+				</when>
+				<when test='groupType == "2"'><!-- 学院分组 -->
+					GROUP BY d.dept_id
+				</when>
+				<when test='groupType == "3"'><!-- 年级分组 -->
+					GROUP BY g.dept_id
+				</when>
+				<when test='groupType == "4"'><!-- 班级分组 -->
+					GROUP BY c.dept_id
+				</when>
+				<when test='groupType == "5"'><!-- 专业分组 -->
+					GROUP BY u.majorId
+				</when>
+			</choose>
+		</if>
+		ORDER BY count(u.user_id) DESC
+		<if test='isLimit == "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+	<!-- 统计分析校友数据(统计数) -->
+	<select id="countByCountAnalysisUserInfo" parameterType="map" resultType="long">
+		SELECT count(1)
+		FROM (
+			SELECT
+				s.dept_id schoolId ,
+				d.dept_id collegeId,
+				g.dept_id gradeId,
+				c.dept_id classId,
+				s.dept_name schoolName ,
+				d.dept_name collegeName,
+				g.dept_name gradeName,
+				c.dept_name className,
+				u.majorId ,
+				m.majorName majorName
+			FROM cy_user_info u
+			LEFT JOIN cy_major m ON m.majorId = u.majorId
+			JOIN cy_dept_info s ON left(u.user_id,6) = s.dept_id AND s.status = '20'
+			JOIN cy_dept_info d ON left(u.user_id,10) = d.dept_id AND d.status = '20'
+			JOIN cy_dept_info g ON left(u.user_id,14) = g.dept_id AND g.status = '20'
+			JOIN cy_dept_info c ON left(u.user_id,16) = c.dept_id AND c.status = '20'
+			WHERE u.checkflag='1'
+				<!-- 是否已被认证 -->
+				<if test="isRegistered != null and isRegistered != ''">
+					<choose>
+						<when test='isRegistered == "0"'><!-- 否 -->
+							AND (accountNum IS NULL OR trim(accountNum) = '')
+						</when>
+						<when test='isRegistered == "1"'><!-- 是 -->
+							AND (accountNum IS NOT NULL AND trim(accountNum) != '')
+						</when>
+					</choose>
+				</if>
+				<!-- 是否已被挖掘 -->
+				<if test="isMining != null and isMining != ''">
+					<choose>
+						<when test='isMining == "0"'><!-- 否 -->
+							AND user_id NOT IN (
+								select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+								<if test="month != null and month != ''">
+									and
+									date_format(d.create_date,'%Y-%m') = #{month}
+								</if>
+							)
+						</when>
+						<when test='isMining == "1"'><!-- 是 -->
+							AND user_id IN (
+								select DISTINCT d.mined_user_id from cy_data_mining d WHERE d.del_flag != '1'
+								<if test="month != null and month != ''">
+									and
+									date_format(d.create_date,'%Y-%m') = #{month}
+								</if>
+							)
+						</when>
+					</choose>
+				</if>
+				<if test="deptId != null and deptId != ''">
+					AND user_id LIKE concat(#{deptId},'%')
+				</if>
+				<if test="majorId != null and majorId != ''">
+					AND u.majorId = #{majorId}
+				</if>
+			<if test="groupType != null and groupType != ''">
+			<choose>
+				<when test='groupType == "1"'><!-- 学校分组 -->
+					GROUP BY s.dept_id
+				</when>
+				<when test='groupType == "2"'><!-- 学院分组 -->
+					GROUP BY d.dept_id
+				</when>
+				<when test='groupType == "3"'><!-- 年级分组 -->
+					GROUP BY g.dept_id
+				</when>
+				<when test='groupType == "4"'><!-- 班级分组 -->
+					GROUP BY c.dept_id
+				</when>
+				<when test='groupType == "5"'><!-- 专业分组 -->
+					GROUP BY u.majorId
+				</when>
+			</choose>
+		</if>
+		) a
+	</select>
+
+	<!-- 获取省份地区校友分布 -->
+	<select id="findUserInfoMap" parameterType="map" resultType="map">
+		SELECT
+			p.provinceName name ,
+			count(u.user_id) value
+		FROM
+			cy_user_info u
+		JOIN cy_province p ON (
+			<!-- u.residentialArea LIKE concat(p.provinceName, '%')
+			OR mobile_local LIKE concat(p.provinceName, '%')
+			OR resourceArea LIKE concat(p.provinceName, '%') -->
+
+		<choose>
+			<when test='areaType == "1"'>
+				residentialArea LIKE concat(p.provinceName,'%')
+			</when>
+			<when test='areaType == "2"'>
+				mobile_local LIKE concat(p.provinceName,'%')
+			</when>
+			<when test='areaType == "3"'>
+				resourceArea LIKE concat(p.provinceName,'%')
+			</when>
+			<otherwise>
+				residentialArea LIKE concat(p.provinceName,'%')
+				OR mobile_local LIKE concat(p.provinceName,'%')
+				OR resourceArea LIKE concat(p.provinceName,'%')
+			</otherwise>
+		</choose>
+
+		)
+		AND u.checkflag = '1'
+		GROUP BY
+			p.provinceName
+		order by value desc
+	</select>
+
+	<!-- 获取省份校友会分布 -->
+	<select id="findAlumniCountMap" parameterType="map" resultType="map">
+		SELECT
+			count(a.alumniId) value,
+			p.provinceName name
+		FROM
+			cy_alumni a
+		JOIN cy_province p ON a.region LIKE CONCAT(p.provinceName, '%')
+		WHERE 1=1
+		<if test="main != null and main != ''">
+			AND a.main = #{main}
+		</if>
+		GROUP BY
+			p.provinceName
+		order by value desc
+	</select>
+
+	<select id="findGradeMates" parameterType="map" resultType="map">
+		SELECT
+			ui.user_id AS baseInfoId,
+			ui.user_name AS name,
+			di.full_name AS className
+		<if test="accountNum != null and accountNum != ''">
+			,CASE WHEN (dm.id IS NOT NULL OR dm.id != '') THEN 1 ELSE 0 END hasRecord
+		</if>
+		FROM
+			cy_user_info ui
+		LEFT JOIN cy_dept_info di ON di.dept_id = LEFT (ui.user_id, 16)
+		<if test="accountNum != null and accountNum != ''">
+			LEFT JOIN cy_data_mining dm ON (dm.mined_user_id = ui.user_id AND dm.mining_user_id=#{accountNum})
+		</if>
+		WHERE
+		<foreach collection="list" open="(" separator="or" close=")" item="userId">
+			ui.user_id LIKE CONCAT( '%', LEFT (#{userId}, #{level}), '%')
+		</foreach>
+		AND ui.checkflag = '1'
+		<if test="isAuth != null and isAuth != '' ">
+			<if test=" isAuth == 1 ">
+				AND ( ui.accountNum IS NULL OR ui.accountNum = '' )
+			</if>
+			<if test=" isAuth == 2 ">
+				AND ui.accountNum IS NOT NULL AND ui.accountNum != ''
+			</if>
+		</if>
+
+	</select>
+
+	<select id="findAccountByPinyin" parameterType="string" resultType="string">
+		SELECT
+			accountNum
+		FROM
+			cy_user_info
+		WHERE
+			name_pinyin LIKE CONCAT('%', #{pinyin}, '%')
+		AND accountNum IS NOT NULL
+		AND accountNum != ''
+		GROUP BY
+			accountNum
+	</select>
+
+	<select id="countAccountInClass" parameterType="com.cy.core.userinfo.entity.UserInfo" resultType="long" >
+		SELECT count(user_id)
+		FROM cy_user_info
+		WHERE user_id LIKE CONCAT( LEFT(#{userId}, 16), '%' )
+		AND accountNum = #{accountNum} AND checkflag = '1'
+	</select>
+
+
+	<select id="selectAuthMember" parameterType="map" resultMap="userInfoResult">
+		SELECT
+			ui.user_id,ui.user_name,ui.accountNum,u.picture AS pic_url,di.full_name,di.dept_name AS className
+		FROM
+		cy_user_info ui
+		JOIN cy_dept_info di ON LEFT(ui.user_id, 16) = di.dept_id
+		JOIN cy_userprofile u ON ui.accountNum = u.accountNum
+		WHERE
+		ui.accountNum IS NOT NULL
+		AND ui.accountNum != ''
+		AND checkflag = '1'
+		ORDER BY use_time DESC
+		<if test="isNoLimit == null ">
+			LIMIT #{start},#{rows}
+		</if>
+	</select>
+	<select id="countAuthMember" parameterType="map" resultType="long">
+		SELECT
+			COUNT(ui.user_id)
+		FROM
+		cy_user_info ui
+		JOIN cy_dept_info di ON LEFT(ui.user_id, 16) = di.dept_id
+		JOIN cy_userprofile u ON ui.accountNum = u.accountNum
+		WHERE
+		ui.accountNum IS NOT NULL
+		AND ui.accountNum != ''
+		AND checkflag = '1'
+	</select>
+
+	<select id="userCheckList" parameterType="map" resultType="map">
+		SELECT
+			ui.user_id AS userId,
+			ui.user_name AS userName,
+			ui.create_time AS createTime,
+			ui.checkIdea,
+			ui.checkflag AS checkFlag,
+			di.full_name AS className
+		FROM
+			cy_user_info ui
+		LEFT JOIN cy_dept_info di ON di.dept_id = LEFT(ui.user_id , 16)
+		WHERE ui.is_from_app = '1' AND di.dept_id IS NOT NULL
+		<if test='accountNum != null and accountNum != ""'>
+			AND ui.accountNum = #{accountNum}
+		</if>
+		<if test='checkFlag != "" and checkFlag != null'>
+			AND ui.checkflag = #{checkFlag}
+		</if>
+		<if test='userId != null and userId != ""'>
+			AND ui.user_id = #{userId}
+		</if>
+		ORDER BY ui.create_time DESC
+		<if test="isNoLimit != 1">
+			LIMIT #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="userCheckCount" parameterType="map" resultType="long">
+		SELECT
+		COUNT(ui.user_id)
+		FROM
+		cy_user_info ui
+		LEFT JOIN cy_dept_info di ON di.dept_id = LEFT(ui.user_id , 16)
+		WHERE ui.is_from_app = '1' AND di.dept_id IS NOT NULL
+		<if test='accountNum != null and accountNum != ""'>
+			AND ui.accountNum = #{accountNum}
+		</if>
+		<if test='checkFlag != "" and checkFlag != null'>
+			AND ui.checkflag = #{checkFlag}
+		</if>
+		<if test='userId != null and userId != ""'>
+			AND ui.user_id = #{userId}
+		</if>
+	</select>
+
+
+	<!--挖掘用户数-->
+	<select id="countUserInfoMining" resultType="long">
+		SELECT
+		count(1)
+		FROM
+		cy_user_info
+		WHERE
+		checkflag = '1'
+		AND (tel_id IS NOT NULL AND trim(tel_id) != '')
+	</select>
+
+	<!--挖掘注册用户数-->
+	<select id="countUserInfoRegister" resultType="long">
+		SELECT
+			count(distinct accountNum)
+		FROM
+		cy_user_info
+		WHERE
+		checkflag = '1'
+		AND (tel_id IS NOT NULL AND trim(tel_id) != '')
+		AND (accountNum IS NOT NULL AND trim(accountNum) != '')
+	</select>
+	<!--挖掘认证用户数-->
+	<select id="countUserInfoAuthenticate" resultType="long">
+		SELECT
+		count( accountNum)
+		FROM
+		cy_user_info
+		WHERE
+		checkflag = '1'
+		AND (tel_id IS NOT NULL AND trim(tel_id) != '')
+		AND (accountNum IS NOT NULL AND trim(accountNum) != '')
+	</select>
+
+	<!-- 修改数据编号 -->
+	<update id="updateUserId" parameterType="map">
+		UPDATE cy_user_info SET user_id = #{newUserId} WHERE user_id = #{oldUserId}
+	</update>
+
+
+	<select id="selectSameNameList" parameterType="map" resultMap="userInfoResult">
+		SELECT	u.*,
+			<!--  
+			d.dept_name as className,
+			d1.dept_name as gradeName,
+			d2.dept_name as departName,
+			d3.dept_name as schoolName
+			-->
+		 trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+         trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+         trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+         trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName
+		FROM
+			cy_user_info u
+		LEFT JOIN cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		WHERE u.checkflag = 1
+		<if test='deptId != null and deptId != "" '>
+			AND u.user_id LIKE CONCAT(#{deptId} , '%')
+		</if>
+		<if test='userName != null and userName != "" '>
+			AND u.user_name = #{userName}
+		</if>
+		<if test='sex != null and sex != ""'>
+			AND (u.sex = #{sex} OR u.sex IS NULL OR u.sex = '')
+		</if>
+		<if test='isLimit == "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="countSameName" parameterType="map" resultType="long">
+		SELECT COUNT(user_id) FROM cy_user_info u
+		WHERE u.checkflag = 1
+		<if test='deptId != null and deptId != "" '>
+			AND u.user_id LIKE CONCAT(#{deptId} , '%')
+		</if>
+		<if test='userName != null and userName != "" '>
+			AND u.user_name = #{userName}
+		</if>
+		<if test='sex != null and sex != ""'>
+			AND (u.sex = #{sex} OR u.sex IS NULL OR u.sex = '')
+		</if>
+	</select>
+
+
+
+
+	<select id="selectUserByTelePhone" parameterType="string" resultMap="userInfoResult">
+		select u.*,
+		d.full_name,		
+		trim(SUBSTRING_INDEX(d.full_name,',',-1))as className,
+		d.dept_id as classId,
+        trim(substring_index(substring_index(d.full_name,',',3),',',-1))as gradeName,
+		LEFT(u.user_id,14) as gradeId,
+		trim(substring_index(substring_index(d.full_name,',',2),',',-1))as departName,
+		LEFT(u.user_id,10) as departId,
+		 trim(substring_index(substring_index(d.full_name,',',1),',',-1))as schoolName,
+		LEFT(u.user_id,6) as schoolId,
+		<!-- by sky 2017-7-6
+		d.dept_name as className,
+		d.dept_id as classId,
+		d1.dept_name as gradeName,
+		d1.dept_id as gradeId,
+		d2.dept_name	as	departName,
+		d2.dept_id as departId,
+		d3.dept_name as schoolName,
+		d3.dept_id as schoolId,
+		 -->
+		m.majorName as majorName
+		from cy_user_info u
+		left join cy_dept_info d on LEFT(u.user_id,16)=d.dept_id
+		<!-- 
+		LEFT JOIN
+		cy_dept_info d1 ON d1.DEPT_ID=LEFT(u.user_id,14)
+		LEFT JOIN cy_dept_info	d2 ON d2.DEPT_ID=LEFT(u.user_id,10)
+		LEFT JOIN cy_dept_info d3 ON d3.DEPT_ID=LEFT(u.user_id,6)
+		 -->
+		left join cy_major m on
+		m.majorId=u.majorId
+		where tel_id = #{phoneNumber}
+	</select>
+
+
+</mapper>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.industry.dao.IndustryMapper">
+	<resultMap type="com.cy.core.industry.entity.Industry" id="industryResultMap">
+		<id column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="value" property="value" />
+		<result column="order_no" property="orderNo" />
+		<result column="parent_code" property="parentCode" />
+		<result column="level" property="level" />
+		<result column="sequence" property="sequence" /> <!--add by jiangling -->
+		<result column="createuser" property="createuser" />
+		<result column="createtime" property="createtime" />
+		<result column="updateuser" property="updateuser" />
+		<result column="updatetime" property="updatetime" />
+		<result column="delstate" property="delstate" />
+		<result column="state" property="state" />
+	</resultMap>
+	
+	<insert id="save" parameterType="com.cy.core.industry.entity.Industry"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		cy_industry(code,value,order_no,parent_code,level,sequence,createuser,createtime)
+		values(#{code},#{value},#{orderNo},#{parentCode},#{level},#{sequence},#{createuser},#{createtime})
+	</insert>
+
+	<update id="update" parameterType="com.cy.core.industry.entity.Industry">
+		update cy_industry
+		<set>
+			<if test="code !=null and code !=''">
+				code = #{code},
+			</if>
+			<if test="value !=null and value !=''">
+				value = #{value},
+			</if>
+			<if test="orderNo !=null and orderNo !=''">
+				order_no = #{orderNo},
+			</if>
+			<if test="parentCode !=null and parentCode !=''">
+				parent_code = #{parentCode},
+			</if>
+			<if test="level !=null and level !=''">
+				level = #{level},
+			</if>
+			<if test="sequence !=null and sequence !=''">
+				sequence = #{sequence},
+			</if>
+			<if test="createuser !=null and createuser !=''">
+				createuser = #{createuser},
+			</if>
+			<if test="createtime !=null and createtime !=''">
+				createtime = #{createtime},
+			</if>
+			<if test="updateuser !=null and updateuser !=''">
+				updateuser = #{updateuser},
+			</if>
+			<if test="updatetime !=null and updatetime !=''">
+				updatetime = #{updatetime},
+			</if>
+			<if test="delstate !=null and delstate !=''">
+				delstate = #{delstate}
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+	<update id="delete" parameterType="com.cy.core.industry.entity.Industry">
+		update cy_industry set delstate = '1' where code = #{code}
+	</update>
+	
+	<delete id="realDelete" parameterType="string">
+		delete from cy_industry where code=#{code}
+	</delete>
+	
+	<select id="countIndustry" parameterType="map" resultType="long">
+		select count(i.id) from cy_industry i
+		<where>
+			<if test="id!=null and id!=''">
+				and i.id = #{id}
+			</if>
+			<if test="code!=null and code!=''">
+				and i.code = #{code}
+			</if>
+			<if test="value!=null and value!=''">
+				and i.value = #{value}
+			</if>
+			<if test="orderNo!=null and orderNo!=''">
+				and i.order_no = #{orderNo}
+			</if>
+			<if test="parentCode!=null and parentCode!=''">
+				and i.parent_code = #{parentCode}
+			</if>
+			<if test="level!=null and level!=''">
+				and i.level = #{level}
+			</if>
+			<if test="sequence !=null and sequence !=''">
+				and sequence = #{sequence}
+			</if>
+			<if test="createuser!=null and createuser!=''">
+				and i.createuser = #{createuser}
+			</if>
+			<if test="createtime!=null and createtime!=''">
+				and i.createtime = #{createtime}
+			</if>
+			<if test="updateuser!=null and updateuser!=''">
+				and i.updateuser = #{updateuser}
+			</if>
+			<if test="updatetime!=null and updatetime!=''">
+				and i.updatetime = #{updatetime}
+			</if>
+			<if test="delstate!=null and delstate!=''">
+				and i.delstate = #{delstate}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="selectIndustryList" parameterType="map" resultMap="industryResultMap">
+		SELECT
+			i.id,
+			i.code	as 'code',
+			i.value as 'value',
+			i.order_no,
+			i.parent_code,
+			i.level as 'level',
+			i.sequence as 'sequence',
+			i.createuser,
+			i.createtime,
+			i.updateuser,
+			i.updatetime,
+			i.delstate,
+			case level when '2' then 'closed' else 'open' end state
+		FROM
+			cy_industry i
+		<where>
+			<if test="id!=null and id!=''">
+				and i.id = #{id}
+			</if>
+			<if test="code!=null and code!=''">
+				and i.code like concat('%',#{code},'%')
+			</if>
+			<if test="value!=null and value!=''">
+				and i.value like concat('%',#{value},'%')
+			</if>
+			<if test="orderNo!=null and orderNo!=''">
+				and i.order_no = #{orderNo}
+			</if>
+			<if test="parentCode!=null and parentCode!=''">
+				and i.parent_code = #{parentCode}
+			</if>
+			<if test="level!=null and level!=''">
+				and i.level = #{level}
+			</if>
+			<if test="sequence !=null and sequence !=''">
+				and sequence = #{sequence}
+			</if>
+			<if test="createuser!=null and createuser!=''">
+				and i.createuser = #{createuser}
+			</if>
+			<if test="createtime!=null and createtime!=''">
+				and i.createtime = #{createtime}
+			</if>
+			<if test="updateuser!=null and updateuser!=''">
+				and i.updateuser = #{updateuser}
+			</if>
+			<if test="updatetime!=null and updatetime!=''">
+				and i.updatetime = #{updatetime}
+			</if>
+			<if test="delstate!=null and delstate!=''">
+				and i.delstate = #{delstate}
+			</if>
+			<!--if test="delstate ==null or delstate ==''">
+				and i.delstate = '0'
+			</if-->
+			and i.delstate !='1'
+		</where>
+	</select>
+
+
+	<select id="findIndustryList" parameterType="map" resultMap="industryResultMap">
+		SELECT
+		*
+		FROM
+		cy_industry i
+		<where>
+			<if test="level!=null and level>0">
+				and <![CDATA[(i.level+0)<=#{level}]]>
+			</if>
+
+			<if test="sequence!=null and sequence!=''">
+				and sequence like concat('%',#{parentCode},'%')
+				and sequence like concat(#{sequence},'%')
+			</if>
+			<if test="parentCode != null and parentCode != ''">
+				AND parent_code = #{parentCode}
+			</if>
+			and i.delstate !='1'
+		</where>
+	</select>
+
+	<!--add by jiangling 查询出该机构及其以上的机构,以树的形式展示-->
+	<select id="selectIndustryTrees" parameterType="map" resultMap="industryResultMap">
+		SELECT t2.*
+		FROM
+		  ( SELECT DISTINCT *
+			FROM
+			  (SELECT CASE @r WHEN '-1' THEN @r := a.code ELSE @r END code,@r _tmp,
+				 (SELECT @r:=parent_code
+				  FROM cy_industry
+				  WHERE delstate !='1' AND code=_tmp)
+			   FROM
+				 (SELECT @r:='-1',h.*
+				  FROM cy_industry h LIMIT 10) aa,
+				  cy_industry a
+				<where> a.delstate !='1'
+			   		<if test="value!=null and value!='' ">
+				   		and a.value LIKE concat('%',#{value},'%')
+			   		</if>
+					<if test="code!=null and code!='' ">
+						and a.code LIKE concat('%',#{code},'%')
+					</if>
+					) b
+				</where>
+			ORDER BY code ASC) t1
+		  LEFT JOIN cy_industry t2 ON t1._tmp=t2.code;
+	</select>
+
+
+	
+	<select id="countByIndustryCode" parameterType="com.cy.core.industry.entity.Industry" resultType="int">
+		select count(id) from cy_industry 
+		<where> delstate !='1'
+			<if test="id!=null and id!=''">
+				and id != #{id}
+			</if>
+			<if test="code!=null and code!=''">
+				and code = #{code}
+			</if>
+		</where>
+	</select>
+	
+	<select id="countByIndustryName" parameterType="com.cy.core.industry.entity.Industry" resultType="int">
+		select count(id) from cy_industry
+		<where> delstate !='1'
+			<if test="id !=null and id !=''">
+				and id != #{id}
+			</if>
+			<if test="value !=null and value !=''">
+				and value = #{value}
+			</if>
+		</where>
+	</select>
+	
+	<select id="countByIndustryValue" parameterType="string"
+		resultMap="industryResultMap">
+		select * from cy_industry where parent_code=#{parentCode}
+	</select>
+	
+	<select id="selectByParentCode" parameterType="string"
+		resultMap="industryResultMap">
+		select * from cy_industry where parent_code=#{parentCode}
+	</select>
+	
+	<select id="selectIndustryByCode" parameterType="string" resultMap="industryResultMap">
+		select i.* from cy_industry i where i.code = #{code}
+	</select>
+
+	<!--add by jiangling -->
+	<select id="selectIndustryByParentCode" parameterType="string" resultMap="industryResultMap">
+		select * from cy_industry i where i.code=#{parentCode}
+	</select>
+
+	<!--Lixun 2017-5-12 多条插入提高效率-->
+	<insert id="multisave" parameterType="list">
+		insert into
+		cy_industry(code,value,order_no,parent_code,level,sequence,createuser,createtime)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.code},#{item.value},#{item.orderNo},#{item.parentCode},#{item.level},#{item.sequence},#{item.createuser},#{item.createtime})
+		</foreach>
+
+	</insert>
+</mapper>

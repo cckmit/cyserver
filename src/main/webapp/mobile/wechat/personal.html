@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人信息</title>
+    <!--css-->
+    <link href="static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="static/css/my_center.css" rel="stylesheet" type="text/css" />
+    <link href="static/layer/need/layer.css" rel="stylesheet" type="text/css" />
+
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+        #activeBOx{
+            float:left;
+            position:relative;
+            width:100%;
+        }
+        .onFloat{
+            position:fixed;
+            _position:absolute;
+            top: -50px;
+            z-index: 999;
+            background: #ddd;
+            color: #555;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+            width: 98%;
+            margin-left: 1%;
+        }
+        .activeLink{
+            float: left;
+            margin-left: 10px
+        }
+        .activeClose{
+            float: right;
+            margin-right: 10px
+        }
+    </style>
+</head>
+<body>
+<div id="activeBox">
+    <div id="activeArea" class="onFloat">
+        <span class="activeLink jump_active">您的邮箱尚未验证,</span><span class="jump_active" onclick="getActiveEmail()" style="color:#1a7ee5">获取验证链接</span>
+        <span class="activeClose">关闭</span>
+    </div>
+</div>
+<div class="H-theme-background-color-eb">
+    <div tapmode=""
+         class="H-flexbox-horizontal  H-theme-background-color-white H-margin-vertical-top-10 H-padding-vertical-both-10
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb; position:relative;overflow: hidden;height:74px;">
+
+        <div class="H-flex-item H-padding-horizontal-both-10 H-theme-font-color15 H-font-size-16">头像</div>
+
+        <!--在本地文件中选择图片-->
+        <div id="avatarArea" class="H-flex-item" style="position:absolute;">
+            <!--uploadImg-->
+            <div id="uploadImg" class="H-padding-horizontal-right-10 H-padding-vertical-both-10 H-display-block" style="position:absolute;right:0;top:-10px">
+                <img id="userAvatar" class=" H-vertical-align-middle H-width-50 H-border-radius-circle" style="width:54px; height:54px" tapmode=""
+                     onerror="javascript:this.src='../img/userlogo.png';">
+            </div>
+        </div>
+
+        <!--获得存储上传图片的地址-->
+        <input type="file" id="picNative" name="picNative"  onchange="getPicUrl(this)" style="display:none;" />
+    </div>
+
+    <div class="H-theme-background-color-white H-border-vertical-both-after">
+
+        <div onclick="goEditName(this)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">姓名</div>
+            <div id="name" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14 H-padding-vertical-both-12 H-text-align-right"
+                 style="color:#818181"></div>
+        </div>
+
+        <div onclick="goEditSex(this)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">性别</div>
+            <div id="sex" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <div onclick="changePhoneNum()" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">手机号</div>
+            <div id="phoneNum" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <!--邮箱-->
+        <div onclick="goEdit(this,5)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">邮箱</div>
+            <div id="email"  class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#3498db"></div>
+        </div>
+        <div onclick="goEdit(this,3)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">生日</div>
+            <div id="birthday" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+    </div>
+    <!--<div class="H-theme-background-color-white H-margin-vertical-top-10 H-border-vertical-both-after">
+
+    </div>-->
+    <div class="H-margin-vertical-top-10 H-theme-background-color-white H-border-vertical-both-after">
+        <div onclick="goEdit(this,4)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">地址</div>
+            <div id="address" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+
+        <div onclick="goEdit(this,7)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">职业</div>
+            <div id="job"  class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <div  onclick="goEdit(this,6)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">工作单位</div>
+            <div id="workUtil" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+    </div>
+    <div class="H-margin-vertical-top-10 H-theme-background-color-white H-border-vertical-both-after">
+        <!--<div onclick="goAlumni()" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">我的分会</div>
+        </div>-->
+        <div  onclick="goStudyPath()" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">我的班级</div>
+            <span class="H-badge H-display-block">
+                <label id="classList" class=" H-display-inline-block H-vertical-middle H-theme-background-color6 H-theme-font-color-white H-font-size-12">
+                </label>
+            </span>
+            <span class="H-icon H-padding-horizontal-right-5 H-display-block"><i class="H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i></span>
+        </div>
+        <div onclick="goEdit(this,8)" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">密码</div>
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12 H-theme-font-color6 H-text-align-right">更改密码</div>
+        </div>
+    </div>
+
+</div>
+
+
+<!--引入脚本文件-->
+<script src="static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="static/js/lrz.mobile.min.js"></script>
+<script src="static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+<script src="static/layer/layer.js" type="text/javascript"></script>
+<!--js-->
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("personal.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '個人信息',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }else{
+        openId = '';
+    }
+    if(!appId || appId == "null"){
+        appId = '';
+    }
+    if(!accountNum || accountNum == "null"){
+        accountNum = '';
+    }
+
+    var isChanged = '0'; //初始化 已修改性别 标识
+    var isVerified = '0'; //初始化时 未认证
+    var sex = '', itemName='', urlName='';
+
+    $(function(){
+        B.ready(function(){
+            // 获取用户信息
+            loadUserInfo();
+        });
+
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+//            alert("我监听到了浏览器的返回按钮事件啦");
+            var rnumber = Math.floor(Math.random()*1000);
+            if(fromFoundation && fromFoundation == '1'){
+                H.openWin("我的捐赠", "../../foundation/my_donates.html?accountNum="+accountNum+"&mod="+rnumber);
+            }else{
+                H.openWin("个人中心", "main.html?accountNum="+accountNum+"&mod="+rnumber);
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+        //点击头像区域, 触发"选择本地图像"
+        $('#avatarArea').on('click', function () {
+            if(openId != ''){
+                wechatUpdatePic(appId, openId,accountNum, 1, '#userAvatar', 1);
+            }else{
+                $("#picNative").trigger("click");
+            }
+        });
+    });
+
+    // 获取用户信息
+    function loadUserInfo() {
+        console.log('{"command": "27","content": {"accountNum": "' + accountNum + '"}}')
+
+        $.ajax({
+            type: "post",
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "' + accountNum + '"}}'
+            },
+            dataType: "json",
+            success: function(data){
+                console.log("个人信息=="+JSON.stringify(data));
+                if (data && data.success) {
+                    initPage(data.obj);
+                    if(data.obj.isActivate == '0'){
+                        $('#email').css('color','#db370c');
+                        var time=0.5;
+                        var interval = setInterval(function () {
+                            if(time <= 0){
+                                clearInterval(interval);
+                            }
+
+                            $('#activeArea').css('top', (-50 + ((0.5-time)/0.5*52))+'px');
+                            time -= 0.01;
+                        },10);
+
+                        // 顶部提示绑定的浮动链接
+                        var oDiv=document.getElementById("activeArea");
+                        var HEIGHT=0,iE6;
+                        var Y=oDiv;
+                        while(Y){HEIGHT+=Y.offsetTop;Y=Y.offsetParent};
+                        iE6=window.ActiveXObject&&!window.XMLHttpRequest;
+                        if(!iE6){
+                            window.onscroll=function()
+                            {
+                                var s=document.body.scrollTop||document.documentElement.scrollTop;
+                                if(s>HEIGHT){
+                                    oDiv.className="onFloat";
+                                    if(iE6){
+                                        oDiv.style.top=(s-HEIGHT)+"px";
+                                    }
+                                }
+                            };
+                        }
+
+
+                        $('.activeClose').click(function () {
+                            time = 0.5;
+                            var interval = setInterval(function () {
+                                if(time <= 0){
+                                    clearInterval(interval);
+                                }
+
+                                $('#activeArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                                time -= 0.01;
+                            },10);
+                        });
+
+                    }
+                }
+            }
+        });
+    }
+
+
+    function initPage(userObj){
+        var sex='', picture='../static/img/default_profile.png';
+
+        if(userObj.pictureRT && userObj.pictureRT != ''){
+            picture = B.getImageAbsoluteUrl(userObj.pictureRT) ;
+        }
+
+
+        $("#userAvatar").attr("src",picture);
+        $("#name").text(userObj.name);
+
+        //学习路径数量(我的班级)
+        if(userObj.baseInfoId && userObj.baseInfoId != ''){
+            var classList = userObj.baseInfoId.split(',');
+            $("#classList").text(classList.length);
+        }else{
+            $("#classList").text("0");
+        }
+
+
+        //转义
+        if(userObj.sex && userObj.sex == '0'){
+            sex = '男';
+
+        }else if(userObj.sex && userObj.sex == '1'){
+            sex = '女';
+        }
+        $("#sex").text(sex);
+        $("#birthday").text(userObj.birthday);
+        $("#address").text(userObj.address);
+        $("#phoneNum").text(userObj.phoneNum);
+
+        //判断邮箱是否绑定
+        if(userObj.email == ''){
+            $("#email").text('绑定邮箱');
+        }else if(userObj.email && userObj.email != ''){
+            $("#email").text(userObj.email);
+        }
+
+
+
+        $("#workUtil").text(userObj.workUtil);
+        $("#job").text(userObj.profession);
+//             $("#signName").text(userObj.sign);
+        //判断性别是否已经进行修改 1-已经修改过, 0-未修改
+        isChanged = userObj.isChangedSex;
+        //判断用户是否已经认证
+        if(userObj.baseInfoId && userObj.baseInfoId !='') {
+            //被认证
+            isVerified = '1';
+        }
+
+    }
+
+
+    function changePhoneNum() {
+        H.openWin("改绑手机号", "rebind_mobile.html?ts="+B.getRandomInt(4)+"&mobile="+$('#phoneNum').text()+"&accountNum"+accountNum);
+    }
+
+    // 获取图片改变后的地址
+    function getPicUrl(obj){
+        // 验证上传图片
+        var fileExt = document.getElementById('picNative').value;
+        var fileName = "";
+
+        if(fileExt != null && fileExt != ''){
+
+            fileName = fileExt.substring(0,fileExt.lastIndexOf("."));
+            fileName = fileName.substr(fileName.lastIndexOf("\\")+1, fileName.length);
+
+            fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+            if(fileExt == null || fileExt == ''){
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请确认上传的文件包含正确的扩展名',
+                    button:["确认"]
+                });
+                return;
+            }
+
+            fileExt = fileExt.toLowerCase();
+            if(fileExt=='.gif' || fileExt=='.jpg' || fileExt=='.png' || fileExt=='.bmp' || fileExt=='.jpeg'){
+            }else{
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请上传正确的图片文件',
+                    button:["确认"]
+                });
+                return;
+            }
+        }
+
+        // 图片压缩
+        lrz(obj.files[0], {
+            width: 400,
+            quality: 0.8,
+            done: function (results) {
+
+                var uploadImgParam = {
+                    uploadFileBase64:results.base64.substring(results.base64.lastIndexOf(",") + 1),
+                    uploadFileName:fileName + fileExt,
+                    jsonStr:'{"command": "6","content": {"accountNum": "'+accountNum+'"}}'
+                };
+
+                // 上传图片到服务器，返回图片在服务器的完整地址,并且服务端将用户与新头像关联上.
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:uploadImgParam,
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        // 显示更改后的头像
+                        $("#userAvatar").attr("src", data.obj);
+
+                    },
+                    error: function(xhr, type){
+                        // 保存失败
+                    }
+                });
+            }
+        });
+    }
+
+    //点击"头像",底部弹出询问框,上传头像
+    /*    function uploadImg() {
+     H.actionSheetTip(function (ret, err) {
+     //            H.alertTip(ret);
+
+     if(ret.buttonIndex==1) {
+     selectPic(); //触发"选择本地图像"事件
+     }
+
+     }, '请选择图片来源', ['图片选择', '优雅自怕']);
+     }*/
+
+    //进入编辑页
+    function goEdit(obj,flag) {
+        var itemStr = $(obj).children(".item");
+        var objStr = itemStr.text()?itemStr.text():'';
+        objStr = encodeURI(objStr) ;
+
+        itemName = $(obj).find("div").get(0);
+        urlName = itemName.innerHTML;
+        var url = "edit_personal.html?ts="+B.getRandomInt(4)+"&obj="+objStr+"&flag="+flag+"&urlName="+urlName +"&fromFoundation="+fromFoundation;
+        H.openWin("编辑",url);
+    }
+
+    //点击"性别",进入编辑页
+    function goEditSex(obj) {
+        //点击 性别 时, 如果已经修改,则先提示用户, 性别已经修改
+        if(isChanged=='1' && isVerified == '1') {
+            H.alert("亲,您的性别已经修改过,不能再修改");
+            return;
+        }
+        var sex=''; //0-男, 1-女
+        var sexStr = $(obj).children(".item").html();
+        if(sexStr=='男') {
+            sex = '0';
+        }else{
+            sex = '1';
+        }
+
+        H.openWin("更改性别","edit_sex.html?ts="+B.getRandomInt(4)+"&sex="+sex+"&fromFoundation="+fromFoundation);
+    }
+
+    //点击"姓名", 计入编辑页
+    function goEditName(obj) {
+        if(isVerified == '1'){
+            //已经认证的用户,不能对姓名进行编辑
+        }else{
+            goEdit(obj, 1); //编辑姓名flag = 2, 非姓名,非性别,非日期的选项 flag=1
+        }
+
+    }
+
+
+
+    function goStudyPath() {
+        H.openWin("我的班级","study_path.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&fromFoundation="+fromFoundation);
+    }
+
+    function goAlumni(){
+        H.openWin("我的分会","alumni/alumni_list.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+"&fromFoundation="+fromFoundation);
+    }
+
+    //验证是否为网址,因为有些图片地址在数据库中并不是一个有效地址
+    function is_website(site_value){
+        var site_value = site_value;
+        var strRegex = "^((https|http)?://)";
+        var re=new RegExp(strRegex);
+        if (re.test(site_value)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    function getActiveEmail() {
+        B.ready(function(){
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "279","content": { "accountNum": "' + accountNum + '"}}'
+                },
+                dataType: "json",
+                success: function(data){
+                    if (data && data.success) {
+                        layer.open({ content:data.msg, skin:"msg", time:5 });
+
+                        var time = 0.5;
+                        var interval = setInterval(function () {
+                            if(time <= 0){
+                                clearInterval(interval);
+                            }
+
+                            $('#activeArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                            time -= 0.01;
+                        },10);
+                    }
+                    else{
+                        layer.open({ content:"邮件发送失败，请稍后再试！", skin:"msg", time:2 });
+                    }
+                }
+            });
+        });
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.notify.dao.NotifyRecordMapper">
+	<resultMap type="com.cy.core.notify.entity.NotifyRecord" id="notifyRecordResultMap">
+		<id column="id" property="id"/>
+		<result column="notify_id" property="notifyId" />
+		<result column="channel" property="channel" />
+		<result column="marking" property="marking" />
+		<result column="user_id" property="userId" />
+		<result column="status" property="status" />
+		<result column="read_flag" property="readFlag"/>
+		<result column="read_date" property="readDate"/>
+		<result column="del_flag" property="delFlag"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="remarks" property="remarks"/>
+	</resultMap>
+
+	<select id="query" parameterType="com.cy.core.notify.entity.NotifyRecord" resultMap="notifyRecordResultMap">
+		select c.*
+		from cy_notify_record c
+		WHERE c.del_flag = '0'
+		<if test="channel != null and channel != ''">
+			and c.channel= #{channel}
+		</if>
+		<if test="marking!= null and marking!= ''">
+			and c.marking= #{marking}
+		</if>
+		<if test="userId!= null and userId!= ''">
+			and c.user_id= #{userId}
+		</if>
+		<if test="notifyId!= null and notifyId!= ''">
+			and c.notify_id= #{notifyId}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.status= #{status}
+		</if>
+		<if test="readFlag!= null and readFlag!= ''">
+			and c.read_flag= #{readFlag}
+		</if>
+		order by c.update_date desc
+		<if test='isNotLimit != "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+	<update id="update" parameterType="com.cy.core.notify.entity.NotifyRecord">
+		update cy_notify_record set
+		<if test="channel!= null and channel!= ''">
+			channel = #{channel} ,
+		</if>
+		<if test="notifyId!= null and notifyId!= ''">
+			notify_id = #{notifyId} ,
+		</if>
+		<if test="marking!= null and marking!= ''">
+			marking = #{marking} ,
+		</if>
+		<if test="userId!= null and userId!= ''">
+			user_id= #{userId} ,
+		</if>
+		<if test="status!= null and status!= ''">
+			status = #{status} ,
+		</if>
+		<if test="readFlag!= null and readFlag!= ''">
+			read_flag = #{readFlag} ,
+		</if>
+		<if test="readDate!= null and readDate!= ''">
+			read_date = #{readDate} ,
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+		update_date = #{updateDate}
+		where id=#{id}
+	</update>
+	<select id="getByIdAndUserId" parameterType="map" resultMap="notifyRecordResultMap">
+		select c.*
+		from cy_notify_record c
+		WHERE c.del_flag = '0'
+		<if test="id != null and id != ''">
+			and c.id= #{id}
+		</if>
+		<if test="notifyId != null and notifyId != ''">
+			and c.notify_id= #{notifyId}
+		</if>
+		<if test="userId!= null and userId!= ''">
+			and c.user_id= #{userId}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.status= #{status}
+		</if>
+		<if test="readFlag!= null and readFlag!= ''">
+			and c.read_flag= #{readFlag}
+		</if>
+		order by (c.read_flag + 0) ASC ,c.update_date desc
+	</select>
+
+	<select id="count" parameterType="com.cy.core.notify.entity.NotifyRecord" resultType="long">
+		select count(c.id) from cy_notify_record c
+		WHERE c.del_flag = '0'
+		<if test="channel != null and channel != ''">
+			and c.channel= #{channel}
+		</if>
+		<if test="userId!= null and userId!= ''">
+			and c.user_id= #{userId}
+		</if>
+		<if test="notifyId!= null and notifyId!= ''">
+			and c.notify_id= #{notifyId}
+		</if>
+		<if test="marking!= null and marking!= ''">
+			and c.marking= #{marking}
+		</if>
+		<if test="readFlag!= null and readFlag!= ''">
+			and c.read_flag= #{readFlag}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.status= #{status}
+		</if>
+	</select>
+
+	<select id="getById" parameterType="java.lang.String" resultMap="notifyRecordResultMap">
+		select c.*
+		from cy_notify_record c
+		where c.id=#{id}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO cy_notify_record(
+			id,
+			channel ,
+			marking ,
+			notify_id ,
+			user_id ,
+			status ,
+			read_flag ,
+			read_date ,
+			del_flag ,
+			create_by ,
+			create_date,
+			update_by ,
+			update_date,
+			remarks
+		) VALUES (
+			#{id},
+			#{channel} ,
+			#{marking} ,
+			#{notifyId} ,
+			#{userId} ,
+			#{status} ,
+			#{readFlag} ,
+			#{readDate} ,
+			#{delFlag} ,
+			#{createBy} ,
+			#{createDate},
+			#{updateBy} , 
+			#{updateDate},
+			#{remarks}       
+		)
+	</insert>
+
+
+	<insert id="insertAll" parameterType="List">
+		INSERT INTO cy_notify_record(
+			id,
+			channel ,
+			notify_id ,
+			marking ,
+			user_id ,
+			status ,
+			read_flag ,
+			read_date ,
+			del_flag ,
+			create_by ,
+			create_date,
+			update_by ,
+			update_date,
+			remarks
+		)
+		<foreach collection="list" item="e" separator=" UNION ALL ">
+			SELECT
+				#{e.id},
+				#{e.channel} ,
+				#{e.notifyId} ,
+				#{e.marking} ,
+				#{e.userId} ,
+				#{e.status} ,
+				#{e.readFlag},
+				#{e.readDate},
+				#{e.delFlag} ,
+				#{e.createBy} ,
+				#{e.createDate},
+				#{e.updateBy} ,
+				#{e.updateDate},
+				#{e.remarks}
+			FROM dual
+		</foreach>
+	</insert>
+
+
+
+	<delete id="deleteByIdList" parameterType="list">
+		update cy_notify_record
+		set
+		del_flag=1,
+		update_date = now()
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<delete id="delete" parameterType="com.cy.core.notify.entity.NotifyRecord">
+		update cy_notify_record
+		set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+		where id = #{id}
+	</delete>
+
+	<!-- 删除所有通过推送内容ID下的所有发送人记录 -->
+	<delete id="deleteByNotifyId">
+		DELETE FROM cy_notify_record
+		WHERE notify_id = #{notifyId}
+	</delete>
+
+	<update id="setAllReaded" parameterType="map">
+		UPDATE cy_notify_record
+		SET read_flag = '1' ,
+		read_date = now()
+		WHERE user_id = #{userId}
+		<if test="notifyIds != null and notifyIds != '' ">
+			AND notify_id IN
+			<foreach collection="notifyIds" item="notifyId" open="(" separator="," close=")">
+				#{notifyId}
+			</foreach>
+		</if>
+	</update>
+
+	<!-- 删除系统通知 -->
+	<delete id="deleteSystemNotify">
+		DELETE FROM cy_notify_record
+		WHERE user_id = #{accountNum}
+		<if test="notifyId !=null and notifyId != ''">
+			AND notify_id = #{notifyId}
+		</if>
+	</delete>
+</mapper>

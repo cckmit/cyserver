@@ -1,0 +1,1085 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.alumniAssociation.dao.AlumniAssociationMapper">
+	<resultMap type="com.cy.core.alumniAssociation.entity.Project" id="donateResultMap">
+		<id column="projectId" property="projectId" />
+		<result column="projectName" property="projectName" />
+		<result column="donationMoney" property="donationMoney" />
+		<result column="remark" property="remark" />
+		<result column="createTime" property="createTime" />
+		<result column="createId" property="createId" />
+		<result column="seq" property="seq" />
+		<result column="introduction" property="introduction"/>
+		<result column="content" property="content"/>
+		<!--<result column="projectPic" property="projectPic"/>-->
+		<result column="projectPic" property="projectPicUrl"/>
+		<result column="target" property="target"/>
+		<result column="has_end_time" property="hasEndTime"/>
+		<result column="end_time" property="endTime"/>
+		<result column="start_time" property="startTime"/>
+		<result column="has_target" property="hasTarget"/>
+		<result column="countPeople" property="countPeople"/>
+		<result column="rateOfTime" property="rateOfTime"/>
+		<result column="timeStatus" property="timeStatus"/>
+		<result column="status" property="status"/>
+		<result column="cost_money" property="costMoney"/>
+		<result column="project_type" property="projectType"/>
+		<result column="foun_project" property="founProject"/>
+		<result column="is_foun" property="isFoun"/>
+		<result column="is_command" property="isCommand"/>
+		<association property="user" column="createId" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+		</association>
+	</resultMap>
+
+	<resultMap id="backSchoolResultMap" type="com.cy.core.alumniAssociation.entity.Fxjh">
+		<id column="id" property="id"/>
+		<result column="topic" property="topic"/>
+		<result column="number" property="number"/>
+		<result column="time" property="time"/>
+		<result column="classinfo" property="classinfo"/>
+		<result column="other" property="other"/>
+		<result column="userId" property="userId"/>
+		<result column="status" property="status"/>
+		<result column="countMember" property="countMember"/>
+		<result column="userPic" property="userPicUrl"/>
+		<result column="userName" property="userName"/>
+		<result column="favoriteNumber" property="favoriteNumber"/>
+		<result column="click_number" property="clickNumber"/>
+		<result column="del_flag" property="delFlag"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="remarks" property="remarks"/>
+		<result column="commentNumber" property="commentNumber"/>
+		<result column="praiseNumber" property="praiseNumber"/>
+		<result column="isSigned" property="isSigned"/>
+		<result column="hasFavorited" property="hasFavorited"/>
+		<result column="end_time" property="endTime"/>
+		<result column="timeState" property="timeState"/>
+		<result column="poster" property="posterUrl"/>
+		<result column="type" property="type"/>
+		<result column="content" property="content"/>
+		<result column="classInfoName" property="classInfoName"/>
+	</resultMap>
+
+	<resultMap type="com.cy.core.news.entity.News" id="newsNoContentResultMap">
+		<id column="newsId" property="newsId" />
+		<result column="title" property="title" />
+		<result column="pic" property="picUrl" />
+		<result column="introduction" property="introduction" />
+		<result column="createTime" property="createTime" />
+		<result column="type" property="type" />
+		<result column="channelName" property="channelName" />
+		<result column="newsUrl" property="newNewsUrl" />
+		<result column="category" property="category" />
+		<result column="categoryName" property="categoryName" />
+		<result column="topnews" property="topnews" />
+		<result column="fDateTime" property="fDateTime" />
+		<result column="cityName" property="cityName" />
+		<result column="approve_dept_id" property="approveDeptId" />
+		<result column="browse_num" property="clickRate" />
+		<result column="createDate" property="createDate" />
+		<result column="updateDate" property="updateDate" />
+	</resultMap>
+
+	<resultMap type="com.cy.core.event.entity.Event" id="eventResultMap">
+		<id column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="type" property="type"/>
+		<result column="category" property="category"/>
+		<result column="place" property="place"/>
+		<result column="content" property="content"/>
+		<result column="pic" property="picUrl"/>
+		<!--<result column="pic" property="pic"/>-->
+		<result column="organizer" property="organizer"/>
+		<result column="startTime" property="startTime"/>
+		<result column="endTime" property="endTime"/>
+		<result column="signupStartTime" property="signupStartTime"/>
+		<result column="signupEndTime" property="signupEndTime"/>
+		<result column="minPeople" property="minPeople"/>
+		<result column="maxPeople" property="maxPeople"/>
+		<result column="needSignIn" property="needSignIn"/>
+		<result column="signInCode" property="signInCode"/>
+		<result column="createTime" property="createTime"/>
+		<result column="userId" property="userId"/>
+		<result column="userInfoId" property="userInfoId"/>
+		<result column="needNotification" property="needNotification"/>
+		<result column="notification" property="notification"/>
+		<result column="auditStatus" property="auditStatus"/>
+		<result column="auditOpinion" property="auditOpinion"/>
+		<result column="auditUserId" property="auditUserId"/>
+		<result column="auditTime" property="auditTime"/>
+		<result column="status" property="status"/>
+		<result column="score" property="score"/>
+		<result column="region" property="region"/>
+		<result column="signupNum" property="signupNum"/>
+		<result column="signInNum" property="signInNum"/>
+		<result column="eventStatus" property="eventStatus"/>
+		<result column="nowStatus" property="nowStatus"/>
+		<result column="alumniName" property="alumniName"/>
+		<result column="dept_id" property="dept_id"/>
+		<result column="dept_name" property="dept_name"/>
+		<result column="page_view" property="pageView"/>
+		<result column="qr_code_url" property="qrCodeUrl"/>
+		<result column="associationId" property="associationId" />
+		<result column="associationName" property="associationName" />
+		<result column="need_auth" property="needAuth"/>
+		<result column="reportCount" property="reportCount" />
+		<result column="handlCount" property="handlCount" />
+
+		<association column="userId" property="user" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+			<result column="telephone" property="telephone" />
+		</association>
+		<association column="userInfoId" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="userInfoId" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+	</resultMap>
+
+	<!--校友会栏目获取-->
+	<select id="getServiceList" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service where provideService = 1 and group_name = '校友会'
+		order by (group_sort+0),id DESC
+	</select>
+
+	<!--惠校友栏目个数获取-->
+	<select id="getServiceListCount" resultType="int">
+		select
+		count(id)
+		from cy_school_service where provideService = 1 and group_name = '校友会'
+	</select>
+
+	<!--校园生活栏目获取-->
+	<select id="getCampusLifeTitleList" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service where provideService = 1 and group_name = '校园生活'
+		order by (group_sort+0),id DESC
+	</select>
+
+	<!--校园生活栏目个数获取-->
+	<select id="getCampusLifeTitleCount" resultType="int">
+		select
+		count(id)
+		from cy_school_service where provideService = 1 and group_name = '校园生活'
+	</select>
+
+	<!--惠校友栏目获取-->
+	<select id="getFavourAlumniServiceList" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service where provideService = 1 and group_name = '惠校友'
+		order by (group_sort+0),id DESC
+	</select>
+
+	<!--惠校友栏目个数获取-->
+	<select id="getFavourAlumniServiceListCount" resultType="int">
+		select
+		count(id)
+		from cy_school_service where provideService = 1 and group_name = '惠校友'
+	</select>
+
+	<!--爱心捐赠项目取得-->
+	<select id="selectDonateList" parameterType="map" resultMap="donateResultMap">
+		SELECT
+		p.projectId ,
+		p.projectName ,
+		p.createTime ,
+		p.target ,
+		p.has_end_time ,
+		p.start_time ,
+		p.end_time ,
+		p.has_target ,
+		p.seq ,
+		p.status,
+		p.introduction,
+		p.project_type,
+		u.userName ,
+		p.projectPic,
+		p.foun_project,
+		p.is_foun,
+		p.is_command,
+		(SELECT count(d.donationId) FROM cy_donation d WHERE d.projectId = p.projectId AND (d.confirmStatus!='10'AND d.confirmStatus!='20')) AS countPeople,
+		(SELECT CASE WHEN ROUND(SUM(payMoney),2) IS NOT NULL THEN ROUND(SUM(payMoney),2) ELSE 0 END donationMoney FROM cy_donation d WHERE d.projectId = p.projectId AND (d.confirmStatus!='10'AND d.confirmStatus!='20') ) AS donationMoney,
+		(SELECT CASE WHEN ROUND(SUM(cost_money),2) IS NOT NULL THEN ROUND(SUM(cost_money),2) ELSE 0 END cost_money FROM cy_project_cost cpc WHERE cpc.project_id = p.projectId AND cpc.del_flag != '1' ) AS cost_money,
+		<![CDATA[
+			CASE WHEN p.end_time IS NOT NULL AND p.end_time !='' AND p.end_time < now() THEN 100 WHEN p.end_time IS NOT NULL AND p.start_time IS NOT NULL AND p.end_time != '' AND p.start_time != '' AND p.end_time > now() AND p.start_time < now() THEN (now()-p.start_time)/(p.end_time-p.start_time)*100 ELSE 0 END rateOfTime,
+			CASE WHEN p.status='0' OR p.status IS NULL OR p.status = '' THEN '未发布' WHEN p.status='1' THEN (CASE WHEN p.start_time IS NULL OR p.start_time = '' OR p.start_time > now() THEN '未开始'  WHEN p.start_time<=now() AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='')) THEN '进行中' ELSE '已结束' END) ELSE '已下线'  END timeStatus
+		]]>
+		FROM
+		cy_project p
+		LEFT JOIN cy_user u ON p.createId = u.userId
+		<where>1=1
+			<if test="projectName!=null and projectName!=''">
+				AND p.projectName like concat('%',#{projectName},'%')
+			</if>
+			<if test="projectType!=null and projectType!=''">
+				AND p.project_type like concat('%',#{projectType},'%')
+			</if>
+			<if test="status != null and status != ''">
+				AND p.status = #{status}
+			</if>
+			<if test='isCommand != null and isCommand != ""'>
+				AND p.is_command = #{isCommand}
+			</if>
+			<if test="timeStatus != null and timeStatus != ''">
+				<!-- 结束 -->
+				<if test='timeStatus == "2"' >
+					<![CDATA[
+						AND p.has_end_time='1' AND p.end_time <= NOW() AND p. STATUS = '1'
+					]]>
+				</if>
+				<!-- 进行中 -->
+				<if test='timeStatus == "1"' >
+					<!--AND (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='' OR p.end_time > NOW())-->
+					<![CDATA[
+						AND (p.status='1'AND now()>p.start_time AND ((p.has_end_time = '1' AND p.end_time>now()) OR (p.has_end_time = '0' OR p.has_end_time IS NULL OR p.has_end_time ='')))
+					]]>
+				</if>
+				<!-- 未发布-->
+				<if test='timeStatus == "0"' >
+					AND (p. STATUS = '0' OR p. STATUS IS NULL OR p. STATUS = '')
+				</if>
+				<!-- 已下线-->
+				<if test='timeStatus == "3"' >
+					AND  p. STATUS = '2'
+				</if>
+
+			</if>
+			<if test="donatedList!=null and donatedList.size()>0">
+				AND p.projectId NOT IN
+				<foreach collection="donatedList" open="(" separator="or"
+						 close=")" item="donatedId">
+					#{donatedId}
+				</foreach>
+			</if>
+		</where>
+		order by seq ,countPeople DESC
+		<if test='isNotLimni != "1"' >
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--返校计划列表取得-->
+	<select id="findFxjhList" parameterType="map" resultMap="backSchoolResultMap">
+		SELECT
+		cb.*,
+		cdi.full_name classInfoName,
+		cu.`name` userName ,
+		CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+		(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember,
+		<![CDATA[
+                CASE
+				WHEN now() < cb.signupStartTime THEN
+				'未开始'
+				WHEN now() >= cb.time && now()<= cb.end_time THEN
+				'进行中'
+				WHEN now() > cb.end_time THEN
+				'已结束'
+				WHEN now() >= cb.signupStartTime && now()<= cb.signupEndTime THEN
+				'报名中'
+				WHEN now() > cb.signupEndTime THEN
+				'报名已截止'
+				ELSE
+				''
+			END AS nowStatus
+        ]]>
+		FROM
+		cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		<if test="currentUserId != null and currentUserId !=''">
+			JOIN cy_backschool_sign cbs ON cbs.backschool_id=cb.id AND cbs.account_num=#{currentUserId}
+		</if>
+		<if test="favoriteUserId != null and favoriteUserId != ''">
+			JOIN cy_favorite cf ON cb.id=cf.buss_id AND cf.buss_type='30' AND cf.del_flag='0' AND cf.user_id=#{favoriteUserId}
+		</if>
+		<where> cb.del_flag='0'
+			<if test="topic!=null and topic!=''">
+				and cb.topic like concat('%',#{topic},'%')
+			</if>
+			<if test="number!=null and number!=''">
+				and cb.number = #{number}
+			</if>
+			<if test="classinfo!=null and classinfo!=''">
+				and cb.classinfo = #{classinfo}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and cb.userId = #{userId}
+			</if>
+			<if test="status!=null and status!=''">
+				and find_in_set(cb.status,#{status})
+			</if>
+
+		</where>
+		ORDER BY cb.update_date DESC
+		<if test='isNotLimit != "1" '>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--直播间话题列表取得-->
+	<select id="getTopicList" parameterType="map" resultType="com.cy.core.live.entity.LiveTopic">
+		SELECT
+		clt.*
+		FROM
+		cy_live_topic clt
+		ORDER BY clt.liveTopicNumOfPeople DESC,clt.liveTopicCreateTime DESC
+		<if test='isNotLimit != "1" '>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--惠校友栏目个数获取-->
+	<select id="getTopicListCount" resultType="long">
+		select
+		count(liveTopicId)
+		from cy_live_topic
+	</select>
+
+	<!--获取招聘列表个数-->
+	<select id="listRecruitmentCount" parameterType="map" resultType="long">
+		SELECT
+		count(id)
+		FROM
+		cy_service
+		WHERE
+		category = '3'
+		and status in (0,1)
+		and auditStatus = '1'
+	</select>
+
+	<!--获取招聘列表-->
+	<select id="listRecruitment" parameterType="map" resultType="com.cy.core.alumniAssociation.entity.Recruitment">
+		SELECT
+		cys.id,
+		cys.accountNum,
+		cys.userId,
+		cys.content,
+		cys.region,
+		cys.type,
+		cys.status,
+		cys.auditStatus,
+		cys.auditOpinion,
+		cys.auditUserId,
+		cys.auditTime,
+		cys.createTime,
+		cu.name,
+		cu.picture
+		FROM cy_service cys
+		LEFT JOIN cy_userprofile cu ON cys.accountNum = cu.accountNum
+		<where>
+			cys.category = '3'
+			and cys.status in (0,1)
+			and cys.auditStatus = '1'
+		</where>
+		ORDER BY cys.createTime DESC
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--惠校友首页常用服务栏目获取-->
+	<select id="getUserServiceList" parameterType="String" resultType="com.cy.core.alumniAssociation.entity.UserService">
+		SELECT
+		accountNum,
+		unNormalServiceId,
+		normalServiceId
+		FROM
+		cy_user_service
+		WHERE
+		accountNum = #{accountNum}
+	</select>
+
+	<!--更新常用服务-->
+	<update id="updateUserServiceList" parameterType="map">
+		update
+		cy_user_service set
+		normalServiceId = #{normalServiceId},
+		unNormalServiceId = #{unNormalServiceId}
+		<where>
+			accountNum = #{accountNum}
+		</where>
+	</update>
+	<!--插入常用服务-->
+	<insert id="insertUserServiceList" parameterType="String">
+		insert into cy_user_service(accountNum,normalServiceId,unNormalServiceId) values(#{accountNum},#{normalServiceId},#{unNormalServiceId})
+	</insert>
+
+	<!--惠校友首页常用栏目获取-->
+	<select id="selectUserFavourAlumniServiceList" parameterType="map" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service
+		<where>1=1
+			AND  id  IN
+			<foreach collection="serviceId" item="id"  open="(" close=")" separator="," >
+				#{id}
+			</foreach>
+		</where>
+		order by (group_sort+0),id DESC
+
+	</select>
+
+	<!--惠校友更多栏目获取-->
+	<select id="getMoreServiceColumns" parameterType="String" resultType="com.cy.core.alumniAssociation.entity.UserService">
+		SELECT
+		accountNum,
+		unNormalServiceId,
+		normalServiceId
+		FROM
+		cy_user_service
+		WHERE
+		accountNum = #{accountNum}
+	</select>
+
+	<!--惠校友更多常用栏目获取-->
+	<select id="selectNormalServiceList" parameterType="map" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service
+		<where>1=1
+			AND  id  IN
+			<foreach collection="normalServiceId" item="id"  open="(" close=")" separator="," >
+				#{id}
+			</foreach>
+		</where>
+		order by (group_sort+0),id DESC
+	</select>
+
+	<!--惠校友更多不常用栏目获取-->
+	<select id="selectUnNormalServiceList" parameterType="map" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+		id ,
+		serviceName ,
+		systemService ,
+		provideService ,
+		serviceUrl AS serviceUrlUrl ,
+		servicePic AS servicePicUrl ,
+		createBy ,
+		createDate ,
+		sort ,
+		group_name ,
+		group_sort ,
+		need_authentication
+		from cy_school_service
+		<where>1=1
+			AND  id  IN
+			<foreach collection="unNormalServiceId" item="id"  open="(" close=")" separator="," >
+				#{id}
+			</foreach>
+		</where>
+		order by (group_sort+0),id DESC
+	</select>
+
+	<!--惠校友动态栏目变更-->
+	<update id="updateMoreServiceColumns" parameterType="map">
+		update
+		cy_user_service set
+		normalServiceId = #{normalServiceId},
+		unNormalServiceId = #{unNormalServiceId}
+		<where>
+			accountNum = #{accountNum}
+		</where>
+	</update>
+
+	<!--根据分会组织ID获取新闻列表-->
+	<select id="getNewsByAlumniId" parameterType="map" resultMap="newsNoContentResultMap">
+		SELECT DISTINCT
+		cyn.newsId,
+		cyn.title,
+		cyn.content = NULL,
+		cyn.pic,
+		cyn.introduction,
+		cyn.createTime AS fDateTime,
+		cyn.type,
+		cyn.channelName,
+		cyn.newsUrl,
+		cyn.category,
+		cyn.topnews,
+		cyn.cityName,
+		cyn.profession,
+		cyn.alumniid,
+		cyn.approve_dept_id,
+		cyn.channel,
+		cyn.createTime,
+		cyn.browse_num,
+		create_date AS createDate,
+		update_date AS updateDate,
+		GROUP_CONCAT(mtype.CODE) AS CODE
+		FROM cy_news cyn
+		LEFT JOIN cy_news_types nt ON cyn.newsId = nt.news_id
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON nt.channel_id = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT OUTER JOIN cy_newschannel cnc ON cnc.channelName = cyn.channelName
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			cyn.dept_id = #{alumniId} AND
+			<if test="channelId != null and channelId !=''">
+				cyn. STATUS = '20' AND find_in_set( #{channelId}, cyn.channel)
+				<if test=" category!=null and category!=0">
+					AND newsId IN (
+					SELECT news_id
+					FROM cy_news_types nt
+					WHERE nt.channel =  #{channelId}
+					AND (
+					nt.channel_id = #{category}
+					OR nt.channel_id IN (
+					SELECT id
+					FROM cy_mobile_news_type
+					WHERE parent_id = #{category}
+					)
+					)
+					)
+				</if>
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>
+			<if test="channel !=null and channel !='' ">
+				and cnc.channelId = #{channel}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+
+				<choose>
+					<when test='channelId == "10"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnews = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnews is null or cyn.topnews != '100')
+							</when>
+						</choose>
+					</when>
+					<when test='channelId == "20"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</when>
+					<otherwise>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</otherwise>
+				</choose>
+
+			</if>
+
+			<if test="code !=null and code != ''">
+				and mtype.code = #{code}
+			</if>
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+		</where>
+		GROUP BY cyn.newsId
+		order by create_date desc
+		<if test="start!=null and start>=0 and rows!=null and rows>0 ">
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--根据分会组织ID获取新闻列表数量-->
+	<select id="getNewsByAlumniIdCount" parameterType="map" resultType="long">
+		select count(DISTINCT newsId)
+		from cy_news cyn
+		LEFT JOIN cy_news_types nt ON cyn.newsId = nt.news_id
+		LEFT OUTER JOIN cy_mobile_news_type mtype ON nt.channel_id = mtype.id
+		LEFT OUTER JOIN cy_mobile_news_type pmtype ON mtype.parent_id = pmtype.id
+		LEFT OUTER JOIN cy_newschannel cnc ON cnc.channelName = cyn.channelName
+		LEFT JOIN cy_alumni alu ON cyn.dept_id = alu.alumniId
+		<where>
+			cyn.dept_id = #{alumniId} AND
+			<if test="channelId != null and channelId !=''">
+				cyn. STATUS = '20' AND find_in_set( #{channelId}, cyn.channel)
+				<if test=" category!=null and category!=0">
+					AND newsId IN (
+					SELECT news_id
+					FROM cy_news_types nt
+					WHERE nt.channel =  #{channelId}
+					AND (
+					nt.channel_id = #{category}
+					OR nt.channel_id IN (
+					SELECT id
+					FROM cy_mobile_news_type
+					WHERE parent_id = #{category}
+					)
+					)
+					)
+				</if>
+			</if>
+			<if test="parent_id!=null and parent_id!=0">
+				and mtype.parent_id = #{parent_id}
+			</if>
+			<if test="channel !=null and channel !='' ">
+				and cnc.channelId = #{channel}
+			</if>
+			<if test="topnews!=null and topnews!=''">
+
+				<choose>
+					<when test='channelId == "10"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnews = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnews is null or cyn.topnews != '100')
+							</when>
+						</choose>
+					</when>
+					<when test='channelId == "20"'>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</when>
+					<otherwise>
+						<choose>
+							<when test='topnews=="100"'>
+								and cyn.topnewsWeb = #{topnews}
+							</when>
+							<when test='topnews=="0"'>
+								and (cyn.topnewsWeb is null or cyn.topnewsWeb != '100')
+							</when>
+						</choose>
+					</otherwise>
+				</choose>
+
+			</if>
+
+			<if test="code !=null and code != ''">
+				and mtype.code = #{code}
+			</if>
+			AND CASE WHEN alu.main = 1 THEN alu.academyid IS NOT NULL AND alu.academyid != '' ELSE TRUE END
+		</where>
+	</select>
+
+	<!--根据分会组织ID获取新闻活动列表-->
+	<select id="getEventsByAlumniId" parameterType="map" resultMap="eventResultMap">
+		SELECT e.*
+		FROM <include refid="eventForm" />
+		<where> e.dept_id = #{alumniId} AND del_flag=0
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="and (" separator="or"
+						 close=")" item="dept">
+					e.dept_id = #{dept.deptId}
+				</foreach>
+			</if>
+			<if test="title!=null and title!=''">
+				and e.title like concat('%',#{title},'%')
+			</if>
+			<if test="type!=null and type!=''">
+				<choose>
+					<when test='type == "0"'>
+						and e.type = '0'  <!-- and e.dept_id = '1' -->
+					</when>
+					<when test='type == "1"'>
+						and e.type = '0' and e.dept_id IS NOT NULL and e.dept_id != '' and e.dept_id != '0' and e.dept_id != '1'
+					</when>
+					<otherwise>
+						and e.type = #{type}
+					</otherwise>
+				</choose>
+			</if>
+			<if test="category!=null and category!=''">
+				and e.category = #{category}
+			</if>
+			<if test="place!=null and place!=''">
+				and e.place like concat('%',#{place},'%')
+			</if>
+			<if test="organizer!=null and organizer!=''">
+				and e.organizer like concat('%',#{organizer},'%')
+			</if>
+			<if test="startFrom!=null and startFrom!=''">
+				and <![CDATA[e.startTime >= #{startFrom}]]>
+			</if>
+			<if test="startTo!=null and startTo!=''">
+				and <![CDATA[e.startTime <= #{startTo}]]>
+			</if>
+			<if test="endFrom!=null and endFrom!=''">
+				and <![CDATA[e.endTime >= #{endFrom}]]>
+			</if>
+			<if test="endTo!=null and endTo!=''">
+				and <![CDATA[e.endTime <= #{endTo}]]>
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and e.userInfoId = #{userInfoId}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and e.userId = #{userId}
+			</if>
+			<if test="auditStatus!=null and auditStatus!=''">
+				and e.auditStatus = #{auditStatus}
+			</if>
+			<if test="status!=null and status!=''">
+				and e.status = #{status}
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				and e.alumniId = #{alumniId}
+			</if>
+			<if test="associationId!=null and associationId!=''">
+				and e.dept_id = #{associationId}
+			</if>
+			<if test="eventStatus!=null and eventStatus!=''">
+				and e.eventStatus = #{eventStatus}
+			</if>
+			<if test="eventStatusScope!=null and eventStatusScope!=''">
+				AND find_in_set(e.eventStatus ,#{eventStatusScope})
+			</if>
+			<if test="region!=null and region!=''">
+				and e.region like concat('%',#{region},'%')
+			</if>
+			<if test="userAlumniId!=null and userAlumniId!=''">
+				and e.dept_id = #{userAlumniId}
+			</if>
+			<if test="alumniIds!=null and alumniIds!=''">
+				AND find_in_set(e.dept_id ,#{alumniIds})
+			</if>
+			<if test="authorityAlumniId != null and authorityAlumniId != ''">
+				AND e.id IN (
+				SELECT buss_id
+				FROM cy_buss_authority
+				WHERE del_flag != '1' AND buss_type = '10' AND alumni_id = #{authorityAlumniId}
+				)
+			</if>
+			<choose>
+				<when test='flag == "2"'><!-- 查询我的活动的 -->
+					AND e.userInfoId = #{currUserId}
+				</when>
+				<when test='flag == "3"'><!-- 查询我参与的活动的 -->
+					AND e.id IN (
+					SELECT eventId FROM cy_event_sign WHERE userInfoId = #{currUserId}
+					)
+				</when>
+			</choose>
+		</where>
+		<if test='flag == "1"'>
+			ORDER BY signupNum DESC
+		</if>
+        order by create_date desc
+		<if test='isNotLimni != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--根据分会组织ID获取新闻活动数量-->
+	<select id="getEventsByAlumniIdCount" parameterType="map" resultType="long">
+		<!-- select count(e.id) from cy_event e
+        left join cy_user u on e.userId=u.userId
+           left join cy_alumni a on u.dept_id = a.alumniId -->
+		select count(e.id)
+		FROM <include refid="eventForm" />
+		<where> e.dept_id = #{alumniId} AND del_flag=0
+			<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="and (" separator="or"
+						 close=")" item="dept">
+					e.dept_id = #{dept.deptId}
+				</foreach>
+			</if>
+			<if test="title!=null and title!=''">
+				and e.title like concat('%',#{title},'%')
+			</if>
+			<if test="type!=null and type!=''">
+				and e.type = #{type}
+			</if>
+			<if test="category!=null and category!=''">
+				and e.category = #{category}
+			</if>
+			<if test="place!=null and place!=''">
+				and e.place like concat('%',#{place},'%')
+			</if>
+			<if test="organizer!=null and organizer!=''">
+				and e.organizer like concat('%',#{organizer},'%')
+			</if>
+			<if test="startFrom!=null and startFrom!=''">
+				and <![CDATA[e.startTime >= #{startFrom}]]>
+			</if>
+			<if test="startTo!=null and startTo!=''">
+				and <![CDATA[e.startTime <= #{startTo}]]>
+			</if>
+			<if test="endFrom!=null and endFrom!=''">
+				and <![CDATA[e.endTime >= #{endFrom}]]>
+			</if>
+			<if test="endTo!=null and endTo!=''">
+				and <![CDATA[e.endTime <= #{endTo}]]>
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and e.userInfoId = #{userInfoId}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and e.userId = #{userId}
+			</if>
+			<if test="auditStatus!=null and auditStatus!=''">
+				and e.auditStatus = #{auditStatus}
+			</if>
+			<if test="status!=null and status!=''">
+				and e.status = #{status}
+			</if>
+			<if test="alumniId!=null and alumniId!=''">
+				and e.alumniId = #{alumniId}
+			</if>
+			<if test="eventStatus!=null and eventStatus!=''">
+				and e.eventStatus = #{eventStatus}
+			</if>
+			<if test="eventStatusScope!=null and eventStatusScope!=''">
+				AND find_in_set(e.eventStatus ,#{eventStatusScope})
+			</if>
+			<if test="region!=null and region!=''">
+				and e.region like concat('%',#{region},'%')
+			</if>
+			<if test="userAlumniId!=null and userAlumniId!=''">
+				and e.dept_id = #{userAlumniId}
+			</if>
+			<if test="authorityAlumniId != null and authorityAlumniId != ''">
+				AND e.id IN (
+				SELECT buss_id
+				FROM cy_buss_authority
+				WHERE del_flag != '1' AND buss_type = '10' AND alumni_id = #{authorityAlumniId}
+				)
+			</if>
+			<choose>
+				<when test='flag == "2"'><!-- 查询我的活动的 -->
+					AND e.userInfoId = #{currUserId}
+				</when>
+				<when test='flag == "3"'><!-- 查询我参与的活动的 -->
+					AND e.id IN (
+					SELECT eventId FROM cy_event_sign WHERE userInfoId = #{currUserId}
+					)
+				</when>
+			</choose>
+		</where>
+	</select>
+
+	<sql id="eventForm">
+		(
+		SELECT
+		e.*, u.userName,
+		u.telephone,
+		up. NAME,
+		up.phoneNum,
+		up.picture,
+		(SELECT count(up.accountNum) FROM cy_event_sign es LEFT JOIN cy_userprofile up ON es.userInfoId=up.accountNum WHERE es.eventId=e.id) AS signupNum,
+		(SELECT count(up.accountNum) FROM cy_event_sign es LEFT JOIN cy_userprofile up ON es.userInfoId=up.accountNum WHERE es.eventId=e.id AND es.isSignIn = 1) AS signInNum,
+		(SELECT count(1) FROM cy_report cre LEFT JOIN cy_event cev ON cre.buss_id = cev.id WHERE cre.buss_id=e.id) AS reportCount,
+		(SELECT count(1) FROM cy_report cre LEFT JOIN cy_event cev ON cre.buss_id = cev.id WHERE cre.buss_id=e.id  AND cre.handle_status = 10) AS handlCount,
+		a.alumniName,
+		a.alumniName AS dept_name,
+		CASE WHEN e.type= '99' THEN ca.`name` ELSE "" END AS associationName,
+		CASE WHEN e.type= '99' THEN ca.id ELSE "" END AS associationId,
+		a.alumniId,
+		es.eventId eventId,
+		<![CDATA[
+                CASE
+                    WHEN e. STATUS = 1 THEN
+                    '10'
+                    WHEN e. STATUS = 2 THEN
+                    '20'
+                    WHEN e.auditStatus = 0 THEN
+                    '30'
+                    WHEN e.auditStatus = 2 THEN
+                    '40'
+                    WHEN now() < e.signupStartTime THEN
+                    '50'
+                    WHEN now() >= e.startTime && now()<= e.endTime THEN
+                    '60'
+                    WHEN now() > e.endTime THEN
+                    '70'
+                    WHEN now() >= e.signupStartTime && now()<= e.signupEndTime THEN
+                    '80'
+                    WHEN now() > e.signupEndTime THEN
+                    '90'
+                    ELSE
+                    ''
+                END AS eventStatus
+                ]]>,
+		<![CDATA[
+                CASE
+                    WHEN e. STATUS = 1 THEN
+                    '已取消'
+                    WHEN e. STATUS = 2 THEN
+                    '已删除'
+                    WHEN e.auditStatus = 0 THEN
+                    '未审核'
+                    WHEN e.auditStatus = 2 THEN
+                    '审核未通过'
+                    WHEN now() < e.signupStartTime THEN
+                    '未开始'
+                    WHEN now() >= e.startTime && now()<= e.endTime THEN
+                    '进行中'
+                    WHEN now() > e.endTime THEN
+                    '已结束'
+                    WHEN now() >= e.signupStartTime && now()<= e.signupEndTime THEN
+                    '报名中'
+                    WHEN now() > e.signupEndTime THEN
+                    '报名已截止'
+                    ELSE
+                    ''
+                END AS nowStatus
+                ]]>
+		FROM cy_event e
+		LEFT JOIN cy_user u ON e.userId = u.userId
+		LEFT JOIN cy_alumni a ON u.dept_id = a.alumniId
+		LEFT JOIN cy_userprofile up ON e.userInfoId = up.accountNum
+		LEFT JOIN cy_event_sign es ON e.id = es.eventId
+		LEFT JOIN cy_dept_info d ON e.dept_id = d.dept_id
+		LEFT JOIN cy_association ca ON e.dept_id = ca.id
+		LEFT JOIN cy_alumni aa ON ca.alumni_id = aa.alumniId
+		WHERE e.del_flag != '1'
+		AND CASE
+		WHEN a.alumniId IS NOT NULL AND a.alumniId + 0 > 1 AND a.main = 1
+		THEN
+		a.academyid IS NOT NULL AND a.academyid != ''
+		WHEN aa.alumniId IS NOT NULL AND aa.alumniId + 0 > 1 AND aa.main = 1
+		THEN
+		aa.academyid IS NOT NULL AND aa.academyid != ''
+		ELSE
+		TRUE
+		END
+		GROUP BY e.create_date DESC ,es.eventId
+		ORDER BY e.create_date DESC
+		) e
+	</sql>
+
+	<!--根据分会组织ID获取活动列表数量-->
+	<select id="getMemberListByAlumniId" parameterType="Map" resultType="com.cy.core.userProfile.entity.UserProfile">
+		SELECT
+		up.name,
+		up.accountNum,
+		up.picture
+		FROM
+		cy_user_alumni ua
+		INNER JOIN cy_userprofile up ON up.accountNum = ua.user_id
+		WHERE
+		ua.del_flag = '0' AND
+		ua.alumni_id = #{alumniId} AND
+		ua.status = '20'
+		<if test='isNotLimit!= "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!--获取当前用户在该会中的状态-->
+	<select id="getMyStatus" parameterType="Map" resultType="String">
+		SELECT
+		status
+		FROM
+		cy_user_alumni
+		WHERE
+		del_flag = '0' AND
+		alumni_id = #{alumniId} AND
+		user_id = #{accountNum}
+	</select>
+
+	<!--分会总人数-->
+	<select id="getMemberCount" parameterType="Map" resultType="long">
+		SELECT
+		count(id)
+		FROM
+		cy_user_alumni ua
+		INNER JOIN cy_userprofile up ON up.accountNum = ua.user_id
+		WHERE
+		ua.del_flag = '0' AND
+		ua.alumni_id = #{alumniId}AND
+		ua.status = '20'
+	</select>
+
+	<!--网站点击量取得-->
+	<select id="getClickNumCnt"  resultType="String">
+		SELECT
+		clickNumCnt
+		FROM
+		cy_web_click_count
+	</select>
+
+	<!--网站点击量插入-->
+	<insert id="insertClickNumCnt"  parameterType="Long">
+		INSERT INTO cy_web_click_count(clickNumCnt,updateTime)
+		VALUES (#{pageView},now())
+	</insert>
+
+	<!--网站点击量更新-->
+	<update id="updateClickNumCnt"  parameterType="Long">
+		UPDATE
+		cy_web_click_count
+		SET
+		clickNumCnt = #{pageView}
+	</update>
+
+</mapper>

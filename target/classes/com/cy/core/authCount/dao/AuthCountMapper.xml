@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.authCount.dao.AuthCountMapper">
+	<resultMap type="com.cy.core.authCount.entity.AuthCount" id="AuthCountResultMap">
+		<result column="accountNum" property="accountNum" />
+		<result column="createTime" property="createTime" />
+	</resultMap>
+	<select id="selectByAccountNum" parameterType="string" resultMap="AuthCountResultMap">
+		select *
+		from cy_authCount where accountNum=#{accountNum}
+	</select>
+	<insert id="save" parameterType="com.cy.core.authCount.entity.AuthCount">
+		insert into
+		cy_authCount(accountNum,authCount)
+		values(#{accountNum},#{authCount})
+	</insert>
+	<insert id="update" parameterType="com.cy.core.authCount.entity.AuthCount">
+		update	cy_authCount set authCount=#{authCount}
+		where accountNum=#{accountNum}
+	</insert>
+	<delete id="delete" parameterType="string">
+	delete from cy_authCount where accountNum=#{accountNum}
+	</delete>
+</mapper>

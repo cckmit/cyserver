@@ -1,0 +1,448 @@
+html{color:#000;background:#fff;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}
+body{font:12px/1 Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif;}
+body{font:12px/1 Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif;}
+img{border:none;}
+em,strong{font-style:normal;font-weight:normal;}
+li{list-style:none;}
+table {border-collapse:collapse;border-spacing:0;}
+h1{font-size:18px;}
+h2{font-size:16px;}
+h3{font-size:14px;}
+h4, h5, h6{font-size:100%;}
+q:before,q:after{content:'';}/* 消除q前后的内容 */
+button,input,select,textarea{font-size:100%;}/* 使得表单元素在 ie 下能继承字体大小 */
+input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}
+address,cite,dfn,em,var{font-style:normal;} /* 将斜体扶正 */
+/* link */
+a{
+    color:#4d88db;text-decoration:none;
+    -webkit-tap-highlight-color:transparent;
+    color:#333333;
+    text-decoration:none;
+    -moz-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+a:hover{
+    color:#82040f;
+}
+/*清除浮动代码*/
+.clearfloat:after{display:block;clear:both;content:"";visibility:hidden;height:0}
+.clearfloat{zoom:1}
+.fl_left{float: left;}
+.fl_right{float: right;}
+
+*{
+    font-family: "Microsoft Yahei", 微软雅黑, arial, 宋体, sans-serif;
+}
+
+html,body{
+    width: 100%;
+    height:100%;
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+}
+
+body{
+    background: #f5f5f5;
+    position: relative;
+}
+
+
+.swiper-container {
+    width: 100%;
+    height: 3.2rem;
+    margin: 0px auto;
+}
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.swiper-slide img{
+    min-width: 100%;
+    min-height:100%;
+}
+
+.titles{
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #333333;
+    padding: 20px 0;
+    background: #fff;
+
+}
+.titles .lines{
+    border-bottom: 1px solid #333333;
+    width: 0.3rem;
+    height:0px;
+    display: inline-block;
+    margin: 5px 15px;
+}
+
+
+.huodongcenter{
+    box-sizing: border-box;
+    padding: 10px;
+    background: #fff;
+}
+.huodong_name{
+    border-bottom: 1px solid #999999;
+}
+.hd_names{
+    font-size: 14px;
+    color: #333333;
+}
+.hd_time{
+    font-size: 12px;
+    color: #999999;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.huodong_text{
+    padding: 10px;
+    box-sizing: border-box;
+    padding-top: 0px;
+    line-height: 20px;
+    background: #fff;
+}
+.huod_wenzi{
+    width: 100%;
+    font-size: 13px;
+    color: #666666;
+}
+.gd_mores{
+    color: #fac207;
+}
+
+.xianzhi{
+    max-height: 60px;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: box;
+    display: -webkit-box;
+    word-wrap: break-word;
+    white-space: normal !important;
+    -webkit-box-orient: vertical;
+}
+
+
+.hd_baoming{
+    margin-top: 8px;
+    box-sizing: border-box;
+    padding: 10px;
+    background: #fff;
+}
+.ybmNum{
+    width: 135px;
+    height: 22px;
+    line-height: 22px;
+    border: 1px solid #000;
+    margin: auto;
+    margin-top: 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-align: center;
+}
+.bmuser_pic img{
+    width: 14px;
+    vertical-align: sub;
+}
+
+.baoming_div{
+    width: 200px;
+    height:200px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 1px solid #000;
+    padding: 15px;
+    margin: auto;
+    margin-top: 30px;
+}
+.baoming_neidiv{
+    width: 100%;
+    height:100%;
+    border-radius: 50%;
+    background: #fac207;
+    text-align: center;
+    /*display: none;*/
+}
+.baoming_neidiv.ybm{
+    background: #d9d9d9;
+}
+.baoming_neidiv.ybm{
+    text-align: center;
+    font-size: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.baoming_neidiv img{
+    width: 110px;
+    margin-top: 65px;
+}
+.bmrlist{
+    margin-top: 30px;
+    padding: 15px 0px;
+    height: 3.1rem;
+    box-sizing: border-box;
+}
+.bmr_div{
+    width: 100%;
+    height:100%;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333333;
+    overflow: hidden;
+}
+
+
+.bmr_div li{
+    padding: 0 10px;
+    line-height: 0.8rem;
+    display: flex;
+}
+.bme_pic{
+    display: flex;
+    align-items: center;
+}
+.bme_pic img{
+    width: 0.6rem;
+    height:0.6rem;
+    border-radius: 50%;
+}
+
+.bme_name{
+    flex: 1;
+    display: inline-block;
+    padding: 0px 10px;
+}
+.bme_time{
+    display: inline-block;
+}
+
+.str_wrap{
+    background: none;
+}
+
+
+
+.active_over{
+    margin-top: 8px;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.user_info{
+    text-align: center;
+}
+
+.user_info .touxaing{
+    width: 1.3rem;
+    height:1.3rem;
+    border:0.15rem solid #f6f6f6;
+    border-radius: 50%;
+}
+.user_info .dianhuas{
+    line-height: 20px;
+    color:#333333;
+    font-size: 14px;
+}
+.user_info .mingzi{
+    color:#333333;
+    font-size: 14px;
+}
+
+.zhongjiang{
+    width: 6.5rem;
+    padding: 0.2rem 0;
+    margin: auto;
+    margin-top: 30px;
+    background: #fac207;
+    margin-bottom: 20px;
+}
+.zhongjiang p{
+    text-align: center;
+    line-height: 0.5rem;
+    font-size: 14px;
+    color: #fff;
+}
+
+.zhongjiangUser{
+    margin-top: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #fff;
+}
+
+.zjmd_box{
+    width: 100%;
+    padding: 15px 0px;
+}
+
+.zjmd_div{
+    width: 100%;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333333;
+    padding: 5px 0px;
+}
+
+.zjmd_div li{
+    padding: 0 10px;
+    line-height: 0.8rem;
+    display: flex;
+}
+.zj_bme_pic{
+    display: flex;
+    align-items: center;
+}
+.zj_bme_pic img {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+}
+.zj_bme_name {
+    flex: 1;
+    display: inline-block;
+    padding: 0px 10px;
+    white-space: nowrap;
+}
+.zj_bme_jp{
+    display: inline-block;
+    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.zj_bme_dj {
+    display: inline-block;
+    white-space: nowrap;
+    color: #fc4059;
+}
+
+
+
+
+.mengban_div{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(1,1,1,0.5);
+    z-index: 999;
+}
+.login_div{
+    background: #fff;
+    width: 7rem;
+    height:9rem;
+}
+.baner_div{
+    text-align: center;
+    padding-top: 1rem;
+}
+.baner{
+    width: 2.8rem;
+}
+
+.logins{
+    padding: 0.2rem;
+    margin-top: 0.4rem;
+}
+.line_bottom{
+    border-bottom: 1px solid #000000;
+    text-align: center;
+    line-height: 40px;
+    margin-top: 10px;
+    position: relative;
+}
+.line_bottom span{
+    font-size: 20px;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.line_bottom input{
+    width: 3.8rem;
+    background: none;
+    outline: none;
+    border: none;
+    font-size: 14px;
+}
+
+
+.queding_brn{
+    width: 100%;
+    height:0.6rem;
+    line-height: 0.6rem;
+    text-align: center;
+    background: #fac207;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 0.7rem;
+}
+
+.wai_login{
+    width: 7rem;
+    height: 10.7rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -5.35rem;
+    margin-left: -3.5rem;
+}
+.guanbi{
+    width: 100%;
+    text-align: center;
+    padding-top: 0.2rem;
+}
+.guanbi img{
+    width: 1.5rem;
+}
+
+.getcode{
+    width: 1.4rem;
+    height: 0.5rem;
+    font-size: 12px;
+    background: #fac207;
+    color: #000;
+    position: absolute;
+    right: 0;
+    bottom: 0.2rem;
+    line-height: 0.5rem;
+    text-align: center;
+    font-size: 12px;
+    display: block;
+    outline: none;
+    border: none;
+}
+.codebg{
+    background: #a9a9a9;
+    color: #fff;
+}
+

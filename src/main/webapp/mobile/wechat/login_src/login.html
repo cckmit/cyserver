@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>用户登录</title>
+
+    <!--css-->
+    <link href="static/layer/need/layer.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <style>
+        .B-login-bg{
+            background-image: url(static/img/background@3x.png);
+            background-size:100%;
+            min-height: 100%;
+        }
+        .B-padding-vertical-40 {
+            padding-top: 40px;
+            padding-bottom: 40px;
+        }
+        .B-font-color1 {
+            color:#00c9f2;
+        }
+        .B-find-pwd {
+            position: absolute;right: 5px;padding: 2px 5px;height: 20px;margin-top: 10px;word-break: keep-all;
+        }
+    </style>
+</head>
+
+<body class="B-login-bg H-box-sizing-border-box H-overflow-hidden">
+<div class="H-padding-horizontal-both-20 H-overflow-hidden">
+    <div class="H-flexbox-vertical B-padding-vertical-40">
+        <div class="H-center-all">
+            <div class="H-center-all" style="border: 2px solid white;border-radius: 44px;width: 84px;height: 84px;">
+                <div class="H-center-all" style="background-image: url(static/img/cy_logo@3x.png);background-size: 100%;border: 1px solid white;border-radius: 38px;width: 74px;height: 74px;"></div>
+            </div>
+        </div>
+        <div class="H-center-all H-margin-vertical-top-20">
+            <img src="static/img/cy_title@3x.png" style="height: 20px;">
+        </div>
+    </div>
+    <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after">
+        <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+            <i class="H-iconfont H-icon-phone H-font-size-22 H-vertical-middle H-theme-font-color17"></i>
+        </span>
+        <input type="text" id="username"
+               class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+               placeholder="请输入登录账号">
+    </div>
+    <div class="H-flexbox-horizontal H-border-vertical-bottom-margin-both-10-after H-padding-vertical-top-20">
+        <span class="H-icon H-vertical-middle H-padding-horizontal-left-10">
+            <i class="H-iconfont H-icon-lock H-font-size-20 H-vertical-middle H-theme-font-color17"></i>
+        </span>
+        <input type="password" id="password"
+               class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16 H-theme-font-color17 H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-10 H-theme-background-color-transparent"
+               placeholder="请输入登录密码">
+        <span class="H-theme-font-color17 H-float-right H-font-size-12 H-padding-vertical-both-10 B-find-pwd" id="findPwdBtn">找回密码？</span>
+    </div>
+
+    <div class="H-padding-horizontal-both-10" style="margin-top: 50px;">
+        <button class="H-button H-width-100-percent  H-font-size-16 H-outline-none H-padding-vertical-both-5 H-padding-horizontal-both-20
+        H-theme-background-color16 H-theme-font-color-white H-theme-border-color16 H-theme-border-color16-click H-theme-background-color16-click
+        H-theme-font-color16-click H-border-radius-3" id="submitBtn">绑&nbsp;&nbsp;定</button>
+    </div>
+    <div class="H-flexbox-horizontal H-text-align-center H-padding-horizontal-both-10" style="padding: 40px 0;">
+        <span class="H-flex-item"><div style="border-bottom: 1px solid #cfcfcf;margin-top: 10px;"></div></span>
+        <span class="H-flex-item H-font-size-16 H-theme-font-color17" id="registerLink">注册账号</span>
+        <span class="H-flex-item"><div style="border-bottom: 1px solid #cfcfcf;margin-top: 10px;"></div></span>
+    </div>
+</div>
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="static/layer/layer.js" type="text/javascript"></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    if(openId && openId != "null") {
+        var shareData = {
+            title: '登陸',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }else{
+        openId='';
+    }
+
+    if(!appId || appId == 'null'){
+        appId = '';
+    }
+
+    $(function(){
+        // 接收参数
+        var backUrl = B.getUrlParamByName("backUrl");
+
+        // 判断是否存在accountNum
+        var accountNum = localStorage.getItem("accountNum");
+        if (accountNum && accountNum != "null"){
+            // 存在，重定向至个人中心页面
+            window.location.href = "main.html?ts=" + B.getRandomInt(4);
+            return;
+        }
+
+        // 页面初始化
+        B.ready(function(){
+            // 登录
+            $("#submitBtn").click(function(){
+                if(validateForm()){
+                    // 验证通过后，提交登录
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "10","content": {"accountNum": "' + $("#username").val() + '","password": "' + $("#password").val() + '", "openId":"'+openId+'", "accountAppId":"'+appId+'"}}'
+                        },
+                        dataType: "json",
+                        success: function(data){
+                            console.log(data);
+                            if (data && data.success && data.obj){
+                                var userObj = data.obj;
+                                localStorage.setItem("accountNum", userObj.accountNum);
+
+//                                localStorage.setItem("openId", "o9pZWwbh_xKRq8qDQWXJTWjYpZuQ");
+//                                localStorage.setItem("appId", "wx8416dd0fba114edb");
+
+                                // 绑定用户的openId，修改绑定 或 新增微信用户account
+                                layer.open({ content: "登录成功！" });
+
+                                if (backUrl && backUrl != "null") {
+                                    window.location.href = B.decrypt(backUrl);
+                                }
+                                else{
+                                    window.location.href = "main.html?ts=" + B.getRandomInt(4);
+                                }
+                            }
+                            else{
+                                layer.open({ content: data.msg, skin: "msg", time: 2 })
+                            }
+                        }
+                    });
+                }
+            });
+
+            // 注册
+            $("#registerLink").click(function(){
+                window.location.href = "register.html?ts=" + B.getRandomInt(4);
+            });
+
+            // 找回密码
+            $("#findPwdBtn").click(function(){
+                window.location.href = "findPwd.html?ts=" + B.getRandomInt(4);
+            });
+        });
+
+        // 验证表单
+        function validateForm() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username == "") {
+                layer.open({ content:"登录账号不能为空！", skin:"msg", time:2 });
+                return false;
+            }
+            if (password == "") {
+                layer.open({ content:"登录密码不能为空！", skin:"msg", time:2 });
+                return false;
+            }
+            return true;
+        }
+
+        // 绑定用户的openId
+        /*function bindAccountOpenId(callback) {
+            var params = {"command":"601","content":{}};
+            params.content.openid = localStorage.getItem("openId");
+            params.content.accountAppId = localStorage.getItem("appId");
+            params.content.accountNum = localStorage.getItem("accountNum");
+
+            $.ajax({
+                type: "post",
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: JSON.stringify(params)
+                },
+                dataType: "json",
+                success: function(data){
+                    if ($.isFunction(callback)) {
+                        callback(data);
+                    }
+                }
+            });
+        }*/
+    });
+
+    // 返回上一页
+    $(function(){
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+</script>

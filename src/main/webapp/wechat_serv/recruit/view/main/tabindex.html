@@ -1,0 +1,24 @@
+<div class="main_box">
+    <header>
+        <div class="headers" ng-controller="indexCtr">
+            <div class="top_tabs">
+                <span ng-class="{'lines':select1}" ng-click="changeTabs(1)" ui-sref="tabindex.index.main1">找全职</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':select2}" ng-click="changeTabs(2)" ui-sref="tabindex.index.main2">找实习</span>
+            </div>
+            <div class="top_tabs">
+                <span ng-class="{'lines':select3}"  ng-click="changeTabs(3)"ui-sref="tabindex.index.main3">企业宣讲</span>
+            </div>
+        </div>
+    </header>
+
+
+    <div ui-view class="views_main">
+    </div>
+
+    <div class="my_zp" ui-sref="zhiwei">
+        <i class="fa fa-user-o"></i>
+    </div>
+
+</div>

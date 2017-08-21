@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.express.dao.ExpressMapper">
+	<!--表白墙插入-->
+	<insert id="insertExpressContent" parameterType="map">
+		insert into
+		cy_express_content (accountNum,expressFrom,expressTo,expressContent,pictureUrl,createTime)
+		values(#{accountNum},#{expressFrom},#{expressTo},#{expressContent},#{pictureUrl},now())
+	</insert>
+
+	<!--表白墙内容获取-->
+	<select id="getExpressContentList"  parameterType="map" resultType="com.cy.core.express.entity.ExpressContent">
+		select
+		tmp.expressId,
+		tmp.accountNum,
+		tmp.pictureUrl,
+		tmp.expressContent,
+		tmp.expressTo,
+		tmp.expressFrom,
+		(select picture FROM  cy_userprofile WHERE cy_userprofile.accountNum = tmp.accountNum) picture,
+		(select count(upvoteId) FROM cy_express_praise WHERE tmp.expressId =cy_express_praise.expressId AND cy_express_praise.upvoteState=1) count,
+		tmp.createTime
+		from
+		<if test='totalLimit == "1"'>
+		(select * from cy_express_content  limit 100) as tmp,cy_express_content where tmp.expressId=cy_express_content.expressId
+		</if>
+		<if test='totalLimit != "1"'>
+		cy_express_content tmp
+		</if>
+		<if test='action == "0"'>
+			ORDER BY tmp.createTime DESC
+			<if test='isNoLimit != "1"'>
+				limit #{start},#{rows}
+			</if>
+		</if>
+		<if test='action == "1"'>
+			ORDER BY count DESC
+			<if test='isNoLimit != "1"'>
+				limit #{start},#{rows}
+			</if>
+		</if>
+	</select>
+	<!--表白墙个数获取-->
+	<select id="getExpressContentCount"  resultType="long">
+		select
+		count(expressId)
+		from
+		cy_express_content
+	</select>
+
+	<!--表白评论表插入-->
+	<insert id="insertExpressComment" parameterType="map">
+		insert into
+		cy_express_comment (expressId,accountNum,commentContent,createTime)
+		values(#{expressId},#{accountNum},#{commentContent},now())
+	</insert>
+	<!--表白点赞表插入-->
+	<insert id="insertExpressUpvote" parameterType="map">
+		insert into
+		cy_express_praise (expressId,accountNum,upvoteState,createTime)
+		values(#{expressId},#{accountNum},1,now())
+	</insert>
+	<!--取消表白点赞表-->
+	<update id="cancelExpressUpvote" parameterType="map">
+		update
+		cy_express_praise SET upvoteState=#{upvoteState},updateTime=now() WHERE expressId=#{expressId} AND accountNum=#{accountNum}
+	</update>
+	<!--获取点赞信息-->
+	<select id="getExpressUpvote" parameterType="map" resultType="com.cy.core.express.entity.ExpressUpvote">
+		select
+		upvoteId,
+		expressId,
+		accountNum,
+		upvoteState,
+		createTime
+		from
+		cy_express_praise
+		<where>
+			expressId = #{expressId}
+			<if test='upvoteState != "-1"'>
+			and
+			upvoteState=#{upvoteState}
+			</if>
+				and accountNum=#{accountNum}
+		</where>
+		ORDER BY createTime
+	</select>
+	<!--获取点赞数量-->
+	<select id="getExpressUpvoteCount" parameterType="map" resultType="long">
+		select
+		count(upvoteId)
+		from
+		cy_express_praise WHERE expressId=#{expressId} AND  upvoteState = 1
+	</select>
+	<!--获取当前表表白墙评论ID-->
+	<select id="getCurrentExpressCommentId" parameterType="String" resultType="String">
+		select
+		max(commentId)
+		from
+		cy_express_comment
+		<where>
+			expressId = #{expressId}
+		</where>
+	</select>
+	<!--获取当前表表白墙点赞ID-->
+	<select id="getCurrentExpressUpvoteId" parameterType="String" resultType="String">
+		select
+		max(UpvoteId)
+		from
+		cy_express_praise
+		<where>
+			expressId = #{expressId}
+		</where>
+	</select>
+	<!--获取当前表白墙评论-->
+	<select id="getCurrentExpressComment" parameterType="String" resultType="com.cy.core.express.entity.ExpressComment">
+		select
+		commentId,
+		expressId,
+		accountNum,
+		(SELECT name FROM cy_userprofile WHERE cy_userprofile.accountNum=cy_express_comment.accountNum) name,
+		commentContent,
+		createTime
+		from cy_express_comment
+		<where>
+			commentId = #{currentCommentId}
+		</where>
+	</select>
+	<!--获取当前表白墙点赞内容-->
+	<select id="getCurrentExpressUpvote" parameterType="String" resultType="com.cy.core.express.entity.ExpressUpvote">
+		select
+		upvoteId,
+		expressId,
+		accountNum,
+		createTime
+		from cy_express_praise
+		<where>
+			upvoteId = #{currentUpvoteId} AND upvoteState = 1
+		</where>
+	</select>
+	<!--表白墙评论列表获取-->
+	<select id="getExpressCommentList" parameterType="map" resultType="com.cy.core.express.entity.ExpressComment">
+		select
+		commentId,
+		expressId,
+		accountNum,
+		(SELECT name FROM cy_userprofile WHERE cy_userprofile.accountNum=cy_express_comment.accountNum) name,
+		commentContent,
+		createTime
+		from
+		cy_express_comment
+		<where>
+			expressId = #{expressId}
+		</where>
+		ORDER BY createTime
+	</select>
+	<!--删除表白墙评论-->
+	<delete id="deleteExpressComment" parameterType="map">
+		delete from cy_express_comment where commentId = #{commentId} and accountNum = #{accountNum}
+	</delete>
+	<!--获取表白墙评论数量-->
+	<select id="getExpressCommentCount" parameterType="map" resultType="long">
+		select
+		count(commentId)
+		from
+		cy_express_comment WHERE expressId=#{expressId}
+	</select>
+	<!--当前表白墙获取-->
+	<select id="getExpressContentById"  parameterType="map" resultType="com.cy.core.express.entity.ExpressContent">
+		select
+		expressId,
+		accountNum,
+		pictureUrl,
+		expressContent,
+		expressTo,
+		expressFrom,
+		(SELECT name FROM cy_userprofile WHERE cy_userprofile.accountNum=cy_express_content.accountNum) name,
+		(select picture FROM  cy_userprofile WHERE cy_userprofile.accountNum = cy_express_content.accountNum) picture,
+		(select count(upvoteId) FROM cy_express_praise WHERE cy_express_content.expressId =cy_express_praise.expressId AND cy_express_praise.upvoteState=1) count,
+		createTime
+		from
+		cy_express_content
+		<where>
+			expressId = #{expressId}
+		</where>
+	</select>
+</mapper>

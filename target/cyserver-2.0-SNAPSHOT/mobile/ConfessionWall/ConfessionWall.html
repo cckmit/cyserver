@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>表白墙</title>
+</head>
+<link rel="stylesheet" type="text/css" href="../services/static/css/Hui.css"/>
+<link rel="stylesheet" href="css/common.css" type="text/css">
+<link rel="stylesheet" href="css/ConfessionWall.css" type="text/css">
+<link rel="stylesheet prefetch" href="css/photoswipe.css">
+<link rel="stylesheet prefetch" href="css/default-skin/default-skin.css">
+<link rel="stylesheet" type="text/css" href="css/dropload.css" /
+<body class="relative">
+
+<div class="writeConfession fixed"></div>
+<div class="imgTheme">
+    <img src="image/theme.png" alt="">
+</div>
+<ul class="top100 clearfloat">
+    <li class="f-l">
+        <img src="image/flower.png" alt="">
+        <span>最感动的100条表白</span>
+    </li>
+    <li class="f-r">
+        <img src="image/go.png" alt="">
+    </li>
+</ul>
+
+<div class="comment-box">
+   <!-- <p class="p-no dis-n">表白墙空空如也，快做第一个表白的吧！</p>-->
+    <div class="box2">
+
+    </div>
+    <!--<div class="message">
+        <p class="p1 clearfloat"><span class="f-l">To: <span>自动化管理的李清</span></span><span class="f-r timeAgo">2222</span></p>
+        <p class="p2">爱尔兰有个传说: 如果一对恋人彼此离开了对方，天下就有课星星熄灭。我希望那颗属于我们的星星永不熄灭，永远闪亮</p>
+        <p class="p-more dis-n">全文</p>
+        <p class="p-less dis-n">收起</p>
+        <div class="body">
+            <div class="my-gallery" data-pswp-uid="1">
+                <figure >
+                    <div><a href="img/s5.jpg" data-size="286x220"><img style="height:100%;" src="img/s5.jpg"></a></div>
+                    <figcaption style="display:none;">在这里可增加图片描述</figcaption>
+                </figure>
+                <figure>
+                    <div><a href="img/sb1.jpg" data-size="640x426"><img style="height:100%;" src="img/sb1.jpg"></a></div>
+                    <figcaption style="display:none;">在这里可增加图片描述2</figcaption>
+                </figure>
+                <figure>
+                    <div><a href="img/sb3.jpg" data-size="768x1024"><img style="height:100%;" src="image/theme.png"></a></div>
+                    <figcaption style="display:none;">在这里可增加图片描述3</figcaption>
+                </figure>
+            </div>
+        </div>
+        <ul class="p3 clearfloat">
+            <li class="f-l clearfloat"><img class="love" src="image/love.png" alt="">&nbsp;&nbsp;<span class="memberCount f-l">315人</span><img class="component" src="image/component.png" alt="">&nbsp;&nbsp;<span class="component1 f-l"><span>评论</span>(<span>2000</span>)</span></li>
+            <li class="f-r"><span class="name">匿名</span></li>
+        </ul>
+    </div>-->
+
+    <!-- <div class="message">
+         <p class="p1 clearfloat"><span class="f-l">To: <span>自动化管理的李清</span></span><span class="f-r timeAgo">2222</span></p>
+         <p class="p2">爱尔兰有个传说: 如果一对恋人彼此离开了对方，天下就有课星星熄灭。我希望那颗属于我们的星星永不熄灭，永远闪亮</p>
+         <p class="p-more dis-n">全文</p>
+         <p class="p-less dis-n">收起</p>
+         <div class="img-box">
+             <img src="image/img1.png" alt="">
+             <img src="image/img2.png" alt="">
+             <img src="image/img3.png" alt="">
+         </div>
+         <ul class="p3 clearfloat">
+             <li class="f-l"><img class="love" src="image/love.png" alt="">&nbsp;&nbsp;<span class="memberCount">315人</span><img class="component" src="image/component.png" alt="">&nbsp;&nbsp;<span>评论</span></li>
+             <li class="f-r"><span class="name">匿名</span></li>
+         </ul>
+     </div>
+     <div class="message">
+         <p class="p1 clearfloat"><span class="f-l">To: <span>自动化管理的李清</span></span><span class="f-r timeAgo">2222</span></p>
+         <p class="p2">爱尔</p>
+         <p class="p-more dis-n">全文</p>
+         <p class="p-less dis-n">收起</p>
+         <div class="img-box">
+             <img src="image/img1.png" alt="">
+             <img src="image/img2.png" alt="">
+             <img src="image/img3.png" alt="">
+         </div>
+         <ul class="p3 clearfloat">
+             <li class="f-l"><img class="love" src="image/love.png" alt="">&nbsp;&nbsp;<span class="memberCount">315人</span><img class="component" src="image/component.png" alt="">&nbsp;&nbsp;<span>评论</span></li>
+             <li class="f-r"><span class="name">匿名</span></li>
+         </ul>
+     </div>-->
+</div>
+
+
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides.
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+            <!--    <button class="pswp__button pswp__button&#45;&#45;share" title="Share"></button>-->
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/dropload.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/jquery.timeago.js" type="text/javascript"></script>
+
+<script>
+ // 接收URL中的参数
+
+  var accountNum=B.getUrlParamByName("accountNum");
+
+   var openId = localStorage.getItem("openId");
+   //来自main.html
+   var fromMain = B.getUrlParamByName("fromMain");
+
+   var teamId = B.getUrlParamByName("teamId");
+
+   var sourceFlag = B.getUrlParamByName("sourceFlag");
+   if(openId && openId != "null") {
+       // 微信端
+       accountNum = localStorage.getItem("accountNum");
+   }
+   list();
+
+   function list(){
+       // 每页展示6个
+       var rows = 6;
+       var page = 0;
+       // dropload
+       var dropload = $('.comment-box').dropload({
+           scrollArea: window,
+           domUp: {
+               domClass: 'dropload-up',
+               domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+               domUpdate: '<div class="dropload-update">↑释放更新</div>',
+               domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+           },
+           domDown: {
+               domClass: 'dropload-down',
+               domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+               domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+               domNoData: '<div class="dropload-noData">暂无更多内容</div>'
+           },
+           loadUpFn: function(me) {
+               me.resetload();
+               $.ajax({
+                   type: 'post',
+                   url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                   data: {
+                       jsonStr: '{"command": "791","content": {"page":"1","rows":"'+rows+'","accountNum":"'+accountNum+'","action":"0" } }'
+                   },
+                   dataType: 'json',
+                   success: function (data) {
+                       console.log(data);
+                       var result = '';
+                       for (var i = 0; i < data.obj.rows.length; i++) {
+                           var pic=data.obj.rows[i].pictureUrl.split("|");
+                           var img='';
+                           for(var j=0;j<pic.length;j++){
+                               img+='<figure > <div><a class="mark1" href="'+ B.imageServiceHttp+pic[j]+'"><img class="mark2" style="height:100%;" src="'+ B.imageServiceHttp+pic[j]+'"></a></div></figure>';
+                           }
+                           var da=data.obj.rows[i].pictureUrl==''?'':'<div class="body"> <div class="my-gallery" data-pswp-uid="'+(i+1)+'">'+img+' </div> </div>';
+                           var zan=data.obj.rows[i].upvoteState==1?"image/love.png":"image/nolove.png";
+                           result += '<div class="message">'
+                               +'<i class="flag1 dis-n">'+data.obj.rows[i].expressId+'</i>'
+                               +'<p class="p1 clearfloat"><span class="f-l">To: <span>'+data.obj.rows[i].expressTo+'</span></span><span class="f-r timeAgo">'+jQuery.timeago(data.obj.rows[i].createTime)+'</span></p>'
+                               +'<p class="p2">'+data.obj.rows[i].expressContent+'</p>'
+                               +'<p class="p-more dis-n">全文</p>'
+                               +'<p class="p-less dis-n">收起</p>'
+                               +da
+                               +'<ul class="p3 clearfloat">'
+                               +'<li class="f-l clearfloat"><img class="love f-l" src="'+zan+'" alt=""><span class="memberCount  f-l"><span class="zanCount">'+data.obj.rows[i].upvoteCount+'</span>人</span><img class="component f-l" src="image/component.png" alt="">&nbsp;&nbsp;<span class="component1 f-l">评论(<span>'+data.obj.rows[i].commentCount+'</span>)</span></span></li>'
+                               +'<li class="f-r"><span class="name">'+data.obj.rows[i].expressFrom+'</span></li>'
+                               +'</ul>'
+                               +'</div>'
+                       }
+
+
+                       me.unlock();
+                       /*重置上拉刷新*/
+                       me.noData(false);
+
+                       page = 1;
+                       // 为了测试，延迟1秒加载
+                       setTimeout(function() {
+                           $('.box2').html(result);
+                           setTimeout(function () {
+                                   for(var i=0;i<$('.mark2').length;i++){
+                                       var w=$('.mark2')[i].naturalWidth;
+                                       var h=$('.mark2')[i].naturalHeight
+                                       var v=w+'x'+h
+                                       $($('.mark2')[i]).parents('figure').find('.mark1').attr('data-size',v)
+                                   }//添加相片实际尺寸大小
+                               },500
+                           );
+                           tz();//跳转评论
+                           dz(accountNum);//点赞和取消点赞
+                           initPhotoSwipeFromDOM('.my-gallery');//图片点击放大功能
+                           $(".my-gallery>figure>div").each(function(){
+                               $(this).height($(this).width());
+                           });
+                           var more = $('.p2').length;
+                           for (var k = 0; k < more; k++) {
+                               var cont = $('.p2').eq(k).html();
+                               if (cont.length > 130) {
+                                   $('.p2').eq(k).siblings('.p-more').show();
+                                   $('.p2').eq(k).html(cont.substring(0, 70) + " . . .")
+                               } else {
+                                   $('.p2').eq(k).siblings('.p-more').hide();
+                               }
+                           }
+                           //展开收起
+                           $('.p-more').click(function () {
+                               var index = $('.p-more').index(this);
+                               $(this).hide();
+                               $(this).siblings('.p-less').show();
+                               $('.p2').eq(index).html(data.obj.rows[index].expressContent);
+                           });
+                           $('.p-less').click(function () {
+                               var index = $('.p-less').index(this);
+                               $(this).hide();
+                               $(this).siblings('.p-more').show();
+                               $('.p2').eq(index).html(data.obj.rows[index].expressContent.substring(0, 70) + " . . .");
+                           });
+
+                           // 每次数据加载完，必须重置
+                           me.resetload();
+                       }, 1000);
+                   },
+
+                   error: function (xhr, type) {
+                       console.log('Ajax error!');
+                       // 即使加载出错，也得重置
+                   }
+               })
+           },
+           loadDownFn: function(me){
+
+               page++;
+               $.ajax({
+                   type: 'post',
+                   url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                   data: {
+                       jsonStr: '{"command": "791","content": {"page": "'+page+'", "rows": "'+rows+'","accountNum":"'+accountNum+'","action":"0" } }'
+                   },
+                   dataType: 'json',
+                   success: function (data) {
+                       console.log(data);
+                       var result = '';
+                       for (var i = 0; i < data.obj.rows.length; i++) {
+                           var pic=data.obj.rows[i].pictureUrl.split("|");
+                           var img='';
+                           for(var j=0;j<pic.length;j++){
+                               img+='<figure > <div><a class="mark1" href="'+ B.imageServiceHttp+pic[j]+'"><img class="mark2" style="height:100%;" src="'+ B.imageServiceHttp+pic[j]+'"></a></div></figure>';
+                           }
+                           var da=data.obj.rows[i].pictureUrl==''?'':'<div class="body"> <div class="my-gallery" data-pswp-uid="'+(i+1)+'">'+img+' </div> </div>';
+                           var zan=data.obj.rows[i].upvoteState==1?"image/love.png":"image/nolove.png";
+                           result += '<div class="message">'
+                               +'<i class="flag1 dis-n">'+data.obj.rows[i].expressId+'</i>'
+                               +'<p class="p1 clearfloat"><span class="f-l">To: <span>'+data.obj.rows[i].expressTo+'</span></span><span class="f-r timeAgo">'+jQuery.timeago(data.obj.rows[i].createTime)+'</span></p>'
+                               +'<p class="p2">'+data.obj.rows[i].expressContent+'</p>'
+                               +'<p class="p-more dis-n">全文</p>'
+                               +'<p class="p-less dis-n">收起</p>'
+                               +da
+                               +'<ul class="p3 clearfloat">'
+                               +'<li class="f-l clearfloat"><img class="love f-l" src="'+zan+'" alt=""><span class="memberCount  f-l"><span class="zanCount">'+data.obj.rows[i].upvoteCount+'</span>人</span><img class="component f-l" src="image/component.png" alt="">&nbsp;&nbsp;<span class="component1 f-l">评论(<span>'+data.obj.rows[i].commentCount+'</span>)</span></span></li>'
+                               +'<li class="f-r"><span class="name">'+data.obj.rows[i].expressFrom+'</span></li>'
+                               +'</ul>'
+                               +'</div>'
+                       }
+                       if ((page*rows)>=data.obj.total) {
+                           // 锁定
+                           me.lock();
+                           // 无数据
+                           me.noData();
+
+                       }
+
+                       // 为了测试，延迟1秒加载
+                       setTimeout(function() {
+                           $('.box2').append(result);
+                           setTimeout(function () {
+                                   for(var i=0;i<$('.mark2').length;i++){
+                                       var w=$('.mark2')[i].naturalWidth;
+                                       var h=$('.mark2')[i].naturalHeight
+                                       var v=w+'x'+h
+                                       $($('.mark2')[i]).parents('figure').find('.mark1').attr('data-size',v)
+                                   }//添加相片实际尺寸大小
+                               },500
+                           );
+                           tz();//跳转评论
+                           dz(accountNum);//点赞和取消点赞
+                           initPhotoSwipeFromDOM('.my-gallery');//图片点击放大功能
+                           $(".my-gallery>figure>div").each(function(){
+                               $(this).height($(this).width());
+                           });
+                           var more = $('.p2').length;
+                           for (var k = 0; k < more; k++) {
+                               var cont = $('.p2').eq(k).html();
+                               if (cont.length > 130) {
+                                   $('.p2').eq(k).siblings('.p-more').show();
+                                   $('.p2').eq(k).html(cont.substring(0, 70) + " . . .")
+                               } else {
+                                   $('.p2').eq(k).siblings('.p-more').hide();
+                               }
+                           }
+                           //展开收起
+                           $('.p-more').click(function () {
+                               var index = $('.p-more').index(this);
+                               $(this).hide();
+                               $(this).siblings('.p-less').show();
+                               $('.p2').eq(index).html(data.obj.rows[index].expressContent);
+                           });
+                           $('.p-less').click(function () {
+                               var index = $('.p-less').index(this);
+                               $(this).hide();
+                               $(this).siblings('.p-more').show();
+                               $('.p2').eq(index).html(data.obj.rows[index].expressContent.substring(0, 70) + " . . .");
+                           });
+
+                           // 每次数据加载完，必须重置
+                           me.resetload();
+                       }, 1000);
+                   },
+
+                   error: function (xhr, type) {
+                       console.log('Ajax error!');
+                       // 即使加载出错，也得重置
+                   }
+               })
+
+           }
+       })
+   }
+
+
+
+    //渲染页面
+
+
+
+
+    //跳转评论
+    function tz(){
+        var flag10 = false;
+        $("body").on('touchstart touchmove touchend',".component,.component1", function(event) {
+            var expressId=$(this).parents('.message').find('.flag1').html();
+            switch(event.type) {
+                case 'touchstart':
+                    falg10 = false;
+                    break;
+                case 'touchmove':
+                    falg10 = true;
+                    break;
+                case 'touchend':
+                    if( !falg10 ) {
+                        console.log('点击');
+                        window.location.href = "comment.html?expressId="+expressId+'&accountNum='+accountNum;
+                    } else {
+                        console.log('滑动');
+                    }
+                    break;
+            }
+        });
+
+    }
+    //点赞取消点赞
+/* $(function () {
+     dz(accountNum)
+ })*/
+    function dz(accountNum){
+        $(".love,.memberCount").off('touchstart touchmove touchend').on('touchstart touchmove touchend',function(event) {
+            if(!checkLogin()) return;
+            console.log(event.target.tagName);
+            var expressId=$(this).parents('.message').find('.flag1').html();
+            var zanCount=parseInt($(this).parents('.message').find('.zanCount').text());
+            var zanDom=$(this).parents('.message').find('.zanCount');
+            if(event.target.tagName=='IMG'){
+                var imgSrc=$(this).attr('src');
+                var _this=$(this);
+            }
+            if(event.target.tagName=='SPAN'){
+                var imgSrc=$(this).siblings('.love').attr('src');
+                var _this=$(this).siblings('.love');
+            }
+            var flag = false;
+            switch(event.type) {
+                case 'touchstart':
+                    falg = false;
+                    break;
+                case 'touchmove':
+                    falg = true;
+                    break;
+                case 'touchend':
+                    if( !falg ) {
+                        console.log('点击');
+                        if(imgSrc=='image/nolove.png'){
+                            $.ajax({
+                                type:'post',
+                                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                                data:{
+                                    jsonStr:'{"command": "792","content": {"expressId": "'+expressId+'","accountNum": "'+accountNum+'","action":"1"} }'
+                                },
+                                dataType:'json',
+                                success:function(data){
+
+                                   _this.attr('src','image/love.png');
+                                    zanDom.text(zanCount+1);
+                                    console.log(data)
+                                },
+                                error: function(xhr, type) {
+                                    console.log('Ajax error!');
+                                    // 即使加载出错，也得重置
+                                }
+                            });
+                        }else if(imgSrc=='image/love.png'){
+                            $.ajax({
+                                type:'post',
+                                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                                data:{
+                                    jsonStr:'{"command": "792","content": {"expressId": "'+expressId+'","accountNum": "'+accountNum+'","action":"2"} }'
+                                },
+                                dataType:'json',
+                                success:function(data){
+                                    _this.attr('src','image/nolove.png');
+                                    zanDom.text(zanCount-1);
+                                    console.log(data)
+                                },
+                                error: function(xhr, type) {
+                                    console.log('Ajax error!');
+                                    // 即使加载出错，也得重置
+                                }
+                            });
+                        }
+
+                    } else {
+                        console.log('滑动');
+                    }
+                    break;
+            }
+        });
+    }
+    //跳转top100条评论
+
+    $('.top100').click(function () {
+        window.location.href='top100Confession.html?accountNum='+accountNum
+    });
+//跳转发表评论
+    $('.writeConfession').click(function () {
+        if(!checkLogin()) return;
+        window.location.href='writeConfession.html?accountNum='+accountNum
+    });
+    var initPhotoSwipeFromDOM = function(gallerySelector) {
+
+        // 解析来自DOM元素幻灯片数据（URL，标题，大小...）
+        // (children of gallerySelector)
+        var parseThumbnailElements = function(el) {
+            var thumbElements = el.childNodes,
+                numNodes = thumbElements.length,
+                items = [],
+                figureEl,
+                linkEl,
+                size,
+                item,
+                divEl;
+
+            for(var i = 0; i < numNodes; i++) {
+
+                figureEl = thumbElements[i]; // <figure> element
+
+                // 仅包括元素节点
+                if(figureEl.nodeType !== 1) {
+                    continue;
+                }
+                divEl = figureEl.children[0];
+                linkEl = divEl.children[0]; // <a> element
+
+                size = linkEl.getAttribute('data-size').split('x');
+
+                // 创建幻灯片对象
+                item = {
+                    src: linkEl.getAttribute('href'),
+                    w: parseInt(size[0], 10),
+                    h: parseInt(size[1], 10)
+                };
+
+
+
+                if(figureEl.children.length > 1) {
+                    // <figcaption> content
+                    item.title = figureEl.children[1].innerHTML;
+                }
+
+                if(linkEl.children.length > 0) {
+                    // <img> 缩略图节点, 检索缩略图网址
+                    item.msrc = linkEl.children[0].getAttribute('src');
+                }
+
+                item.el = figureEl; // 保存链接元素 for getThumbBoundsFn
+                items.push(item);
+            }
+
+            return items;
+        };
+
+        // 查找最近的父节点
+        var closest = function closest(el, fn) {
+            return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+        };
+
+        // 当用户点击缩略图触发
+        var onThumbnailsClick = function(e) {
+            e = e || window.event;
+            e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+            var eTarget = e.target || e.srcElement;
+
+            // find root element of slide
+            var clickedListItem = closest(eTarget, function(el) {
+                return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+            });
+
+            if(!clickedListItem) {
+                return;
+            }
+
+            // find index of clicked item by looping through all child nodes
+            // alternatively, you may define index via data- attribute
+            var clickedGallery = clickedListItem.parentNode,
+                childNodes = clickedListItem.parentNode.childNodes,
+                numChildNodes = childNodes.length,
+                nodeIndex = 0,
+                index;
+
+            for (var i = 0; i < numChildNodes; i++) {
+                if(childNodes[i].nodeType !== 1) {
+                    continue;
+                }
+
+                if(childNodes[i] === clickedListItem) {
+                    index = nodeIndex;
+                    break;
+                }
+                nodeIndex++;
+            }
+
+
+
+            if(index >= 0) {
+                // open PhotoSwipe if valid index found
+                openPhotoSwipe( index, clickedGallery );
+            }
+            return false;
+        };
+
+        // parse picture index and gallery index from URL (#&pid=1&gid=2)
+        var photoswipeParseHash = function() {
+            var hash = window.location.hash.substring(1),
+                params = {};
+
+            if(hash.length < 5) {
+                return params;
+            }
+
+            var vars = hash.split('&');
+            for (var i = 0; i < vars.length; i++) {
+                if(!vars[i]) {
+                    continue;
+                }
+                var pair = vars[i].split('=');
+                if(pair.length < 2) {
+                    continue;
+                }
+                params[pair[0]] = pair[1];
+            }
+
+            if(params.gid) {
+                params.gid = parseInt(params.gid, 10);
+            }
+
+            return params;
+        };
+
+        var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+            var pswpElement = document.querySelectorAll('.pswp')[0],
+                gallery,
+                options,
+                items;
+
+            items = parseThumbnailElements(galleryElement);
+
+            // 这里可以定义参数
+            options = {
+                barsSize: {
+                    top: 100,
+                    bottom: 100
+                },
+                fullscreenEl : false,
+                shareButtons: [
+                    {id:'wechat', label:'分享微信', url:'#'},
+                    {id:'weibo', label:'新浪微博', url:'#'},
+                    {id:'download', label:'保存图片', url:'{{raw_image_url}}', download:true}
+                ],
+
+                // define gallery index (for URL)
+                galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+                getThumbBoundsFn: function(index) {
+                    // See Options -> getThumbBoundsFn section of documentation for more info
+                    var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+                        pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                        rect = thumbnail.getBoundingClientRect();
+
+                    return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+                }
+
+            };
+
+            // PhotoSwipe opened from URL
+            if(fromURL) {
+                if(options.galleryPIDs) {
+                    // parse real index when custom PIDs are used
+                    for(var j = 0; j < items.length; j++) {
+                        if(items[j].pid == index) {
+                            options.index = j;
+                            break;
+                        }
+                    }
+                } else {
+                    // in URL indexes start from 1
+                    options.index = parseInt(index, 10) - 1;
+                }
+            } else {
+                options.index = parseInt(index, 10);
+            }
+
+            // exit if index not found
+            if( isNaN(options.index) ) {
+                return;
+            }
+
+            if(disableAnimation) {
+                options.showAnimationDuration = 0;
+            }
+
+            // Pass data to PhotoSwipe and initialize it
+            gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+            gallery.init();
+        };
+
+        // loop through all gallery elements and bind events
+        var galleryElements = document.querySelectorAll( gallerySelector );
+
+        for(var i = 0, l = galleryElements.length; i < l; i++) {
+            galleryElements[i].setAttribute('data-pswp-uid', i+1);
+            galleryElements[i].onclick = onThumbnailsClick;
+        }
+
+        // Parse URL and open gallery if it contains #&pid=3&gid=1
+        var hashData = photoswipeParseHash();
+        if(hashData.pid && hashData.gid) {
+            openPhotoSwipe( hashData.pid ,  galleryElements[ hashData.gid - 1 ], true, true );
+        }
+    };
+
+    function checkLogin() {
+        if(!accountNum || accountNum == '' || accountNum == 'null'){
+
+            if(openId && openId != 'null'){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        if(fromMain && fromMain=='1'){
+                           /* alert(11)*/
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../ConfessionWall/ConfessionWall.html?sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain);
+                        }else{
+                           /* alert(12)*/
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../ConfessionWall/ConfessionWall.html?sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4));
+                        }
+                    }
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+                return false;
+            }else {
+                H.alert('亲，您尚未登陆，请先去登陆吧！');
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }
+</script>
+<script src="js/photoswipe.js"></script>
+<script src="js/photoswipe-ui-default.min.js"></script>
+
+</html>

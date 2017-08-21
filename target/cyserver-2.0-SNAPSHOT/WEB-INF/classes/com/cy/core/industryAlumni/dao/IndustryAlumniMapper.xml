@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.industryAlumni.dao.IndustryAlumniMapper">
+	<resultMap type="com.cy.core.industryAlumni.entity.IndustryAlumni" id="industryAlumniResultMap">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="memberCount" property="memberCount" />
+		<result column="presidentName" property="presidentName" />
+		<result column="telephone" property="telephone" />
+		<result column="address" property="address" />
+		<result column="email" property="email" />
+	</resultMap>
+	
+	<select id="selectAll" resultMap="industryAlumniResultMap">
+		select * from cy_industryalumni
+	</select>
+</mapper>

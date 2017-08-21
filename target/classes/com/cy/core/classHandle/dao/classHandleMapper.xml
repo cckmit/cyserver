@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.classHandle.dao.ClassHandleMapper">
+    <resultMap id="classHandleResultMap" type="com.cy.core.classHandle.entity.ClassHandle">
+        <id column="id" property="id" />
+        <result column="class_base_info_Id" property="classBaseInfoId" />
+        <result column="base_info_Id" property="baseInfoId" />
+        <result column="dept_id" property="deptId" />
+        <result column="type" property="type" />
+        <result column="name" property="name" />
+        <result column="old_name" property="nameOld" />
+        <result column="telephone" property="telephone" />
+        <result column="old_telephone" property="telephoneOld" />
+        <result column="class_name" property="className" />
+        <result column="class_admin" property="classAdmin" />
+        <result column="majorName" property="majorName"/>
+        <result column="status" property="status" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <select id="selectByDeptId" parameterType="map" resultMap="classHandleResultMap">
+        SELECT ch.*,
+        u.user_name class_admin,
+        di.full_name class_name,
+        m.majorName
+        FROM cy_class_handle ch
+        LEFT JOIN cy_user_info u ON u.user_id=ch.class_base_info_Id
+        LEFT JOIN cy_dept_info di ON di.dept_id = LEFT(ch.base_info_Id,16)
+        LEFT JOIN cy_major m ON u.majorId = m.majorId
+        WHERE ch.del_flag='0'
+        <if test="currdeptId!=null and currdeptId!='' ">
+            AND ch.dept_id IN (SELECT
+            b.dept_id
+            FROM
+            (
+            SELECT
+            dept_id
+            FROM
+            cy_dept_info
+            WHERE
+            belong_dept_id = #{currdeptId}
+            OR dept_id = #{currdeptId}
+            ) a
+            LEFT JOIN cy_dept_info b ON b.dept_id LIKE concat(a.dept_id, '%') WHERE LENGTH(b.dept_id) = 16)
+        </if>
+        <if test="deptId!=null and deptId!=''">
+            AND ch.dept_id LIKE CONCAT(#{deptId},'%')
+        </if>
+        <if test="baseInfoId!=null and baseInfoId!=''">
+            AND ch.base_info_id = ${baseInfoId}
+        </if>
+        <if test="classAdmin!=null and classAdmin!=''">
+            AND u.user_name LIKE CONCAT('%',#{classAdmin},'%')
+        </if>
+        <if test="status!=null and status!=''">
+            AND ch.status = #{status}
+        </if>
+        <if test="type!=null and type!=''">
+            AND ch.type=#{type}
+        </if>
+        limit #{start},#{rows}
+    </select>
+
+    <select id="countByDeptId" parameterType="map" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM cy_class_handle ch
+        LEFT JOIN cy_user_info u ON u.user_id=ch.class_base_info_Id
+        LEFT JOIN cy_dept_info di ON di.dept_id = LEFT(ch.base_info_Id,16)
+        where ch.del_flag='0'
+        <if test="currdeptId!=null and currdeptId!='' ">
+            AND ch.dept_id IN (SELECT
+            b.dept_id
+            FROM
+            (
+            SELECT
+            dept_id
+            FROM
+            cy_dept_info
+            WHERE
+            belong_dept_id = #{currdeptId}
+            OR dept_id = #{currdeptId}
+            ) a
+            LEFT JOIN cy_dept_info b ON b.dept_id LIKE concat(a.dept_id, '%') WHERE LENGTH(b.dept_id) = 16)
+        </if>
+        <if test="deptId!=null and deptId!=''">
+            AND ch.dept_id LIKE CONCAT(#{deptId},'%')
+        </if>
+        <if test="baseInfoId!=null and baseInfoId!=''">
+            AND ch.base_info_id = ${baseInfoId}
+        </if>
+        <if test="classAdmin!=null and classAdmin!=''">
+            AND u.user_name LIKE CONCAT('%',#{classAdmin},'%')
+        </if>
+        <if test="status!=null and status!=''">
+            AND ch.status = #{status}
+        </if>
+        <if test="type!=null and type!=''">
+            AND ch.type=#{type}
+        </if>
+
+    </select>
+
+    <select id="selectById" parameterType="String" resultMap="classHandleResultMap">
+        SELECT *
+        FROM cy_class_handle
+        WHERE id=#{id};
+    </select>
+    <insert id="saveClassHandle" parameterType="com.cy.core.classHandle.entity.ClassHandle">
+        INSERT INTO cy_class_handle(
+            id,
+            class_base_info_Id,
+            base_info_Id,
+            dept_id,
+            `type`,
+            `name`,
+            old_name,
+            telephone,
+            old_telephone,
+            status,
+            create_date,
+            create_by,
+            update_date,
+            update_by,
+            remarks,
+            del_flag
+        )VALUES(
+            #{id},
+            #{classBaseInfoId},
+            #{baseInfoId},
+            #{deptId},
+            #{type},
+            #{name},
+            #{nameOld},
+            #{telephone},
+            #{telephoneOld},
+            #{status},
+            #{createDate},
+            #{createBy},
+            #{updateDate},
+            #{updateBy},
+            #{remarks},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="updateUserInfo" parameterType="map">
+        UPDATE cy_user_info SET user_name = #{name} WHERE user_id=#{baseInfoId}
+    </update>
+
+    <update id="updateUserBaseInfo" parameterType="map">
+        UPDATE cy_userbase_info SET user_name = #{name} WHERE user_id=#{baseInfoId}
+    </update>
+
+    <update id="updateClassHandle" parameterType="map">
+        UPDATE cy_class_handle SET `status` = #{status} WHERE id= #{id}
+    </update>
+</mapper>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html{color:#000;background:#fff;}
+        body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,input,button,textarea,p,blockquote,th,td{margin:0;padding:0;}
+        body{font:12px/1 Tahoma,Helvetica,Arial,"\5b8b\4f53",sans-serif;}
+        img{border:none;}
+        em,strong{font-style:normal;font-weight:normal;}
+        li{list-style:none;}
+        table {border-collapse:collapse;border-spacing:0;}
+        h1{font-size:18px;}
+        h2{font-size:16px;}
+        h3{font-size:14px;}
+        h4, h5, h6{font-size:100%;}
+        q:before,q:after{content:'';}/* 消除q前后的内容 */
+        button,input,select,textarea{font-size:100%;}/* 使得表单元素在 ie 下能继承字体大小 */
+        input,button,textarea,select,optgroup,option{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit;}
+        address,cite,dfn,em,var{font-style:normal;} /* 将斜体扶正 */
+        /* link */
+        a{color:#36c;text-decoration:none;}
+        a:hover{color:#f60;text-decoration:underline;}
+
+
+        .top{
+            width:1100px;
+            border:1px solid gray;
+            margin: auto;
+        }
+        .top_log{
+            font-size: 20px;
+            font-weight: bold;
+            padding: 20px;
+        }
+        .xinxi{
+            background: #f2f2f2;
+            border-top:1px solid #fff;
+            padding: 10px 33px;
+            overflow: hidden;
+        }
+        .left_xx{
+            float: left;
+        }
+        .left_xx p{
+            font-size: 12px;
+            line-height: 20px;
+        }
+        .right_xx{
+            float: right;
+            margin-right: 100px;
+            font-size: 16px;
+        }
+        .right_xx p{
+            font-size: 12px;
+            line-height: 44px;
+        }
+        .right_xx p span{
+            font-weight: bold;
+        }
+        .zong_box{
+            padding:20px 10px;
+        }
+        .center{
+            border: 2px solid #ff6600;
+            overflow: hidden;
+            padding: 6px;
+            line-height: 44px;
+        }
+        .left_we{
+            float: left;
+            font-size: 12px;
+            margin: 0px 12px;
+        }
+        .right_we{
+            float: right;
+            font-size: 14px;
+            margin-right: 50px;
+        }
+        .right_we span{
+            color: red;
+        }
+        .left_we img{
+            vertical-align: middle;
+        }
+        .left_we tuiJian{
+            vertical-align: middle;
+            width: 61px;
+            height: 30px;
+        }
+        .tubao{
+            padding: 2px 5px;
+            background: #e0942f;
+            border-radius: 2px;
+            font-size: 12px;
+            color: #fff;
+        }
+        .ewm{
+            margin:auto 25px;
+            padding: 10px;
+        }
+        .ewm_bor{
+            width: 200px;
+            height:200px;
+            overflow: hidden;
+        }
+        .ewm_bor img{
+            width: 200px;
+            height:200px;
+            vertical-align: middle;
+        }
+        .hezi{
+            margin-top: 20px;
+            width: 200px;
+            height:50px;
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        .hezi img{
+            width: 200px;
+            height:50px;
+            vertical-align: middle;
+        }
+    </style>
+
+    <script type="text/javascript" src="../../alumniweb/web/js/jquery-1.8.3.min.js"></script>
+    <script src="../../alumniweb/web/js/xdomain.min.js" type="text/javascript"></script>
+    <script src="../../alumniweb/web/js/jquery.page.js" type="text/javascript"></script>
+    <script src="../../alumniweb/web/js/B.js" type="text/javascript"></script>
+    <script src="../../alumniweb/web/js/levelList.js" type="text/javascript"></script>
+    <script src="../../alumniweb/web/js/common.js"></script>
+    <script type="text/javascript" src="http://cdn.staticfile.org/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+</head>
+<body>
+    <div class="top">
+        <div class="top_log">
+            LOGO 收银台
+        </div>
+        <div class="xinxi">
+            <div class="left_xx">
+                <p>订单编号：<span>死牛牛</span></p>
+                <p>订单类型：<span>死然然</span></p>
+            </div>
+            <div class="right_xx">
+                <p>应付金额:  <span> ¥ 79.00</span></p>
+            </div>
+        </div>
+
+    <!--    <div class="zong_box">
+
+        </div>-->
+        <div class="ewm">
+
+            <div class="center">
+                <div class="left_we">
+                    <img src="../images/wePayLogo.png" width="120px" height="38px" vertical-align="middle" >
+                    <img src="../images/wePayTuiJian.png" width="62px" height="27px"  >
+                    <!--<span style="font-size: 14px">微信支付</span>-->
+                    <!--<span class="tubao">推荐</span>-->
+                    <span style="margin-left: 20px;color: rgba(15, 15, 15, 0.46)">亿万用户的选择，更快更安全</span>
+                </div>
+                <div class="right_we">
+                    支付：<span>123</span> 元
+                </div>
+            </div>
+
+            <div class="ewm_bor" id="output">
+                <!--<img src="../../image/icon_add.png">-->
+            </div>
+            <div class="hezi">
+                <img src="../images/wePayTip.png">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    // 接收参数
+    var out_trade_no = B.getUrlParamByName("out_trade_no");
+    // 接收参数
+    var subject = B.getUrlParamByName("subject");
+    // 接收参数
+    var total_fee = B.getUrlParamByName("total_fee");
+    var WIDbody = B.getUrlParamByName("WIDbody");
+    $(function() {
+        var url = B.serverUrl;
+        url += '/alipay/wechatPayAction!doNotNeedSessionAndSecurity_pcModelTwo.action?' ;
+//        url += 'out_trade_no='+out_trade_no+'&subject='+subject+'&total_fee='+total_fee+'&WIDbody='+WIDbody;
+        B.ready(function () {
+            $.ajax({
+                type:'post',
+                url: url,
+                data: {
+                    'out_trade_no':out_trade_no,
+                    'subject':subject,
+                    'total_fee':total_fee,
+                    'WIDbody':WIDbody
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data && data.obj){
+                        jQuery(function(){
+                            jQuery('#output').qrcode(data.obj.code_url);
+                        })
+                    }
+                }
+            })
+        })
+    });
+</script>
+</html>

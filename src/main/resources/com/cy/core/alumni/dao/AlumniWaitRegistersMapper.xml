@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.alumni.dao.AlumniWaitRegistersMapper">
+    <resultMap type="com.cy.core.alumni.entity.AlumniWaitRegisters" id="awrResultMap">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="alumni_id" property="alumniId" />
+        <result column="is_worked" property="isWorked" />
+        <result column="create_date" property="createDate" />
+        <result column="create_by" property="createBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="remarks" property="remarks" />
+    </resultMap>
+
+    <select id="selectList" parameterType="com.cy.core.alumni.entity.AlumniWaitRegisters" resultMap="awrResultMap">
+        SELECT awr.* FROM cy_alumni_wait_registers awr
+        WHERE awr.del_flag != '1'
+        <if test='userId != null and userId != ""'>
+            AND user_id = #{userId}
+        </if>
+        <if test='alumniId != null and alumniId != ""'>
+            AND alumni_id = #{alumniId}
+        </if>
+        <if test='isWorked != null and isWorked != ""'>
+            AND is_worked = #{isWorked}
+        </if>
+
+    </select>
+
+    <insert id="save" parameterType="com.cy.core.alumni.entity.AlumniWaitRegisters">
+        INSERT INTO cy_alumni_wait_registers(
+            id,
+            user_id,
+            alumni_id,
+            is_worked,
+            create_date,
+            create_by,
+            update_date,
+            update_by,
+            remarks,
+            del_flag
+        )VALUES(
+            #{id},
+            #{userId},
+            #{alumniId},
+            #{isWorked},
+            #{createDate},
+            #{createBy},
+            #{updateDate},
+            #{updateBy},
+            #{remarks},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.alumni.entity.AlumniWaitRegisters">
+        UPDATE cy_alumni_wait_registers SET
+            update_date = #{updateDate}
+            ,update_by = #{updateBy}
+        <if test='isWorked != null and isWorked != ""'>
+            ,is_worked = #{isWorked}
+        </if>
+        <if test='delFlag != null and delFlag != ""'>
+            ,del_flag = #{delFlag}
+        </if>
+        WHERE user_id=#{userId} AND alumni_id = #{alumniId}
+    </update>
+
+    <delete id="delete" parameterType="com.cy.core.alumni.entity.AlumniWaitRegisters">
+        DELETE FROM cy_alumni_wait_registers WHERE user_id=#{userId} AND alumni_id = #{alumniId}
+    </delete>
+</mapper>

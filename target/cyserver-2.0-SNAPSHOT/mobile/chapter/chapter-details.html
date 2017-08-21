@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>组织详情</title>
+    <link rel="stylesheet" href="css/chapter-details.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="../services/static/css/Hui.css"/>
+</head>
+<body>
+
+
+<div class="meng absolute dis-n">
+</div>
+<div class="absolute live-int dis-n">
+</div>
+<div class="delsure absolute dis-n">
+    <p class="ds-p1">确认要加入该分会组织吗?</p >
+    <div class="des-b">
+        <span class=" divbr">取消</span>
+        <span class=" divbl">确定</span>
+    </div>
+</div>
+<div class="delsure-1 absolute dis-n">
+    <p class="ds-p1-1">确认要退出该分会组织吗?</p >
+    <div class="des-b-1">
+        <span class=" divbr-1">取消</span>
+        <span class=" divbl-1">确定</span>
+    </div>
+</div>
+
+    <div class="header">
+      <!--  <div class="theme"><img src="images/img1.jpg" alt=""></div>
+        <p>窗友科技大学计算机学院</p>
+        <p>类型:&nbsp;<span>院系分会&nbsp;&nbsp;&nbsp;</span>成员:<span>&nbsp;24人</span></p>-->
+    </div>
+    
+    <div class="tittle">组织介绍</div>
+    <div class="introduce">
+<!--
+        <p class="content">谈到总决赛MVP杜兰特，5年前正是詹姆斯从杜兰特率领的雷霆手里拿到了自己的第一个冠军，而今天杜兰特以出色的表现从詹姆斯手里夺取了总冠军奖杯，谈到历史以及角色的反转，詹姆斯对杜兰特表达了尊敬：“首先，他从我手里赢得总冠军，我很不开心。但是从2012到现在，我不得不说经历是最好的老师，他一直在用亲身经历来磨练自己。而这赛季在勇士的经历更是画龙点睛，他觉得自己需要改变，需要提升，所以他来到了勇士。对于我来说，5年前的夺冠就像自己第一个孩子出生一样，那是一个永生难忘的时刻。像我之前说的，只要努力下功夫，总有一天会有回报。”</p>
+-->
+        <p class="content"></p>
+        <p class="p-more dis-n">展开</p>
+        <p class="p-less dis-n">收起</p>
+    </div>
+    <div class="tittle memtit dis-n">组织成员</div>
+<ul class="member dis-n">
+    <li class="img-box clearfloat f-l " >
+        <!-- <img src="images/img1.jpg" alt="">
+         <img src="images/img1.jpg" alt="">
+         <img src="images/img1.jpg" alt="">
+         <img src="images/img1.jpg" alt="">
+         <img src="images/img1.jpg" alt="">-->
+    </li>
+    <li class="member-count f-r">共<span></span>个成员</li>
+</ul>
+    <div class="tittle">联系方式</div>
+    <ul class="contact">
+        <li class="school">
+            <div class="img-box">
+                <img src="images/person.png" width="40%" height="40%" alt="">
+            </div>
+            <span><!--窗友科技大学职业学院--></span>
+        </li>
+        <li class="phoneNum">
+            <div class="img-box">
+                <img style="margin-left: 0.1rem" src="images/phone.png" width="35%" height="45%" alt="">
+            </div>
+            <span ><!--13538982845--></span>
+        </li>
+        <li class="email">
+            <div class="img-box">
+                <img style="margin-left: -0.2rem" src="images/email.png"width="50%" height="30%" alt="">
+            </div>
+            <span><!--278325666@qq.com--></span>
+        </li>
+        <li class="position">
+            <div class="img-box">
+                <img src="images/icon3.png"width="40%" height="45%" alt="">
+            </div>
+            <span ><!--武汉市洪山区关山大道456号--></span>
+        </li>
+    </ul>
+    <ul class="footer">
+        <li></li>
+        <li class="join dis-n"><p >申请加入</p></li>
+        <li class="out dis-n"><p >退出该组织</p></li>
+        <li class=" examine dis-n"><p >申请已提交审核中</p></li>
+        <li class=" no-join dis-n"><p >学院分会不可加入</p></li>
+        <li class=" no-examine dis-n"><p >审核未通过，请再次申请！</p></li>
+    </ul>
+
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript" ></script>
+<script src="../js/jbase64.js" type="text/javascript"></script>
+<script src="../js/wechat.js" type="text/javascript"></script>
+
+
+<script>
+function toTop(){
+    var toTop= $(window).scrollTop()+300;
+    $('.live-int').css('top',toTop+'px')
+}
+    
+        var accountNum=localStorage.getItem('id');
+        var alumniId= B.getUrlParamByName('alumniId')
+
+        var openId = localStorage.getItem("openId");
+        //来自main.html
+        var fromMain = B.getUrlParamByName("fromMain");
+
+        var teamId = B.getUrlParamByName("teamId");
+
+        var sourceFlag = B.getUrlParamByName("sourceFlag");
+        if(openId && openId != "null") {
+            // 微信端
+            accountNum = localStorage.getItem("accountNum");
+        }
+
+        //渲染页面
+        show(alumniId);
+        //加入分会
+        joinChapter(accountNum,alumniId);
+        //再次加入分会
+        joinChapter1(accountNum,alumniId);
+        //退出分会
+        outChapter(accountNum,alumniId);
+        //渲染person
+        person(accountNum,alumniId);
+        //跳转分会成员页面
+        goPerson(alumniId);
+        
+    
+
+       //渲染页面
+    function show(alumniId){
+                $.ajax({
+                    type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "240","content": {"alumniId": "'+alumniId+'"}}'
+                },
+                dataType:'json',
+                success:function(data){
+                    console.log(data);
+                    localStorage.setItem("alumniName",data.obj.alumniName);
+                    var result1='';
+                    switch (data.obj.mainType){
+                        case '院系分会':
+                            result1=' <div class="theme"><img src="images/yuan-chapter.png" alt=""></div> ' +
+                            '<p>'+data.obj.alumniName+'</p> ' +
+                            '<p>类型:&nbsp;<span>'+data.obj.mainType+'&nbsp;&nbsp;&nbsp;</span></p>';
+                            $('.footer').empty();
+                           /* $('.member,.tittle').hide();*/
+                            break;
+                        case '地方分会':
+                            result1=' <div class="theme"><img src="images/di-chapter.png" alt=""></div> ' +
+                            '<p>'+data.obj.alumniName+'</p> ' +
+                            '<p>类型:&nbsp;<span>'+data.obj.mainType+'&nbsp;&nbsp;&nbsp;</span>成员:<span class="personCount">&nbsp;</span></p>';
+                            $('.member,.memtit').show();
+                            break;
+                        case '行业分会':
+                            result1=' <div class="theme"><img src="images/hang-chapter.png" alt=""></div> ' +
+                            '<p>'+data.obj.alumniName+'</p> ' +
+                            '<p>类型:&nbsp;<span>'+data.obj.mainType+'&nbsp;&nbsp;&nbsp;</span>成员:<span class="personCount">&nbsp;</span></p>'
+                            $('.member,.memtit').show();
+                            break;
+                    }
+                    $('.header').append(result1)
+
+                    String.prototype.stripHTML = function() {
+                        var reTag = /<(?:.|\s)*?>/g;
+                        var reg=/&nbsp;/g;
+                        var st=/<style[^>]*?>[\s\S]*?<\/style>/g;
+                        var a=this.replace(reg,"");
+                        var b=a.replace(st,'');
+                        return  b.replace(reTag,"");
+                    }
+                  /*  console.log(data.obj.introduction.stripHTML())
+                    console.log(data.obj.introduction)*/
+                     if(data.obj.introduction.stripHTML().length>140){
+                    $('.p-more').show();
+                     $('.content').html(data.obj.introduction.stripHTML().substring(0,140)+" . . .")
+                     }else{
+                     $('.p-more').hide();
+                     }
+                     $('.p-more').click(function(){
+                     $(this).hide();
+                     $('.p-less').show();
+                     $('.content').html(data.obj.introduction.stripHTML());
+                     });
+                     $('.p-less').click(function(){
+                     $(this).hide();
+                     $('.p-more').show();
+                     $('.content').html(data.obj.introduction.stripHTML().substring(0,140)+" . . .");
+                     });
+
+                    $('.school span').html(data.obj.alumniName);
+                    $('.phoneNum span').html(data.obj.telephone);
+                    $('.email span').html(data.obj.email);
+                    $('.position span').html(data.obj.address)
+
+                },
+                error: function(xhr, type) {
+                    console.log('Ajax error!');
+                    // 即使加载出错，也得重置
+                }
+            })
+
+
+    }
+
+      //加入分会
+    function joinChapter(accountNum,alumniId){
+         
+      /* $('body').on('click','.join',function(){*/
+        $('.join').click(function(){
+            if(!checkLogin()) return;
+
+            var sp = $(window).scrollTop();
+            var winHeighe = $(window).height() / 2;
+            $(".meng ").css("top", sp + 'px');
+            $('.delsure').css('top', winHeighe + sp + 'px');
+            $("body").on("touchmove", function (e) {
+                e.preventDefault(); //阻止默认事件
+                e.stopPropagation();
+            }, false);
+            $('.meng').fadeIn(200);
+            $('.delsure').fadeIn(500);
+            $('.divbr').click(function () {
+                $("body").off("touchmove");
+                $('.meng').fadeOut(200);
+                $('.delsure').fadeOut(500);
+            });
+            $('.divbl').click(function () {
+                $("body").off("touchmove");
+                $.ajax({
+                    type:'post',
+                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{jsonStr:'{"command": "208","content": {"accountNum": "'+accountNum+'","alumniId": "'+alumniId+'"}}'
+                    },
+                    dataType:'json',
+                    success:function(data){
+                        console.log(data);
+                        if(data.success==false){
+                            $('.meng').fadeOut(200);
+                            $('.delsure').fadeOut(500);
+                            toTop()
+                            $('.live-int').html('学院分会不可加入..');
+                            $('.live-int').fadeIn(200);
+                            $('.live-int').fadeOut(3000);
+                            $('.join').hide();
+                            $('.no-join').show();
+
+                        }else{
+                            $('.meng').fadeOut(200);
+                            $('.delsure').fadeOut(500);
+                            toTop()
+                            $('.live-int').html('申请已提交，审核中..');
+                            $('.live-int').fadeIn(200);
+                            $('.live-int').fadeOut(3000);
+                            $('.join').hide();
+                            $('.examine').show();
+
+                        }
+
+
+                    },
+                    error: function(xhr, type) {
+                        console.log('Ajax error!');
+                        // 即使加载出错，也得重置
+                    }
+                })
+            });
+        })
+    }
+//再次加入分会
+function joinChapter1(accountNum,alumniId){
+    
+   /* $('body').on('click','.no-examine',function(){*/
+    $('.no-examine').click(function(){
+         if(!checkLogin()) return;
+        var sp = $(window).scrollTop();
+        var winHeighe = $(window).height() / 2;
+        $(".meng ").css("top", sp + 'px');
+        $('.delsure').css('top', winHeighe + sp + 'px');
+        $("body").on("touchmove", function (e) {
+            e.preventDefault(); //阻止默认事件
+            e.stopPropagation();
+        }, false);
+        $('.meng').fadeIn(200);
+        $('.delsure').fadeIn(500);
+        $('.divbr').click(function () {
+            $("body").off("touchmove");
+            $('.meng').fadeOut(200);
+            $('.delsure').fadeOut(500);
+        });
+        $('.divbl').click(function () {
+            $("body").off("touchmove");
+            $.ajax({
+                type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{jsonStr:'{"command": "208","content": {"accountNum": "'+accountNum+'","alumniId": "'+alumniId+'"}}'
+                },
+                dataType:'json',
+                success:function(data){
+                    console.log(data);
+                    if(data.success==false){
+                        $('.meng').fadeOut(200);
+                        $('.delsure').fadeOut(500);
+                        toTop()
+                        $('.live-int').html('学院分会不可加入..');
+                        $('.live-int').fadeIn(200);
+                        $('.live-int').fadeOut(3000);
+                        $('.join').hide();
+                        $('.no-join').show();
+
+                    }else{
+                        $('.meng').fadeOut(200);
+                        $('.delsure').fadeOut(500);
+                        toTop()
+                        $('.live-int').html('申请已提交，审核中..');
+                        $('.live-int').fadeIn(200);
+                        $('.live-int').fadeOut(3000);
+                        $('.no-examine').hide();
+                        $('.examine').show();
+
+                    }
+
+
+                },
+                error: function(xhr, type) {
+                    console.log('Ajax error!');
+                    // 即使加载出错，也得重置
+                }
+            })
+        });
+    })
+}
+    //退出分会
+    function outChapter(accountNum,alumniId){
+       
+
+        $('.out').click(function(){
+            if(!checkLogin()) return;
+            var sp = $(window).scrollTop();
+            var winHeighe = $(window).height() / 2;
+            $(".meng ").css("top", sp + 'px');
+            $('.delsure-1').css('top', winHeighe + sp + 'px');
+            $("body").on("touchmove", function (e) {
+                e.preventDefault(); //阻止默认事件
+                e.stopPropagation();
+            }, false);
+            $('.meng').fadeIn(200);
+            $('.delsure-1').fadeIn(500);
+            $('.divbr-1').click(function () {
+                $("body").off("touchmove");
+                $('.meng').fadeOut(200);
+                $('.delsure-1').fadeOut(500);
+            });
+            $('.divbl-1').click(function () {
+                $("body").off("touchmove");
+                $.ajax({
+                    type:'post',
+                    url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:{jsonStr:'{"command": "209", "content": {"accountNum": "'+accountNum+'","alumniIds": "'+alumniId+'"}}'
+                    },
+                    dataType:'json',
+                    success:function(data){
+                        console.log(data);
+                        $('.meng').fadeOut(200);
+                        $('.delsure-1').fadeOut(500);
+                        toTop();
+                        $('.live-int').html('退出成功');
+                        $('.live-int').fadeIn(200);
+                        $('.live-int').fadeOut(3000);
+                        $('.out').hide();
+                        $('.join').show();
+
+                    },
+                    error: function(xhr, type) {
+                        console.log('Ajax error!');
+                        // 即使加载出错，也得重置
+                    }
+                })
+            });
+        })
+
+    }
+    //分会成员
+    function person(accountNum,alumniId){
+
+        $.ajax({
+            type:'post',
+            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "782","content": { "accountNum":"'+accountNum+'" ,"alumniId":"'+alumniId+'" } }'
+            },
+            dataType:'json',
+            success:function(data){
+                console.log(data);
+                if(data.obj.msStatus==20){
+                    $('.out').show();
+                }
+                if(data.obj.msStatus==10){
+                    $('.examine').show()
+                }
+                if(data.obj.msStatus==30){
+                    $('.no-examine').show()
+                }
+                if(data.obj.msStatus==null){
+                    $('.join').show();
+                }
+                var result='';
+                for(var i=0;i<(data.obj.memberList.length<5?data.obj.memberList.length:5);i++){
+                    result+='<img onerror="nofind()" src="' +B.imageServiceHttp+data.obj.memberList[i].picture+'" alt="">'
+                }
+                $('.member .img-box').append(result)
+                $('.member-count span').text(data.obj.memberCount)
+                $('.personCount').text(data.obj.memberCount)
+                localStorage.setItem('msStatus',data.obj.msStatus)
+            },
+            error: function(xhr, type) {
+                console.log('Ajax error!');
+                // 即使加载出错，也得重置
+            }
+        });
+    }
+    //跳转分会成员页面
+   function goPerson(alumniId){
+     
+        var flag = false;
+        $("body").on('touchstart touchmove touchend',".member-count", function(event) {
+            switch(event.type) {
+                case 'touchstart':
+                    falg = false;
+                    break;
+                case 'touchmove':
+                    falg = true;
+                    break;
+                case 'touchend':
+                    if( !falg ) {
+                        console.log('点击');
+                        if(!checkLogin()) return;
+                        console.log(localStorage.getItem('msStatus'));
+                        if(localStorage.getItem('msStatus')!=20){
+                            toTop();
+                            $('.live-int').html('您不是该组织成员，不能查看组织成员信息');
+                            $('.live-int').fadeIn(200);
+                            $('.live-int').fadeOut(3000);
+                        }else{
+                            window.location.href = 'chapter-details-personnel.html?alumniId='+alumniId;
+                        }
+                    } else {
+                        console.log('滑动');
+                    }
+                    break;
+            }
+        });
+
+    };
+    
+
+    
+
+ function checkLogin() {
+        if(!accountNum || accountNum == '' || accountNum == 'null'){
+
+            if(openId && openId != 'null'){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        if(fromMain && fromMain=='1'){
+                            /* alert(11)*/
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../chapter/chapter-details.html?sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain+"&alumniId="+chapterId);
+                        }else{
+                            /* alert(12)*/
+                            H.openWin("登陆页面", "../wechat/login.html?backUrl=" + B.encrypt('../chapter/chapter-details.html?accountNum=' + accountNum)+"&ts=" + B.getRandomInt(4)+"&alumniId="+chapterId);
+                        }
+                    }
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+                return false;
+            }else {
+                H.alert('亲，您尚未登陆，请先去登陆吧！');
+                return false;
+            }
+        }else{
+            return true;
+        }
+    }    
+ 
+
+var jsonStr = {
+    "title":"分会详情",
+    "btn1":{
+        "imgname":"icon_Back@2x.png",
+        "imgversion":"20170214",
+        "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+        "name":"返回",
+        "action":"fallback()"
+    },
+    "btn3":{
+        "imgname":"icon_more_detail@2x.png",
+        "imgversion":"20170214",
+        "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAAAQAAAASCAYAAAB8fn/4AAAAAXNSR0IArs4c6QAAADBJREFUGBlj+P//vycQP4ZiTwYoA0iBwWMmBnQAFEfVgq6ACD6GGUABkBtgYPBaCwAdi4T3K1E4vwAAAABJRU5ErkJggg==",
+        "name":"",
+        "droplist":[
+            {
+                "name":"分享",
+                "action":"share"
+            }
+        ]
+    }
+}
+
+/*微信分享*/
+var shareStr = {
+    "title":localStorage.getItem("alumniName"),
+    "desc":"",
+    "img":"",
+    "link":location.href.split('?')[0]+'?alumniId='+B.getUrlParamByName('alumniId')
+}
+
+appShareInfo(10, shareStr);
+
+function shareAndroid() {
+    var str= JSON.stringify(shareStr);
+    window.stub.jsMethodTwo(str);
+    return shareStr;
+}
+function shareIos() {
+    window.webkit.messageHandlers.AppModel.postMessage({body: shareStr});
+    return shareStr;
+}
+/**/
+
+function menuConfig() {
+    window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+    return jsonStr;
+
+}
+function jsonConfig() {
+    var str = JSON.stringify(jsonStr);
+    window.stub.jsMethod(str);
+    return jsonStr;
+
+}
+function fallback() {
+    window.history.back()
+}
+
+
+/*找不到图片*/
+function nofind(){
+    var img=event.srcElement;
+    img.src="images/userPhoto.png";
+    img.onerror=null; /*控制不要一直跳动*/
+}
+
+</script>
+</html>

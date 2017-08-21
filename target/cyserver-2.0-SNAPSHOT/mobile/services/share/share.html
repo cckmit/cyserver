@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>APP下载</title>
+    <meta name="viewport" content="maximum-scale=1,minimum-scale=1,user-scalable=0,width=device-width,initial-scale=1" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/font/iconfont.css" type="text/css" rel="stylesheet" />
+
+    <style type="text/css">
+        .bg{
+            background-color:#ebebeb;
+            padding:10px 2px;
+        }
+        .box_item{
+            background-color:#fff;
+            margin-bottom:10px;
+        }
+        .box_item .title{
+            text-align: center;
+            padding: 24px 0 27px 0;
+            font-size:16px;
+        }
+        .box_item .img_box{
+            width: 86%;
+            margin: 0 auto;
+            padding-bottom: 31px;
+            border-bottom:1px solid #999;
+        }
+        .img_box .qr_txt{
+            font-size:12px;
+        }
+        .date_box{
+            width: 86%;
+            margin: 0 auto;
+            height:45px;
+            line-height: 45px;
+            text-align: right;
+            font-size:10px;
+        }
+
+        /*for iphone5*/
+        @media screen and (max-width: 320px) {
+            .box_item .img_box{
+                width: 100%;
+            }
+            .date_box{
+                width: 100%;
+
+            }
+            .date_box span{
+                padding-right:10px;
+            }
+        }
+
+        .banner_box, .detail_content{
+            margin: 0 auto;
+            width: 94%;
+            font-size: 14px;
+        }
+
+        /*scroll test*/
+        #wrapper {
+            /*position: absolute;*/
+            z-index: 1;
+            /*top: 0;*/
+            /*height: 35px;*/
+            height: auto;
+            /*left: 0;*/
+            width: 100%;
+            background: #f4f5f9;
+            overflow: hidden;
+        }
+        #scroller {
+            /*position: absolute;*/
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            width: 752px;
+            /*height: 100%;*/
+            background-color: #ffffff;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+  /*      #scroller ul {
+            list-style: none;
+            padding: 0;
+            !*width: 100%;*!
+            width: 86%;
+            margin: 0 auto;
+            height: 100%;
+            text-align: center;
+        }
+        #scroller li {
+            display: block;
+            float: left;
+            width: 118px;
+            !*height: 100%;*!
+            line-height: 35px;
+            background-color: #fff;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        #scroller li img{
+            width:103px;
+        }*/
+
+        /*test*/
+        .image_box{
+            overflow: auto;
+            width: 100%;
+        }
+        .scroll_item{
+            display: inline-block;
+        }
+
+        .liulanqi{
+            display: none;
+            position: absolute;
+            top:0;
+            color: #fff;
+            left:0;
+            width: 100%;
+            height:100%;
+            background: rgba(1,1,1,0.7);
+            text-align: center;
+        }
+        .liulanqi img{
+            width: 100%;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="bg">
+    <!--qrcode box-->
+    <div class="qrcode_box box_item">
+        <div class="title school_name"></div>
+        <div class="qr_box img_box H-flexbox-horizontal">
+            <div class="H-flex-item H-text-align-center">
+                <a class="androdown" href="javascript:;"><img src="../static/img/android_down.png" style="width:71px; background-color:#ddd;border-radius:3px;"/></a>
+                <div class="qr_txt">安卓下载APP</div>
+            </div>
+            <div class="H-flex-item H-text-align-center">
+                <a class="iosdown" href="javascript:;"><img src="../static/img/ios_down.png" style="width:71px;"/></a>
+                <div class="qr_txt">IOS下载APP</div>
+            </div>
+        </div>
+        <div class="date_box">
+            更新时间:<span class="date_span"></span>
+        </div>
+
+    </div>
+
+<!--page box-->
+        <div class="page_box box_item">
+            <div class="title" style="padding-bottom:24px;">页面展示</div>
+
+            <!--test scroll-->
+
+            <!--update by jl-->
+            <div class="image_box">
+                <div class="image_scroll">
+                </div>
+            </div>
+
+            <div class="date_box">
+                更新时间:<span class="date_span"></span>
+            </div>
+        </div>
+<!--detail box-->
+
+        <div class="detail_box box_item">
+            <div class="title" style="padding-bottom:24px;">产品介绍</div>
+            <div class="detail_content" style="padding:17px 0;">
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="liulanqi">
+        <img src="../static/img/share_pic.png"/>
+    </div>
+
+</body>
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script src="../static/js/iscroll.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+
+<script type="text/javascript">
+    $(function(){
+        //定义模板标签符
+        H.tppl_flag = ["<%", "%>"];
+
+        loadContent();
+
+
+    })
+
+    //加载分享内容
+    function loadContent() {
+        B.ready(function () {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "504","content": {}}'
+                },
+                dataType: 'json',
+                success: function(data){
+
+//                    console.log(data);
+
+                    if(data.success && data.obj){
+                        var updateDate ='', schoolName = '', content='';
+
+                        //学校名称
+                        if(data.obj.schoolName && data.obj.schoolName !=''){
+                            schoolName = data.obj.schoolName;
+                        }else{
+                            schoolName = '大学校友会';
+                        }
+                        $('.school_name').text(schoolName);
+
+
+                        //更新时间
+                        if(data.obj.updateDate && data.obj.updateDate !=''){
+                            updateDate = data.obj.updateDate.substring(0,10);
+                        }else{
+                            updateDate = '0000-00-00';
+                        }
+                        //qrcode_box
+                        $('.date_span').text(updateDate);
+
+                        //页面展示
+                        var fileArr = data.obj.fileList;
+                        var fileLen = fileArr.length;
+
+                        var V_width=window.screen.width/3;
+
+                        $('.image_scroll').css("width",(fileLen*V_width)+"px");
+
+                        for(var i=0; i<fileLen; i++){
+                            var fileStr = '', imgUrl='';
+                            if(fileArr[i].pictureUrl && fileArr[i].pictureUrl!=''){
+                                imgUrl = B.getImageAbsoluteUrl(fileArr[i].pictureUrl);
+                            }else{
+                                imgUrl ='../static/img/page.png';
+                            }
+
+                            fileStr = '<div class="scroll_item" style="width: \''+V_width+'px\'"><img style="margin: 5px; width: '+(V_width-10)+'px; height: '+(V_width-10)*16/9+'px" src="'+imgUrl+'" /></div>';
+                            $('.image_scroll').append(fileStr);
+                        }
+
+
+                        //产品介绍-详情
+                        if(data.obj.introduce && data.obj.introduce !=''){
+                            introduce = data.obj.introduce;
+                        }else{
+                            introduce = '还没有添加介绍';
+                        }
+                        $('.detail_content').html(introduce);
+
+                        //下载的链接
+                        $('.androdown').attr( "onclick","andown('"+data.obj.androidUrl+"')");
+                        $('.iosdown').attr( "onclick","iosdown('"+data.obj.iosUrl+"')")
+
+
+                        //微信分享
+                     /*   if(openId && openId != 'null'){
+                            var title = data.obj.name;
+                            var desc = data.obj.summary;
+                            var imgUrl = B.getImageAbsoluteUrl(data.obj.posterPicUrl);
+                            var shareData = {
+                                title: title,
+                                desc: desc,
+                                link: location.href.split('?')[0]+"?productId="+productId,
+                                imgUrl: imgUrl
+                            };
+                            mkShareInfo(location.href, shareData, 0);
+                        }*/
+
+
+                    }else{
+                        H.alert("加载有错");
+                    }
+
+
+                },
+                error: function(xhr, type){
+                    // 即使加载出错，也得重置
+                }
+            });
+
+        })
+    }
+
+
+    function andown(a){
+        if(isWeiXin()){
+            $('.liulanqi').show();
+            $('body').css('overflow','hidden');
+        }else{
+            window.location.href=a;
+        }
+    }
+    function iosdown(a){
+        if(isWeiXin()){
+            $('.liulanqi').show();
+            $('body').css('overflow','hidden');
+        }else{
+            window.location.href=a;
+        }
+    }
+    function isWeiXin(){
+        var ua = window.navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+</script>
+</html>

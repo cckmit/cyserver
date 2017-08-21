@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>捐赠成功</title>
+    <style type="text/css">
+        .myDiv {position: fixed;left: -100%;right:100%;top:0;bottom: 0;text-align: center;font-size: 0;}
+        .myDiv:after {content:"";display: inline-block;vertical-align: middle;height: 100%;width: 0;}
+        .pay {
+            position: fixed;
+            width: 100%;
+            bottom: 0px;
+            height: 100px;
+            z-index: 999;
+            left: 0px;
+            padding: 10px;
+            box-sizing: border-box;
+
+        }
+        .pay span {
+            display: block;
+            width: 100%;
+            height: 80px;
+            color: #ffffff;
+            font-family: "微软雅黑", Arial, "宋体";
+            background: #fa9641;
+            font-size: 36px;
+            line-height: 80px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        img {display: inline-block; *display: inline; *zoom:1;	vertical-align: middle;position: relative;right: -100%;width:600px;height:600px;}
+    </style>
+</head>
+<body>
+    <div class="myDiv"><img src="../static/img/paySuccess@2x.png" /></div>
+    <div class="pay"><span>查看证书</span></div>
+</body>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    var accountNum = B.getUrlParamByName("accountNum");
+    var id = B.getUrlParamByName("id");
+    var donationId = B.getUrlParamByName("donationId");
+    if(donationId){
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data: {
+                jsonStr: '{"command": "231","content": {"donationId": "' + donationId + '","userId":"' + accountNum + '"}}'
+            },
+            dataType: 'json',
+            success: function (data) {
+
+                if (data.success) {
+                    zfb();
+                }
+            },
+            error: function (xhr, type) {
+                H.alert("支付失败！");
+            }
+        });
+    }else{
+         wx();
+    };
+
+   /* wx支付*/
+        function wx() {
+
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "229","content": {"id": "' + id + '"}}'
+                },
+                dataType: 'json',
+                success: function (data) {
+
+                    $('.pay').click(function () {
+                        window.location.href = "certificate.html?ts=" + B.getRandomInt(4) + "&state="+0+"&accountNum=" + accountNum + "&imgUrl=" + B.encrypt(data.obj.certificatePicUrl);
+                    });
+                },
+                error: function (xhr, type) {
+                    // 加载出错
+                }
+            })
+
+        }
+    /*支付宝支付*/
+    function zfb() {
+
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data: {
+                jsonStr: '{"command": "229","content": {"id": "' + donationId + '"}}'
+            },
+            dataType: 'json',
+            success: function (data) {
+
+                $('.pay').click(function () {
+                    window.location.href = "certificate.html?ts=" + B.getRandomInt(4) +"&state="+0+ "&accountNum=" + accountNum + "&imgUrl=" + B.encrypt(data.obj.certificatePicUrl);
+                });
+            },
+            error: function (xhr, type) {
+                // 加载出错
+            }
+        })
+
+    }
+/*
+
+*/
+
+    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+
+    //返回
+    var jsonStr = {
+        "title":"捐赠成功",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+
+
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+
+    }
+    function fallback() {
+        window.location.href="my_donates.html?accountNum="+accountNum
+    }
+</script>
+</html>

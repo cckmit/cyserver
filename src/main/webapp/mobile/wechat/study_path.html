@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的班级</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!--css-->
+    <link href="static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="static/css/my_center.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div>
+    <img class="imgpost" src="static/img/stydyban.png" style=" width:100%;vertical-align: middle">
+</div>
+
+
+<script type="text/html" id="listStudy">
+    <%
+    for(var i in listStudy){
+    %>
+    <div class="">
+        <div  class="list_dianji">
+            <div class="H-qq-item H-vertical-middle H-overflow-hidden H-margin-vertical-top-5">
+                <div class="H-flexbox-horizontal H-box-sizing-border-box H-theme-background-color-white H-border-vertical-bottom-after H-clear-both H-padding-horizontal-both-10 H-padding-vertical-both-8 H-touch-active">
+                    <div class="H-flex-item H-vertical-middle H-overflow-hidden">
+                        <div class="H-width-100-percent">
+                            <strong class="H-font-weight-normal H-display-block H-font-weight-500 H-font-size-16 H-text-show-row-1"><%=listStudy[i].fullStudyPath.split(',')[2]%><span class="H-font-size-14">【<%=listStudy[i].fullStudyPath.split(',')[3]%>】</span></strong>
+                            <div class="H-theme-font-color-999 H-font-size-14 H-padding-vertical-top-5 H-text-show-row-1">
+                                <%=listStudy[i].fullStudyPath.split(',')[0]%>&nbsp;>&nbsp;<%=listStudy[i].fullStudyPath.split(',')[1]%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="H-font-size-12 H-theme-font-color-999 white-space-nowrap H-text-align-right" style="position: absolute;right:10px;top:10px">
+                        <label class="H-display-block classNum<%=listStudy[i].strStudyPathId%>">[ / ]</label>
+                    </div>
+                </div>
+                <div class="H-qq-menu H-vertical-middle H-position-relative H-overflow-hidden">
+                    <div onclick="dellist(this,'<%=listStudy[i].strStudyPathId%>')"
+                         class="H-font-size-16 H-padding-horizontal-both-20 H-theme-background-color-red H-display-block H-theme-font-color-white white-space-nowrap">退出</div>
+                </div>
+            </div>
+        </div>
+        <div class="study_center" style="display: none;width:100%;box-sizing: border-box;background: #f4f5f9;padding: 5px 10px 0px 10px;">
+            <table class="jingli_box" border="0" cellspacing="0">
+                <thead>
+                <tr>
+                    <th class="H-vertical-align-middle H-font-size-15 H-font-weight-500 H-border-vertical-bottom-after">
+                        <img src="static/img/user_study.png" style="width: 15px;">
+                    </th>
+                    <th class="H-vertical-align-middle H-font-size-15 H-font-weight-500 H-border-vertical-bottom-after">
+                        姓名
+                    </th>
+                    <th class="H-vertical-align-middle H-font-size-15 H-font-weight-500 H-border-vertical-bottom-after">
+                        性别
+                    </th>
+                    <th class="H-vertical-align-middle H-font-size-15 H-font-weight-500 H-border-vertical-bottom-after">
+                        联系电话
+                    </th>
+                    <th class="H-vertical-align-middle H-font-size-15 H-font-weight-500 H-border-vertical-bottom-after">
+                        状态
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="class_xinxi<%=listStudy[i].strStudyPathId%>">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%
+    }
+    %>
+</script>
+
+<script type="text/html" id="classXinxi">
+    <%
+    for(var key in classXinxi){
+    if(classXinxi[key].accountNum){
+    %>
+    <tr class="yrz_num">
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after" style="position: relative;">
+            <img onerror="javascript:this.src='static/img/default_profile.png';" src="<%=B.getImageAbsoluteUrl(classXinxi[key].pictureRT)%>" style="border-radius: 50%; width: 30px;height: 30px;">
+            <%if(classXinxi[key].isClassAdmin=='1'){%>
+                <img src="static/img/icon_manager.png" style="position: absolute;bottom: 2px;right: 2px;width: 42px;" />
+            <%}else{%>
+            <%}%>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%=classXinxi[key].userName%>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%
+            if(classXinxi[key].sex){
+            %>
+            <span><%=classXinxi[key].sex%></span>
+            <%
+            }
+            %>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%
+            if(classXinxi[key].phoneNum){
+            %>
+            <%=classXinxi[key].phoneNum%>
+            <%
+            }
+            %>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%
+            if(classXinxi[key].isCurrent==1){
+            %>
+            <span style="color: #3498db;">我</span>
+
+            <%
+            }else if(classXinxi[key].friendStatus==1){
+            %>
+            <span style="color: #ff5b5b;">互为好友</span>
+            <%
+            }else{
+            %>
+            <span style="color: #999999;">非好友</span>
+            <%
+            }
+            %>
+
+
+        </td>
+    </tr>
+    <%
+    }else{
+    %>
+    <tr style="color: #b7b7b7;">
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after" style="position: relative;">
+            <img onerror="javascript:this.src='static/img/default_profile.png';" src="<%=B.getImageAbsoluteUrl(classXinxi[key].pictureRT)%>" style="border-radius: 50%; width: 30px;height: 30px;">
+            <%if(classXinxi[key].isClassAdmin=='1'){%>
+            <img src="static/img/icon_manager.png" style="position: absolute;bottom: 2px;right: 2px;width: 42px;" />
+            <%}else{%>
+            <%}%>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%=classXinxi[key].userName%>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%=classXinxi[key].sex%>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            <%
+            if(classXinxi[key].phoneNum){
+            %>
+            <%=classXinxi[key].phoneNum%>
+            <%
+            }
+            %>
+        </td>
+        <td class="H-vertical-align-middle H-font-size-14 H-border-vertical-bottom-after">
+            未认证
+        </td>
+    </tr>
+    <%
+    }
+    }
+    %>
+
+
+</script>
+
+<div class="list_study">
+</div>
+</body>
+
+<!--引入脚本文件-->
+<script src="static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="static/js/lrz.mobile.min.js"></script>
+<script src="static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("study_path.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.go(-1);
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '學習經歷',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        B.ready(function(){
+            //获取用户的学习经历
+            loadingstydypath();
+        });
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+//            alert("我监听到了浏览器的返回按钮事件啦");
+            var rnumber = Math.floor(Math.random()*1000);
+            if(fromFoundation && fromFoundation == '1'){
+                H.openWin("个人信息", "../wechat/personal.html?accountNum="+accountNum+"&mod="+rnumber+"&fromFoundation="+fromFoundation);
+            }else{
+                H.openWin("登陆页面", "../wechat/main.html?accountNum="+accountNum+"&mod="+rnumber);
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+
+
+    //################## 侧滑全部代码
+    //返回角度
+    function GetSlideAngle(dx, dy) {
+        return Math.atan2(dy, dx) * 180 / Math.PI;
+    }
+
+    //根据起点和终点返回方向 1：向上，2：向下，3：向左，4：向右,0：未滑动
+    function GetSlideDirection(startX, startY, endX, endY) {
+        var dy = startY - endY;
+        var dx = endX - startX;
+        var result = 0;
+
+        //如果滑动距离太短
+        if (Math.abs(dx) < 2 && Math.abs(dy) < 2) {
+            return result;
+        }
+
+        var angle = GetSlideAngle(dx, dy);
+        if (angle >= -45 && angle < 45) {
+            result = 4;
+        } else if (angle >= 45 && angle < 135) {
+            result = 1;
+        } else if (angle >= -135 && angle < -45) {
+            result = 2;
+        }
+        else if ((angle >= 135 && angle <= 180) || (angle >= -180 && angle < -135)) {
+            result = 3;
+        }
+
+        return result;
+    }
+
+    var _startX = 0;
+    var _startY = 0;
+    var scrollHeight = 0;
+    var scrollWidth = 0;
+    var currentRange = 0;
+    var parentEle = null;
+    var direction = 1;
+
+    // 设置侧滑动画
+    function setScroll(parentElement, value, time) {
+        parentElement.firstElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+        parentElement.lastElementChild.style.cssText = "-webkit-transition: transform " + time + "s;-webkit-transform:translateX(" + value + "px);";
+    }
+
+    // 触摸开始
+    window.addEventListener("touchstart", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            parentEle = H.getParents(event.target, "H-qq-item");
+            if (H.isElement(parentEle)) {
+
+                // 其他兄弟隐藏
+                var siblings = H.siblings(parentEle);
+                for (var i = 0; i < siblings.length; i++) {
+                    var _siblingObj = siblings[i];
+                    setScroll(_siblingObj, 0, 0);
+                }
+
+                scrollHeight = parentEle.firstElementChild.clientHeight;
+                scrollWidth = H.D(".H-qq-menu", parentEle).clientWidth;
+
+                for (var j = 0; j < parentEle.lastElementChild.childNodes.length; j++) {
+                    var child = parentEle.lastElementChild.childNodes[j];
+                    if (H.isElement(child)) {
+                        child.style.cssText = "height:" + scrollHeight + "px;line-height:" + scrollHeight + "px;";
+                    }
+                }
+
+                currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+                _startX = touch.pageX;
+                _startY = touch.pageY;
+            }
+        }
+    }, false);
+    // 触摸过程
+    window.addEventListener("touchmove", function (event) {
+        if (event.targetTouches.length == 1) {
+            var touch = event.targetTouches[0];
+            direction = GetSlideDirection(_startX, _startY, touch.pageX, touch.pageY);
+            if (direction == 3 || direction == 4) {
+                event.preventDefault();
+                if (H.isElement(parentEle)) {
+                    var range = touch.pageX - _startX;
+                    if (range <= 0) {
+                        if (range - currentRange >= -scrollWidth && range - currentRange <= 0) {
+                            setScroll(parentEle, (range - currentRange), 0);
+                        }
+                    }
+                    else {
+                        if (range + currentRange <= 0) {
+                            setScroll(parentEle, (range + currentRange), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }, false);
+    // 触摸接触
+    window.addEventListener("touchend", function (event) {
+        var touch = event.targetTouches[0];
+        if (H.isElement(parentEle)) {
+            currentRange = Number(parentEle.firstElementChild.style.WebkitTransform.replace(/translateX\(/g, "").replace(/px\)/g, ""));
+            if (direction == 3 && (currentRange < 0)) {
+                setScroll(parentEle, -scrollWidth, 0.4);
+            }
+            else if (direction == 4 && currentRange < 80) {
+                setScroll(parentEle, 0, 0.4);
+            }
+            else {
+                setScroll(parentEle, 0, 0.4);
+            }
+        }
+    }, false);
+    // 点击
+    window.addEventListener("click", function (event) {
+        var parentEle = H.getParents(event.target, "H-qq-item");
+        if (H.isElement(parentEle)) {
+            setScroll(parentEle, 0, 0.4);
+        }
+    }, false);
+
+    //点击显示隐藏效果
+    $('.list_study').on('click','.list_dianji',function(){
+        $(this).siblings('.study_center').toggle();
+        $(this).parent().siblings().children('.study_center').hide();
+    });
+
+    //删除学习经历
+    function dellist(ele,sId){
+
+        H.confirmoutclass(function (ret) {
+            if(ret.buttonIndex==1){
+                B.ready(function(){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "206","content": { "accountNum": "'+accountNum+'",  "baseInfoIdx": "'+sId+'"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            if(data && data.success){
+                                $(ele).parent().parent().parent().parent().hide();
+                            }
+                        },
+                        error: function(xhr, type){
+                        }
+                    });
+                });
+            }else{
+            }
+        }, '确认提示：', '您确定要退出当前班级吗？',['狠心退出','暂不退出']);
+    }
+
+    //获取用户的学习经历
+    function loadingstydypath() {
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "101","content": {"accountNum": "'+accountNum+'"} }'
+            },
+            dataType: 'json',
+            success: function(data){
+                var verifyOther;
+                if(data.obj.length > 0){
+                    var render = H.tppl(H.D("#listStudy").innerHTML);
+                    var result = render({listStudy:data.obj});
+                    $('.list_study').append(result);
+                    verifyOther = '点击认证其他班级';
+
+                    for(var j in data.obj){
+                        classren(data.obj[j].strStudyPathId);
+                    }
+                }else{
+                    verifyOther = '您还没有认证，点击去认证吧';
+                }
+                verifyOther = '<div class="H-margin-horizontal-both-15 H-text-align-center H-margin-vertical-top-15"><span tapmode="" onclick="goVerify()" class="H-theme-font-color16 H-font-size-14">'+verifyOther+'</span></div>';
+                $('.list_study').append(verifyOther);
+            },
+            error: function(xhr, type){
+            }
+        });
+    }
+
+    function goVerify(){
+        var rnumber = Math.floor(Math.random()*1000);
+        H.openWin("个人信息", "../wechat/verify/class_list.html?accountNum="+accountNum+"&mod="+rnumber+"&fromFoundation="+fromFoundation);
+    }
+
+    //获取班级成员信息
+    function classren(classid){
+        B.ready(function(){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "242","content": { "userId": "'+classid+'"} }'
+                },
+                dataType: 'json',
+                success: function(data){
+
+                    if(data.obj.length > 0){
+
+
+                        var render = H.tppl(H.D("#classXinxi").innerHTML);
+                        var result = render({classXinxi:data.obj});
+                        $('.class_xinxi'+classid+'').append(result);
+
+                        var sunNUm=data.obj.length;
+                        var yrzNUm=$('.class_xinxi'+classid+' .yrz_num').length;
+                        $('.classNum'+classid+'').html('['+yrzNUm+'/'+sunNUm+']');
+
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+    //sessionStorage缓存-----------
+    var userEntity = {
+        name: '存的值',
+        age: 22
+    };
+    // 存储值：将对象转换为Json字符串
+    sessionStorage.setItem('user', JSON.stringify(userEntity));
+
+    // 取值时：把获取到的Json字符串转换回对象
+    var userJsonStr = sessionStorage.getItem('user');
+    userEntity = JSON.parse(userJsonStr);
+
+</script>
+</html>

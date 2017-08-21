@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.dict.dao.DictMapper">
+	<resultMap type="com.cy.core.dict.entity.Dict" id="dictResultMap">
+		<id column="dict_id" property="dictId" />
+		<result column="dict_type_id" property="dictTypeId" />
+		<result column="dict_name" property="dictName" />
+		<result column="dict_value" property="dictValue" />
+		<result column="dict_image" property="dictImageUrl" />
+
+	</resultMap>
+	<delete id="deleteDict" parameterType="list">
+		delete from cy_dict where dict_id =#{id}
+	</delete>
+	<delete id="deleteByDictTypeId" parameterType="long">
+		delete from cy_dict where dict_type_id=#{dictTypeId}
+	</delete>
+	<insert id="addDict" parameterType="com.cy.core.dict.entity.Dict">
+		insert into cy_dict(dict_name,dict_type_id,dict_value,dict_image) values(#{dictName},#{dictTypeId},#{dictValue},#{dictImageUrl})
+	</insert>
+	<select id="selectDict" parameterType="map" resultMap="dictResultMap">
+		select dict_id,dict_name,dict_type_id,dict_value,dict_image from cy_dict where dict_type_id=#{dictTypeId}
+		<if test="dictName!=null and dictName!=''">
+			and dict_name like concat('%',#{dictName},'%')
+		</if>
+		limit #{start},#{rows}
+	</select>
+	<select id="countDict" parameterType="map" resultType="long">
+		select count(dict_id) from cy_dict where dict_type_id=#{dictTypeId}
+		<if test="dictName!=null and dictName!=''">
+			and dict_name like concat('%',#{dictName},'%')
+		</if>
+	</select>
+	<select id="selectDictById" parameterType="int" resultMap="dictResultMap">
+		select dict_id,dict_name,dict_type_id,dict_value,dict_image from cy_dict where dict_id=#{id}
+	</select>
+	<update id="updateDict" parameterType="com.cy.core.dict.entity.Dict">
+		update cy_dict set dict_name=#{dictName},dict_value=#{dictValue}
+		<if test="dictImageUrl !=null and dictImageUrl !=''">
+			,dict_image=#{dictImageUrl}
+		</if>
+		where dict_id=#{dictId}
+	</update>
+	<select id="selectByDictTypeValue" parameterType="map" resultMap="dictResultMap">
+		select dict_id,dict_name,dict_type_id,dict_value,dict_image from cy_dict where dict_type_id in (select dict_type_id from cy_dict_type where dict_type_value=#{dictTypeValue})
+		<if test="value==100">
+			and <![CDATA[dict_value<=#{value}]]>
+		</if>
+		<if test="value==101">
+			and <![CDATA[dict_value>=#{value}]]>
+		</if>
+	</select>
+
+	<select id="getDictByDictTypeId" parameterType="long" resultType="com.cy.core.dict.entity.Dict">
+		select dict_name dictName,dict_value dictValue from cy_dict where dict_type_id=#{dictTypeId}
+	</select>
+
+
+	<select id="selectByDictTypeId" parameterType="long" resultMap="dictResultMap">
+		select * from cy_dict where dict_type_id=#{dictTypeId}
+	</select>
+
+
+	<select id="selectDictTypeIdByDictTypeValue" parameterType="String" resultType="String">
+		select dict_type_id from cy_dict_type where dict_type_value=#{dictTypeValue}
+	</select>
+</mapper>

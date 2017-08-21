@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.share.dao.ShareMapper">
+    <resultMap type="com.cy.core.share.entity.Share" id="shareResultMap">
+        <id column="id" property="id" />
+        <result column="school_name" property="schoolName" />
+        <result column="ios_url" property="iosUrl" />
+        <result column="android_url" property="androidUrl" />
+        <result column="ios_package_size" property="iosPackageSize" />
+        <result column="ios_downloads" property="iosDownloads" />
+        <result column="android_package_size" property="androidPackageSize" />
+        <result column="android_downloads" property="androidDownloads" />
+        <result column="page_pictures" property="pagePictures" />
+        <result column="introduce" property="introduce" />
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="pictureUrls" property="pictureUrls"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.cy.core.share.entity.Share">
+        INSERT INTO cy_share (
+        id,
+        school_name  ,
+        ios_url      ,
+        android_url  ,
+        ios_package_size ,
+        ios_downloads ,
+        android_package_size ,
+        android_downloads ,
+        page_pictures,
+        introduce    ,
+        del_flag     ,
+        update_date  ,
+        update_by    ,
+        create_date  ,
+        create_by    ,
+        remarks
+        )
+        VALUES (
+        #{id},
+        #{schoolName},
+        #{iosUrl},
+        #{androidUrl},
+        #{iosPackageSize},
+        #{iosDownloads},
+        #{androidPackageSize},
+        #{androidDownloads},
+        #{pagePictures},
+        #{introduce},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.share.entity.Share" >
+        UPDATE cy_share SET
+        school_name   = #{schoolName},
+        ios_url       = #{iosUrl},
+        android_url   = #{androidUrl},
+        ios_package_size  = #{iosPackageSize},
+        ios_downloads     = #{iosDownloads},
+        android_package_size  = #{androidPackageSize},
+        <if test="androidDownloads !=null and androidDownloads !=''">
+            android_downloads = #{androidDownloads},
+        </if>
+        page_pictures = #{pagePictures},
+        introduce     = #{introduce},
+        del_flag      = #{delFlag},
+        update_date   = #{updateDate},
+        update_by     = #{updateBy},
+        remarks       = #{remarks}
+		WHERE id = #{id}
+    </update>
+    <select id="selectById" resultMap="shareResultMap">
+      SELECT
+         s.*
+      FROM cy_share s
+      WHERE s.id = #{id} AND s.del_flag != '1'
+    </select>
+    <select id="selectAll" resultMap="shareResultMap">
+        SELECT * FROM cy_share WHERE del_flag != '1'
+    </select>
+    <select id="selectList" parameterType="com.cy.core.share.entity.Share" resultMap="shareResultMap">
+       SELECT
+          s.*
+        FROM cy_share s
+        WHERE s.del_flag != '1'
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+</mapper>

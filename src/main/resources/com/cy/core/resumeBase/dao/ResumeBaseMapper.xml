@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.resumeBase.dao.ResumeBaseMapper">
+    <resultMap id="resumeBaseResultMap" type="com.cy.core.resumeBase.entity.ResumeBase">
+        <id column="id" property="id"/>
+        <result column="name" property="name" />
+        <result column="accountNum" property="accountNum" />
+        <result column="sex" property="sex" />
+        <result column="head_pic" property="headPic" />
+        <result column="birthday" property="birthday" />
+        <result column="experience" property="experience" />
+        <result column="city" property="city" />
+        <result column="place_origin" property="placeOrigin" />
+        <result column="telephone" property="telephone" />
+        <result column="email" property="email" />
+        <result column="hobby" property="hobby" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+        <result column="sel_comment" property="selComment"/>
+    </resultMap>
+
+    <!--教育经历-->
+    <resultMap id="resumeEducationResultMap" type="com.cy.core.resumeBase.entity.ResumeEducation">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="school_name" property="schoolName" />
+        <result column="education" property="education" />
+        <result column="profession" property="profession" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--工作经历-->
+    <resultMap id="resumeWorkExperienceResultMap" type="com.cy.core.resumeBase.entity.ResumeWorkExperience">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="company_name" property="companyName" />
+        <result column="position_name" property="positionName" />
+        <result column="desc" property="desc" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--项目经验-->
+    <resultMap id="resumeProjectExperienceResultMap" type="com.cy.core.resumeBase.entity.ResumeProjectExperience">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="project_name" property="projectName" />
+        <result column="desc" property="desc" />
+        <result column="start_date" property="startDate" />
+        <result column="end_date" property="endDate" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--技能-->
+    <resultMap id="resumeSkillResultMap" type="com.cy.core.resumeBase.entity.ResumeSkill">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="skill_name" property="skillName" />
+        <result column="proficiency" property="proficiency" />
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--在校奖励-->
+    <resultMap id="resumeRewardAtSchoolResultMap" type="com.cy.core.resumeBase.entity.ResumeRewardAtSchool">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="project_name" property="projectName" />
+        <result column="level" property="level" />
+        <result column="time" property="time"/>
+        <result column="desc" property="desc"/>
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--证书-->
+    <resultMap id="resumeCertificateResultMap" type="com.cy.core.resumeBase.entity.ResumeCertificate">
+        <id column="id" property="id"/>
+        <result column="resume_base_id" property="resumeBaseId" />
+        <result column="certificate_name" property="certificateName" />
+        <result column="time" property="time"/>
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+    </resultMap>
+
+    <!--查询简历-->
+    <select id="selectResumeBase" parameterType="map" resultMap="resumeBaseResultMap">
+        SELECT
+        *
+        FROM cy_resume_base cr
+        WHERE cr.del_flag ='0'
+        <if test="id != null and id != ''" >
+            AND cr.id = #{id}
+        </if>
+        <if test="name != null and name != ''" >
+            AND cr.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            AND cr.accountNum = #{accountNum}
+        </if>
+        <if test="sex !=null and sex != '' ">
+            AND cr.sex = #{sex}
+        </if>
+        <if test="birthday !=null and birthday != '' ">
+            AND cr.birthday = #{birthday}
+        </if>
+        <if test="experience !=null and experience != '' ">
+            AND cr.experience = #{experience}
+        </if>
+        <if test="headPic !=null and headPic != '' ">
+            AND cr.head_pic = #{headPic}
+        </if>
+        <if test="city !=null and city != '' ">
+            AND cr.city LIKE CONCAT('%', #{city} ,'%')
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            AND cr.telephone LIKE CONCAT('%', #{telephone} ,'%')
+        </if>
+        ORDER BY cr.update_date DESC
+        <if test='isNoLimit != "1" '>
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="resumeBaseResultMap">
+        SELECT
+        *
+        FROM cy_resume_base cr
+        WHERE cr.del_flag != '1' AND cr.id=#{id}
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(id)
+        FROM cy_resume_base cr
+        WHERE del_flag = '0'
+        <if test="id != null and id != ''" >
+            AND cr.id = #{id}
+        </if>
+        <if test="name != null and name != ''" >
+            AND cr.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            AND cr.accountNum = #{accountNum}
+        </if>
+        <if test="sex !=null and sex != '' ">
+            AND cr.sex = #{sex}
+        </if>
+        <if test="birthday !=null and birthday != '' ">
+            AND cr.birthday = #{birthday}
+        </if>
+        <if test="experience !=null and experience != '' ">
+            AND cr.experience = #{experience}
+        </if>
+        <if test="headPic !=null and headPic != '' ">
+            AND cr.head_pic = #{headPic}
+        </if>
+        <if test="city !=null and city != '' ">
+            AND cr.city LIKE CONCAT('%', #{city} ,'%')
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            AND cr.telephone LIKE CONCAT('%', #{telephone} ,'%')
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.cy.core.resumeBase.entity.ResumeBase">
+        INSERT INTO cy_resume_base (
+        id,
+        name,
+        accountNum,
+        sex,
+        head_pic,
+        birthday,
+        experience,
+        city,
+        place_origin,
+        telephone,
+        email,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag,
+        sel_comment,
+        hobby
+        )
+        VALUES (
+        #{id},
+        #{name},
+        #{accountNum},
+        #{sex},
+        #{headPic},
+        #{birthday},
+        #{experience},
+        #{city},
+        #{placeOrigin},
+        #{telephone},
+        #{email},
+        now(),
+        #{updateBy},
+        now(),
+        #{createBy},
+        #{remarks},
+        #{delFlag},
+        #{selComment}
+        #{hobby}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.resumeBase.entity.ResumeBase" >
+        UPDATE cy_resume_base SET
+        <if test="name !=null and name != '' ">
+            name = #{name},
+        </if>
+        <if test="accountNum !=null and accountNum != '' ">
+            accountNum = #{accountNum},
+        </if>
+        <if test="sex !=null and sex != '' ">
+            sex = #{sex},
+        </if>
+        <if test="headPic !=null and headPic != '' ">
+            head_pic = #{headPic},
+        </if>
+        <if test="birthday !=null and birthday != '' ">
+            birthday = #{birthday},
+        </if>
+        <if test="experience !=null and experience != '' ">
+            experience = #{experience},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+        <if test="placeOrigin !=null and placeOrigin != '' ">
+            place_origin = #{placeOrigin},
+        </if>
+        <if test="telephone !=null and telephone != '' ">
+            telephone = #{telephone},
+        </if>
+        <if test="email !=null and email != '' ">
+            email = #{email},
+        </if>
+        <if test="hobby !=null and hobby != '' ">
+            hobby = #{hobby},
+        </if>
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="createDate !=null and createDate != '' ">
+            create_date = #{createDate},
+        </if>
+        <if test="createBy !=null and createBy != '' ">
+            create_by = #{createBy},
+        </if>
+        <if test="selComment !=null and selComment != '' ">
+            sel_comment = #{selComment},
+        </if>
+
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="updateDate !=null and updateDate != '' ">
+            update_date = #{updateDate}
+        </if>
+        WHERE id = #{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_resume_base SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+
+
+    <!--教育经历-BEGIN-->
+    <select id="selectResumeEducation" parameterType="string" resultMap="resumeEducationResultMap">
+        SELECT cre.*
+        FROM cy_resume_education cre
+        WHERE cre.del_flag = '0' AND cre.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeEducationById" parameterType="string" resultMap="resumeEducationResultMap">
+        SELECT cre.*
+        FROM cy_resume_education cre
+        WHERE cre.del_flag = '0' AND cre.id = #{id}
+    </select>
+
+    <insert id="saveResumeEducation" parameterType="com.cy.core.resumeBase.entity.ResumeEducation">
+        INSERT INTO cy_resume_education (
+        id,
+        resume_base_id,
+        school_name,
+        education,
+        profession,
+        start_date,
+        end_date,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{schoolName},
+        #{education},
+        #{profession},
+        #{startDate},
+        #{endDate},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeEducation" parameterType="com.cy.core.resumeBase.entity.ResumeEducation">
+        UPDATE cy_resume_education SET
+        <if test="schoolName !=null and schoolName != '' ">
+            school_name = #{schoolName},
+        </if>
+        <if test="education !=null and education != '' ">
+            education = #{education},
+        </if>
+        <if test="profession !=null and profession != '' ">
+            profession = #{profession},
+        </if>
+        <if test="startDate !=null and startDate != '' ">
+            start_date = #{startDate},
+        </if>
+        <if test="endDate !=null and endDate != '' ">
+            end_date = #{endDate},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+    <!--教育经历-END-->
+
+    <!--工作经历-BEGIN-->
+    <select id="selectResumeWorkExperience" parameterType="string" resultMap="resumeWorkExperienceResultMap">
+        SELECT crwe.*
+        FROM cy_resume_work_experience crwe
+        WHERE crwe.del_flag = '0' AND crwe.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeWorkExperienceById" parameterType="string" resultMap="resumeWorkExperienceResultMap">
+        SELECT crwe.*
+        FROM cy_resume_work_experience crwe
+        WHERE crwe.del_flag = '0' AND crwe.id = #{id}
+    </select>
+
+    <insert id="saveResumeWorkExperience" parameterType="com.cy.core.resumeBase.entity.ResumeWorkExperience">
+        INSERT INTO cy_resume_work_experience (
+        id,
+        resume_base_id,
+        company_name,
+        position_name,
+        `desc`,
+        start_date,
+        end_date,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{companyName},
+        #{positionName},
+        #{desc},
+        #{startDate},
+        #{endDate},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeWorkExperience" parameterType="com.cy.core.resumeBase.entity.ResumeWorkExperience">
+        UPDATE cy_resume_work_experience SET
+        <if test="companyName !=null and companyName != '' ">
+            company_name = #{companyName},
+        </if>
+        <if test="positionName !=null and positionName != '' ">
+            position_name = #{positionName},
+        </if>
+        <if test="desc !=null and desc != '' ">
+            `desc` = #{desc},
+        </if>
+        <if test="startDate !=null and startDate != '' ">
+            start_date = #{startDate},
+        </if>
+        <if test="endDate !=null and endDate != '' ">
+            end_date = #{endDate},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+
+    <!--工作经历-END-->
+
+    <!--项目经验-BEGIN-->
+    <select id="selectResumeProjectExperience" parameterType="string" resultMap="resumeProjectExperienceResultMap">
+        SELECT crpe.*
+        FROM cy_resume_project_experience crpe
+        WHERE crpe.del_flag = '0' AND crpe.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeProjectExperienceById" parameterType="string" resultMap="resumeProjectExperienceResultMap">
+        SELECT crpe.*
+        FROM cy_resume_project_experience crpe
+        WHERE crpe.del_flag = '0' AND crpe.id = #{id}
+    </select>
+
+    <insert id="saveResumeProjectExperience" parameterType="com.cy.core.resumeBase.entity.ResumeProjectExperience">
+        INSERT INTO cy_resume_project_experience (
+        id,
+        resume_base_id,
+        project_name,
+        `desc`,
+        start_date,
+        end_date,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{projectName},
+        #{desc},
+        #{startDate},
+        #{endDate},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeProjectExperience" parameterType="com.cy.core.resumeBase.entity.ResumeProjectExperience">
+        UPDATE cy_resume_project_experience SET
+        <if test="projectName !=null and projectName != '' ">
+            project_name = #{projectName},
+        </if>
+        <if test="desc !=null and desc != '' ">
+            `desc` = #{desc},
+        </if>
+        <if test="startDate !=null and startDate != '' ">
+            start_date = #{startDate},
+        </if>
+        <if test="endDate !=null and endDate != '' ">
+            end_date = #{endDate},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+
+    <!--项目经验-END-->
+
+    <!--技能-BEGIN-->
+    <select id="selectResumeSkill" parameterType="string" resultMap="resumeSkillResultMap">
+        SELECT crs.*
+        FROM cy_resume_skill crs
+        WHERE crs.del_flag = '0' AND crs.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeSkillById" parameterType="string" resultMap="resumeSkillResultMap">
+        SELECT crs.*
+        FROM cy_resume_skill crs
+        WHERE crs.del_flag = '0' AND crs.id = #{id}
+    </select>
+
+    <insert id="saveResumeSkill" parameterType="com.cy.core.resumeBase.entity.ResumeSkill">
+        INSERT INTO cy_resume_skill (
+        id,
+        resume_base_id,
+        skill_name,
+        proficiency,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{skillName},
+        #{proficiency},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeSkill" parameterType="com.cy.core.resumeBase.entity.ResumeSkill">
+        UPDATE cy_resume_skill SET
+        <if test="skillName !=null and skillName != '' ">
+            skill_name = #{skillName},
+        </if>
+        <if test="proficiency !=null and proficiency != '' ">
+            proficiency = #{proficiency},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+
+    <!--技能-END-->
+
+    <!--在校奖励-BEGIN-->
+    <select id="selectResumeRewardAtSchool" parameterType="string" resultMap="resumeRewardAtSchoolResultMap">
+        SELECT crras.*
+        FROM cy_resume_reward_at_school crras
+        WHERE crras.del_flag = '0' AND crras.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeRewardAtSchoolById" parameterType="string" resultMap="resumeRewardAtSchoolResultMap">
+        SELECT crras.*
+        FROM cy_resume_reward_at_school crras
+        WHERE crras.del_flag = '0' AND crras.id = #{id}
+    </select>
+
+    <insert id="saveResumeRewardAtSchool" parameterType="com.cy.core.resumeBase.entity.ResumeRewardAtSchool">
+        INSERT INTO cy_resume_reward_at_school (
+        id,
+        resume_base_id,
+        project_name,
+        `level`,
+        `time`,
+        `desc`,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{projectName},
+        #{level},
+        #{time},
+        #{desc},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeRewardAtSchool" parameterType="com.cy.core.resumeBase.entity.ResumeRewardAtSchool">
+        UPDATE cy_resume_reward_at_school SET
+        <if test="projectName !=null and projectName != '' ">
+            project_name = #{projectName},
+        </if>
+        <if test="level !=null and level != '' ">
+            `level` = #{level},
+        </if>
+        <if test="time !=null and time != '' ">
+            `time` = #{time},
+        </if>
+        <if test="desc !=null and desc != '' ">
+            `desc` = #{desc},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+
+    <!--在校奖励-END-->
+
+    <!--证书-BEGIN-->
+    <select id="selectResumeCertificate" parameterType="string" resultMap="resumeCertificateResultMap">
+        SELECT crc.*
+        FROM cy_resume_certificate crc
+        WHERE crc.del_flag = '0' AND crc.resume_base_id = #{resumeBaseId}
+    </select>
+
+    <select id="getResumeCertificateById" parameterType="string" resultMap="resumeCertificateResultMap">
+        SELECT crc.*
+        FROM cy_resume_certificate crc
+        WHERE crc.del_flag = '0' AND crc.id = #{id}
+    </select>
+
+    <insert id="saveResumeCertificate" parameterType="com.cy.core.resumeBase.entity.ResumeCertificate">
+        INSERT INTO cy_resume_certificate (
+        id,
+        resume_base_id,
+        certificate_name,
+        `time`,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{resumeBaseId},
+        #{certificateName},
+        #{time},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="updateResumeCertificate" parameterType="com.cy.core.resumeBase.entity.ResumeCertificate">
+        UPDATE cy_resume_certificate SET
+        <if test="certificateName !=null and certificateName != '' ">
+            certificate_name = #{certificateName},
+        </if>
+        <if test="time !=null and time != '' ">
+            `time` = #{time},
+        </if>
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="delFlag !=null and delFlag != '' ">
+            del_flag = #{delFlag},
+        </if>
+        update_by = #{updateBy},
+        update_date = #{updateDate}
+        WHERE id = #{id}
+    </update>
+
+    <!--证书-END-->
+
+</mapper>

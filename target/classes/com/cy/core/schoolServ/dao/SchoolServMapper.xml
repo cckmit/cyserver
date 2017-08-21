@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.schoolServ.dao.SchoolServMapper">
+	<resultMap id="backSchoolResultMap" type="com.cy.core.schoolServ.entity.Fxjh">
+		<id column="id" property="id"/>
+		<result column="topic" property="topic"/>
+		<result column="number" property="number"/>
+		<result column="time" property="time"/>
+		<result column="classinfo" property="classinfo"/>
+		<result column="other" property="other"/>
+		<result column="userId" property="userId"/>
+		<result column="status" property="status"/>
+		<result column="countMember" property="countMember"/>
+		<result column="userPic" property="userPicUrl"/>
+		<result column="userName" property="userName"/>
+		<result column="favoriteNumber" property="favoriteNumber"/>
+		<result column="click_number" property="clickNumber"/>
+		<result column="del_flag" property="delFlag"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="remarks" property="remarks"/>
+		<result column="commentNumber" property="commentNumber"/>
+		<result column="praiseNumber" property="praiseNumber"/>
+		<result column="isSigned" property="isSigned"/>
+		<result column="hasFavorited" property="hasFavorited"/>
+		<result column="end_time" property="endTime"/>
+		<result column="timeState" property="timeState"/>
+		<result column="poster" property="posterUrl"/>
+		<result column="type" property="type"/>
+		<result column="content" property="content"/>
+		<result column="classInfoName" property="classInfoName"/>
+	</resultMap>
+
+	<select id="list" parameterType="map" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		SELECT
+			id ,
+			serviceName ,
+			systemService ,
+			provideService ,
+			serviceUrl AS serviceUrlUrl ,
+			servicePic AS servicePicUrl ,
+			createBy ,
+			createDate ,
+			sort ,
+			group_name ,
+			group_sort ,
+			need_authentication
+		<if test="deptId != null and deptId != ''">
+			, #{deptId} deptId
+		</if>
+		from cy_school_service
+		<where>
+			<if test="serviceName!=null and serviceName!=''">
+				and serviceName like concat('%',#{serviceName},'%')
+			</if>
+			<if test="systemService!=null and systemService!=''">
+				and systemService = #{systemService}
+			</if>
+			<if test="provideService!=null and provideService!=''">
+				and provideService = #{provideService}
+			</if>
+			<if test="isAuditScreen!=null and isAuditScreen!=''">
+				and is_audit_screen != '1'
+			</if>
+			<if test="needAuthentication != null and needAuthentication != ''">
+				and need_authentication = #{needAuthentication}
+			</if>
+		</where>
+		order by systemService desc, (sort+0) ,id desc
+		<if test='isNotLimni != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+	
+	
+	<select id="count" parameterType="map" resultType="long">
+		select count(id) from cy_school_service
+		<where>
+			<if test="serviceName!=null and serviceName!=''">
+				and serviceName like concat('%',#{serviceName},'%')
+			</if>
+			<if test="systemService!=null and systemService!=''">
+				and systemService = #{systemService}
+			</if>
+			<if test="provideService!=null and provideService!=''">
+				and provideService = #{provideService}
+			</if>
+			<if test="isAuditScreen!=null and isAuditScreen!=''">
+				and is_audit_screen != '1'
+			</if>
+			<if test="needAuthentication != null and needAuthentication != ''">
+				and need_authentication = #{needAuthentication}
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.schoolServ.entity.SchoolServ">
+		insert into cy_school_service(
+			serviceName,
+			systemService,
+			provideService,
+			serviceUrl,
+			servicePic,
+			sort,
+			createBy,
+			createDate,
+			group_name,
+	        group_sort,
+	        need_authentication
+			) 
+			value(
+			#{serviceName},
+			#{systemService},
+			#{provideService},
+			#{serviceUrl},
+			#{servicePic},
+			#{sort},
+			#{createBy},
+			now(),
+			#{group_name},
+			#{group_sort},
+			#{need_authentication}
+			)
+	</insert>
+	
+	
+	<delete id="delete" parameterType="list">
+		delete from cy_school_service where systemService != 1 and id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	
+	
+	
+	
+	
+	
+	<update id="update" parameterType="com.cy.core.schoolServ.entity.SchoolServ">
+		update cy_school_service 
+		<set>
+			<if test="serviceName!=null and serviceName!=''">
+				serviceName = #{serviceName},
+			</if>
+			<if test="systemService!=null and systemService!=''">
+				systemService = #{systemService},
+			</if>
+			<if test="provideService!=null and provideService!=''">
+				provideService = #{provideService},
+			</if>
+			<if test="serviceUrl!=null and serviceUrl!=''">
+				serviceUrl = #{serviceUrl},
+			</if>
+			<if test="servicePic!=null and servicePic!=''">
+				servicePic = #{servicePic},
+			</if>
+			<if test="sort !=null and sort !=''">
+				sort = #{sort},
+			</if>
+			<if test="createBy!=null and createBy!=''">
+				createBy = #{createBy},
+			</if>
+			<if test="group_name!=null and group_name!=''">
+				group_name = #{group_name},
+			</if>
+			<if test="group_sort!=null and group_sort!=''">
+				group_sort = #{group_sort},
+			</if>
+			<if test="need_authentication!=null and need_authentication != ''">
+				need_authentication = #{need_authentication},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<select id="selectById" parameterType="long" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+			id ,
+			serviceName ,
+			systemService ,
+			provideService ,
+			serviceUrl AS serviceUrlUrl ,
+			servicePic AS servicePicUrl ,
+			createBy ,
+			createDate ,
+			sort ,
+			group_name ,
+			group_sort ,
+			need_authentication
+		from cy_school_service where id = #{id}
+	</select>
+	
+	
+	<select id="getServiceList" resultType="com.cy.core.schoolServ.entity.SchoolServ">
+		select
+			id ,
+			serviceName ,
+			systemService ,
+			provideService ,
+			serviceUrl AS serviceUrlUrl ,
+			servicePic AS servicePicUrl ,
+			createBy ,
+			createDate ,
+			sort ,
+			group_name ,
+			group_sort ,
+			need_authentication
+		from cy_school_service where provideService = 1 order by systemService desc, (sort+0), id desc
+	</select>
+
+	<insert id="saveFxjh" parameterType="com.cy.core.schoolServ.entity.Fxjh">
+		insert into cy_backschool(
+		id,
+		topic,
+		place,
+		`name`,
+		`time`,
+		end_time,
+		signupStartTime,
+		signupEndTime,
+		other,
+		poster,
+		is_free,
+		cost,
+		costComment,
+		`number`,
+		classinfo,
+		needSignIn,
+		signInCode,
+		userId,
+		status,
+		create_by,
+		create_date,
+		update_by ,
+		update_date,
+		remarks,
+		`type`,
+		content,
+		services
+		)
+		value(
+		#{id},
+		#{topic},
+		#{place},
+		#{name},
+		#{time},
+		#{endTime},
+		#{signupStartTime},
+		#{signupEndTime},
+		#{other} ,
+		#{poster} ,
+		#{isFree},
+		#{cost} ,
+		#{costComment},
+		#{number},
+		#{classinfo},
+		#{needSignIn},
+		#{signInCode},
+		#{userId},
+		#{status},
+		#{createBy},
+		now(),
+		#{updateBy},
+		now(),
+		#{remarks},
+		#{type},
+		#{content},
+		#{services}
+		)
+	</insert>
+
+	<insert id="saveFxjhNew" parameterType="com.cy.core.schoolServ.entity.Fxjh">
+		insert into cy_backschool(
+		id,
+		topic,
+		place,
+		`name`,
+		`time`,
+		end_time,
+		signupStartTime,
+		signupEndTime,
+		other,
+		poster,
+		is_free,
+		cost,
+		costComment,
+		`number`,
+		classinfo,
+		needSignIn,
+		signInCode,
+		userId,
+		status,
+		create_by,
+		create_date,
+		update_by ,
+		update_date,
+		remarks,
+		`type`,
+		content
+		)
+		value(
+		#{id},
+		#{topic},
+		#{place},
+		#{name},
+		#{time},
+		#{endTime},
+		#{signupStartTime},
+		#{signupEndTime},
+		#{other} ,
+		#{poster} ,
+		#{isFree},
+		#{cost} ,
+		#{costComment},
+		#{number},
+		#{classinfo},
+		#{needSignIn},
+		#{signInCode},
+		#{userId},
+		#{status},
+		#{createBy},
+		now(),
+		#{updateBy},
+		now(),
+		#{remarks},
+		#{type},
+		#{content}
+		)
+	</insert>
+
+	<select id="findFxjhList" parameterType="map" resultMap="backSchoolResultMap">
+		SELECT
+			cb.*,
+			cdi.full_name classInfoName,
+			cu.`name` userName ,
+			CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+			(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.type='10' AND cc.buss_type='30' AND cc.del_flag='0') AS commentNumber,
+			(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.type='30' AND cc.buss_type='30' AND cc.del_flag='0') AS praiseNumber,
+			(SELECT count(cf.id) FROM cy_favorite cf WHERE cf.buss_id=cb.id AND cf.del_flag='0') AS favoriteNumber,
+			(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember,
+			<![CDATA[CASE WHEN cb.time IS NOT NULL AND now()<cb.time THEN 0 WHEN cb.time IS NOT NULL AND cb.end_time IS NOT NULL AND cb.time<=now() AND now()<cb.end_time THEN 1 ELSE 2 END AS timeState]]>
+		FROM
+			cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		<if test="currentUserId != null and currentUserId !=''">
+			JOIN cy_backschool_sign cbs ON cbs.backschool_id=cb.id AND cbs.account_num=#{currentUserId}
+		</if>
+		<if test="favoriteUserId != null and favoriteUserId != ''">
+			JOIN cy_favorite cf ON cb.id=cf.buss_id AND cf.buss_type='30' AND cf.del_flag='0' AND cf.user_id=#{favoriteUserId}
+		</if>
+		<where> cb.del_flag='0'
+			<if test="topic!=null and topic!=''">
+				and cb.topic like concat('%',#{topic},'%')
+			</if>
+			<if test="number!=null and number!=''">
+				and cb.number = #{number}
+			</if>
+			<if test="classinfo!=null and classinfo!=''">
+				and cb.classinfo = #{classinfo}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and cb.userId = #{userId}
+			</if>
+			<if test="status!=null and status!=''">
+				and find_in_set(cb.status,#{status})
+			</if>
+
+		</where>
+		ORDER BY cb.update_date DESC
+		<if test='isNotLimit != "1" '>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="findFxjhListNew" parameterType="map" resultMap="backSchoolResultMap">
+		SELECT
+		cb.*,
+		cdi.full_name classInfoName,
+		cu.`name` userName ,
+		CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+		(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember,
+		<!--(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.type='10' AND cc.buss_type='30' AND cc.del_flag='0') AS commentNumber,
+		(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.type='30' AND cc.buss_type='30' AND cc.del_flag='0') AS praiseNumber,
+		(SELECT count(cf.id) FROM cy_favorite cf WHERE cf.buss_id=cb.id AND cf.del_flag='0') AS favoriteNumber,
+		(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember,
+		<![CDATA[CASE WHEN cb.time IS NOT NULL AND now()<cb.time THEN 0 WHEN cb.time IS NOT NULL AND cb.end_time IS NOT NULL AND cb.time<=now() AND now()<cb.end_time THEN 1 ELSE 2 END AS timeState]]>-->
+		<![CDATA[
+                CASE
+				WHEN now() < cb.signupStartTime THEN
+				'未开始'
+				WHEN now() >= cb.time && now()<= cb.end_time THEN
+				'进行中'
+				WHEN now() > cb.end_time THEN
+				'已结束'
+				WHEN now() >= cb.signupStartTime && now()<= cb.signupEndTime THEN
+				'报名中'
+				WHEN now() > cb.signupEndTime THEN
+				'报名已截止'
+				ELSE
+				''
+			END AS nowStatus
+        ]]>
+		FROM
+		cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		<if test="currentUserId != null and currentUserId !=''">
+			JOIN cy_backschool_sign cbs ON cbs.backschool_id=cb.id AND cbs.account_num=#{currentUserId}
+		</if>
+		<if test="favoriteUserId != null and favoriteUserId != ''">
+			JOIN cy_favorite cf ON cb.id=cf.buss_id AND cf.buss_type='30' AND cf.del_flag='0' AND cf.user_id=#{favoriteUserId}
+		</if>
+		<where> cb.del_flag='0'
+			<if test="topic!=null and topic!=''">
+				and cb.topic like concat('%',#{topic},'%')
+			</if>
+			<if test="number!=null and number!=''">
+				and cb.number = #{number}
+			</if>
+			<if test="classinfo!=null and classinfo!=''">
+				and cb.classinfo = #{classinfo}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and cb.userId = #{userId}
+			</if>
+			<if test="status!=null and status!=''">
+				and find_in_set(cb.status,#{status})
+			</if>
+
+		</where>
+		ORDER BY cb.update_date DESC
+		<if test='isNotLimit != "1" '>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<select id="findFxjhListCountNew" parameterType="map" resultType="long">
+		SELECT
+		count(cb.id)
+		FROM
+		cy_backschool cb
+		<if test="currentUserId != null and currentUserId !=''">
+			JOIN cy_backschool_sign cbs ON cbs.backschool_id=cb.id AND cbs.account_num=#{currentUserId}
+		</if>
+		<if test="favoriteUserId != null and favoriteUserId != ''">
+			JOIN cy_favorite cf ON cb.id=cf.buss_id AND cf.buss_type='30' AND cf.del_flag='0' AND cf.user_id=#{favoriteUserId}
+		</if>
+		<where> cb.del_flag='0'
+			<if test="topic!=null and topic!=''">
+				and cb.topic like concat('%',#{topic},'%')
+			</if>
+			<if test="number!=null and number!=''">
+				and cb.number = #{number}
+			</if>
+			<if test="classinfo!=null and classinfo!=''">
+				and cb.classinfo = #{classinfo}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and cb.userId = #{userId}
+			</if>
+			<if test="status!=null and status!=''">
+				and find_in_set(cb.status,#{status})
+			</if>
+
+		</where>
+	</select>
+
+	<select id="selectByFxjhId" parameterType="string"  resultMap="backSchoolResultMap">
+		SELECT
+			cb.*,
+			cdi.full_name classInfoName,
+			cu.`name` userName ,
+			CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+			(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='10' AND cc.del_flag='0') AS commentNumber,
+			(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='30' AND cc.del_flag='0') AS praiseNumber,
+			(SELECT count(cf.id) FROM cy_favorite cf WHERE cf.buss_id=cb.id AND cf.del_flag='0') AS favoriteNumber,
+			(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember,
+			<![CDATA[CASE WHEN cb.time IS NOT NULL AND now()<cb.time THEN 0 WHEN cb.time IS NOT NULL AND cb.end_time IS NOT NULL AND cb.time<=now() AND now()<cb.end_time THEN 1 ELSE 2 END AS timeState]]>
+		FROM cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		WHERE cb.id=#{id} AND cb.del_flag='0'
+	</select>
+
+	<select id="selectByFxjhIdAndUserId" parameterType="map"  resultMap="backSchoolResultMap">
+		SELECT
+		cb.*,
+		cdi.full_name classInfoName,
+		cu.`name` userName ,
+		CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+		(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='10' AND cc.del_flag='0') AS commentNumber,
+		(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='30' AND cc.del_flag='0') AS praiseNumber,
+		(SELECT count(cf.id) FROM cy_favorite cf WHERE cf.buss_id=cb.id AND cf.del_flag='0') AS favoriteNumber,
+		<![CDATA[CASE WHEN cb.time IS NOT NULL AND now()<cb.time THEN 0 WHEN cb.time IS NOT NULL AND cb.end_time IS NOT NULL AND cb.time<=now() AND now()<cb.end_time THEN 1 ELSE 2 END AS timeState,]]>
+		<if test="userId != null and userId != ''">
+			(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id=cbs.backschool_id AND cbs.account_num=#{userId}) AS isSigned,
+			(SELECT count(cf.id) FROM cy_favorite cf WHERE cb.id=cf.buss_id AND cf.del_flag='0' AND cf.user_id = #{userId}) AS hasFavorited,
+		</if>
+		(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember
+		FROM cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		WHERE cb.del_flag='0' AND cb.id=#{id}
+	</select>
+
+	<select id="selectByFxjhIdAndUserIdNew" parameterType="map"  resultMap="backSchoolResultMap">
+		SELECT
+		cb.id,
+		cb.topic,
+		cb.userId,
+		cb.time,
+		cb.end_time,
+		cb.signupStartTime,
+		cb.signupEndTime,
+		cb.place,
+		cb.number,
+		cb.other,
+		cb.cost,
+		cb.costComment,
+		cb.signInCode,
+		cb.poster,
+		cb.type,
+		cb.name,
+		cb.needSignIn,
+		cb.classinfo,
+		cb.groupId,
+		ccg.easemob_group_id as groupEasemobId,
+		ccg.name as groupTitle,
+		cdi.full_name classInfoName,
+		cu.`name` userName ,
+		CASE WHEN cb.type='1' THEN (SELECT css.school_logo FROM cy_system_setting css LIMIT 1) ELSE cu.picture END userPic ,
+		<!--(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='10' AND cc.del_flag='0') AS commentNumber,-->
+		<!--(SELECT count(cc.id) FROM cy_comment cc WHERE cc.buss_id=cb.id AND cc.buss_type='30' AND cc.type='30' AND cc.del_flag='0') AS praiseNumber,-->
+		(SELECT count(cf.id) FROM cy_favorite cf WHERE cf.buss_id=cb.id AND cf.del_flag='0') AS favoriteNumber,
+		<![CDATA[
+                CASE
+                    WHEN now() < cb.signupStartTime THEN
+                    '50'
+                    WHEN now() >= cb.time && now()<= cb.end_time THEN
+                    '60'
+                    WHEN now() > cb.end_time THEN
+                    '70'
+                    WHEN now() >= cb.signupStartTime && now()<= cb.signupEndTime THEN
+                    '80'
+                    WHEN now() > cb.signupEndTime THEN
+                    '90'
+                    ELSE
+                    ''
+                END AS eventStatus
+		]]>,
+		<if test="userId != null and userId != ''">
+			(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id=cbs.backschool_id AND cbs.account_num=#{userId}) AS isSigned,
+			(SELECT count(cf.id) FROM cy_favorite cf WHERE cb.id=cf.buss_id AND cf.del_flag='0' AND cf.user_id = #{userId}) AS hasFavorited,
+		</if>
+		(SELECT count(cbs.id) FROM cy_backschool_sign cbs WHERE cb.id = cbs.backschool_id ) AS countMember
+		FROM cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		LEFT JOIN cy_dept_info cdi ON cdi.dept_id = cb.classinfo
+		LEFT JOIN cy_chat_group ccg ON cb.groupId = ccg.id
+		WHERE cb.del_flag='0' AND cb.id=#{id} AND ccg.del_flag='0'
+	</select>
+
+	<select id="isSignInOrNot" parameterType="Map" resultType="com.cy.core.schoolServ.entity.BackSchoolSign">
+		SELECT
+		id,
+		is_sign_in AS isSignIn
+		FROM
+		cy_backschool_sign
+		WHERE
+		backschool_id = #{id} AND account_num = #{accountNum}
+	</select>
+
+	<update id="updateBackSchoolSign" parameterType="Map">
+		UPDATE  cy_backschool_sign
+		SET is_sign_in = '1',sign_in_time = now()
+		WHERE
+		backschool_id = #{id} AND account_num = #{accountNum}
+	</update>
+
+	<insert id="insertBackSchoolSign" parameterType="Map">
+	INSERT INTO cy_backschool_sign(backschool_id,account_num,signup_time,view_notification,is_sign_in,sign_in_time)
+	VALUES (#{id},#{accountNum},now(),'0','1',now())
+	</insert>
+
+	<select id="countFxjh" parameterType="map" resultType="long">
+		SELECT count(id) FROM cy_backschool cb
+		LEFT JOIN cy_userprofile cu ON cb.userId = cu.accountNum
+		<if test="currentUserId != null and currentUserId !=''">
+			JOIN cy_backschool_sign cbs ON cbs.backschool_id=cb.id AND cbs.account_num=#{currentUserId}
+		</if>
+		<if test="favoriteUserId != null and favoriteUserId != ''">
+			JOIN cy_favorite cf ON cb.id=cf.buss_id AND cf.buss_type='30' AND cf.del_flag='0' AND cf.user_id=#{favoriteUserId}
+		</if>
+		<where>cb.del_flag='0'
+			<if test="topic!=null and topic!=''">
+				and cb.topic like concat('%',#{topic},'%')
+			</if>
+			<if test="number!=null and number!=''">
+				and cb.number = #{number}
+			</if>
+			<if test="classinfo!=null and classinfo!=''">
+				and cb.classinfo = #{classinfo}
+			</if>
+			<if test="userId!=null and userId!=''">
+				and cb.userId = #{userId}
+			</if>
+			<if test="status!=null and status!=''">
+				and find_in_set(cb.status,#{status})
+			</if>
+		</where>
+	</select>
+	<update id="updateFxjh" parameterType="com.cy.core.schoolServ.entity.Fxjh">
+		UPDATE
+		cy_backschool
+		SET
+		<if test="topic != null and topic != ''">
+			topic=#{topic},
+		</if>
+		<if test="place != null and place != ''">
+			place=#{place},
+		</if>
+		<if test="name != null and name != ''">
+			`name`=#{name},
+		</if>
+		<if test="number != null and number != ''">
+			`number`=#{number},
+		</if>
+		<if test="time != null and time != ''">
+			`time`=#{time},
+		</if>
+		<if test="classinfo != null and classinfo != ''">
+			classinfo=#{classinfo},
+		</if>
+		<if test="other != null and other != ''">
+			other=#{other},
+		</if>
+		<if test="content != null and content != ''">
+			content=#{content},
+		</if>
+		<if test="status != null and status != ''">
+			status=#{status},
+		</if>
+		<if test="updateBy != null and updateBy != ''">
+			update_by = #{updateBy},
+		</if>
+		<if test="delFlag != null and delFlag != ''">
+			del_flag = #{delFlag},
+		</if>
+		<if test="endTime != null and endTime != ''">
+			end_time = #{endTime},
+		</if>
+		<if test="signupStartTime != null and signupStartTime != ''">
+			signupStartTime = #{signupStartTime},
+		</if>
+		<if test="signupEndTime != null and signupEndTime != ''">
+			signupEndTime = #{signupEndTime},
+		</if>
+		<if test="needSignIn != null and needSignIn != ''">
+			needSignIn = #{needSignIn},
+		</if>
+		<if test="signInCode != null and signInCode != ''">
+			signInCode = #{signInCode},
+		</if>
+		<if test="posterUrl != null and posterUrl != ''">
+			poster = #{posterUrl},
+		</if>
+		<if test='type != null and type != "" ' >
+			type = #{type},
+		</if>
+		<if test='services != null and services != "" ' >
+			services = #{services},
+		</if>
+		update_date = #{updateDate}
+		WHERE id=#{id}
+	</update>
+
+	<select id="getUserCount" parameterType="map" resultType="long">
+		select count(id) from cy_backschool_sign
+		<where>1=1
+			<if test="backSchoolId !=null and backSchoolId !=''">
+				and backschool_id = #{backSchoolId}
+			</if>
+			<!--<if test="accountNum !=null and accountNum !=''">-->
+				<!--and account_num = #{accountNum}-->
+			<!--</if>-->
+		</where>
+	</select>
+
+	<select id="findBackSchoolSignList" parameterType="map" resultType="com.cy.core.schoolServ.entity.BackSchoolSign">
+		SELECT
+			bs.id AS id,
+			bs.backschool_id AS backSchoolId ,
+			bs.account_num AS accountNum ,
+			bs.signup_time AS signUpTime ,
+			bs.view_notification AS viewNotification ,
+			bs.is_sign_in AS isSignIn ,
+			bs.sign_in_time AS signInTime ,
+			bs.services,
+			bs.servicesRemarks,
+			u.`name` ,
+			u.picture ,
+			u.phoneNum ,
+			u.sex ,
+			u.email ,
+			u.groupName,
+			CASE WHEN bs.account_num=cb.userId THEN 1 ELSE 0 END isOwner
+		FROM
+			cy_backschool_sign bs
+		LEFT JOIN cy_userprofile u ON bs.account_num = u.accountNum
+		LEFT JOIN cy_backschool cb ON cb.id=bs.backschool_id
+		<where>1=1
+			<if test="backSchoolId !=null and backSchoolId !=''">
+				and backschool_id = #{backSchoolId}
+			</if>
+			<if test="accountNum !=null and accountNum !=''">
+				and account_num = #{accountNum}
+			</if>
+		</where>
+		ORDER BY bs.signup_time DESC
+		<if test='isNotLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<insert id="saveBackSchoolSign" parameterType="com.cy.core.schoolServ.entity.BackSchoolSign" >
+		INSERT INTO cy_backschool_sign(
+			backschool_id,
+			account_num,
+			signup_time,
+			view_notification,
+			is_sign_in,
+			sign_in_time,
+			services,
+			servicesRemarks
+		)
+		VALUES (
+			#{ backSchoolId},
+			#{ accountNum},
+			#{ signUpTime},
+			#{ viewNotification},
+			#{ isSignIn},
+			#{ signInTime},
+			#{ services},
+			#{ servicesRemarks}
+		)
+	</insert>
+
+	<delete id="deleteBackSchoolSign" parameterType="string">
+		DELETE FROM cy_backschool_sign WHERE id=#{id}
+	</delete>
+
+	<select id="findUserBackSchoolCount" parameterType="string" resultType="map">
+		SELECT
+			cu.phoneNum ,
+			cu.`name` ,
+			cu.picture ,
+			(
+				SELECT
+					COUNT(cf.id)
+				FROM
+					cy_favorite cf
+				JOIN cy_backschool cb ON cb.id = cf.buss_id
+				AND cb.del_flag = '0'
+				AND cb.`status` = '20'
+				WHERE
+					cf.del_flag = '0'
+				AND cf.user_id = cu.accountNum
+			) AS favoriteNumber ,
+			(
+				SELECT
+					COUNT(cbs.id)
+				FROM
+					cy_backschool_sign cbs
+				JOIN cy_backschool cb ON cb.id = cbs.backschool_id
+				AND cb.del_flag = '0'
+				AND cb.`status` = '20'
+				WHERE
+					cbs.account_num = cu.accountNum
+			) AS signNumber
+		FROM
+			cy_userprofile cu
+		WHERE cu.accountNum = #{userId}
+	</select>
+
+	<select id="selectFxjhServicesById" parameterType="map" resultType="String">
+		SELECT
+		services
+		FROM cy_backschool
+		WHERE  id = #{id}
+	</select>
+
+	<update id="updateFxjhGroupId" parameterType="Map">
+		UPDATE  cy_backschool
+		SET groupId = #{groupId}
+		WHERE
+		id = #{id}
+	</update>
+
+	<!-- YS 2017/7/10 保存返校计划花絮-->
+	<insert id="saveBackschoolBoard" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard">
+
+		insert into cy_backschool_board
+		(backschoolId,
+		userInfoId,
+		comment,
+		createTime,
+		status)
+
+		VALUES
+		(#{backschoolId},
+		#{userInfoId},
+		#{comment},
+		#{createTime},
+		#{status})
+
+	</insert>
+
+	<!-- YS 2017/7/10 插入花絮图片-->
+	<insert id="saveBackschoolBoardPic" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardPic">
+
+		insert into cy_backschool_board_pic
+		(boardId,
+		pic)
+
+		VALUES
+		(#{boardId},
+		#{pic})
+
+	</insert>
+
+	<!-- YS 2017/7/10 获取返校计划花絮列表 7/17修改-->
+	<select id="findBackchoolBoardList" parameterType="map" resultType="com.cy.core.schoolServ.entity.BackschoolBoard">
+		SELECT
+		eb.*,
+		(select count(id) from cy_backschool_board_comment where boardId = eb.id) as commentNum,
+		u.name as username,
+		u.picture as  userAvatarUrl,
+		u.sex as userSex
+		FROM
+		cy_backschool_board eb LEFT JOIN cy_userprofile u
+		ON
+		eb.userInfoId=u.accountNum
+		where eb.backschoolId = #{backschoolId} and eb.status in(0,1)
+		order by eb.id desc
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- YS 2017/7/10 通过指定返校计划花絮对象中的参数得到返校计划花絮的对象-->
+	<select id="getbackschoolBoard" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard" resultType="com.cy.core.schoolServ.entity.BackschoolBoard">
+		select
+		eb.*,
+		(select count(id) from cy_backschool_board_comment where boardId = eb.id) as commentNum,
+		IFNULL(u.name,'') as userName,
+		IFNULL(u.picture,'') as userAvatarUrl,
+		IFNULL(u.phoneNum,'') as userTel,
+		IFNULL(u.sex,'') as userSex
+		from
+		cy_backschool_board eb LEFT JOIN cy_userprofile u
+		on
+		eb.userInfoId = u.accountNum
+		<where>
+			<if test="id!=null and id!=''">
+				and eb.id = #{id} and eb.status in(0,1)
+			</if>
+		</where>
+		order by id desc limit 1
+	</select>
+
+
+	<!-- YS 2017/7/10 通过指定返校计划花絮点赞对象中的参数得到返校计划花絮点赞数 7/17修改-->
+	<select id="countBackschoolPraise" parameterType="map" resultType="int">
+		SELECT count(id) FROM cy_backschool_board_praise
+		where
+		boardId=#{boardId}
+	</select>
+
+
+	<!-- YS 2017/7/10 通过指定返校计划花絮图片对象中的参数得到返校计划花絮图片列表-->
+	<select id="getBackschoolBoardPicList" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardPic" resultType="com.cy.core.schoolServ.entity.BackschoolBoardPic">
+		select id,boardId,pic AS picUrl from cy_backschool_board_pic where boardId = #{boardId} order by id desc
+	</select>
+
+	<!-- YS 2017/7/10 获取返校计划花絮评论列表-->
+	<select id="getBackschoolBoardCommentList" parameterType="String" resultType="com.cy.core.schoolServ.entity.BackschoolBoardComment">
+		select
+		ebc.*,
+		IFNULL(u.name,'') as userName,
+		IFNULL(u.picture,'') as userAvatarUrl,
+		IFNULL(u.phoneNum,'') as userTel,
+		IFNULL(u.sex,'') as userSex
+		from
+		cy_backschool_board_comment ebc LEFT JOIN cy_userprofile u
+		on
+		ebc.userInfoId = u.accountNum
+		where boardId = #{boardId} order by id
+	</select>
+
+	<!-- YS 2017/7/11 通过返校计划花絮评论对象中的参数删除返校计划花絮评论-->
+	<delete id="deleteBachschoolBoardComment" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardComment">
+		delete from cy_backschool_board_comment where id = #{id} and userInfoId = #{userInfoId}
+	</delete>
+
+	<!-- YS 2017/7/11 插入返校计划花絮评论对象中的参数到返校计划花絮评论表-->
+	<insert id="insertBackSchoolBoardComment" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardComment">
+		insert into cy_backschool_board_comment(boardId, userInfoId, comment, createTime)
+		values(#{boardId}, #{userInfoId}, #{comment}, now())
+	</insert>
+
+	<!-- YS 2017/7/11 插入返校计划花絮点赞对象中的参数到返校计划花絮点赞表-->
+	<insert id="insertBackschoolBoardPraise" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardPraise">
+		insert into cy_backschool_board_praise(boardId, userInfoId, createTime)
+		values(#{boardId}, #{userInfoId}, now())
+	</insert>
+
+	<!-- YS 2017/7/11 通过返校计划花絮点赞对象中的参数删除返校计划花絮点赞-->
+	<delete id="deleteBackschoolBoardPraise" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardPraise">
+		delete from cy_backschool_board_praise where boardId = #{boardId} and userInfoId = #{userInfoId}
+	</delete>
+
+	<!-- YS 2017/7/11 插入返校计划花絮举报对象中的参数到返校计划花絮举报表 -->
+	<insert id="insertBackschoolBoardComplaint" parameterType="com.cy.core.schoolServ.entity.BackschoolBoardComplaint">
+		insert into cy_backschool_board_complaint(boardId, userInfoId, reason, createTime,buss_id,buss_type)
+		values(#{boardId}, #{userInfoId}, #{reason}, now(),#{bussId},#{bussType})
+	</insert>
+
+	<!-- YS 2017/7/11 -->
+	<update id="deleteBcakschoolBoard" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard">
+		update cy_backschool_board set status = 3 where id = #{id} and userInfoId = #{userInfoId}
+	</update>
+
+	<!-- YS 2017/7/15 通过返校计划花絮点赞对象中的参数获取点赞id-->
+	<select id="boardPraiseYesOrNotByUserId" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard" resultType="String">
+		select id from cy_backschool_board_praise where boardId=#{id} and userInfoId=#{userInfoId}
+	</select>
+
+	<!-- YS 2017/7/17 通过返校计划花絮对象中的参数获取花絮信息-->
+	<select id="isOwnBoard" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard" resultType="String">
+		select * from cy_backschool_board where id=#{id} and userInfoId=#{userInfoId}
+	</select>
+
+	<!-- YS 2017/7/18 通过返校计划花絮对象中的参数获取花絮id-->
+	<select id="getBoardId" parameterType="com.cy.core.schoolServ.entity.BackschoolBoard" resultType="String">
+		select id from cy_backschool_board where backschoolId=#{backschoolId} and userInfoId=#{userInfoId} order by id desc limit 1
+	</select>
+
+	<select id="findBackchoolBoardListCount" parameterType="map" resultType="long">
+		select count(id) from cy_backschool_board eb LEFT JOIN cy_userprofile u
+		ON
+		eb.userInfoId=u.accountNum
+		where eb.backschoolId = #{backschoolId} and eb.status in(0,1)
+	</select>
+</mapper>

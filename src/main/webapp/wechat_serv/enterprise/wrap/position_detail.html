@@ -1,0 +1,187 @@
+
+
+<style>
+    .intro_long{
+        height:auto;
+    }
+    .intro_short{
+        height:1.08rem;
+    }
+
+    /*commend*/
+    .foot_box{
+        display: flex;
+    }
+
+    .sub_comment,.sub_resume{
+        flex:1;
+        text-align: center;
+    }
+
+</style>
+
+<div class="bg">
+    <!--position info-->
+    <div class="position_item">
+        <div class="item_l">
+            <img class="logo_pic"
+                 onerror="javascript:this.src='../../images/wechat_serv/default_profile.png' "
+                 ng-src="{{positionDetail.enterpriseLogo | filter_pic}}"/>
+        </div>
+        <div class="item_r">
+            <div class="r_li name">{{positionDetail.name}}</div>
+            <div class="r_li firm">{{positionDetail.enterpriseName}}</div>
+            <div class="r_li post"><a ui-sref="position_list({'id':positionDetail.enterpriseId})" class="more_btn">该公司所有职位</a></div>
+        </div>
+    </div>
+
+    <!--position tab-->
+    <div class="position_tabs">
+        <div class="row">
+            <div class="tab">
+                <i class="icon iconfont icon-weizhi"></i>
+                <span class="address">{{positionDetail.city}}</span>
+            </div>
+            <div class="tab">
+                <i class="icon iconfont icon-iconxuelizheng"></i>
+                <span class="academic">{{positionDetail.education}}</span>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 0;">
+            <div class="tab">
+                <i style="font-size:0.15rem;" class="icon iconfont icon-wodeshixi"></i>
+                <span class="position">{{positionDetail.type}}</span>
+            </div>
+            <div class="tab">
+                <i style="font-size:0.18rem;" class="icon iconfont icon-shijian"></i>
+                <span class="time">{{positionDetail.updateDate.substring(0,10)}}</span>
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!--post_intro-->
+    <div class="post_box">
+        <div class="title">
+            <i style="font-size:0.2rem;" class="icon iconfont icon-miaoshu"></i>
+            <span>岗位描述</span>
+        </div>
+        <div class="des_box" ng-if="positionDetail.description.length<=20">
+            <div class="job_intro ent_intro intro_long">
+                {{positionDetail.description}}
+            </div>
+        </div>
+        <div class="des_box" ng-if="positionDetail.description.length>20">
+            <div class="job_intro ent_intro H-text-show-row-6 intro_short">
+                {{positionDetail.description}}
+            </div>
+            <a class="icon_toggle" onclick="slideToggle1(this)">展开</a>
+        </div>
+    </div>
+
+
+    <div class="post_box">
+        <div class="title">
+            <i style="font-size:0.24rem;" class="icon iconfont icon-renzhiyaoqiu"></i>
+            <span>岗位要求</span>
+        </div>
+        <div class="des_box" ng-if="positionDetail.description.length<=80">
+            <div class="ent_intro job_demand intro_long">
+                {{positionDetail.demand}}
+            </div>
+        </div>
+        <div class="des_box" ng-if="positionDetail.description.length>80">
+            <div class="ent_intro job_demand H-text-show-row-6 intro_short">
+                {{positionDetail.demand}}
+            </div>
+            <a class="icon_toggle " onclick="slideToggle2(this)">展开</a>
+        </div>
+
+    </div>
+<!--
+    &lt;!&ndash;comment_list&ndash;&gt;
+    <div class="title">
+        <i class="icon iconfont icon-pinglun"></i>
+        <span>评论</span>&nbsp;(<span class="comment_num">2</span>)
+    </div>
+    <ul class="comment_list">
+        <li>
+           <div class="user_pic item_l">
+               <img src="../../images/wechat_serv/default_profile.png"/>
+           </div>
+            <div class="item_r">
+                <div class="r_row1">
+                    <div class="r_row1_l name">张三</div>
+                    <div class="r_row1_r time">3分钟前</div>
+                </div>
+                <div class="r_row2">
+                    <div class="comment">还招人吗?</div>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="user_pic item_l">
+                <img src="../../images/wechat_serv/default_profile.png"/>
+            </div>
+            <div class="item_r">
+                <div class="r_row1">
+                    <div class="r_row1_l name">张三</div>
+                    <div class="r_row1_r time">3分钟前</div>
+                </div>
+                <div class="r_row2">
+                    <div class="comment">还招人吗?</div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    &lt;!&ndash;pinglun+toudi&ndash;&gt;
+    <div class="foot_box">
+        <div class="sub_comment">
+            评论
+        </div>
+        <div class="sub_resume">
+            投递简历
+        </div>
+    </div>-->
+
+</div>
+
+<script>
+    //toggle open
+    function slideToggle1(item){
+        if($(".job_intro").hasClass('intro_long')){
+            $('.job_intro').removeClass('intro_long').addClass('intro_short');
+            $('.job_intro').addClass('H-text-show-row-6')
+            $(item).text('展开');
+        }else if($('.job_intro').hasClass('intro_short')){
+            $('.job_intro').removeClass('intro_short').addClass('intro_long');
+            $('.job_intro').removeClass('H-text-show-row-6')
+            $(item).text('收起');
+        }
+
+    }
+
+    function slideToggle2(item){
+        if($(".job_demand").hasClass('intro_long')){
+            $('.job_demand').removeClass('intro_long').addClass('intro_short');
+            $('.job_demand').addClass('H-text-show-row-6')
+            $(item).text('展开');
+        }else if($('.job_demand').hasClass('intro_short')){
+            $('.job_demand').removeClass('intro_short').addClass('intro_long');
+            $('.job_demand').removeClass('H-text-show-row-6')
+            $(item).text('收起');
+        }
+
+    }
+
+
+</script>
+
+
+
+
+

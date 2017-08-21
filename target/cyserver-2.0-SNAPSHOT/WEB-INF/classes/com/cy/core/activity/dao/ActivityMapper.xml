@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.activity.dao.ActivityMapper">
+
+    <resultMap type="com.cy.core.activity.entity.Activity" id="activityResultMap">
+        <id column="id" property="id"/>
+        <result column="department" property="department"/>
+        <result column="grade" property="grade"/>
+        <result column="clazz" property="clazz"/>
+        <result column="major" property="major"/>
+        <result column="back_startime" property="backStartime"/>
+        <result column="back_Endtime" property="backEndtime"/>
+        <result column="back_number" property="backNumber"/>
+        <result column="contact_person" property="contactPerson"/>
+        <result column="contact_phone" property="contactPhone"/>
+        <result column="need_meeting" property="needMeeting"/>
+        <result column="meeting_area" property="meetingArea"/>
+        <result column="meeting_time" property="meetingTime"/>
+        <result column="meeting_endtime" property="meetingEndTime"/>
+        <result column="meeting_number" property="meetingNumber"/>
+        <result column="need_projector" property="needProjector"/>
+        <result column="need_visit" property="needVisit"/>
+        <result column="visit_place" property="visitPlace"/>
+        <result column="visit_time" property="visitTime"/>
+        <result column="visit_endtime" property="visitEndTime"/>
+        <result column="visit_number" property="visitNumber"/>
+        <result column="need_dinner" property="needDinner"/>
+        <result column="dinner_area" property="dinnerArea"/>
+        <result column="dinner_time" property="dinnerTime"/>
+        <result column="dinner_endtime" property="dinnerEndTime"/>
+        <result column="dinner_number" property="dinnerNumber"/>
+        <result column="dinner_standard" property="dinnerStandard"/>
+        <result column="need_subscription" property="needSubscription"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="user_id" property="userId"/>
+        <result column="status" property="status"/>
+        <result column="sign_count" property="countMember"/>
+        <result column="opinion" property="opinion"/>
+        <result column="check_time" property="checkTime"/>
+    </resultMap>
+
+    <select id="query" parameterType="map" resultMap="activityResultMap">
+        SELECT
+        a.*,
+        (SELECT COUNT(cbos.id) FROM cy_backschool_online_sign cbos WHERE a.id = cbos.activity_id AND cbos.deletion = '0' ) AS sign_count
+        FROM cy_activity a
+        LEFT JOIN cy_user_info u ON a.user_id = u.user_id
+        <where>del_flag = '0'
+            <if test="deptId!=null and deptId!=''"><!-- 根据学校查询 -->
+                AND a.user_id like concat('%',#{deptId},'%')
+            </if>
+            <if test="accountNum!=null and accountNum!=''"><!-- 根据账号查询 -->
+                and a.user_id = #{accountNum}
+            </if>
+            <if test="status!=null and status!=''"><!-- 根据状态查询 -->
+                and a.status = #{status}
+            </if>
+            <if test="contactPhone!=null and contactPhone!=''">
+                and a.contact_phone = #{contactPhone}
+            </if>
+            <if test="contactPerson!=null and contactPerson!=''">
+                and a.contact_person = #{contactPerson}
+            </if>
+        </where>
+        order by id desc
+        limit #{start},#{rows}
+    </select>
+
+
+    <select id="queryAll" resultMap="activityResultMap">
+        select * from cy_activity
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(a.id)	from cy_activity a
+        LEFT JOIN
+        cy_user_info u ON a.user_id = u.user_id
+        <where>del_flag = '0'
+            <if test="deptId!=null and deptId!=''"><!-- 根据学校查询 -->
+                AND a.user_id like concat('%',#{deptId},'%')
+            </if>
+            <if test="accountNum!=null and accountNum!=''"><!-- 根据专业查询 -->
+                and a.user_id = #{accountNum}
+            </if>
+            <if test="status!=null and status!=''"><!-- 根据状态查询 -->
+                and a.status = #{status}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="activityResultMap">
+        select * from cy_activity where id=#{id}
+    </select>
+
+    <insert id="add" parameterType="com.cy.core.activity.entity.Activity">
+        insert into cy_activity ( department, opinion,check_time,grade, clazz, major, back_startime,back_endtime, back_number, contact_person, contact_phone, need_meeting, meeting_area, meeting_time,meeting_endtime, meeting_number, need_projector, need_visit, visit_place, visit_time,visit_endtime, visit_number, need_dinner, dinner_area, dinner_time,dinner_endtime, dinner_number, dinner_standard, need_subscription, del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        user_id,
+        status)
+        values (#{department}, #{opinion},#{checkTime},#{grade}, #{clazz}, #{major}, #{backStartime},#{backEndtime}, #{backNumber}, #{contactPerson}, #{contactPhone}, #{needMeeting}, #{meetingArea}, #{meetingTime},#{meetingEndTime}, #{meetingNumber}, #{needProjector}, #{needVisit}, #{visitPlace}, #{visitTime},#{visitEndTime}, #{visitNumber}, #{needDinner}, #{dinnerArea}, #{dinnerTime},#{dinnerEndTime},#{dinnerNumber}, #{dinnerStandard}, #{needSubscription}, #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{userId},
+        #{status});
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.activity.entity.Activity">
+        update cy_activity
+        <set>
+            <if test="department!=null and department!=''">
+                department=#{department},
+            </if>
+
+            <if test="opinion!=null and opinion!=''">
+                opinion=#{opinion},
+            </if>
+            <if test="checkTime!=null and checkTime!=''">
+                check_time=#{checkTime},
+            </if>
+
+            <if test="grade!=null and grade!=''">
+                grade=#{grade},
+            </if>
+
+            <if test="clazz!=null and clazz!=''">
+                clazz=#{clazz},
+            </if>
+
+            <if test="major!=null and major!=''">
+                major=#{major},
+            </if>
+
+            <if test="backStartime!=null and backStartime!=''">
+                back_startime=#{backStartime},
+            </if>
+            <if test="backEndtime!=null and backEndtime!=''">
+                back_endtime=#{backEndtime},
+            </if>
+
+            <if test="backNumber!=null">
+                back_number=#{backNumber},
+            </if>
+
+            <if test="contactPerson!=null and contactPerson!=''">
+                contact_person=#{contactPerson},
+            </if>
+
+            <if test="contactPhone!=null and contactPhone!=''">
+                contact_phone=#{contactPhone},
+            </if>
+
+            <if test="needMeeting!=null">
+                need_meeting=#{needMeeting},
+            </if>
+
+            <if test="meetingArea!=null and meetingArea!=''">
+                meeting_area=#{meetingArea},
+            </if>
+
+            <if test="meetingTime!=null">
+                meeting_time=#{meetingTime},
+            </if>
+
+            <if test="meetingNumber!=null">
+                meeting_number=#{meetingNumber},
+            </if>
+
+            <if test="needProjector!=null">
+                need_projector=#{needProjector},
+            </if>
+
+            <if test="needVisit!=null">
+                need_visit=#{needVisit},
+            </if>
+
+            <if test="visitPlace!=null and visitPlace!=''">
+                visit_place=#{visitPlace},
+            </if>
+
+            <if test="visitTime!=null">
+                visit_time=#{visitTime},
+            </if>
+
+            <if test="visitNumber!=null">
+                visit_number=#{visitNumber},
+            </if>
+
+            <if test="needDinner!=null">
+                need_dinner=#{needDinner},
+            </if>
+
+            <if test="dinnerArea!=null and dinnerArea!=''">
+                dinner_area=#{dinnerArea},
+            </if>
+
+            <if test="dinnerTime!=null">
+                dinner_time=#{dinnerTime},
+            </if>
+
+            <if test="dinnerNumber!=null">
+                dinner_number=#{dinnerNumber},
+            </if>
+
+            <if test="dinnerStandard!=null">
+                dinner_standard=#{dinnerStandard},
+            </if>
+
+            <if test="needSubscription!=null">
+                need_subscription=#{needSubscription},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+
+            del_flag=#{delFlag},
+            update_date=#{updateDate},
+            update_by=#{updateBy},
+            create_date=#{createDate},
+            create_by=#{createBy},
+            remarks=#{remarks}
+
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="list">
+        delete from cy_activity where id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+</mapper>

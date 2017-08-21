@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.share.dao.FileMapper">
+    <resultMap type="com.cy.core.share.entity.File" id="fileResultMap">
+        <result column="id" property="id" />
+        <result column="name" property="name"/>
+        <result column="buss_type" property="bussType" />
+        <result column="file_type" property="fileType" />
+        <result column="file_size" property="fileSize" />
+        <result column="file_sort" property="fileSort" />
+        <result column="picture_url" property="pictureUrl"/>
+        <result column="small" property="small"/>
+        <result column="large" property="large"/>
+        <result column="file_group" property="fileGroup"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_date	" property="createDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_date	" property="updateDate"/>
+        <result column="remarks" property="remarks"/>
+        <result column="del_flag	" property="delFlag"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.cy.core.share.entity.File">
+        INSERT INTO cy_file (
+        id,
+        name,
+        buss_type,
+        file_type,
+        file_size,
+        file_sort,
+        picture_url,
+        small,
+        large,
+        file_group,
+        create_by,
+        create_date,
+        update_by,
+        update_date,
+        remarks,
+        del_flag
+        )
+        VALUES (
+        #{id},
+        #{name},
+        #{bussType},
+        #{fileType},
+        #{fileSize},
+        #{fileSort},
+        #{pictureUrl},
+        #{small},
+        #{large},
+        #{fileGroup},
+        #{createBy},
+        #{createDate},
+        #{updateBy},
+        #{updateDate},
+        #{remarks},
+        #{delFlag}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.share.entity.File" >
+        UPDATE cy_file SET
+        name=#{name},
+        buss_type= #{bussType},
+        file_type= #{fileType},
+        file_size= #{fileSize},
+        file_sort= #{fileSort},
+        picture_url= #{pictureUrl},
+        small= #{small},
+        large= #{large},
+        file_group = #{fileGroup},
+        update_by=#{updateBy},
+        update_date=#{updateDate},
+        remarks=#{remarks},
+        del_flag=#{delFlag}
+        WHERE id = #{id}
+    </update>
+    <update id="delete" parameterType="map" >
+        UPDATE cy_file SET
+        del_flag= '1'
+        WHERE file_group = #{fileGroup} AND buss_type = #{bussType}
+    </update>
+    <select id="selectById" resultMap="fileResultMap">
+        SELECT
+        f.*
+        FROM cy_file f
+        WHERE f.id = #{id} AND s.del_flag != '1'
+    </select>
+    <select id="selectList" parameterType="map" resultMap="fileResultMap">
+        SELECT
+        f.*
+        FROM cy_file f
+        WHERE f.del_flag != '1'
+        <if test="fileGroup !=null and fileGroup != ''">
+            AND f.file_group = #{fileGroup}
+        </if>
+        <if test="fileType !=null and fileType != ''">
+            AND f.buss_type = #{bussType}
+        </if>
+        <if test='isLimit !=null and isLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="selectPicList" parameterType="map" resultMap="fileResultMap">
+        SELECT
+        f.*
+        FROM cy_file f
+        WHERE f.del_flag != '1'
+        <if test="fileGroup !=null and fileGroup != ''">
+            AND f.file_group = #{fileGroup}
+        </if>
+        <if test="fileType !=null and fileType != ''">
+            AND f.buss_type = #{bussType}
+        </if>
+        <if test='isLimit !=null and isLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+
+
+
+
+</mapper>

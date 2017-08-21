@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>非手动输入申请新班级</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+    </style>
+
+</head>
+<body class="H-theme-background-color-white">
+<div class="H-padding-10">
+    <ul class="main_form">
+
+        <!--选择信息-->
+        <li class="text_item H-margin-vertical-bottom-10">选择信息</li>
+        <li class="select_item H-flexbox-horizontal H-margin-vertical-bottom-10 H-border-radius-9">
+            <select type="text"
+                    class="select_content_0 select_box H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" style="color:#2b2b2b;">
+                <option value ="" class="">请选择您的学校</option>
+            </select>
+        </li>
+        <li class="select_item H-flexbox-horizontal H-margin-vertical-bottom-10 H-border-radius-9">
+            <select type="text"
+                    class="select_content_1 select_box H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" style="color:#2b2b2b;">
+                <option value ="" class="H-theme-font-color-999">请选择您的学院</option>
+            </select>
+        </li>
+
+        <li class="select_grade select_item H-flexbox-horizontal H-margin-vertical-bottom-10 H-border-radius-9">
+            <select type="text"
+                    class="select_content_2 select_box H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" style="color:#2b2b2b;">
+                <option value ="" class="H-theme-font-color-999">请选择您的年级</option>
+            </select>
+        </li>
+        <li class="select_class select_item H-flexbox-horizontal H-margin-vertical-bottom-10 H-border-radius-9">
+            <select type="text"
+                    class="select_content_3 select_box H-textbox H-vertical-align-middle H-vertical-middle H-font-size-12 H-flex-item H-box-sizing-border-box
+                        H-border-none H-outline-none H-padding-10 H-border-radius-9" style="color:#2b2b2b;" >
+                <option value ="" class="H-theme-font-color-999">请选择您的班级</option>
+            </select>
+        </li>
+
+        <!--非手动输入-->
+        <li onclick="goVerifyHand()" class="text_item H-margin-vertical-bottom-10 H-text-align-right">手动录入</li>
+
+        <!--btn-->
+        <div class="H-padding-15 H-margin-vertical-top-10">
+            <button id="sumbit" onclick="applyVerify()" class="H-button H-width-100-percent H-font-size-16 H-outline-none H-padding-vertical-both-10
+                H-padding-horizontal-both-20  H-theme-border-color16 H-border-radius-3"
+                    style="background-color:#3498db;color:#fefefe">申请认证
+            </button>
+        </div>
+
+
+
+
+    </ul>
+
+
+</div>
+
+
+</body>
+</html>
+
+
+<!--提示框: 认证失败 提示用户 静态页面-->
+<!--  <div class="H-dialog H-theme-background-color-white animated H-border-radius-9"
+               style="animation-duration: 0.3s; width: 310px; min-height: 100px; margin-top: 0px;">
+  <div class="H-dialog-content H-text-align-center H-padding-vertical-top-20">
+      <div class="H-padding-vertical-top-20">
+               <span class="H-icon H-display-block H-horizontal-center">
+                  <i class="H-icon H-iconfont H-icon-guanbi2-fill H-vertical-middle H-theme-font-color-999" style="font-size:55px;"></i>
+              </span>
+      </div>
+      <div class="H-padding-10 H-word-break-break-all H-font-size-16 H-theme-font-color-666">
+          认证失败,请核对认证信息
+      </div>
+  </div>
+  <div class="H-dialog-buttons H-flexbox-horizontal H-border-vertical-top-after">
+      <div class="H-dialog-button H-border-horizontal-right-after H-flex-item H-font-size-16
+          H-padding-10 H-center-all H-touch-active H-theme-font-color-white H-theme-background-color16">
+          我知道了
+      </div>
+  </div>
+</div>-->
+
+
+
+
+<!--提示框: 9选3:选择三位朋友,此功能未使用-->
+<div class="friends_confirm">
+    <div class="confirm_title">请选择三位您认识的朋友</div>
+    <ul class="friend_list">
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+        <li class="friend_item">
+            <div class="avatar_box">
+                <img src="../static/img/default_profile.png" class="friend_avatar"/>
+                <span class="chk_flag"></span>
+            </div>
+            <p class="friend_name"></p>
+        </li>
+    </ul>
+    <div onclick="closeConfirm()" class="verify_btn">确定</div>
+</div>
+<div class="friends_mask"></div>
+
+<!--9选3: 查找好友的弹出框效果-->
+<!--<script type="text/javascript">
+    function selectFriendsConfirm() {
+
+        $('.friends_mask').fadeIn(100); //弹出遮罩层
+        $('.friends_confirm').slideDown(200); //弹出好友选择提示框
+
+    }
+    function closeConfirm(){
+        $('.friends_mask').fadeOut(100); //弹出遮罩层
+        $('.friends_confirm').slideUp(200); //弹出好友选择提示框
+
+    }
+</script>-->
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jquery.min.js" ></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript">
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("verify/verify_select.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '選擇認證',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        //初始化页面:获取该学校的信息(比如曾用名)及该有的院系和班级
+        getSelectInfo(0,"","","",".select_content_0");
+
+        //级联获取下级信息(选择上级的某个值,触发下级,下级中获取数据)
+        $(".select_content_0").change(function() {
+
+            var $t0 = $(".select_content_0");
+            var objId  = $t0.val();
+
+            //获取下级(学院)中的菜单值,将本级选项的id传过去
+            getSelectInfo(1,objId,"","",".select_content_1");
+        });
+
+        $(".select_content_1").change(function() {
+
+            var $t1 = $(".select_content_1");
+            var objId  = $t1.val();
+
+            //获取下级(年级)中的菜单值,将schoolId传过去
+            getSelectInfo(2,"",objId,"",".select_content_2");
+
+        });
+
+        $(".select_content_2").change(function() {
+            var $t2 = $(".select_content_2");
+            var objId  = $t2.val();
+            //获取下级(班级)中的菜单值,将schoolId传过去
+            getSelectInfo(3,"","",objId,".select_content_3");
+
+        });
+
+        $(".select_content_3").change(function() {
+            var $t3 = $(".select_content_3");
+
+        })
+    });
+
+    //获取该学校的信息(比如曾用名)及该有的院系和班级: 211接口
+    function getSelectInfo(level,schoolId,collegeId,gradeId,selectContent) {
+
+        B.ready(function(){
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: '{"command": "211","content": { "level": "'+level+'","schoolId": "'+schoolId+'", "collegeId": "'+collegeId+'", "gradeId": "'+gradeId+'"  } }'
+                },
+                dataType: 'json',
+                success: function(data){
+                    $(selectContent).empty();
+
+                    // 添加第一个选项
+                    var optName = "";
+                    switch(level){
+                        case 0:
+                            optName = "学校";
+                            break;
+                        case 1:
+                            optName = "学院";
+                            break;
+                        case 2:
+                            optName = "年级";
+                            break;
+                        case 3:
+                            optName = "班级";
+                            break;
+
+                    }
+                    $(selectContent).prepend(' <option class="item H-theme-font-color-999" value="'+objId+'">请选择您的'+optName+'</option>');
+
+                    if(data.obj && data.obj.length>0){
+                        //将 学校曾用名及现有名录入option显示
+                        var objList = data.obj;
+                        var itemList = '';
+                        for(var i=0; i<objList.length; i++) {
+                            var objName = objList[i].deptName;
+                            var objId = objList[i].deptId;
+                            itemList +=' <option class="item H-theme-font-color15" value="'+objId+'">'+objName+'</option>';
+                        }
+
+                        // 将获得的学校名称添加到 选择项中
+                        $(selectContent).append(itemList);
+                    }
+
+                    // 触发下一级的change事件
+                    $(".select_content_" + level).trigger("change");
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            });
+
+        });
+
+    }
+
+
+    //"手动"/"选择"输入的页面,点击 "申请认证",提交表单,申请加入该班级
+    function applyVerify() {
+
+        //获取页面上的值
+        var schoolN = $(".select_content_0 option:selected").text(); //获得学校的值
+        var departN = $(".select_content_1 option:selected").text(); //获得学院的值
+        var gradeN = $(".select_content_2 option:selected").text(); //获得年级的值
+        var classN = $(".select_content_3 option:selected").text(); //获得班级的值
+
+
+
+
+        //校验 该值都不能为空
+        if(schoolN=="" || schoolN=="请选择您的学校") {
+            H.alert("请选择您的学校");
+            return false;
+        }else if(departN=="" || departN=="请选择您的学院") {
+            H.alert("请选择您的学院");
+            return false;
+        }else if(gradeN=="" || gradeN=="请选择您的年级" ) {
+            H.alert("请选择您的年级");
+            return false;
+        }else if(classN=="" || classN=="请选择您的班级") {
+            H.alert("请选择您的班级");
+            return false;
+        }
+
+
+
+        if(schoolN!="" && schoolN!="请选择您的学校"
+                && departN!="" && departN!="请选择您的学院"
+                && gradeN!="" && departN!="请选择您的年级"
+                && classN!="" && departN!="请选择您的班级") {
+
+            var gradeNum = gradeN.substring(0,4); //对年级进行处理, 支取其中的数字
+
+            submitForm(schoolN, departN, gradeNum, classN);
+        }
+
+    }
+
+
+    function submitForm(schoolN, departN, gradeNum, classN) {
+
+        B.ready(function () {
+//            console.log('{"command":"212","content":{"schoolName":"'+schoolN+'","departName":"'+departN+'","gradeName":"'+gradeNum+'","className":"'+classN+'","accountNum":"'+accountNum+'"}}')
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr: '{"command":"212","content":{"schoolName":"'+schoolN+'","departName":"'+departN+'","gradeName":"'+gradeNum+'","className":"'+classN+'","accountNum":"'+accountNum+'"}}'
+                    },
+                dataType: 'json',
+                success: function(data){
+                    //请求成功后,提示用户 请求成功
+                    if(data.success) {
+                        H.alertTipForSuccuss(function () {
+                            //申请成功后 跳转至 申请中的列表
+                            H.openWin("未认证班级列表","verify_list.html?ts="+ B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+
+                        },data.msg)
+
+                    }else{
+                        H.alertTipForFail(function () {
+                            //申请未成功 跳转至 未通过的班级列表
+                            //H.openWin("未认证班级列表","verify_list.html?ts="+ B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+
+                        },data.msg)
+
+                    }
+
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                    alert("加载出错");
+                }
+            });
+        })
+    }
+
+    //点击"手动输入", 进入"信息认证" 选择学习经历申请页面
+    function goVerifyHand(){
+        H.openWin("手动输入申请新班级","verify_hand.html?ts="+B.getRandomInt(4)+"&fromFoundation="+fromFoundation);
+
+    }
+</script>

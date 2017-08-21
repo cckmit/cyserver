@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <link href="../../../jslib/hui/plugins/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../../jslib/hui/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../../../jslib/dropload/dropload.css" rel="stylesheet" type="text/css" />
+
+    <script src="../../../jslib/zepto/zepto.min.js" type="text/javascript" ></script>
+    <script src="../../../jslib/hui/script/H.js" type="text/javascript"></script>
+    <script src="../../../jslib/xdomain.min.js" type="text/javascript"></script>
+    <script src="../../js/B.js" type="text/javascript" ></script>
+    <script src="../../js/jbase64.js" type="text/javascript"></script>
+    <script src="../../js/wechat.js" type="text/javascript"></script>
+
+    <style>
+        body{
+            background-color:#ebebeb;
+            color:#2b2b2b;
+        }
+
+        .txt{
+            margin: 0;
+            padding: 10px;
+            font-size:14px;
+        }
+        .item_wrap{
+            padding:20px 10px;
+
+
+        }
+        .item_box{
+            font-size:16px;
+            line-height: 16px;
+            margin-bottom:20px;
+        }
+        .img_bg{
+            border: 10px solid #ebebeb;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        /*支付按钮*/
+        .btn_box{
+            position:fixed;
+            bottom:0px;
+            width:100%;
+            height:50px;
+            background-color:#fff;
+            padding:5px 10px;
+            box-sizing:border-box;
+        }
+        .pay_btn{
+            outline: none;
+            width:100%;
+            border-radius:3px;
+            font-size:14px;
+            color:#fff;
+            text-align: center;
+            height:40px;
+            line-height: 25px;
+        }
+        .no_pay{
+            background-color:#ff4f4f;
+            border:1px solid #ff4f4f;
+        }
+        .pay{
+            background-color:#fa9641;
+            border:1px solid #fa9641;
+
+        }
+
+    </style>
+</head>
+<body>
+<p class="txt">捐赠信息</p>
+<div class="item_wrap H-theme-background-color-white">
+    <div class="item_box H-flexbox-horizontal">
+        <div class="H-flex-item H-text-align-left">项目名称: </div>
+        <div class="H-flex-item H-text-align-right xiangmu_name" style="color:#fa9641;"> </div>
+
+    </div>
+    <div class="item_box H-flexbox-horizontal">
+        <div class="H-flex-item H-text-align-left">捐赠单号: </div>
+        <div class="H-flex-item H-text-align-right xiangmu_danhao" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"> </div>
+    </div>
+    <div class="item_box H-flexbox-horizontal">
+        <div class="H-flex-item H-text-align-left">收款单位: </div>
+        <div class="H-flex-item H-text-align-right shoukuan_danwei"> </div>
+    </div>
+    <div class="item_box H-flexbox-horizontal">
+        <div class="H-flex-item H-text-align-left">收款金额: </div>
+        <div class="H-flex-item H-text-align-right shoukuan_jine" style="color:#fa9641;"> </div>
+    </div>
+    <div class="item_box H-flexbox-horizontal">
+        <div class="H-flex-item H-text-align-left">支付状态: </div>
+        <div class="H-flex-item H-text-align-right shoukuan_zhuangtai"> </div>
+    </div>
+
+</div>
+<ul class="H-theme-background-color-white H-margin-vertical-top-10 payyes">
+    <li class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after H-padding-10 H-display-inline-block">
+        <strong class="H-font-size-14 H-font-weight-normal H-theme-font-color-999 H-padding-horizontal-right-5">支付方式</strong>
+    </li>
+
+    <li class="wx H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+							<span class="H-icon H-center-all H-display-block H-margin-horizontal-left-10 H-theme-font-color-white H-theme-background-color-transparent" style="height: 30px; width: 30px;">
+								<img src="../static/img/icons/weichat.png" class="H-vertical-middle" alt="" title="" style="height: 30px; width: 30px;">
+							</span>
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">微信支付</div>
+							<span class="H-icon H-padding-horizontal-right-5 H-display-block">
+								<input id="weixin" type="radio" checked="checked" name="n2" value="1" class="H-radio H-radio-fill H-vertical-align-middle H-font-size-18 H-theme-font-color1 H-theme-background-color-white H-border-radius-circle H-margin-horizontal-right-10">
+							</span>
+    </li>
+    <li class="zfb H-text-list H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+							<span class="H-icon H-center-all H-display-block H-margin-horizontal-left-10 H-theme-font-color-white H-theme-background-color-transparent" style="height: 30px; width: 30px;">
+								<img src="../static/img/icons/icon_alipay@2x.png" class="H-vertical-middle" alt="" title="" style="height: 30px; width: 30px;">
+							</span>
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">支付宝支付</div>
+							<span class="H-icon H-padding-horizontal-right-5 H-display-block">
+								<input id="alipay" type="radio" name="n2" value="2" class="H-radio H-radio-fill H-vertical-align-middle H-font-size-18 H-theme-font-color1 H-theme-background-color-white H-border-radius-circle H-margin-horizontal-right-10">
+							</span>
+    </li>
+</ul>
+<div class="btn_wrap">
+    <div class="btn_box">
+        <!--<button class="button_zhifu pay_btn no_pay">支　付</button>-->
+    </div>
+</div>
+<script type="text/html" id="orderTppl">
+    <input type="hidden" name="out_trade_no" id="out_trade_no" value="<%=orderObj.orderNo%>">
+    <input type="hidden" name="subject" id="subject" value="<%=orderObj.project.projectName%>">
+    <input type="hidden" name="total_fee" id="total_fee" value="<%=orderObj.money%>">
+    <input type="hidden" name="WIDbody" id="WIDbody" value="<%=orderObj.message%>">
+    <input type="hidden" name="payType" value="10"><!--支付类型:10:手机支付;20:网页支付-->
+</script>
+<!-- list-->
+<form id="form1" name="form1" method="post">
+    <div  id="orderList">
+
+    </div>
+</form>
+
+
+</body>
+
+<script type="text/javascript">
+    // 接收url中的参数
+    var id = B.getUrlParamByName("id");
+    var accountNum = B.getUrlParamByName("accountNum");
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    var projectId = '';
+
+    var dataJson;
+    var orderDetail;
+
+    var out_trade_no ; //訂單编号
+    var body ;//订单描述
+    var total_fee; //金额 （单位：元）
+
+    /*if(openId && openId != 'null') {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+//        $("title").html("订单详情");
+    }else{
+        location.href=getAuthUrl(appId,B.domain+"/foundation/order_detail.html?id="+id, B.domain+"／");
+        //app或网页
+//        $("title").html('{"title":"订单详情","backUrl":"/foundation/order_detail.html?accountNum=' + accountNum + '&id'+id+'","backTitle":"返回"}');
+    }
+
+    if(!accountNum || accountNum == '' || accountNum == 'null'){
+        accountNum = '';
+    }
+*/
+    $(function() {
+        H.tppl_flag = ["<%", "%>"];
+
+        B.ready(function () {
+            //查询订单详情
+            dingdanXq();
+
+        });
+    });
+
+
+    $('.wx').click(function(){
+
+        $('input')[0].checked=true;
+        $('input')[1].checked=false;
+    })
+    $('.zfb').click(function(){
+
+        $('input')[1].checked=true;
+        $('input')[0].checked=false;
+    })
+
+    //查询订单详情
+    function dingdanXq(){
+        console.log('{"command": "229","content": {"id": "'+id+'"}}');
+        $("#form1").attr("action",B.serverUrl+"/alipay/alipayAction!doNotNeedSessionAndSecurity_alipayApi.action") ;
+        B.ready(function(){
+            $.ajax({
+                type: 'POST',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "229","content": {"id": "'+id+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    localStorage.setItem('donationId',data.obj.donationId);
+                    localStorage.setItem('projectId',data.obj.projectId);
+                    if(data.obj){
+                        projectId = data.obj.projectId;
+                        var render = H.tppl(H.D("#orderTppl").innerHTML);
+                        var result = render({orderObj:data.obj});
+                        $('#orderList').html(result);
+                        //根据支付状态,判断支付按钮的状态 //1-已经支付; 0-未支付
+                        if(data.obj.confirmStatus >= 20){
+                            var status = '';
+                            switch (data.obj.confirmStatus){
+                                case 20 : status = '等待确认';
+                                    break;
+                                case 30 : status = '已确认';
+                                    break;
+                                case 40 : status = '已寄出发票和捐赠证书';
+                                    break;
+                                case 45 : status = '已寄出捐赠证书';
+                                    break;
+                            }
+                            var confirmStr = '<div class="item_box H-flexbox-horizontal">'+
+                                '<div class="H-flex-item H-text-align-left">捐赠状态: </div>'+
+                                '<div class="H-flex-item H-text-align-right shoukuan_jzzt">'+status+'</div>'+
+                                '</div>';
+                            $('.item_wrap').append(confirmStr);
+                        }
+
+                        if(data.obj.payStatus && data.obj.payStatus==1){
+                            //已支付
+                            if(data.obj.confirmStatus >= 30){
+                                var btnDom = '<button class="button_zhifu pay_btn pay">查看证书</button>';
+                                $('.btn_box').html(btnDom);
+                                $('.payyes').hide();
+
+
+                                $('.pay').on('click', function(){
+                                    H.openWin("查看证书", "certificate.html?ts="+B.getRandomInt(4)+"&state="+0+"&accountNum="+accountNum+"&imgUrl="+B.encrypt(data.obj.certificatePicUrl))
+                                });
+                            }
+                            $('.shoukuan_zhuangtai').html('已支付');
+                            if(openId && openId != '' && openId != 'null'){
+                                var money = data.obj.money;
+                                var title = data.obj.project.projectName;
+                                var org = data.obj.project.organization;
+                                var desc = '我为'+org+'捐赠了'+money +'元';
+                                var pic = B.getImageAbsoluteUrl(data.obj.project.projectPic_xd);
+                                var shareLink = location.href.split('?')[0].replace(location.href.split('?')[0].split('/')[location.href.split('?')[0].split('/').length-1], '')+'donate_detail.html?projectId='+projectId;
+                                var shareData = {
+                                    title: title,
+                                    desc: desc,
+                                    link: shareLink,
+                                    imgUrl: pic,
+                                    success: function () {
+                                        H.openWin('我的捐赠','my_donates.html?accountNum='+accountNum);
+                                    },
+                                    cancel: function () {
+                                        H.openWin('我的捐赠','my_donates.html?accountNum='+accountNum);
+                                    }
+                                };
+                                mkShareInfo(location.href.split('#')[0], shareData, 0);
+                            }
+                        }else{
+                            //未支付
+                            var btnDom = '<button class="button_zhifu pay_btn no_pay">支　付</button>';
+
+                            $('.btn_box').html(btnDom);
+                            $('.shoukuan_zhuangtai').html('未支付');
+                            if(openId && openId != '' &&openId != 'null'){
+                                var shareData = {
+                                    title: "订单页面",
+                                    desc: "",
+                                    link: "location.href.split('?')[0]",
+                                    imgUrl: ""
+                                };
+                                mkShareInfo(location.href.split('#')[0], shareData, 1);
+                            }
+                        }
+
+                        if(data.obj.project.projectName && data.obj.project.projectName != ''){
+                            $('.xiangmu_name').html(data.obj.project.projectName);
+                            body = data.obj.project.projectName;
+                        }
+
+                        $('.xiangmu_danhao').html(data.obj.orderNo);
+                        out_trade_no = data.obj.orderNo;
+                        $('.shoukuan_danwei').html(data.obj.project.organization);
+                        $('.shoukuan_jine').html('￥'+data.obj.money+'元');
+                        total_fee =data.obj.money;
+                       /* $('.xiangmu_name').on('click', function () {
+                            H.openWin("捐赠详情", "donate_detail.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&projectId=" + projectId);
+                        });*/
+
+
+                        $('.no_pay').on('click', function () {
+                            B.ready(function(){
+                                var a = document.getElementsByName("n2");
+
+                                for (var i=0; i<a.length; i++){
+                                    if(a[i].checked) {
+                                        if(a[i].value==1){
+                                            var money = data.obj.money;
+                                            var u = navigator.userAgent, app = navigator.appVersion;
+                                            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //g
+                                            var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                                            if (isAndroid) {
+                                                var jsonStr = {"money": money.toString(), "donationID":data.obj.donationId.toString()};
+                                                var str = JSON.stringify(jsonStr);
+                                                window.stub.weixinPay(str)
+                                            }
+                                            if (isIOS) {
+                                                var jsonStr = {"money": money, "donationID": data.obj.donationId.toString()};
+                                                /* alert(money)
+                                                 alert(donationId)*/
+                                                window.webkit.messageHandlers.JSCallOCWeChatPay.postMessage({body: jsonStr});
+                                            }
+                                        }
+                                        if(a[i].value==2){
+                                            $("#form1").submit();
+                                            /*var money = data.obj.money;
+                                            var u = navigator.userAgent, app = navigator.appVersion;
+                                            var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //g
+                                            var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                                            if (isAndroid) {
+                                                var jsonStr = {"money": money.toString(), "donationID":data.obj.donationId.toString()};
+                                                var str = JSON.stringify(jsonStr);
+                                                window.stub.zhifubaoPay(str)
+                                            }
+                                            if (isIOS) {
+                                                var jsonStr = {"money": money, "donationID": data.obj.donationId.toString()};
+                                                *//* alert(money)
+                                                 alert(donationId)*//*
+                                                window.webkit.messageHandlers.JSCallOCAliPay.postMessage({body: jsonStr});
+                                            }*/
+
+                                            /*window.location.href= "alipay_success.html"
+                                            $.ajax({
+                                                type: 'post',
+                                                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                                                data: {
+                                                    jsonStr: '{"command": "231","content": {"donationId": "' + data.obj.donationId + '","userId":"' + accountNum + '"}}'
+                                                },
+                                                dataType: 'json',
+                                                success: function (data) {
+
+                                                    if (data.success) {
+                                                        H.openWin("支付成功", "alipay_success.html?accountNum=" + accountNum + "&ts=" + B.getRandomInt(4) + "&donationId=" + data.obj.donationId);
+                                                    }
+                                                },
+                                                error: function (xhr, type) {
+                                                    H.alert("支付失败！");
+                                                }
+                                            });*/
+                                        }
+                                    }
+                                }
+
+                            })
+                        });
+                    }
+                },
+                error: function(xhr, type){
+                    // 加载出错
+                }
+            })
+        });
+    }
+    function WeChatPaySuccess(){
+        var donationId=localStorage.getItem('donationId');
+        window.location.href= "alipay_success.html?accountNum=" + accountNum+"&id="+donationId
+       /* H.openWin("支付成功", "alipay_success.html?accountNum=" + accountNum + "&ts=" + B.getRandomInt(4) + "&donationId=" + data.obj.donationId);*/
+    }
+
+    function getOrder() {
+
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data: {
+                jsonStr: '{"command": "229","content": {"id": "' + id + '"}}'
+            },
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.obj);
+                if(data.obj ){
+                    orderDetail = data.obj;
+                }
+
+            }
+        });
+    }
+    //网页端调起支付API
+    function onBridgeReady(){
+        WeixinJSBridge.invoke(
+            'getBrandWCPayRequest',
+            JSON.parse(dataJson),
+            function(res){
+//                alert("-------> 支付结果res : "+JSON.stringify(res));
+                // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                    getOrder();
+                    if (orderDetail && orderDetail !=null && orderDetail !=''){
+                        if (orderDetail.payStatus && orderDetail.payStatus==1){
+                            H.openWin('支付成功','donate_success.html?donateId='+id);
+                        }
+                    }
+                }
+            }
+        );
+    }
+
+    function getOrderJson() {
+        var total_fee_penny;
+//        var appId ='wxb618afcd782df25c';
+//        var openId = 'o4wJE1avUczP3Xjj8zposm4p9f4o';
+
+        if (!appId || appId =='' || appId =='null'){
+            alert("订单号不能为空");
+            return;
+        }
+        if (!openId || openId =='' || openId =='null'){
+            alert("订单描述不能为空");
+            return;
+        }
+        if (!out_trade_no || out_trade_no =='' || out_trade_no =='null'){
+            alert("订单号不能为空");
+            return;
+        }
+        if (!body || body =='' || body =='null'){
+            alert("订单描述不能为空");
+            return;
+        }
+        if (!total_fee || total_fee =='' || total_fee =='null'){
+            alert("捐赠金额不能为空");
+            return;
+        }else {
+            //将元转化为分
+            total_fee_penny = parseFloat(total_fee)*100;
+        }
+        /*if (!total_fee_penny || total_fee_penny =='' || total_fee_penny =='null'){
+            alert("捐赠金额单位转化有误");
+            return;
+        }*/
+        $.ajax({
+            url:B.serverUrl + "/alipay/wechatPayAction!doNotNeedSessionAndSecurity_getBrandWCPayDate.action",
+            data:{
+                'appid':appId,
+                'openId':openId,
+                'out_trade_no':out_trade_no,
+                'body':body,
+                'total_fee':total_fee,
+                'payType':'20'
+            },
+            type:"post",
+            async: false,
+            dataType: 'json',
+            success:function (result) {
+                if(result.success){
+//                    alert("-------> result : "+JSON.stringify(result.obj));
+                    if (result.obj && result.obj !='' && result.obj !='null'){
+                        dataJson = result.obj;
+                    }else if (result.returnId && result.returnId !='' && result.returnId !='null'){
+                        H.openWin('支付成功','donate_success.html?donateId='+result.returnId);
+                    }
+                }else {
+                    alert(result.msg)
+                }
+
+            },
+            err:function (e) {
+                alert("出现异常！");
+            }
+        }) ;
+    }
+
+    //ios 跳转回
+//    var rnumber = Math.floor(Math.random()*1000)
+//    //    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&projectId='+projectId+'&id='+id+'&mod='+rnumber);
+//    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&id='+id+'&mod='+rnumber);
+//    window.onpopstate = function(event) {
+//        location.reload();
+//    };
+    var jsonStr = {
+        "title":"订单详情",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+
+
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+
+    }
+    function fallback() {
+        var projectId = localStorage.getItem("projectId");
+        var state = B.getUrlParamByName("state");
+        if(state==0){
+            window.location.href="donate_detail.html?accountNum="+accountNum+"&projectId="+projectId
+        }else{
+            window.location.href="my_donates.html?accountNum="+accountNum
+        }
+
+       /* window.location.href="project_list.html?accountNum="+accountNum*/
+    }
+</script>
+
+</html>

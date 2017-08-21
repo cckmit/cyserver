@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.activityWinning.dao.ActivityWinningMapper">
+    <resultMap type="com.cy.core.activityWinning.entity.ActivityWinning" id="ActivityWinningMap">
+        <id column="id" property="id" />
+        <result column="activity_id"  property="activityId"/>
+        <result column="activityName"  property="activityName"/>
+        <result column="applicant_id"  property="applicantId"/>
+        <result column="applicantName"  property="applicantName"/>
+        <result column="headSrc"  property="headSrc"/>
+        <result column="telephone"  property="telephone"/>
+        <result column="awards_id"  property="awardsId"/>
+        <result column="awardsName"  property="awardsName"/>
+        <result column="prizeName"  property="prizeName"/>
+        <result column="prizeSrc"  property="prizeSrc"/>
+        <result column="sort"  property="sort"/>
+        <result column="del_flag"  property="delFlag"/>
+        <result column="create_by"  property="createBy"/>
+        <result column="create_date"  property="createDate"/>
+        <result column="update_by"  property="updateBy"/>
+        <result column="update_date"  property="updateDate"/>
+        <result column="remarks"  property="remarks"/>
+    </resultMap>
+    <sql id="base_culomn">
+        ac.id,ac.activity_id AS activityId,av.name AS activityName,ac.applicant_id AS applicantId,ap.head_src AS headSrc,ap.telephone,ap.name AS applicantName,ac.sort,ac.awards_id AS awardsId,ad.name AS awardsName,ad.prize_name AS prizeName,ad.prize_src AS prizeSrc,ac.del_flag AS delFlag,ac.create_by AS createBy,ac.create_date AS createDate,ac.update_by AS updateBy,ac.update_date AS updateDate,ac.remarks
+    </sql>
+    <insert id="insert" parameterType="com.cy.core.activityWinning.entity.ActivityWinning">
+        INSERT INTO act_activity_winning (
+        id,
+        activity_id,
+        applicant_id,
+        awards_id,
+        sort,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks
+        )
+        VALUES (
+        #{id},
+        #{activityId},
+        #{applicantId},
+        #{awardsId},
+        #{sort},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.activityWinning.entity.ActivityWinning" >
+        UPDATE act_activity_winning
+        <set>
+            <if test=" activityId !=null and activityId != '' ">
+                activity_id=#{activityId},
+            </if>
+            <if test=" applicantId !=null and applicantId != '' ">
+                applicant_id=#{applicantId},
+            </if>
+            <if test=" awardsId !=null and awardsId != '' ">
+                awards_id=#{awardsId},
+            </if>
+            <if test=" sort !=null and sort != '' ">
+                sort=#{sort},
+            </if>
+            <if test=" delFlag !=null and delFlag != '' ">
+                del_flag = #{delFlag},
+            </if>
+            <if test=" updateDate !=null and updateDate != '' ">
+                update_date = #{updateDate},
+            </if>
+            <if test=" updateBy !=null and updateBy != '' ">
+                update_by = #{updateBy},
+            </if>
+            <if test=" remarks !=null and remarks != '' ">
+                remarks = #{remarks}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+    <select id="selectById" parameterType="string" resultMap="ActivityWinningMap">
+        SELECT
+        <include refid="base_culomn"/>
+        FROM act_activity_winning ac left join act_activity av on av.id = ac.activity_id
+        left join act_activity_applicant ap on ap.id = ac.applicant_id
+        left join act_activity_prize ad on ad.id = ac.awards_id
+        WHERE ac.id = #{id} AND ac.del_flag = '0'
+    </select>
+    <select id="selectAll" resultMap="ActivityWinningMap">
+        SELECT * FROM act_activity WHERE del_flag != '0'
+        <if test='activityId !=null and activityId !=""'>
+            and ac.activity_id = #{activityId}
+        </if>
+        <if test='keywords !=null and keywords !=""'>
+            and ap.name like CONCAT('%',#{keywords},'%')
+        </if>
+    </select>
+    <select id="selectList" parameterType="map" resultMap="ActivityWinningMap">
+        SELECT
+        <include refid="base_culomn"/>
+        FROM act_activity_winning ac left join act_activity av on av.id = ac.activity_id
+        left join act_activity_applicant ap on ap.id = ac.applicant_id
+        left join act_activity_prize ad on ad.id = ac.awards_id
+        WHERE ac.del_flag = '0'
+        <if test='activityId !=null and activityId !=""'>
+            and ac.activity_id = #{activityId}
+        </if>
+        <if test='keywords !=null and keywords !=""'>
+            and ap.name like CONCAT('%',#{keywords},'%')
+        </if>
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="selectCount" parameterType="map" resultType="long">
+        SELECT
+        count(ac.id)
+        FROM act_activity_winning ac left join act_activity av on av.id = ac.activity_id
+        left join act_activity_applicant ap on ap.id = ac.applicant_id
+        left join act_activity_prize ad on ad.id = ac.awards_id
+        WHERE ac.del_flag = '0'
+        <if test='activityId !=null and activityId !=""'>
+            and ac.activity_id = #{activityId}
+        </if>
+        <if test='keywords !=null and keywords !=""'>
+            and ap.name like CONCAT('%',#{keywords},'%')
+        </if>
+    </select>
+
+    <update id="delete" parameterType="list">
+        update act_activity_winning SET del_flag='1' where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+</mapper>

@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.chatContacts.dao.ChatContactsMapper">
+
+    <resultMap type="com.cy.core.chatContacts.entity.ChatContacts" id="chatContactsResultMap">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+		<result column="friend_id" property="friendId"/>
+		<result column="alias" property="alias"/>
+		<result column="letter" property="letter"/>
+		<result column="status" property="status"/>
+		<result column="type" property="type"/>
+		<result column="applicant_flag" property="applicantFlag"/>
+		<result column="referee_id" property="refereeId"/>
+		<result column="star_flag" property="starFlag"/>
+		<result column="background" property="background"/>
+		<result column="notice_flag" property="noticeFlag"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+    <select id="query" parameterType="com.cy.core.chatContacts.entity.ChatContacts" resultMap="chatContactsResultMap">
+        select c.*
+       	from cy_chat_contacts c
+        WHERE c.del_flag = '0'
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="friendId!= null and friendId!= ''">
+				and c.friend_id= #{friendId}
+			</if>
+			<if test="alias!= null and alias!= ''">
+				and c.alias= #{alias}
+			</if>
+			<if test="letter!= null and letter!= ''">
+				and c.letter= #{letter}
+			</if>
+			<if test="status!= null and status!= ''">
+				and c.STATUS= #{status}
+			</if>
+			<if test="isNotStatus!= null and isNotStatus!= ''">
+				and c.status != #{isNotStatus}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="applicantFlag!= null and applicantFlag!= ''">
+				and c.applicant_flag= #{applicantFlag}
+			</if>
+			<if test="refereeId!= null and refereeId!= ''">
+				and c.referee_id= #{refereeId}
+			</if>
+			<if test="starFlag!= null and starFlag!= ''">
+				and c.star_flag= #{starFlag}
+			</if>
+			<if test="background!= null and background!= ''">
+				and c.background= #{background}
+			</if>
+			<if test="noticeFlag!= null and noticeFlag!= ''">
+				and c.notice_flag= #{noticeFlag}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+        order by c.update_date desc
+		<if test="start != null and start != '' and rows != null and rows != ''">
+			limit #{start},#{rows}
+		</if>
+    </select>
+
+	<!-- 查询好友信息数据 -->
+    <select id="queryContactsInterface" parameterType="com.cy.core.chatContacts.entity.ChatContacts" resultType="java.util.Map">
+        select
+			c.status AS status ,
+			c.type AS type ,
+			c.alias AS userName ,
+			c.applicant_flag AS applicantFlag,
+			c.update_date AS createDate,
+			p.phoneNum AS phoneNum,
+			p.accountNum AS userId,
+			p.picture AS pictureUrl ,
+			p.sex AS sex ,
+			p.profession AS profession ,
+			p.hobby AS hobby ,
+			p.address AS address ,
+			p.baseInfoId AS baseInfoId ,
+			p.groupName AS departName ,
+			p.workUtil AS workUtil
+       	from cy_chat_contacts c
+		JOIN cy_userprofile p ON p.accountNum = c.friend_id
+        WHERE c.del_flag = '0'
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="friendId!= null and friendId!= ''">
+				and c.friend_id= #{friendId}
+			</if>
+			<if test="friendName!=null and friendName !=''">
+				and c.alias LIKE CONCAT('%',#{friendName},'%')
+			</if>
+			<if test="isNotStatus!= null and isNotStatus!= ''">
+				and c.status != #{isNotStatus}
+			</if>
+			<if test="alias!= null and alias!= ''">
+				and c.alias= #{alias}
+			</if>
+			<if test="letter!= null and letter!= ''">
+				and c.letter= #{letter}
+			</if>
+			<if test="status!= null and status!= ''">
+				and c.STATUS= #{status}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="applicantFlag!= null and applicantFlag!= ''">
+				and c.applicant_flag= #{applicantFlag}
+			</if>
+			<if test="refereeId!= null and refereeId!= ''">
+				and c.referee_id= #{refereeId}
+			</if>
+			<if test="starFlag!= null and starFlag!= ''">
+				and c.star_flag= #{starFlag}
+			</if>
+			<if test="background!= null and background!= ''">
+				and c.background= #{background}
+			</if>
+			<if test="noticeFlag!= null and noticeFlag!= ''">
+				and c.notice_flag= #{noticeFlag}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+        order by c.update_date desc
+    </select>
+
+    <select id="count" parameterType="com.cy.core.chatContacts.entity.ChatContacts" resultType="long">
+        select count(c.id) from cy_chat_contacts c
+        WHERE c.del_flag = '0'
+			<if test="userId!= null and userId!= ''">
+				and c.user_id= #{userId}
+			</if>
+			<if test="friendId!= null and friendId!= ''">
+				and c.friend_id= #{friendId}
+			</if>
+			<if test="isNotStatus!= null and isNotStatus!= ''">
+				and c.status != #{isNotStatus}
+			</if>
+			<if test="alias!= null and alias!= ''">
+				and c.alias= #{alias}
+			</if>
+			<if test="letter!= null and letter!= ''">
+				and c.letter= #{letter}
+			</if>
+			<if test="status!= null and status!= ''">
+				and c.STATUS= #{status}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="applicantFlag!= null and applicantFlag!= ''">
+				and c.applicant_flag= #{applicantFlag}
+			</if>
+			<if test="refereeId!= null and refereeId!= ''">
+				and c.referee_id= #{refereeId}
+			</if>
+			<if test="starFlag!= null and starFlag!= ''">
+				and c.star_flag= #{starFlag}
+			</if>
+			<if test="background!= null and background!= ''">
+				and c.background= #{background}
+			</if>
+			<if test="noticeFlag!= null and noticeFlag!= ''">
+				and c.notice_flag= #{noticeFlag}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="chatContactsResultMap">
+        select c.*
+        from cy_chat_contacts c
+       	where c.id=#{id}
+    </select>
+
+	<insert id="insert">
+		INSERT INTO cy_chat_contacts(
+			id,
+			user_id,
+			friend_id,
+			alias,
+			letter,
+			status,
+			type,
+			applicant_flag,
+			referee_id,
+			star_flag,
+			background,
+			notice_flag,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{userId},
+			#{friendId},
+			#{alias},
+			#{letter},
+			#{status},
+			#{type},
+			#{applicantFlag},
+			#{refereeId},
+			#{starFlag},
+			#{background},
+			#{noticeFlag},
+			#{createDate},
+			#{createBy},
+			#{updateDate},
+			#{updateBy},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.cy.core.chatContacts.entity.ChatContacts">
+        update cy_chat_contacts set
+		<if test="userId!= null and userId!= ''">
+			user_id = #{userId} ,
+		</if>
+		<if test="friendId!= null and friendId!= ''">
+			friend_id = #{friendId} ,
+		</if>
+		<if test="alias!= null and alias!= ''">
+			alias = #{alias} ,
+		</if>
+		<if test="letter!= null and letter!= ''">
+			letter = #{letter} ,
+		</if>
+		<if test="status!= null and status!= ''">
+			STATUS = #{status} ,
+		</if>
+		<if test="type!= null and type!= ''">
+			TYPE = #{type} ,
+		</if>
+		<if test="applicantFlag!= null and applicantFlag!= ''">
+			applicant_flag = #{applicantFlag} ,
+		</if>
+		<if test="refereeId!= null and refereeId!= ''">
+			referee_id = #{refereeId} ,
+		</if>
+		<if test="starFlag!= null and starFlag!= ''">
+			star_flag = #{starFlag} ,
+		</if>
+		<if test="background!= null and background!= ''">
+			background = #{background} ,
+		</if>
+		<if test="noticeFlag!= null and noticeFlag!= ''">
+			notice_flag = #{noticeFlag} ,
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+			update_date = now()
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="list">
+        update cy_chat_contacts
+		set
+			del_flag=1,
+			update_date = now()
+			<if test="updateBy != null and updateBy != ''">
+				, update_by = #{updateBy}
+			</if>
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+    <delete id="delete" parameterType="com.cy.core.chatContacts.entity.ChatContacts">
+        update cy_chat_contacts
+        set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+        where id = #{id}
+    </delete>
+
+	<!-- 查询普通好友信息for241 -->
+	<select id="findContactsInfo" parameterType="java.util.Map" resultType="java.util.Map">
+		select
+		c.status AS status ,
+		c.type AS type ,
+		p.name AS name ,
+		c.applicant_flag AS applicantFlag,
+		c.update_date AS createDate,
+		c.remarks AS remarks,
+		p.phoneNum AS phoneNum,
+		p.accountNum AS accountNum,
+		p.picture AS picture ,
+		p.sex AS sex ,
+		p.profession AS profession ,
+		p.hobby AS hobby ,
+		p.address AS address ,
+		p.baseInfoId AS baseInfoId ,
+		p.groupName AS departName ,
+		p.workUtil AS workUtil
+		from cy_chat_contacts c
+		JOIN cy_userprofile p ON p.accountNum = c.friend_id
+		WHERE c.del_flag = '0' and c.user_id= #{userId}
+		<if test="friendId!= null and friendId!= ''">
+			and c.friend_id= #{friendId}
+		</if>
+		<if test="friendName!=null and friendName !=''">
+			and c.alias LIKE CONCAT('%',#{friendName},'%')
+		</if>
+		<if test="sex!=null and sex !=''">
+			and p.sex = #{sex}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.STATUS= #{status}
+		</if>
+		<if test="applicantFlag!= null and applicantFlag!= ''">
+			and c.applicant_flag= #{applicantFlag}
+		</if>
+		order by c.update_date desc
+	</select>
+
+	<delete id="theRealDelete" parameterType="com.cy.core.chatContacts.entity.ChatContacts">
+		DELETE FROM cy_chat_contacts WHERE (user_id=#{userId} AND friend_id=#{friendId}) OR (user_id=#{friendId} AND friend_id=#{userId})
+	</delete>
+
+	<select id="queryUserList"  parameterType="java.util.Map" resultType="com.cy.core.userProfile.entity.UserProfile">
+		select b.user_id accountNum,count(a.friend_id) count from (select friend_id from cy_chat_contacts where user_id = #{userId} and status='1' and del_flag='0') as a
+		left join (select friend_id ,user_id from cy_chat_contacts where user_id in
+		(select distinct user_id from	cy_chat_contacts bb,((select distinct d.accountNum
+		from cy_chat_contacts c left join cy_userprofile d on c.user_id = d.accountNum
+		WHERE c.user_id = d.accountNum and c.status='1' and c.del_flag = '0' AND c.user_id != #{userId} AND d.accountNum not IN
+		(select e.friend_id from cy_chat_contacts e where user_id=#{userId} and status='1' and del_flag=0)
+		order by c.update_date desc) as aa) where bb.user_id = aa.accountNum)
+		and status='1' and del_flag='0') as b	on a.friend_id =b.friend_id where a.friend_id =b.friend_id group by b.user_id
+		<if test='isNoLimit != "1"'>
+			limit #{start},#{rows}
+		</if>
+	</select>
+
+	<!-- 查询普通好友的共同好友信息 for1000 -->
+	<select id="getCommendFriendList" parameterType="java.util.Map" resultType="java.lang.String">
+		select a.friend_id from (select friend_id from cy_chat_contacts where user_id = #{userId} and status='1' and del_flag='0') as a
+		left join (select friend_id from cy_chat_contacts where user_id = #{maybeFriendId} and status='1' and del_flag='0') as b
+		on a.friend_id =b.friend_id where a.friend_id =b.friend_id
+	</select>
+</mapper>

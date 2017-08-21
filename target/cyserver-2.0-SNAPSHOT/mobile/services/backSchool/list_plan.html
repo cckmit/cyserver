@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>计划列表</title>
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/font/iconfont.css" type="text/css" rel="stylesheet" />
+    <link href="../static/css/backSchool.css" rel="stylesheet" type="text/css" />
+
+    <style>
+
+    </style>
+
+    <script type="text/html" id="tppl">
+
+        <%for(var key in list){%>
+            <div class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after
+            H-clear-both H-padding-horizontal-both-10 H-padding-vertical-both-10 list-item">
+                <!--avatar-->
+
+                <div class="H-box-sizing-border-box avatar-box">
+
+                    <img onerror="javascript:this.src='../static/img/banner4@3x.png';" src="<%=B.getImageAbsoluteUrl(list[key].userPicUrl)%>" alt="" title="" class="H-display-block" >
+
+                    <%
+                    if(!list[key].userName || list[key].userName=='' || !list[key].userName==='undefind'){
+                    %>
+                    <div class="H-margin-vertical-both-8 H-text-align-center H-font-size-14 H-theme-font-color15" style="color: #ff6c6c;">
+                        官方
+                    </div>
+                    <%
+                    }else{
+                    %>
+                    <div class="H-margin-vertical-both-8 H-text-align-center H-font-size-14 H-theme-font-color15">
+                        <%=list[key].userName%>
+                    </div>
+                    <%
+                    }
+                    %>
+
+
+                </div>
+
+
+                <!--计划 信息-->
+                <div class="H-flex-item H-padding-horizontal-left-8 H-position-relative H-box-sizing-border-box" style="overflow:hidden">
+                    <a href="detail_plan.html?accountNum=<%=accountNum%>&categoryId=<%=list[key].id%>&sourceFlag=1" class="link-style">
+                        <div class="H-theme-font-color15 H-font-size-15 H-text-show-row-1" style="margin-top:-2px;color:#262626;height: 22px;line-height: 22px;"><%=list[key].topic%></div>
+                    </a>
+                    <div class="H-theme-font-color-999 H-font-size-12 H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box">
+                        <span class="H-display-block H-flex-item H-text-align-left">
+                            <%=list[key].time%>
+                        </span>
+
+                        <%
+                        if(list[key].timeState==0){
+                        %>
+                        <span class="H-display-block H-flex-item H-text-align-right" style="color: red">
+                            报名进行中
+                        </span>
+                        <%
+                        }else if(list[key].timeState==1){
+                        %>
+                        <span class="H-display-block H-flex-item H-text-align-right" style="color: #3e9bff">
+                            活动进行中
+                        </span>
+                        <%
+                        }else if(list[key].timeState==2){
+                        %>
+                        <span class="H-display-block H-flex-item H-text-align-right" style="color: #999999">
+                            活动已结束
+                        </span>
+                        <%
+                        }else{
+                        }
+                        %>
+
+
+                    </div>
+                    <a href="detail_plan.html?accountNum=<%=accountNum%>&categoryId=<%=list[key].id%>" class="link-style">
+                        <div class="H-flex-item H-theme-font-color-666 H-font-size-13 H-display-block H-margin-vertical-both-5 H-text-show-row-2">
+                             <%=list[key].other%>
+                            <!--一切从简，只为了更懒！Hui是新生帝个人开发，版权所有为中山赢友网络科技有限公司，Hui基于最新的HTML5，CSS3，ECMAScript开发，-->
+                            <!--并且是一款非常棒的开源项目。也希望更多开发者能够参与进来，一起完善她，成就她！-->
+                        </div>
+                    </a>
+
+                    <div class="H-flexbox-horizontal H-font-size-12 H-theme-font-color-999 H-margin-0 H-padding-vertical-top-10
+                    H-border-vertical-top-after item-bottom" style="position:absolute; bottom:0; line-height: 18px;">
+                        <span class="H-flex-item">
+                            <i class="icon iconfont icon-baomingbiao H-theme-font-color16" style="font-size:1.3rem;"></i>
+                            报名人数: <%=list[key].countMember%>
+                        </span>
+                        <span class="H-flex-item">
+                            <i class="icon iconfont icon-niandujihua H-theme-font-color16" style="font-size:1.3rem;"></i>
+                            计划人数: <%=list[key].number%>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        <%}%>
+    </script>
+</head>
+
+<body class="H-flexbox-vertical H-theme-background-color-eb">
+<header class="H-header H-theme-background-color9" id="header">
+    <!-- Tab -->
+    <div class="H-flexbox-horizontal H-theme-background-color-white" id="tag">
+        <div onclick="setPage(0);" style="border-width: 0 0 2px  0;"
+             class="H-flex-item H-center-all H-font-size-16 H-padding-vertical-both-10 H-theme-border-color-white">
+            <span style="border-bottom: 2px solid #fff; display: block">返校动态</span>
+        </div>
+
+        <div onclick="setPage(1);" style="border-width: 0 0 2px  0;"
+             class="H-flex-item H-center-all H-font-size-16 H-padding-vertical-both-10 H-theme-border-color-white
+              H-theme-font-color16">
+            <span style="border-bottom: 2px solid #52ace5; display: block">计划列表</span>
+        </div>
+        <div onclick="setPage(2);" style="border-width: 0 0 2px  0;"
+             class="H-flex-item H-center-all H-font-size-16 H-padding-vertical-both-10 H-theme-border-color-white">
+            <span style="border-bottom: 2px solid #fff; display: block">我的计划</span>
+        </div>
+    </div>
+</header>
+<div class="H-padding-vertical-bottom-10"></div>
+
+<!-- list-->
+<div class="content list-wraper">
+    <div class="list">
+
+        <!--tppl 静态-->
+        <!--<div class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-bottom-after H-clear-both H-padding-horizontal-both-8 H-padding-vertical-both-8 list-item">-->
+            <!--&lt;!&ndash;avatar&ndash;&gt;-->
+            <!--<div class="H-box-sizing-border-box avatar-box">-->
+                <!--<img src="../static/img/icons/icon_avatar@3x.png" alt="" title="" class="H-display-block" >-->
+                <!--<div class="H-margin-vertical-top-20 H-margin-vertical-bottom-10 H-text-align-center">胡椒</div>-->
+            <!--</div>-->
+
+            <!--&lt;!&ndash;计划 信息&ndash;&gt;-->
+            <!--<div class="H-flex-item H-padding-horizontal-left-8 H-position-relative H-box-sizing-border-box">-->
+                <!--<a href="detail_plan.html" class="link-style">-->
+                    <!--<div class="H-theme-font-color-black H-font-size-16">校园风采</div>-->
+                <!--</a>-->
+                <!--<div class="H-theme-font-color-999 H-font-size-12">2016-12-12</div>-->
+                <!--<a href="detail_plan.html" class="link-style">-->
+                    <!--<div class="H-font-weight-normal H-theme-font-color-999 H-font-size-14 H-display-block H-text-show-row-3 H-padding-vertical-both-5">-->
+                        <!--一切从简，只为了更懒！Hui是新生帝个人开发，版权所有为中山赢友网络科技有限公司，Hui基于最新的HTML5，CSS3，ECMAScript开发，-->
+                        <!--并且是一款非常棒的开源项目。也希望更多开发者能够参与进来，一起完善她，成就她！-->
+                    <!--</div>-->
+                <!--</a>-->
+                <!--&lt;!&ndash;报名人数+计划人数&ndash;&gt;-->
+                <!--<div class="H-font-size-14 H-theme-font-color-999 H-z-index-10 H-margin-0 H-padding-vertical-top-10 H-border-vertical-top-after item-bottom">-->
+                    <!--<span class="H-float-left">-->
+                        <!--<i class="icon iconfont icon-file H-theme-font-color1"></i>-->
+                        <!--报名人数: 125-->
+                    <!--</span>-->
+                    <!--<span class="H-float-right">-->
+                        <!--<i class="icon iconfont icon-number H-theme-font-color1"></i>-->
+                        <!--计划人数: 236-->
+                    <!--</span>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+    </div>
+</div>
+</body>
+
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script src="../static/js/dropload.js" type="text/javascript" ></script>
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '返校计划',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+    var backUrl = B.encrypt("../services/backSchool/list_plan.html?ts=" + B.getRandomInt(4));
+
+    // 设置页签集合
+    var tabs = [{
+        name:"返校动态",
+        url:"list_index.html"
+    },{
+        name:"计划列表",
+        url:"list_plan.html"
+    },{
+        name:"我的计划",
+        url:"my_jihua.html"
+    }];
+
+    // 切换页签
+    function setPage(index) {
+        if(index==2){
+            if(accountNum=='null' || !accountNum){
+                H.confirm(function (ret) {
+                    if(ret.buttonIndex==1){
+                        window.location.href = "../../wechat/login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl;
+                    };
+                }, '确认提示：', '尚未登陆，是否登陆账号？');
+            }else if( userrz!=1 ){
+                //认证提示区分微信端和APP端
+                if (openId && openId != '' && openId != 'null') {
+                    H.confirm(function (ret) {
+                        if(ret.buttonIndex==1){
+                            H.openWin("认证页面", "../../wechat/verify/class_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&backUrl=" + backUrl);
+                        };
+                    }, '确认提示：', '尚未认证，是否去认证？');
+                }else {
+                    H.alert('亲，您还未认证，请先去认证吧');
+                }
+            }else{
+                H.openWin(tabs[index].name, tabs[index].url + "?ts="+B.getRandomInt(4) + "&accountNum=" + accountNum, "#header");
+            }
+        }else {
+            H.openWin(tabs[index].name, tabs[index].url + "?ts="+B.getRandomInt(4) + "&accountNum=" + accountNum, "#header");
+        }
+
+    }
+
+    // 页面初始化
+    $(function(){
+
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+        $('.list').empty();
+
+
+        // 定义模板标签符
+        H.tppl_flag = ["<%", "%>"];
+
+        // 跨域请求
+        B.ready(function(){
+
+            //判断用户是否认证
+            renzhenguser();
+
+            // 下拉刷新上拉加载
+            var page=1;
+
+
+            $('.content').dropload({
+
+                scrollArea : window,
+                domUp : {
+                    domClass   : 'dropload-up',
+                    domRefresh : '<div class="dropload-refresh">↓下拉刷新-计划列表</div>',
+                    domUpdate  : '<div class="dropload-update">↑释放更新-计划列表</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                },
+                loadDownFn : function(me){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "83","content": {"page": \"'+page+'\", "rows": "2","type": "0","userId": \"'+accountNum+'\" }}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+//                            console.log('{"command": "83","content": {"page": \"'+page+'\", "rows": "2","type": "0","userId": \"'+accountNum+'\" }}')
+//                            page = 2;
+                            if(!data.success ||data.obj.length==0){
+                                me.lock();
+                                me.noData(true);
+                                if(!data.success){
+                                    //H.alert(data.msg);
+                                }
+                            }else{
+				                //console.log("上拉加载："+JSON.stringify(data));
+
+                                var render = H.tppl(H.D("#tppl").innerHTML);
+                                var result = render({list:data.obj});
+
+                                $('.list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                            me.unlock();
+                            me.noData(false);
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            //me.resetload();
+                            me.noData(true);
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+    });
+
+    //判断是否已认证
+    var userrz='';
+    function renzhenguser(){
+        $.ajax({
+            type: 'POST',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "27","content": {"accountNum": "'+accountNum+'"}}'
+            },
+            dataType: 'json',
+            success: function(data){
+                if(data.obj && data.obj.baseInfoId){
+                    userrz = 1;
+                }else{
+                    userrz = 0;
+                }
+            },
+            error: function(xhr, type){
+                // 加载出错
+            }
+        });
+    }
+
+    //验证是否为网址,因为有些图片地址在数据库中并不是一个有效地址
+    function is_website(site_value){
+        var site_value = site_value;
+        var strRegex = "^((https|http)?://)";
+        var re=new RegExp(strRegex);
+        if (re.test(site_value)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+//    //ios返回刷新
+//    var t = B.getUrlParamByName("t");
+//    $(function () {
+//        var u = navigator.userAgent, app = navigator.appVersion;
+//        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//        if (isAndroid) {
+//
+//        }
+//        if (isIOS) {
+//            var rnumber = Math.floor(Math.random()*1000)
+//            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+//            window.onpopstate = function(event) {
+//                location.reload();
+//            };
+//        }
+//    });
+
+
+    var jsonStrBut = {
+        "title":"值年返校",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+        return jsonStrBut;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStrBut);
+        window.stub.jsMethod(str);
+        return jsonStrBut;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+
+    }
+
+    $(function(){
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            pushHistory();
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                WeixinJSBridge.call('closeWindow');
+            } else if(ua.indexOf("alipay")!=-1){
+                AlipayJSBridge.call('closeWebview');
+            }else if(ua.indexOf("baidu")!=-1){
+                BLightApp.closeWindow();
+            }
+            else{
+                window.close();
+            }
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+    });
+
+</script>
+</html>

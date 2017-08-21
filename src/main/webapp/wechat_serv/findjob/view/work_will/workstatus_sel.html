@@ -1,0 +1,304 @@
+
+    <style>
+
+        .bg{
+            background-color:#f2f2f2;
+            height:100%;
+            width:100%;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+
+        .top_l{
+            font-size:0.26rem;
+            color:#555;
+            flex:1;
+            position: relative;
+            height:1rem;
+        }
+        .top_r{
+
+            text-align: right;
+        }
+        .top_r span{
+            display: inline-block;
+            font-size:0.28rem;
+            color:#333;
+
+        }
+
+        /*图片*/
+        .none{
+            text-align: center;
+        }
+        .none img{
+            width:3.56rem;
+            height:3.56rem;
+            padding-top:1rem;
+            padding-bottom:1.2rem;
+        }
+
+        /*提示*/
+        .tip{
+            font-size: 0.28rem;
+            color:#888;
+            text-align: center;
+
+        }
+
+        /*底部按钮*/
+        .foot_box{
+            box-sizing: border-box;
+            width:100%;
+            padding:0.2rem;
+            padding-top:0;
+        }
+        .foot_box .btn{
+            color:#fff;
+            background-color:#0F88EB;
+            line-height: 1rem;
+            width:100%;
+            text-align: center;
+            border-radius:0.1rem;
+
+            font-size:0.3rem;
+        }
+
+
+        /*求职状态_弹出框*/
+        .sel_confirm{
+            background-color:#fff;
+            width:5.8rem;
+            height:5.66rem;
+
+            position:absolute;
+            top:1.3rem;
+            left:10%;
+
+        }
+
+        .sel_content{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            padding:0.6rem;
+
+        }
+        .s_row{
+            line-height: 2.5;
+        }
+        .s_row i{
+            margin-right:0.1rem;
+            font-size:0.3rem;
+            color:#979797;
+        }
+        .s_row span{
+            font-size:0.3rem;
+            color:#333;
+        }
+
+        .sel_confirm .btn{
+            padding:0 0.4rem;
+            font-size: 0.26rem;
+            line-height: 2;
+            color:#888;
+            text-align: right;
+        }
+
+        /*chk_item*/
+        .chk{
+            color: #0F88EB;
+        }
+
+
+        .work_status{
+            position: relative;
+            padding:0 0.2rem;
+            line-height: 1rem;
+            height:1rem;
+            margin:0.2rem 0;
+            background-color:#fff;
+            display: flex;
+        }
+        select {
+            border: none;
+            outline: none;
+            background: none;
+            font-size: 0.28rem;
+
+            appearance:none;
+            -moz-appearance:none;
+            -webkit-appearance:none;
+
+            position: absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            width: 100%;
+            box-sizing: border-box;
+            direction: rtl;
+            padding-right: 0.1rem;
+        }
+        /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+        select::-ms-expand { display: none; }
+
+        select.weixuanz{
+            color: #888;
+        }
+
+
+        .zhista{
+            float: right;
+            margin-right: 0.1rem;
+            color: #a8a8a8;
+        }
+
+
+        /*list*/
+        .job_list{
+            flex: 1;
+            overflow: auto;
+        }
+        .j_item{
+            background-color:#fff;
+            padding:0.36rem 0.2rem;
+            margin-bottom:0.04rem;
+            display: flex;
+            flex-direction: column;
+
+        }
+        .j_item .row1{
+            font-size: 0.28rem;
+            color:#333;
+            margin-bottom:0.2rem;
+        }
+
+        .j_item .row2{
+            font-size: 0.26rem;
+            color:#555;
+        }
+        .j_item .row2 span{
+            display:inline-block;
+        }
+
+        /*提示*/
+        .tip{
+            font-size: 0.22rem;
+            color:#888;
+            text-align: center;
+            padding-top:0.5rem;
+        }
+
+        .tops_s{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+
+
+<div class="bg">
+
+    <div class="tops_s">
+        <div class="top work_status">
+            <div class="top_l">
+                求职状态
+                <!--<span class="zhista">{{destate.title}}</span>-->
+                <select ng-class="{'weixuanz':aaa}" ng-change="selectValue(destate.id)" ng-model="destate.id" ng-options="list.id as list.title for list in zhistate">
+                    <option ng-show="deshow" value="">请选择求职状态</option>
+                </select>
+            </div>
+
+            <div class="top_r">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </div>
+        </div>
+
+
+        <div class="job_list">
+            <div class="j_item">
+                <div class="row1 H-text-row-1">UI设计师</div>
+                <div class="row2 H-text-row-1">
+                    <span class="add">
+                        <span class="province">湖北省</span>-<span>武汉市</span>
+                    </span>
+                    <span>|</span>
+                    <span>互联网</span>
+                    <span>|</span>
+                    <span class="sal">
+                        <span class="min_sal">8k</span>-<span class="max_sal">10k</span>
+                    </span>
+                </div>
+            </div>
+            <div class="j_item">
+                <div class="row1 H-text-row-1">UI设计师</div>
+                <div class="row2 H-text-row-1">
+                    <span class="add">
+                        <span class="province">湖北省</span>-<span>武汉市</span>
+                    </span>
+                    <span>|</span>
+                    <span>互联网</span>
+                    <span>|</span>
+                    <span class="sal">
+                        <span class="min_sal">8k</span>-<span class="max_sal">10k</span>
+                    </span>
+                </div>
+            </div>
+            <div class="j_item">
+                <div class="row1 H-text-row-1">UI设计师</div>
+                <div class="row2 H-text-row-1">
+                    <span class="add">
+                        <span class="province">湖北省</span>-<span>武汉市</span>
+                    </span>
+                    <span>|</span>
+                    <span>互联网</span>
+                    <span>|</span>
+                    <span class="sal">
+                        <span class="min_sal">8k</span>-<span class="max_sal">10k</span>
+                    </span>
+                </div>
+            </div>
+            <div class="j_item">
+                <div class="row1 H-text-row-1">UI设计师</div>
+                <div class="row2 H-text-row-1">
+                    <span class="add">
+                        <span class="province">湖北省</span>-<span>武汉市</span>
+                    </span>
+                    <span>|</span>
+                    <span>互联网</span>
+                    <span>|</span>
+                    <span class="sal">
+                        <span class="min_sal">8k</span>-<span class="max_sal">10k</span>
+                    </span>
+                </div>
+            </div>
+
+
+
+            <!--tip-->
+            <div class="tip">
+                长按删除
+            </div>
+            <div class="none">
+                <img src="img/none.png"/>
+                <div class="tip">
+                    您还没有添加期望职位呢，赶快去添加吧
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="foot_box">
+        <div class="btn" ui-sref="workwill">
+            添加期望职位
+        </div>
+    </div>
+
+
+</div>
+
+

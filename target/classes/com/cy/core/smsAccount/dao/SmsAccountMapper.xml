@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.smsAccount.dao.SmsAccountMapper">
+    <resultMap id="smsAccountResultMap" type="com.cy.core.smsAccount.entity.SmsAccount">
+        <id column="id"  property="id" />
+        <result column="alumni_id" property="alumniId" />
+        <result column="name" property="name" />
+        <result column="app_user_id" property="appUserId" />
+        <result column="account" property="account" />
+        <result column="password" property="password" />
+        <result column="sign" property="sign" />
+        <result column="surplus_num" property="surplusNum" />
+        <result column="surplus_price" property="surplusPrice" />
+        <result column="curr_buy_water_id" property="currBuyWaterId" />
+        <result column="next_buy_water_id" property="nextBuyWaterId" />
+        <result column="if_use" property="ifUse" />
+        <result column="remarks" property="remarks" />
+        <result column="update_date" property="updateDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="create_date" property="createDate" />
+        <result column="create_by" property="createBy" />
+    </resultMap>
+
+    <resultMap id="appUserResultMap" type="com.cy.core.smsAccount.entity.AppUser">
+        <id column="id"  property="id" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="email" property="email" />
+        <result column="company" property="company" />
+        <result column="position" property="position"/>
+        <result column="remarks" property="remarks" />
+        <result column="update_date" property="updateDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="create_date" property="createDate" />
+        <result column="create_by" property="createBy" />
+    </resultMap>
+
+    <select id="getByAlumniId" parameterType="string" resultMap="smsAccountResultMap">
+        SELECT * FROM cy_sms_account WHERE del_flag = '0' AND alumni_id = #{alumniId}
+    </select>
+
+    <insert id="saveAccount" parameterType="com.cy.core.smsAccount.entity.SmsAccount">
+        INSERT INTO cy_sms_account
+        (
+            id,
+            alumni_id,
+            `name`,
+            app_user_id,
+            account,
+            password,
+            sign,
+            surplus_num,
+            surplus_price,
+            curr_buy_water_id,
+            next_buy_water_id,
+            if_use,
+            del_flag,
+            remarks,
+            update_date,
+            update_by,
+            create_date,
+            create_by
+        )
+        VALUES
+        (
+            #{id},
+            #{alumniId},
+            #{name},
+            #{appUserId},
+            #{account},
+            #{password},
+            #{sign},
+            #{surplusNum},
+            #{surplusPrice},
+            #{currBuyWaterId},
+            #{nextBuyWaterId},
+            #{ifUse},
+            #{delFlag},
+            #{remarks},
+            #{updateDate},
+            #{updateBy},
+            #{createDate},
+            #{createBy}
+        )
+    </insert>
+
+
+    <update id="updateAccount" parameterType="com.cy.core.smsAccount.entity.SmsAccount">
+        UPDATE cy_sms_account SET
+            <if test="name != null and name != ''">
+                `name` = #{name},
+            </if>
+            <if test="alumniId!=null and alumniId!= ''">
+                alumni_id = #{alumniId},
+            </if>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="sign != null and sign != ''">
+                sign = #{sign},
+            </if>
+            <if test="surplusNum != null and surplusNum != ''">
+                surplus_num = #{surplusNum},
+            </if>
+            <if test="surplusPrice != null and surplusPrice != ''">
+                surplus_price = #{surplusPrice},
+            </if>
+            <if test="currBuyWaterId != null">
+                curr_buy_water_id = #{currBuyWaterId},
+            </if>
+            <if test="nextBuyWaterId != null">
+                next_buy_water_id = #{nextBuyWaterId},
+            </if>
+            <if test="ifUse != null and ifUse != ''">
+                if_use = #{ifUse},
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                del_flag = #{delFlag},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks},
+            </if>
+            update_date = #{updateDate},
+            update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="clearAccount" parameterType="string">
+        DELETE FROM cy_sms_account WHERE alumni_id = #{alumniId}
+    </delete>
+
+    <select id="getAppUser" parameterType="string" resultMap="appUserResultMap">
+        SELECT * FROM cy_sms_app_user WHERE del_flag = '0' AND id = #{id}
+    </select>
+
+    <insert id="saveAppUser" parameterType="com.cy.core.smsAccount.entity.AppUser">
+        INSERT INTO cy_sms_app_user
+        (
+        id,
+        alumni_id,
+        `name`,
+        phone,
+        email,
+        company,
+        `position`,
+        del_flag,
+        remarks,
+        update_date,
+        update_by,
+        create_date,
+        create_by
+        )
+        VALUES
+        (
+        #{id},
+        #{alumniId},
+        #{name},
+        #{phone},
+        #{email},
+        #{company},
+        #{position},
+        #{delFlag},
+        #{remarks},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy}
+        )
+    </insert>
+
+    <update id="updateAppUser" parameterType="com.cy.core.smsAccount.entity.AppUser">
+        UPDATE cy_sms_app_user SET
+        <if test="name != null and name != ''">
+          `name` = #{name},
+        </if>
+        <if test="alumniId != null and alumniId != ''">
+          alumni_id = #{alumniId},
+        </if>
+        <if test="phone != null and phone != ''">
+          phone = #{phone},
+        </if>
+        <if test="email != null and email != ''">
+          email = #{email},
+        </if>
+        <if test="company != null and company != ''">
+          company = #{company},
+        </if>
+        <if test="position != null and position != ''">
+          `position` = #{position},
+        </if>
+        <if test="delFlag != null and delFlag != ''">
+          del_flag = #{delFlag},
+        </if>
+        <if test="remarks != null and remarks != ''">
+          remarks = #{remarks},
+        </if>
+        update_date = #{updateDate},
+        update_by = #{updateBy}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="clearAppUser" parameterType="string">
+        DELETE FROM cy_sms_app_user WHERE alumni_id = #{alumniId}
+    </delete>
+</mapper>

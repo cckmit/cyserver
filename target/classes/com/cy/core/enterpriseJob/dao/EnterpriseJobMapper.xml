@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.enterpriseJob.dao.EnterpriseJobMapper">
+    <resultMap id="enterpriseJobResultMap" type="com.cy.core.enterpriseJob.entity.EnterpriseJob">
+        <id column="id" property="id"/>
+        <result column="name" property="name" />
+        <result column="enterprise_id" property="enterpriseId" />
+        <result column="city" property="city" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="location_desc" property="locationDesc" />
+        <result column="experience_max" property="experienceMax" />
+        <result column="experience_min" property="experienceMin" />
+        <result column="salary_max" property="salaryMax" />
+        <result column="salary_min" property="salaryMin" />
+        <result column="education" property="education" />
+        <result column="recruiters_num" property="recruitersNum" />
+        <result column="description" property="description" />
+        <result column="demand" property="demand" />
+        <result column="status" property="status" />
+        <result column="audit_status" property="auditStatus"/>
+        <result column="auditor" property="auditor"/>
+        <result column="create_by" property="createBy" />
+        <result column="create_date" property="createDate" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_date" property="updateDate" />
+        <result column="remarks" property="remarks" />
+        <result column="del_flag" property="delFlag" />
+        <result column="enterprise_name" property="enterpriseName"/>
+        <result column="enterprise_logo" property="enterpriseLogo"/>
+        <result column="type_name" property="typeName" />
+        <result column="type" property="type"/>
+        <result column="audit_opinion" property="auditOpinion"/>
+
+        <result column="characteristic" property="characteristic"/>
+        <result column="department" property="department" />
+        <result column="end_time" property="endTime"/>
+        <result column="spotlight" property="spotlight"/>
+        <result column="cloud_job_id" property="cloudJobId"/>
+
+    </resultMap>
+    <select id="selectEnterpriseJob" parameterType="map" resultMap="enterpriseJobResultMap">
+        SELECT
+        cj.*, ce.`name` AS enterprise_name,ce.logo AS enterprise_logo,cd.dict_name AS type_name
+        FROM
+        cy_enterprise_job cj
+        LEFT JOIN cy_enterprise ce ON cj.enterprise_id = ce.id AND ce.del_flag = '0'
+        LEFT JOIN cy_dict cd ON cd.dict_type_id='42' AND cd.dict_value=cj.type
+        WHERE cj.del_flag ='0'
+        <if test="id != null and id != ''" >
+            AND cj.id = #{id}
+        </if>
+        <if test="name != null and name != ''" >
+            AND cj.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="enterpriseId !=null and enterpriseId != '' ">
+            AND cj.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="experienceMax !=null and experienceMax != '' ">
+            AND cj.experience_max =#{experienceMax}
+        </if>
+        <if test="experienceMin !=null and experienceMin != '' ">
+            AND cj.experience_min = #{experienceMin}
+        </if>
+        <if test="status !=null and status != '' ">
+            AND cj.status = #{status}
+        </if>
+        <if test="auditStatus !=null and auditStatus != '' ">
+            AND cj.audit_status = #{auditStatus}
+        </if>
+        <if test="auditOpinion !=null and auditOpinion != '' ">
+            AND cj.audit_opinion = #{auditOpinion}
+        </if>
+        <if test="recruitersNum !=null and recruitersNum != '' ">
+            AND cj.recruiters_num =#{recruitersNum}
+        </if>
+        <if test="type !=null and type != '' ">
+            AND cj.type =#{type}
+        </if>
+        <if test="education !=null and education != '' ">
+            AND cj.education =#{education}
+        </if>
+        <if test="isCloud !=null and isCloud == '1'">
+            AND cj.cloud_job_id IS NOT NULL
+        </if>
+        ORDER BY cj.update_date DESC
+        <if test='isNotLimit != "1" '>
+            LIMIT #{start},#{rows}
+        </if>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="enterpriseJobResultMap">
+        SELECT
+        cj.*, ce.`name` AS enterprise_name,ce.logo AS enterprise_logo,cd.dict_name AS type_name
+        FROM
+        cy_enterprise_job cj
+        LEFT JOIN cy_enterprise ce ON cj.enterprise_id = ce.id AND ce.del_flag = '0'
+        LEFT JOIN cy_dict cd ON cd.dict_type_id='42' AND cd.dict_value=cj.type
+
+        WHERE cj.del_flag != '1' AND cj.id=#{id}
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        SELECT
+        COUNT(cj.id)
+        FROM
+        cy_enterprise_job cj
+        LEFT JOIN cy_enterprise ce ON cj.enterprise_id = ce.id AND ce.del_flag = '0'
+        LEFT JOIN cy_dict cd ON cd.dict_type_id='42' AND cd.dict_value=cj.type
+        WHERE cj.del_flag = '0' AND ce.id IS NOT NULL AND ce.del_flag = '0'
+        <if test="id != null and id != ''" >
+            AND cj.id = #{id}
+        </if>
+        <if test="name != null and name != ''" >
+            AND cj.name LIKE CONCAT('%', #{name} ,'%')
+        </if>
+        <if test="enterpriseId !=null and enterpriseId != '' ">
+            AND cj.enterprise_id = #{enterpriseId}
+        </if>
+        <if test="experienceMax !=null and experienceMax != '' ">
+            AND cj.experience_max =#{experienceMax}
+        </if>
+        <if test="experienceMin !=null and experienceMin != '' ">
+            AND cj.experience_min = #{experienceMin}
+        </if>
+        <if test="status !=null and status != '' ">
+            AND cj.status = #{status}
+        </if>
+        <if test="auditStatus !=null and auditStatus != '' ">
+            AND cj.audit_status = #{auditStatus}
+        </if>
+        <if test="auditOpinion !=null and auditOpinion != '' ">
+            AND cj.audit_opinion = #{auditOpinion}
+        </if>
+        <if test="recruitersNum !=null and recruitersNum != '' ">
+            AND cj.recruiters_num =#{recruitersNum}
+        </if>
+        <if test="type !=null and type != '' ">
+            AND cj.type =#{type}
+        </if>
+        <if test="education !=null and education != '' ">
+            AND cj.education =#{education}
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="com.cy.core.enterpriseJob.entity.EnterpriseJob">
+        INSERT INTO cy_enterprise_job (
+        id,
+        name,
+        enterprise_id,
+        city,
+        longitude,
+        latitude,
+        location_desc,
+        experience_max,
+        experience_min,
+        salary_max,
+        salary_min,
+        education,
+        recruiters_num,
+        description,
+        demand,
+        status,
+        `type`,
+        audit_status,
+        audit_opinion,
+        auditor,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        del_flag,
+        characteristic,
+        department,
+        end_time,
+        spotlight,
+        cloud_job_id
+        )
+        VALUES (
+        #{id},
+        #{name},
+        #{enterpriseId},
+        #{city},
+        #{longitude},
+        #{latitude},
+        #{locationDesc},
+        #{experienceMax},
+        #{experienceMin},
+        #{salaryMax},
+        #{salaryMin},
+        #{education},
+        #{recruitersNum},
+        #{description},
+        #{demand},
+        #{status},
+        #{type},
+        #{auditStatus},
+        #{auditOpinion},
+        #{auditor},
+        now(),
+        #{updateBy},
+        now(),
+        #{createBy},
+        #{remarks},
+        #{delFlag},
+        #{characteristic},
+        #{department},
+        #{endTime},
+        #{spotlight},
+        #{cloudJobId}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.enterpriseJob.entity.EnterpriseJob" >
+        UPDATE cy_enterprise_job SET
+        <if test="name !=null and name != '' ">
+            name = #{name},
+        </if>
+        <if test="enterpriseId !=null and enterpriseId != '' ">
+            enterprise_id = #{enterpriseId},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+        <if test="longitude !=null and longitude != '' ">
+            longitude = #{longitude},
+        </if>
+        <if test="latitude !=null and latitude != '' ">
+            latitude = #{latitude},
+        </if>
+        <if test="locationDesc !=null and locationDesc != '' ">
+            location_desc = #{locationDesc},
+        </if>
+        <if test="experienceMax !=null and experienceMax != '' ">
+            experience_max = #{experienceMax},
+        </if>
+        <if test="experienceMin !=null and experienceMin != '' ">
+            experience_min = #{experienceMin},
+        </if>
+        <if test="salaryMax !=null and salaryMax != '' ">
+            salary_max = #{salaryMax},
+        </if>
+        <if test="salaryMin !=null and salaryMin != '' ">
+            salary_min = #{salaryMin},
+        </if>
+        <if test="education !=null and education != '' ">
+            education = #{education},
+        </if>
+        <if test="recruitersNum !=null and recruitersNum != '' ">
+            recruiters_num = #{recruitersNum},
+        </if>
+        <if test="description !=null and description != '' ">
+            description = #{description},
+        </if>
+        <if test="demand !=null and demand != '' ">
+            demand = #{demand},
+        </if>
+        <if test="status !=null and status != '' ">
+            status = #{status},
+        </if>
+        <if test="type !=null and type != '' ">
+            type =#{type},
+        </if>
+        <if test="auditOpinion !=null and auditOpinion != '' ">
+            audit_opinion = #{auditOpinion},
+        </if>
+        <if test="auditStatus !=null and auditStatus != '' ">
+            audit_status = #{auditStatus},
+        </if>
+        <if test="auditor !=null and auditor != '' ">
+            auditor = #{auditor},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="createDate !=null and createDate != '' ">
+            create_date = #{createDate},
+        </if>
+        <if test="createBy !=null and createBy != '' ">
+            create_by = #{createBy},
+        </if>
+
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="updateDate !=null and updateDate != '' ">
+            update_date = #{updateDate}
+        </if>
+
+        <if test="characteristic !=null and characteristic != '' ">
+            characteristic = #{characteristic},
+        </if>
+        <if test="department !=null and department != '' ">
+            department = #{department}
+        </if>
+        <if test="endTime !=null and endTime != '' ">
+            end_time = #{endTime},
+        </if>
+        <if test="spotlight !=null and spotlight != '' ">
+            spotlight = #{spotlight}
+        </if>
+        <if test="cloudJobId !=null and cloudJobId != '' ">
+            cloud_job_id = #{cloudJobId}
+        </if>
+        WHERE id = #{id}
+    </update>
+
+
+    <update id="updateByCloudId" parameterType="com.cy.core.enterpriseJob.entity.EnterpriseJob" >
+        UPDATE cy_enterprise_job SET
+        <if test="name !=null and name != '' ">
+            name = #{name},
+        </if>
+        <if test="enterpriseId !=null and enterpriseId != '' ">
+            enterprise_id = #{enterpriseId},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+        <if test="longitude !=null and longitude != '' ">
+            longitude = #{longitude},
+        </if>
+        <if test="latitude !=null and latitude != '' ">
+            latitude = #{latitude},
+        </if>
+        <if test="locationDesc !=null and locationDesc != '' ">
+            location_desc = #{locationDesc},
+        </if>
+        <if test="experienceMax !=null and experienceMax != '' ">
+            experience_max = #{experienceMax},
+        </if>
+        <if test="experienceMin !=null and experienceMin != '' ">
+            experience_min = #{experienceMin},
+        </if>
+        <if test="salaryMax !=null and salaryMax != '' ">
+            salary_max = #{salaryMax},
+        </if>
+        <if test="salaryMin !=null and salaryMin != '' ">
+            salary_min = #{salaryMin},
+        </if>
+        <if test="education !=null and education != '' ">
+            education = #{education},
+        </if>
+        <if test="recruitersNum !=null and recruitersNum != '' ">
+            recruiters_num = #{recruitersNum},
+        </if>
+        <if test="description !=null and description != '' ">
+            description = #{description},
+        </if>
+        <if test="demand !=null and demand != '' ">
+            demand = #{demand},
+        </if>
+        <if test="status !=null and status != '' ">
+            status = #{status},
+        </if>
+        <if test="type !=null and type != '' ">
+            type =#{type},
+        </if>
+        <if test="auditOpinion !=null and auditOpinion != '' ">
+            audit_opinion = #{auditOpinion},
+        </if>
+        <if test="auditStatus !=null and auditStatus != '' ">
+            audit_status = #{auditStatus},
+        </if>
+        <if test="auditor !=null and auditor != '' ">
+            auditor = #{auditor},
+        </if>
+        <if test="city !=null and city != '' ">
+            city = #{city},
+        </if>
+        <if test="updateBy !=null and updateBy != '' ">
+            update_by = #{updateBy},
+        </if>
+        <if test="createDate !=null and createDate != '' ">
+            create_date = #{createDate},
+        </if>
+        <if test="createBy !=null and createBy != '' ">
+            create_by = #{createBy},
+        </if>
+
+        <if test="remarks !=null and remarks != '' ">
+            remarks = #{remarks},
+        </if>
+        <if test="updateDate !=null and updateDate != '' ">
+            update_date = #{updateDate}
+        </if>
+
+        <if test="characteristic !=null and characteristic != '' ">
+            characteristic = #{characteristic},
+        </if>
+        <if test="department !=null and department != '' ">
+            department = #{department}
+        </if>
+        <if test="endTime !=null and endTime != '' ">
+            end_time = #{endTime},
+        </if>
+        <if test="spotlight !=null and spotlight != '' ">
+            spotlight = #{spotlight}
+        </if>
+        WHERE cloud_job_id = #{cloudJobId}
+    </update>
+
+    <update id="delete" parameterType="list">
+        update cy_enterprise_job SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+
+</mapper>

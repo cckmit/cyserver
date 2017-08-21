@@ -1,0 +1,35 @@
+<div class="find_dd" ng-show="gz_didian">
+    <div class="find_dd_box" ng-show="sheng">
+        <div class="dd_tabs">
+            <div class="dq_cy" ng-click="cityChange(0)">
+                热门区域
+            </div>
+            <div ng-click="cityChange(1)">A-G</div>
+            <div ng-click="cityChange(2)">H-M</div>
+            <div ng-click="cityChange(3)">N-T</div>
+            <div ng-click="cityChange(4)">U-Z</div>
+        </div>
+        <div class="squyus">
+            <ul>
+                <li ng-repeat="list in city">
+                    <span class="spans" ng-click="cityclick(list)">{{list.text}}</span>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="shixian" ng-show="shixian">
+        <div class="city_shi">
+            <ul>
+                <li ng-click="changeCityShi(list)" class="li_shi" ng-repeat="list in city_shi">{{list.text}}</li>
+            </ul>
+        </div>
+        <div class="city_xian">
+            <ul>
+                <li ng-click="changeCityXian(list)" class="li_xian" ng-repeat="list in city_xian">{{list.text}}</li>
+            </ul>
+        </div>
+    </div>
+
+</div>

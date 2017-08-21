@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>捐赠项目详情</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+	    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+	    <meta content="校友会-在线捐赠-捐赠项目详情" name="description"/>
+	    <meta content="校友会" name="author"/>
+		<!--引入css文件-->
+		<link href="../../css/style.css" type="text/css" rel="stylesheet" />
+		<link href="../../css/user.css" type="text/css" rel="stylesheet" />
+
+		
+
+		<!--引入js文件-->
+		<script src="../../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../../js/B.js" type="text/javascript"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/interfacepath.js"></script>
+
+		
+		<script language="javascript">
+			// 接收的参数
+			var categoryId = B.getUrlParamByName("categoryId");
+			var projectId = B.getUrlParamByName("projectId");
+
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+			var accountNum = '' ; //用户账号
+			var phoneNum = '';	//电话
+			var moneyVal = '';
+			
+			$(function() {
+				accountNum = getCookie("accountNum");
+				phoneNum = getCookie("phoneNum");
+
+				loadDonateDetail();
+
+				//点击"我要捐赠"
+				$("#toDonateForm").click(function(){
+//					alert("toDonateForm");
+					if(checkLoginStatus()) {
+						$(".donateFormBox").show();
+						$("#toDonateForm").hide();
+					}else{
+						goLoginConfirm();
+					}
+				});
+
+				// 处理选择的捐赠金额
+				$('input:radio[name="money"]').on("click",function(){
+
+					// 获取单击选择的radio的值
+					if($(this).val() == 'inputMoney'){
+						// 选择的是"其他"，清空输入框，将输入框可见可编辑
+						$("#moneyInput").val("");
+						$("#moneyInput").show();
+					}
+					else{
+						// 选择的是具体的金额，将该金额赋值给输入框
+						$("#moneyInput").val($(this).val());
+						$("#moneyInput").hide();
+						$("#moneyInput").parent().find("span").text("");
+					}
+				});
+
+				//点击"确定"捐赠按钮，弹出提示用户确认框，在弹框之前对金额进行验证
+				$("#donateYes").click(function(){
+					// 表单验证
+					moneyVal = $('#moneyInput').val();
+					var reg =/^(-)?(([1-9]{1}\d*)|([0]{1}))(\.(\d){1,2})?$/;
+//					var reg =/^(0\.[1-9])|(0\.\d[1-9])|([1-9]\d*\.\d{1,2})$/;
+
+					if(reg.test(moneyVal) && moneyVal>0  ) {
+						donateConfirm();
+					}else{
+						$("#moneyInput").parent().find("span").text("请输入正确格式的金额（小数点保留2位）");
+						return;
+					}
+
+				});
+
+
+				initFoot();
+			});
+
+
+			//加载项目详情
+			function loadDonateDetail() {
+				interface.donatelistcontentJz.jsonData.content.id= projectId.toString();
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + interface.donatelistcontentJz.url,
+					data: {
+						jsonStr: JSON.stringify(interface.donatelistcontentJz.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						console.log(JSON.stringify(data.obj));
+
+						var pCategoryName = "在线捐赠";
+						var categoryName = "捐赠项目";
+
+
+						// 所在位置
+						$(".news_view h2").append('<a href="../../index.html" >首页</a>');
+						if(pCategoryName) {
+							$(".news_view h2").append('&gt;&gt;<a href="donateList.html?flag=1" >' + pCategoryName + '</a>'); //在线捐赠
+						}
+						if(categoryName) {
+							$(".news_view h2").append('&gt;&gt;<a href="donateList.html?flag=3" >' + categoryName + '</a>'); //捐赠项目
+						}
+						$(".news_view h2").append('&gt;&gt;<span class="title">' + data.obj.projectName + '</span>');
+
+						$(".title").html(data.obj.projectName);
+						$(".createDate").text(data.obj.createTime.substr(0, 10));
+						$(".clickRate").text("￥"+data.obj.donationMoney); //捐赠金额
+						$(".content1").html(data.obj.content);
+					},
+					error: function(xhr, type) {
+
+					}
+				});
+			}
+
+			//跳转到登录页面
+			function goLogin() {
+				addCookie("accountNum","",-1) ;
+				addCookie("phoneNum","",-1) ;
+				addCookie("password","",-1);
+				addCookie("picture","",-1) ;
+				addCookie("name","",-1) ;
+				window.location.href ='../../index.html';
+
+			}
+
+			//验证用户是否登录
+			function checkLoginStatus() {
+				//用户已经登录
+				if(accountNum && phoneNum) {
+//					alert("accountNum="+accountNum + "| phoneNum="+phoneNum);
+					console.log("accountNum=="+accountNum+"phoneNum=="+ phoneNum);
+					//展开捐赠表单
+					return true;
+
+				}//用户没有登录，提示用户登录，弹出登录窗口
+				else{
+					return false;
+				}
+			}
+
+
+			//确定提交
+			function donateSubmit() {
+
+				$("#toDonateForm").hide();
+
+				var messageVal = $('#message').val();//message
+				var anonymousVal = '';
+				if($("#anonymous").attr("checked")) {
+					anonymousVal = '1';
+				}else {
+					anonymousVal = '0';
+				}
+				var remarkVal = '';
+
+				B.ready(function(){
+
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+						data: {
+							jsonStr: '{"command": "230","content": { "projectId": "'+projectId+'","accountNum":"'+accountNum+'" ,"money": "'+moneyVal+'", "anonymous": "'+anonymousVal+'","message": "'+messageVal+'","remark": "'+remarkVal+'"} }'
+						},
+						dataType: 'json',
+						success: function(data) {
+//							alert('donateOrder.html?donationId='+data.obj+' ');
+							console.log("订单已经提交===="+JSON.stringify(data.obj));
+
+							//跳转到订单页面
+							window.location.href='donateOrder.html?donationId='+data.obj+'&pageStatus=0 ';
+
+						},
+						error: function(xhr, type) {
+
+						}
+
+
+					});
+				});
+			}
+
+			window.onresize = function () {
+				initFoot();
+			}
+			function initFoot(){
+				var windowHeight = $(window).height() ;
+				if(windowHeight > 200) {
+					$(".news_view").css("min-height",windowHeight-227);
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+	<!--这是顶部::start-->
+	<!--
+        <div id="head">
+            <div id="top_line"></div>
+            <div id="top_bg" align="center">
+                <img src="image/top_bg.png" />
+            </div>
+            <div id="top_nav_bg">
+                <div id="top_nav">
+                    <ul id="nav">
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>-->
+	<!--这是顶部::end-->
+	<div class="dengluTankuang"></div>
+	<!--这是顶部::start-->
+	<div id="head">
+
+		<div class="lines">
+		</div>
+
+		<div class="header_nav">
+		</div>
+
+		<div class="header_content">
+		</div>
+
+	</div>
+	<!--这是顶部::end-->
+
+		<!--新闻栏目::start-->
+		<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="695" align="left" valign="top">
+					<div id="bodyer">
+						<div id="main">
+							<div class="news_view">
+								<h2>当前位置：</h2>
+								<div class="content">
+									<div class="news">
+										<h1 class="title"></h1>
+										<div class="top">
+											发布时间：<span class="createDate"></span>&nbsp;&nbsp;&nbsp; 捐献总金额：
+											<span class="clickRate"></span>
+										</div>
+										<div class="content1">
+										</div>
+										<!--我要捐赠 提交表格-->
+										<div class="donateFormBox" hidden>
+											<form class="donateForm" action="">
+												<ul class="project" style="margin-top: 10px;">
+													<li class="li-item">
+														<label class="li-name">捐赠金额：</label>
+														<label><input type="radio" id="money_50" class="donateMoney" name="money" value="50">50元</label>
+														<label><input type="radio" id="money_100" class="donateMoney" name="money" value="100">100元</label>
+														<label><input type="radio" id="money_200" class="donateMoney" name="money" value="200">200元</label>
+														<label><input type="radio" id="money_500" class="donateMoney" name="money" value="500">500元</label>
+														<label><input type="radio" id="money_1000" class="donateMoney" name="money" value="1000">1000元</label>
+														<label><input type="radio" id="money_2000" class="donateMoney" name="money" value="2000">2000元</label>
+														<label style="margin-left:84px;">
+																<input type="radio" id="money_other" class="donateMoney" name="money" value="inputMoney">其他
+																<input type="number" id="moneyInput" class="donateInput"
+																	   placeholder="请输入捐赠金额" step="0.01" hidden/>
+																<span style='color:#F00'></span>
+														</label>
+													</li>
+												</ul>
+												<ul class="project" style="margin-top: 10px;">
+													<li class="li-item">
+														<div class="li-name">捐赠留言：</div>
+														<textarea id="message" class="donateMessage"
+																  placeholder="请输入您的留言..."></textarea>
+													</li>
+												</ul>
+												<ul class="project" style="margin-top: 10px;">
+													<li class="li-item">
+														<label class="li-name">匿名捐赠：</label>
+														<input type="checkbox" id="anonymous" checked="checked" class="checkBtn">
+													</li>
+												</ul>
+												<ul>
+													<li class="subBtn">
+														<input type="button" id="donateYes" class="clickBtn"
+															   style="padding:8px 30px" value="确定">
+													</li>
+												</ul>
+
+											</form>
+
+										</div>
+									</div>
+
+
+								</div>
+								<div class="bottom" style="text-align:center">
+										<input type="button" id="toDonateForm" class="clickBtn" value="我要捐赠"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<!--新闻栏目::end-->
+
+		<!--提醒用户登录-->
+		<div class="theme-pop" id="pop01">
+			<div class="theme-poptit">
+				<a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+				<h3>提示</h3>
+			</div>
+			<div class="theme-popbod dform">
+				<p style="margin-top: 18px; font-size: 13px;">请登录</p>
+				<div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+					<input style="width: 70px;" class="confirmBtn" onclick="goLogin();"  value="去登录 " />
+				</div>
+			</div>
+		</div>
+		<div class="theme-pop-mask" id="goLoginConfirm"></div>
+
+
+		<!--提醒用户确定是否捐赠-->
+		<div class="theme-pop" id="pop02">
+			<div class="theme-poptit">
+				<a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+				<h3>提示</h3>
+			</div>
+			<div class="theme-popbod dform">
+				<p style="margin-top: 18px; font-size: 13px;">确定捐赠吗？</p>
+				<div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+					<input style="width: 96px;float:left;height:29px;" type="button" class="confirmBtn" onclick="donateSubmit(); " value="确&nbsp;&nbsp;定 " />
+					<input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+				</div>
+			</div>
+		</div>
+		<div class="theme-pop-mask" id="donateConfirm"></div>
+
+		<!--弹出登录框loginForm-->
+		<!--
+		<div class="theme-pop index_login" id="pop03">
+			<div class="theme-poptit">
+				<a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+				<div class="login_bt radiustlr">校友信息系统平台入口</div>
+			</div>
+			<div class="theme-popbod dform">
+				<form id="login_form" action="" method="post">
+					<p><span>手机号</span><input type="text" name="UserName" id="UserName" class="login_input radius"></p>
+					<p><span>密　码</span><input type="password" name="PassWord" id="PassWord" class="login_input radius"></p>
+					<span id="loginMsg" ></span>
+					<p class="mid">
+						<input type="button" class="login_btn radius" name="submit_btn" onclick="login()" id="submit_btn" value="立即登录">
+						<a href="../../user_register.html" class="radius">我要注册</a>
+					</p>
+				</form>
+			</div>
+			<div class="afterLogin" id="afterDiv" style="width: 289px; height: 155px;margin: 10px 0; display: none">
+			</div>
+		</div>
+		<div class="theme-pop-mask" id="loginConfirm"></div>
+		-->
+
+
+
+
+		<script type="text/javascript">
+			function closeConfirm() {
+				$('.theme-pop-mask').fadeOut(100);
+				$('.theme-pop').slideUp(200);
+			}
+			function goLoginConfirm(){
+				$('#goLoginConfirm').fadeIn(100);
+				$('#pop01').slideDown(200);
+			}
+			function donateConfirm() {
+				$('#donateConfirm').fadeIn(100);
+				$('#pop02').slideDown(200);
+			}
+
+//			弹出登录框
+//			function loginConfirm() {
+//				$('#donateConfirm').fadeIn(100);
+//				$('#pop03').slideDown(200);
+//			}
+
+		</script>
+
+		<!--顶部线条::start-->
+		<div id="footer_line"></div>
+		<!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="../../js/public.js"></script>
+<script src="../../js/G.js"></script>

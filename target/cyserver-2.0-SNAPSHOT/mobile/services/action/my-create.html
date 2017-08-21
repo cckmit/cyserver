@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我创建的</title>
+	<link rel="stylesheet" type="text/css" href="css/common.css" />
+	<link rel="stylesheet" type="text/css" href="css/my-plan.css" />
+	<link rel="stylesheet" type="text/css" href="css/dropload.css" />
+    
+    
+</head>
+
+<body>
+	<header>
+	 	<div class="f-l join ">我参与的</div>
+	 	<div class="f-l create active">我创建的</div>
+	</header>
+	<div class="box-content ">
+        <div class="box1">
+        	 <!--<div class="join-list relative">
+        	 	<div class="state absolute">待审核</div>
+        	 	<img class="f-l dis-in join-img" src="../../../../../../../新建文件夹%20(2)/zan.png" alt=""/>
+        	 	<div class="f-l plan-mess">
+        	 		<p class="title1 text-hide-1">测试测试测测试测测试测测试测测试测试测试</p>
+        	 		<p class="plan-det text-hide-1"><img class="dis-in" src="../../../../../../../新建文件夹%20(2)/icon1.png" alt=""/>测试测试测试测试测试</p>
+        	 		<p class="plan-det text-hide-1"><img class="dis-in" src="../../../../../../../新建文件夹%20(2)/icon1.png" alt=""/>测试测试测试测试测试</p>
+        	 		<p class="plan-det text-hide-1"><img class="dis-in" src="../../../../../../../新建文件夹%20(2)/icon1.png" alt=""/>测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试</p>
+        	 	</div> 
+        	 </div>-->
+
+			 	
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/dropload.min.js"></script>
+<script type="text/javascript" src="js/jquery.timeago.js"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script type="text/javascript">
+	var accountNum= B.getUrlParamByName('accountNum');
+	if(accountNum == 'null' || !accountNum){
+		accountNum = localStorage.getItem("accountNum");
+	}else{
+		accountNum = B.getUrlParamByName("accountNum")
+	}
+
+
+	/*渲染页面*/
+	function list(){
+		// 每页展示6个
+		var rows = 6;
+		var page = 0;
+		// dropload
+		var dropload = $('.box-content').dropload({
+			scrollArea: window,
+			domUp: {
+				domClass: 'dropload-up',
+				domRefresh: '<div class="dropload-refresh">↓下拉刷新</div>',
+				domUpdate: '<div class="dropload-update">↑释放更新</div>',
+				domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>'
+			},
+			domDown: {
+				domClass: 'dropload-down',
+				domRefresh: '<div class="dropload-refresh">↑上拉加载更多</div>',
+				domLoad: '<div class="dropload-load"><span class="loading"></span>加载中...</div>',
+				domNoData: '<div class="dropload-noData">暂无更多内容</div>'
+			},
+			loadUpFn: function(me) {
+				me.resetload();
+				$.ajax({
+					type: "post",
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data:{
+
+						jsonStr:'{"command":"61","content":{"type":"","eventStatusScope":"50,60,70,80,90","title":"","flag":"2","page":"1","rows": "'+rows+'","currUserId":"'+accountNum+'","associationId":"",}} '
+					},
+					dataType: 'json',
+					success: function(data) {
+						console.log(data);
+						var result="";
+						var numcount="";
+						for(var i = 0; i < data.obj.rows.length; i++) {
+							if(data.obj.rows[i].maxPeople==0){
+								numcount="无上限";
+							}else{
+								numcount=data.obj.rows[i].signupNum+"/"+data.obj.rows[i].maxPeople
+							}
+							result+=' <div class="join-list "><i class="dis-n eventId">'+data.obj.rows[i].id+'</i><div class="state absolute" style="background:#FF9A4D">'+data.obj.rows[i].nowStatus+'</div><div class="img-mess f-l"><img onerror="nofind1()" src="' + B.imageServiceHttp + data.obj.rows[i].pic_xd+ '" alt=" "/></div>'+
+							'<div class="f-l plan-mess"><p class="title1 text-hide-1">'+data.obj.rows[i].title+'</p>'+
+							'<p class="plan-det text-hide-1"><img class="dis-in" src="images/icon_2.png" alt=""/>'+data.obj.rows[i].createTime.substring(0,10).replace(/\-/g, "/")+" - "+data.obj.rows[i].endTime.substring(0,10).replace(/\-/g, "/")+'</p>'+
+							'<p class="plan-det text-hide-1"><img style="width:1.2rem" class="dis-in" src="images/icon_3.png" alt=""/>'+data.obj.rows[i].place+'</p>'+
+							'<p class="plan-det text-hide-1"><img class="dis-in" src="images/icon_4.png" alt=""/>'+"报名人数："+numcount+'</p></div></div>'
+
+						}
+
+						me.unlock();
+						/*重置上拉刷新*/
+						me.noData(false);
+
+						page = 1;
+						// 为了测试，延迟1秒加载
+						setTimeout(function() {
+							$('.box1').html(result);
+							jQuery("abbr.timeago").timeago();
+							// 每次数据加载完，必须重置
+							me.resetload();
+						}, 1000);
+					},
+					error: function(xhr, type) {
+						console.log('Ajax error!');
+						// 即使加载出错，也得重置
+						me.resetload();
+					}
+				});
+			},
+			loadDownFn: function(me){
+
+				page++;
+				$.ajax({
+					type: "post",
+					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+					data:{
+						jsonStr:'{"command":"61","content":{"type":"","eventStatusScope":"50,60,70,80,90","title":"","flag":"2","page":"'+page+'","rows": "'+rows+'","currUserId":"'+accountNum+'","associationId":"",}} '
+					},
+					dataType: 'json',
+					success: function(data) {
+						console.log(data);
+						var result="";
+						var numcount="";
+						var state="";
+						for(var i = 0; i < data.obj.rows.length; i++) {
+							if(data.obj.rows[i].maxPeople==0){
+								numcount="无上限";
+							}else{
+								numcount=data.obj.rows[i].signupNum+"/"+data.obj.rows[i].maxPeople
+							}
+							result+=' <div class="join-list "><i class="dis-n eventId">'+data.obj.rows[i].id+'</i><div class="state absolute" style="background:#FF9A4D">'+data.obj.rows[i].nowStatus+'</div><div class="img-mess f-l"><img onerror="nofind1()" src="' + B.imageServiceHttp + data.obj.rows[i].pic_xd+ '" alt=" "/></div>'+
+							'<div class="f-l plan-mess"><p class="title1 text-hide-1">'+data.obj.rows[i].title+'</p>'+
+							'<p class="plan-det text-hide-1"><img class="dis-in" src="images/icon_2.png" alt=""/>'+data.obj.rows[i].createTime.substring(0,10).replace(/\-/g, "/")+" - "+data.obj.rows[i].endTime.substring(0,10).replace(/\-/g, "/")+'</p>'+
+							'<p class="plan-det text-hide-1"><img style="width:1.2rem" class="dis-in" src="images/icon_3.png" alt=""/>'+data.obj.rows[i].place+'</p>'+
+							'<p class="plan-det text-hide-1"><img class="dis-in" src="images/icon_4.png" alt=""/>'+"报名人数："+numcount+'</p></div></div>'
+						}
+						if ((page*rows)>=data.obj.total) {
+							// 锁定
+							me.lock();
+							// 无数据
+							me.noData();
+
+						}
+						// 为了测试，延迟1秒加载
+						setTimeout(function() {
+							$('.box1').append(result);
+							jQuery("abbr.timeago").timeago();
+							// 每次数据加载完，必须重置
+							me.resetload();
+						}, 1000);
+					},
+					error: function(xhr, type) {
+						console.log('Ajax error!');
+						// 即使加载出错，也得重置
+						me.resetload();
+					}
+				});
+
+			}
+		})
+	}
+
+	list()
+
+
+
+
+
+	/*点击进入详情页面*/
+$("body").on('touchstart touchmove touchend',".join-list", function(event) {
+	var flag = false;
+	switch(event.type) {
+		case 'touchstart':
+			falg = false;
+			break;
+		case 'touchmove':
+			falg = true;
+			break;
+		case 'touchend':
+			if( !falg ) {
+				console.log('点击');
+				var eventId = $(this).find('.eventId').html();
+				window.location.href="action-detail.html?eventId="+eventId+'&accountNum='+accountNum+'&state='+2;
+
+			} else {
+				console.log('滑动');
+			}
+			break;
+	}
+})
+
+/*我参与的*/
+$('.join').click(function(){
+	var state= B.getUrlParamByName('state');
+	if(state==0){
+		window.location.href="my-plan.html?accountNum="+accountNum+'&state='+0;
+	}else{
+		window.location.href="my-plan.html?accountNum="+accountNum
+	}
+
+})
+
+ /*找不到图片*/
+function nofind(){
+    var img=event.srcElement;
+    img.src="images/userPhoto.png";
+    img.onerror=null; /*控制不要一直跳动*/
+}
+function nofind1(){
+	var img=event.srcElement;
+	img.src="images/noimg.png";
+	img.onerror=null; /*控制不要一直跳动*/
+}
+
+
+	var jsonStr = {
+		"title":"我创建的",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback"
+		},
+		"btn2":{
+			"imgname":"icon_add@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAYAAABXuSs3AAAABGdBTUEAALGPC/xhBQAABOFJREFUaAXNmlmLXEUYhrsnkxjBaDLGRIXEQUgcg4iCd6LikklUNC5xIVEv1MuAeuMfEEG8yE9Q0R8gkhETt4BGcI0LGuOMkhs3ksw4RhCy2T5P9/l6ejl9uk8vk/7g6apT9dVX71TXqVOneoqFHq1UKi0hxE2wBa6GjTAGK0D7B+ZgBn6EffBxsVg8Q7q4hthl8AC8DrOQZqcoPJlWQdkcvAHbYdnA1dNJER6FXyDsNJkP4VnYCtfCJaCvrAbLtsAz8AHYJuwImZ1QHMgfQODb4UsIU8BjsCpvh7RZCYp9D8IOktmcN1ZLf4KNwMsRnfRrcD73xYh1B3wFYbvJeN90bwS4EN5OIv5N+jj0/Ss1JvgN/AXaO3BRV8ppOA6HQJuBia4C5WhEHxvhJ9AOw5U5mhcKNHCkfwDNeZh7HufqsMaZvpz/+0BTfGcjj6Nzegq092G0Ju6iZOlzCewFzbT9nMcpbkSnx6KNdOOI0LcjH9Nmd2N93TWOt4HmjehT8JwaGpzzccNOporBwTv7C9CeSHXKUUiM9TCeo0mqKzF2gOYy3LyiUfiItdg3MJIapcNC2rslmIcTsLzDZqlutHdAY53fWedExVL4GbStdZVdXBDDx3zYpV2EqGtCIB9S2hFY2NtwcT9o++tadHlBnL4KVwYxXZa1h7yOKbHNC+zVSjKUn6GtopW/wDXzGJyBi/shmTiDGHGXR7fKczDqiN8Iq+EAm/vZfggfRAy0zRP3I/DZcrPCY33cQ37YLTROKnxTotbXqmG30LhJ4RsStX8Mu2r0hcYNbqB8sdV+ryTZn9wY5+GxMturGlM3X+NKbfznmcMn2/hYHRrHXB99up0GRz/T8FkH7mP6bcYcz+w8qcTPF/B/Q2zzHiA9iiP3X3pVT6XtvpFycARXdTpVPPfwDGQN/Aktja/zVxqvxaHd5t7pdzgJdA3p0STfKjnR4VTxOeMj/6jCPay5PCFTOD4FOjhFcsx8K+OPqx3BWdpk+reKk1J+WVI261SZTi4UP+wWGmcUXl0bh101+iYSjYcU7lmeFhutytVwft6TyNrrchibrLPJjdezZOIMapPlsn1czSPcOGdROgWO/r09qx5cgLsI7WIypWbFam9VksJTSTqMyZOJqNBafrvw1c3jCO3BXlUTo69ThXibFYZNg6O+YBQ8bA3WXLng1lGOGL4se6zgo3x5R41aONHel+WDoG1vcqNQh8+txXY1OeQsIIb7mvU5mzW5E8OjbO2zpsoooPLWsgubGNIbovxcpWi4Cjzm0G7J1IHDS2W3Uuk30nhSZbYZRCV9+47ptNVeaNsHTh567tEbc+qc37ZRnx3ocxTeBe1NqO4KM7vCcQV8D5riF23k6WsVhOjvyF+QKbaxkgZXQIh32gx8ztPHBMT0+Jb8ukZdHV3T0JGPaeMNuwvq19GOImU7EdMVzZ9p4kZ0euQb6cYuCOCcjxuWbPnMuueHVPRDvEnwJDbsRTKdzekIkpUSzKUyjqHt5FN4GnxzymW0GQNH2N9Hw4znL9T9NwL7lfqEjZNdsiV3lQfgebgbroe14Del/xq4Du6E52A/uMsLc043PxH7L7+6t7mPDl8Dzx3TTHG1Amt9bPMKbIOl3WjseS7RsT8sef7oj7ZZ/4QwTb1vW764fJJsp8l2Z/8DK4y3sCGcLqkAAAAASUVORK5CYII=",
+			"name":"添加",
+			"action":"added"
+		}
+
+
+	}
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+		return jsonStr;
+
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStr);
+		window.stub.jsMethod(str);
+		return jsonStr;
+
+	}
+	function fallback() {
+		var state= B.getUrlParamByName('state');
+		if(state==0){
+			window.location.href = "index.html?accountNum="+accountNum;
+		}else{
+			window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+		}
+	}
+
+	function added() {
+
+		window.location.href = "add.html?accountNum="+accountNum+'&state='+0;
+	}
+
+</script>
+</html>

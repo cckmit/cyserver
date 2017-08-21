@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.operation.dao.FavoriteMapper">
+    <resultMap type="com.cy.core.operation.entity.Favorite" id="favoriteResultMap">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="buss_id" property="bussId"/>
+        <result column="buss_type" property="bussType"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="remarks" property="remarks"/>
+    </resultMap>
+    <insert id="insert" parameterType="com.cy.core.operation.entity.Favorite">
+        INSERT INTO cy_favorite(
+            id,
+			user_id,
+			buss_id,
+			buss_type,
+			del_flag ,
+			create_by ,
+			create_date,
+			update_by ,
+			update_date,
+			remarks
+        )VALUES (
+            #{id},
+			#{userId} ,
+			#{bussId} ,
+			#{bussType} ,
+			#{delFlag} ,
+			#{createBy} ,
+			#{createDate},
+			#{updateBy} ,
+			#{updateDate},
+			#{remarks}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.operation.entity.Favorite">
+        UPDATE cy_favorite SET
+            user_id= #{userId},
+            bussId = #{bussId},
+            bussType = #{bussType},
+            del_flag  = #{delFlag},
+            update_date = #{updateDate},
+            update_by = #{updateBy},
+            remarks = #{remarks}
+        WHERE id = #{id}
+    </update>
+    <update id="delete" parameterType="com.cy.core.operation.entity.Favorite">
+        UPDATE cy_favorite SET del_flag = #{DEL_FLAG_DELETE} WHERE user_id = #{userId} AND buss_id = #{bussId}
+    </update>
+    <select id="selectById" parameterType="string" resultMap="favoriteResultMap">
+        SELECT f.*
+        FROM cy_favorite f
+        WHERE f.del_flag != #{DEL_FLAG_DELETE}
+        AND f.id =#{id}
+    </select>
+    <select id="selectList" parameterType="com.cy.core.operation.entity.Favorite" resultMap="favoriteResultMap">
+        SELECT f.*
+        FROM cy_favorite f
+        WHERE f.del_flag != #{DEL_FLAG_DELETE}
+        <if test="userId != null and userId != ''">
+            AND  f.user_id = #{userId}
+        </if>
+        <if test="bussId != null and bussId != ''">
+            AND f.buss_id = #{bussId}
+        </if>
+        <if test="bussType != null and bussType != ''">
+            AND f.buss_type = #{bussType}
+        </if>
+        <if test='isNotLimit !=null and isNotLimit !="1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+    <select id="count" parameterType="com.cy.core.operation.entity.Favorite" resultType="long">
+        SELECT COUNT (f.id)
+        FROM cy_favorite f
+        WHERE f.del_flag != #{DEL_FLAG_DELETE}
+        <if test="userId != null and userId != ''">
+            AND  f.user_id = #{userId}
+        </if>
+        <if test="bussId != null and bussId != ''">
+            AND f.buss_id = #{bussId}
+        </if>
+        <if test="bussType != null and bussType != ''">
+            AND f.buss_type = #{bussType}
+        </if>
+    </select>
+</mapper>

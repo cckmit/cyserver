@@ -1,0 +1,233 @@
+<style>
+    .main1_box{
+        width: 100%;
+        height:100%;
+    }
+    .main_centers{
+        width: 1000px;
+        height:760px;
+        position: absolute;
+        left:50%;
+        margin-left: -500px;
+        top:50%;
+        margin-top: -380px;
+        overflow: hidden;
+    }
+
+    .topbox{
+        width: 100%;
+        padding-top: 70px;
+        position: relative;
+    }
+    .tops_pic{
+        width: 600px;
+        margin: auto;
+        display: block;
+        position: relative;
+    }
+
+    .time_box{
+        text-align: center;
+        position: absolute;
+        top: 65px;
+        right: 190px;
+
+        transform:rotate(-5deg);
+        -ms-transform:rotate(-5deg); 	/* IE 9 */
+        -moz-transform:rotate(-5deg); 	/* Firefox */
+        -webkit-transform:rotate(-5deg); /* Safari 和 Chrome */
+        -o-transform:rotate(-5deg); 	/* Opera */
+    }
+    .time_box p{
+        font-size: 27px;
+        color: #ffd94d;
+    }
+    .tims_center{
+        margin-top: 10px;
+        width: 205px;
+        height: 35px;
+        line-height: 35px;
+        background: #ffed08;
+        font-size: 14px;
+        color: #fc4059;
+    }
+    .tims_center span{
+        display: inline-block;
+        width: 33px;
+        height: 33px;
+        margin-top: 1px;
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        font-family: "Impact";
+        background: #34186d;
+        color: #fff;
+        margin-right: 5px;
+    }
+    .xiaohua{
+        position: absolute;
+        top: 19px;
+        right: -14px;
+        z-index: -1;
+        width: 33px;
+    }
+    .duohua{
+        position: absolute;
+        top: 226px;
+        right: 328px;
+        width: 75px;
+    }
+
+
+    .footbox{
+        width: 870px;
+        margin: auto;
+        position: relative;
+        margin-top: 10px;
+        padding-top: 68px;
+        padding-left: 50px;
+        box-sizing: border-box;
+    }
+
+
+    .wenzi_div2{
+        padding: 10px 30px;
+        background: #fd8638;
+        border-radius: 15px;
+        position: relative;
+    }
+    .wenzi_div1{
+        padding: 10px 67px;
+        font-size: 18px;
+        color: #fff;
+        line-height: 25px;
+        background: #fe9b2e;
+        border-radius: 15px;
+        box-sizing: border-box;
+        padding-left: 216px;
+    }
+    .wenzi_div{
+        height: 75px;
+
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: box;
+        display: -webkit-box;
+        word-wrap: break-word;
+        white-space: normal !important;
+        -webkit-box-orient: vertical;
+    }
+    .lines{
+        position: absolute;
+        top:0;
+        left:0;
+        right:10px;
+        bottom:0;
+        border:5px dashed #fff;
+        border-radius: 15px;
+    }
+    
+    .left_ewm{
+        position: absolute;
+        top:0px;
+        left:0px;
+        background: url("img/kuang.png");
+        width: 282px;
+        height:257px;
+        z-index: 1;
+        background-size: cover;
+        text-align: center;
+    }
+    .left_ewm img{
+        width: 159px;
+        height:159px;
+        margin-top: 44px;
+        margin-left: 6px;
+    }
+
+    .jbf{
+        margin-top: 20px;
+        margin-left: 245px;
+        font-size: 24px;
+        font-weight: bold;
+        color: #fff;
+    }
+    .ft_tupian{
+        position: relative;
+    }
+
+    .duoliwu{
+        position: absolute;
+        top: -35px;
+        left: 26px;
+        width: 160px;
+    }
+    .liwu{
+        position: absolute;
+        top: -85px;
+        right: 8px;
+        width: 180px;
+    }
+    .bg_line1{
+        position: absolute;
+        top:0;
+        left: 0;
+    }
+    .bg_line2{
+        position: absolute;
+        bottom:0;
+        right: 0;
+    }
+</style>
+
+<div class="main1_box">
+    <img class="bg_line1" src="img/top_line1.png" alt="">
+    <img class="bg_line2" src="img/top_line2.png" alt="" style="width: 100%">
+    <div class="main_centers">
+
+
+        <div class="topbox">
+            <img class="duohua" src="img/duohua.png" alt="">
+            <img class="tops_pic" src="img/tops.png" alt="">
+            <div class="time_box">
+                <p>活动倒计时</p>
+                <div class="tims_center">
+
+                    <span>{{timeshi}}</span>时
+                    <span>{{timefen}}</span>分
+                    <span>{{timemiao}}</span>秒
+                </div>
+                <img class="xiaohua" src="img/hua.png" alt="">
+            </div>
+        </div>
+
+        <div class="footbox">
+
+            <div class="left_ewm">
+                <img src="img/erweima.png" alt="">
+            </div>
+
+            <div class="wenzi_div2">
+                <div class="wenzi_div1">
+                    <div class="wenzi_div">
+                        {{hdxiangqing.introduction}}
+                        <!--活动是由共同目的联合起来并完成一定社会职能的动作的总和。活动由目的、动机和动作构成，具有完整的结构系统。苏联心理学家从20年代起就对活动进行了一系列研究。其中Α.Н.列昂节夫的活动理论对苏联心理学的发展影响很大，成为现代苏联心理学的重要理论基石。构系统。苏联心理学家从20年代起就对活动进行了一系列研究。其中Α.Н.列昂节夫的活动理论对苏联心理学的发展影响很大，成为现代苏联心理学的重要理论基石。-->
+                    </div>
+                </div>
+                <div class="lines"></div>
+            </div>
+            <div class="jbf">举办方：{{hdxiangqing.organizer}}</div>
+
+        </div>
+
+        <div class="ft_tupian">
+            <img class="duoliwu" src="img/duoliwu.png" alt="">
+            <img class="liwu" src="img/liwu.png" alt="">
+        </div>
+
+    </div>
+</div>
+

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.role.dao.RoleMapper">
+	<resultMap type="com.cy.core.role.entity.Role" id="roleResultMap">
+		<id column="roleId" property="roleId" />
+		<result column="roleName" property="roleName" />
+		<result column="systemAdmin" property="systemAdmin" />
+		<result column="flag" property="flag" />
+		<result column="Can_Del_Flag" property="can_del_flag"/>
+		<collection property="list" ofType="com.cy.core.resource.entity.Resource">
+			<id column="id" property="id" />
+			<result column="name" property="name" />
+			<result column="url" property="url" />
+			<result column="pid" property="pid" />
+			<result column="iconCls" property="iconCls" />
+			<result column="type" property="type" />
+			<result column="seq" property="seq" />
+			<result column="flag" property="flag" />
+		</collection>
+	</resultMap>
+	<select id="selectRole" parameterType="map" resultMap="roleResultMap">
+		select * from cy_role
+		<where>
+			<if test="roleName!=null and roleName!=''">
+				roleName like concat('%',#{roleName},'%')
+			</if>
+		</where>
+		limit #{start},#{rows}
+	</select>
+	<select id="countRole" parameterType="map" resultType="long">
+		select count(roleId) from cy_role
+		<where>
+			<if test="roleName!=null and roleName!=''">
+				roleName like concat('%',#{roleName},'%')
+			</if>
+		</where>
+	</select>
+	<select id="getById" parameterType="long" resultMap="roleResultMap">
+		select *
+		from cy_role where roleId=#{roleId}
+	</select>
+	<insert id="add" parameterType="com.cy.core.role.entity.Role" useGeneratedKeys="true" keyProperty="roleId">
+		insert into
+		cy_role(roleName,systemAdmin,flag)
+		values(#{roleName},#{systemAdmin},#{flag})
+	</insert>
+	<update id="update" parameterType="com.cy.core.role.entity.Role">
+		update cy_role set
+		roleName=#{roleName} where roleId=#{roleId}
+	</update>
+	<delete id="delete" parameterType="long">
+		delete from cy_role where
+		roleId=#{id}
+	</delete>
+	<select id="selectResource" parameterType="long" resultMap="roleResultMap">
+		select ro.*,re.* from cy_role ro left join cy_role_resource oe on
+		ro.roleId=oe.roleId LEFT JOIN cy_resource re ON oe.id=re.id where
+		ro.roleId=#{roleId}
+	</select>
+	<!--获取所有菜单 创建人：Kent 创建时间：2016-07-26-->
+	<select id="selectMenu" parameterType="long" resultMap="roleResultMap">
+		select ro.*,re.* from cy_role ro left join cy_role_resource oe on
+		ro.roleId=oe.roleId LEFT JOIN cy_resource re ON oe.id=re.id where
+		re.type='菜单' AND
+		ro.roleId=#{roleId}
+	</select>
+	<!--获取所有功能 创建人：Kent 创建时间：2016-07-26-->
+	<select id="selectAction" parameterType="long" resultMap="roleResultMap">
+		select ro.*,re.* from cy_role ro left join cy_role_resource oe on
+		ro.roleId=oe.roleId LEFT JOIN cy_resource re ON oe.id=re.id where
+		re.type='功能' AND
+		ro.roleId=#{roleId}
+	</select>
+	<!--根据功能获取角色列表 创建人：Kent 创建时间：2016-07-26-->
+	<select id="selectRolesByAction" parameterType="string" resultMap="roleResultMap">
+		SELECT
+		  ro.*,re.*
+		FROM
+		  cy_role ro
+		  LEFT JOIN cy_role_resource rr
+			ON ro.roleId = rr.roleId
+		  LEFT JOIN cy_resource re
+			ON rr.id = re.id AND re.type = '功能'
+		WHERE
+		  re.name = #{actionName}
+	</select>
+	<select id="getMenu" parameterType="long" resultMap="roleResultMap">
+		select ro.*,re.* from cy_role ro left join cy_role_resource oe on
+		ro.roleId=oe.roleId LEFT JOIN cy_resource re ON oe.id=re.id where
+		ro.roleId=#{roleId}
+	</select>
+	<select id="selectAll" resultMap="roleResultMap">
+		select * from cy_role
+	</select>
+	<!-- 中间表 -->
+	<delete id="deleteRoleAndResource" parameterType="long">
+		delete from
+		cy_role_resource where roleId=#{id}
+	</delete>
+	<insert id="insertRoleAndResource" parameterType="map">
+		insert into
+		cy_role_resource(roleId,id) values(#{roleId},#{id});
+	</insert>
+	<!--批量插入角色资源关系 创建人：Kent 创建时间：2016-07-26-->
+	<insert id="insertRoleAndResource1" parameterType="list">
+		insert into cy_role_resource(roleId,id)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(#{item.roleId},#{item.id})
+		</foreach>
+	</insert>
+	<select id="selectSystemAdmin" resultMap="roleResultMap">
+		select * from cy_role
+		where systemAdmin=1;
+	</select>
+	<select id="selectAllNoAdmin" resultMap="roleResultMap">
+		select * from cy_role where systemAdmin=0 and flag=0
+	</select>
+	<select id="selectxAllNoAdmin" resultMap="roleResultMap">
+		select * from cy_role where systemAdmin=0 and flag=1
+	</select>
+	
+	<select id="getMenuByUserRole" parameterType="long" resultMap="roleResultMap">
+		select ro.*,re.* from cy_role ro left join cy_role_resource oe on
+		ro.roleId=oe.roleId LEFT JOIN cy_resource re ON oe.id=re.id where
+		 ro.roleId in
+		<foreach item="userRole" collection="list" separator="," open="(" close=")" index="">  
+	      #{userRole.roleId}  
+	    </foreach>  
+	</select>
+	
+	<select id="getUserRoleByUserId" parameterType="long" resultMap="roleResultMap">
+		SELECT
+			re.roleId,
+			re.roleName,
+			re.systemAdmin,
+			re.flag
+		FROM
+			cy_user_role ur
+		LEFT JOIN cy_role re ON re.roleId = ur.roleId
+		where ur.userId=#{userId}
+	</select>
+
+	<!--获得删除标识位Can_Del_Flag 创建人: jiangling 创建时间: 20160803 -->
+	<select id="getDelFlag" parameterType="long" resultType="int">
+		select Can_Del_Flag from cy_role where roleId = #{id}
+	</select>
+</mapper>

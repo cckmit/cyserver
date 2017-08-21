@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.major.dao.MajorMapper">
+
+    <resultMap type="com.cy.core.major.entity.Major" id="majorResultMap">
+        <id column="majorId" property="majorId"/>
+        <result column="majorName" property="majorName"/>
+		<collection property="deptList" ofType="com.cy.core.dept.entity.Dept">
+			<id column="dept_id" property="deptId" />
+			<result column="full_name" property="fullName" />
+		</collection>
+    </resultMap>
+    <resultMap type="com.cy.core.major.entity.MajorDept" id="majorAndDeptResultMap">
+    	<result column="majorId" property="majorId"/>
+    	<result column="deptId" property="deptId"/>
+    </resultMap>
+
+    <select id="query" parameterType="map" resultMap="majorResultMap">
+    	select m.majorId, m.majorName, d.dept_id, d.full_name from cy_major m
+    	inner join (    
+		        select DISTINCT m.majorId from cy_major m
+				inner join cy_major_dept md on m.majorId = md.majorId
+				inner join cy_dept_info d on md.deptId = d.dept_id
+		        <where>
+		        	<if test="deptList!=null and deptList.size()>0">
+						<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+							md.deptId like concat(#{dept.deptId},'%')
+						</foreach>
+					</if>
+		            <if test="majorName!=null and majorName!=''">
+		                and m.majorName like concat('%',#{majorName},'%')
+		            </if>
+		            <if test="school!=null and school!=''">
+		                and LEFT(md.deptId,6) = #{school}
+		            </if>  
+		            <if test="department!=null and department!=''">
+		                and md.deptId = #{department}
+		            </if>
+		        </where>
+		        order by convert( m.majorName using gbk ) collate gbk_chinese_ci
+		        limit #{start},#{rows}
+		        ) AS temp on m.majorId = temp.majorId
+		left join cy_major_dept md on m.majorId = md.majorId
+		left join cy_dept_info d on md.deptId = d.dept_id
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(distinct m.majorId) from cy_major m
+		inner join cy_major_dept md on m.majorId = md.majorId
+		inner join cy_dept_info d on md.deptId = d.dept_id
+        <where>
+        	<if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="(" separator="or" close=")" item="dept">
+					md.deptId like concat(#{dept.deptId},'%')
+				</foreach>
+			</if>
+            <if test="majorName!=null and majorName!=''">
+                and m.majorName like concat('%',#{majorName},'%')
+            </if>
+            <if test="school!=null and school!=''">
+                and LEFT(md.deptId,6) = #{school}
+            </if>  
+            <if test="department!=null and department!=''">
+                and md.deptId = #{department}
+            </if>
+        </where>
+    </select>
+
+    <select id="getById" parameterType="long" resultMap="majorResultMap">
+        select m.*, d.dept_id, d.full_name from cy_major m
+		left join cy_major_dept md on m.majorId = md.majorId
+		left join cy_dept_info d on md.deptId = d.dept_id
+		where m.majorId=#{majorId}
+    </select>
+    
+    <select id="getByName" parameterType="String" resultMap="majorResultMap">
+        select * from cy_major where majorName=#{majorName}
+    </select>
+    
+    <select id="countByName" parameterType="String" resultType="long">
+        select count(majorId) from cy_major where majorName=#{majorName}
+    </select>
+    
+    <select id="countByIdName" parameterType="com.cy.core.major.entity.Major" resultType="long">
+        select count(majorId) from cy_major where majorName=#{majorName} and majorId!=#{majorId}
+    </select>
+
+    <insert id="addMajor" parameterType="com.cy.core.major.entity.Major" useGeneratedKeys="true" keyProperty="majorId">
+        insert into cy_major (majorName) values (#{majorName})
+    </insert>
+    
+    <insert id="addMajorDept" parameterType="map">
+        insert into cy_major_dept(majorId, deptId) values (#{majorId}, #{deptId})
+    </insert>
+
+    <!--Lixun 2017-5-12 优化导入效率-->
+    <insert id="multiaddMajor" parameterType="list">
+        insert into cy_major (majorName) values
+        <foreach collection="list" item="majorName" separator=",">
+        (#{majorName})
+        </foreach>
+    </insert>
+
+    <!--Lixun 2017-5-12 优化导入效率-->
+    <insert id="multiaddMajorDept" parameterType="list">
+        insert into cy_major_dept(majorId, deptId) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.majorId},#{item.deptId})
+        </foreach>
+    </insert>
+
+    <update id="updateMajor" parameterType="com.cy.core.major.entity.Major">
+        update cy_major set majorName=#{majorName} where majorId=#{majorId}
+    </update>
+
+    <delete id="deleteMajor" parameterType="list">
+        delete from cy_major where majorId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+    
+    <delete id="deleteMajorDept" parameterType="list">
+        delete from cy_major_dept where majorId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+    
+    <delete id="deleteMajorByDeptId" parameterType="list">
+        delete from cy_major_dept where deptId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+    
+    <select id="getMajor" parameterType="string" resultMap="majorResultMap">
+    	select * from cy_major where majorId in (select majorId from cy_major_dept where deptId=#{deptId})
+    </select>
+    
+    <select id="selectAll" resultMap="majorResultMap">
+    	select m.*,d.* from cy_major m left join cy_major_dept md on m.majorId = md.majorId left join cy_dept_info d on md.deptId = d.dept_id
+    </select>
+    <select id="getMajorAndDept" parameterType="map" resultMap="majorAndDeptResultMap">
+    	select * from cy_major_dept where deptId=#{deptId} and majorId=#{majorId}
+    </select>
+    <select id="selectMajorAndDeptAll" resultMap="majorAndDeptResultMap">
+    	select * from cy_major_dept
+    </select>
+</mapper>

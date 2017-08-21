@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>创建返校计划</title>
+</head>
+
+
+<link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" href="css/common.css">
+<link rel="stylesheet" href="css/build-plan.css">
+<body>
+<div id="APP">
+<div class="meng fixed dis-n">
+</div>
+<div class="delsure-3 fixed dis-n">
+    <p class="ds-p1-3 clearfloat" v-for="(val,index) in classList" @click="getClassId(val,index)" ><i class="f-l" :class="{'active':flag==index}"></i>{{val.strClass}}</p >
+    <div class="des-b-3 clearfloat">
+        <span class=" divbr-3 f-l"></span>
+        <span class=" divbl-3 f-r">取消</span>
+    </div>
+</div>
+
+<div class="delsure fixed dis-n">
+    <ul class="ds-p1 clearfloat">
+        <li class="f-l l1"></li>
+        <li class="f-l l2">不限</li>
+    </ul>
+    <div class="inp">
+        <input type="number" v-model="memberCount" placeholder="人数  (人)"/>
+    </div>
+    <div class="des-b clearfloat">
+        <span class=" divbr f-l">取消</span>
+        <span class=" divbl f-r">确定</span>
+    </div>
+</div>
+
+<div class="delsure-1 fixed dis-n">
+    <ul class="ds-p1-1 clearfloat">
+        <li class="f-l l1 " :class="{'active':flag2==1}" @click="flag2=1"></li>
+        <li class="f-l l2">免费</li>
+        <li class="f-r l2">元</li>
+        <input class="f-r" type="number" v-model="cost" style="border-bottom:0.1rem solid black;width: 20%;height: 1.4rem;line-height: 1.4rem;font-size: 1.1rem"/>
+        <li class="f-r l3" :class="{'active':flag2==2}" @click="flag2=2"></li>
+    </ul>
+    <div class="inp-1" v-show="flag2==2">
+        <textarea  id="cost-introduce" v-model="costIntroduce" placeholder="请输入收费说明"></textarea>
+    </div>
+    <div class="des-b-1 clearfloat">
+        <span class=" divbr-1 f-l">取消</span>
+
+        <span class=" divbl-1 f-r">确定</span>
+    </div>
+</div>
+
+
+
+<main>
+    <div class="live-tit">
+        <span>主题:</span>
+        <input id="topic"  v-model="topic" type="text" name="" maxlength="20" placeholder="请输入活动主题20字以内" />
+    </div>
+    <div class="live-tit">
+        <span>地点:</span>
+        <input id="place" v-model="place" type="text" name="" placeholder="请填写活动地点" />
+    </div>
+    <div class="live-tit"  style="border-bottom: 0.6rem solid #f8f8f8">
+        <span>发起人:</span>
+        <input id="userName" v-model="userName" type="text" name=""   readonly="readonly" style="font-size: 1.25rem;color: #333333"/>
+    </div>
+    <div class="live-tit">
+        <span>报名开始:</span>
+        <input id="joinStartTime" v-model="joinStartTime" class="H-textbox" type="datetime-local" placeholder="请选择报名开始时间" >
+        <img src="images/go.png" alt="" >
+    </div>
+    <div class="live-tit" style="border-bottom: 0.6rem solid #f8f8f8">
+        <span>报名结束:</span>
+        <input id="joinEndTime" v-model="joinEndTime"  class="H-textbox" type="datetime-local" placeholder="请选择报名结束时间" >
+        <img src="images/go.png" alt=""  >
+    </div>
+    <div class="live-tit">
+        <span>开始时间:</span>
+        <input id="backSchoolStartTime" v-model="backSchoolStartTime" class="H-textbox" type="datetime-local" placeholder="请选择活动开始时间">
+        <img src="images/go.png" alt=""  >
+    </div>
+    <div class="live-tit" style="border-bottom: 0.6rem solid #f8f8f8">
+        <span>结束时间:</span>
+        <input id="backSchoolEndTime" v-model="backSchoolEndTime" class="H-textbox" type="datetime-local" placeholder="请选择活动结束时间" >
+        <img src="images/go.png" alt=""  >
+    </div>
+    <div class="live-tit department"  @click="getClassInFo">
+        <span>报名范围:</span>
+        <input type="text" v-model="classInFo" id="classInfo" placeholder="请选择报名范围 "   @click="getClassInFo"  readonly="readonly"/>
+        <img src="images/go.png" alt=""   >
+    </div>
+    <p class="live-des1 clearfloat">计划详情:<span class="wordwrap f-r"><var class="word">300</var>/300</span></p>
+    <div class="wordCount" id="wordCount">
+        <textarea id="describe" v-model="describe" placeholder="请输入计划详情..."></textarea>
+        <!-- <span class="wordwrap"><var class="word">300</var>/300</span>-->
+    </div>
+    <div class="uploadImg">
+        <input id="upload" name="upload" type="file"  style="display: none" onchange="getPicUrl(this)">
+        <div class="upload-box" onclick="selectPic()">
+            <img class="photo" src="images/upLoad.png" alt="" width="58" height="40">
+            <div>上传海报图片</div>
+        </div>
+    </div>
+    <div class="live-tit1 clearfloat">
+        <span class="s1 f-l">费用</span>
+        <span class="s2 cost f-l" @click="getCost">{{filterCost}}</span>
+        <span class="s4 f-l"  @click="getCost"></span>
+    </div>
+
+    <div class="live-tit1 clearfloat">
+        <span class="s1 f-l">人数上限</span>
+        <span id="plannedPeopleNum" class="s2 memberCount f-l" @click="getMemberCount">{{filterMemberCount}}</span>
+        <span class="s4 f-l" @click="getMemberCount"></span>
+    </div>
+
+    <div class="live-tit1 clearfloat">
+        <span class="s1 f-l">需要签到</span>
+        <span class="s3 f-r" ><i class="btn1" @click="changeBtn"></i></span>
+    </div>
+    <div class="introduce">
+        说明: 开启此项后，活动发布成功后即可生成一个专属校检码，该校检码仅活动发起人可见。报名成员在自己的活动详情界面输入校检码即可签到报名。
+    </div>
+</main>
+<footer>
+    <div class="sub" @click="createPlan">提交</div>
+    <div class="sub1 dis-n">已提交</div>
+</footer>
+</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/lrz.mobile.min.js"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../js/H.js" type="text/javascript" ></script>
+<script src="js/vue.js"></script>
+<script>
+
+    	var accountNum= B.getUrlParamByName('accountNum');
+    	 
+        var vm = new Vue({
+            el:'#APP',
+            data:{
+                filterCost:'免费',
+                filterMemberCount:'不限',
+                flag1:true,
+                flag:-1,
+                flag2:1,
+                curProductIndex:0,
+                accountNum:accountNum,
+                classList:[],                   //班级列表
+                userName:'',                  //用户名
+                topic:'',                    //组织主题
+                place:'',                   //活动地点
+                joinStartTime:'',          //报名开始时间
+                joinEndTime:'',            //报名结束时间
+                backSchoolStartTime:'',   //返校开始时间
+                backSchoolEndTime:'',     //返校结束时间
+                classInFo:'',              //获取班级名称
+                classId:'',              //获取班级ID
+                describe:'',               //活动描述
+                cost:'',               //费用
+                costIntroduce:'',         //费用介绍
+                memberCount:'不限'        //人数上限
+            },
+            methods:{
+                createPlan:function(){
+                    var joinStartTime=this.joinStartTime.replace('T',' ');//报名开始时间
+                    var joinEndTime=this.joinEndTime.replace('T',' ');//报名结束时间
+                    var backSchoolStartTime = this.backSchoolStartTime.replace('T',' '); //返校时间
+                    var backSchoolEndTime = this.backSchoolEndTime.replace('T',' '); //返校时间
+                    var upload=$('#upload').val();//上传图片
+                    var memberCount1= this.memberCount=='不限'?0:this.memberCount;
+                    var isFree=this.cost==''?1:0;
+                    var needSignIn=$('.btn1').hasClass('active')==true?1:0;
+                  /*  console.log(userName)
+                     console.log(topic)
+                     console.log(place)
+                     console.log(plannedPeopleNum )
+                     console.log(describe)
+                     console.log(classInfo)
+                     console.log(costIntroduce)
+                     console.log(needSignIn)
+                     console.log(memberCount)
+                     console.log(isFree)*/
+                    var date = new Date();
+                    var d=date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes();//当前时间
+                    function CompareDate(d1,d2) {
+                        return ((new Date(d1.replace(/-/g,"\/"))) > (new Date(d2.replace(/-/g,"\/"))));
+                    }
+                    // 校验表单数据
+                    if ($.trim(this.topic) == '') {
+                        H.alert(function () {
+                            $("#topic").focus();
+                        }, "请输入组织主题！");
+                        return false;
+                    }else if($.trim(this.place)==''){
+                        H.alert(function(){
+                            $('#place').focus()
+                        },'请输入活动地点')
+                    }
+                    else if ($.trim(joinStartTime) == '' ) {
+                        H.alert("请选择报名开始时间！");
+                        return false;
+                    }else if ($.trim(joinEndTime) == '' ) {
+                        H.alert("请选择报名截止时间！");
+                        return false; }
+                    else if ($.trim(backSchoolStartTime) == '' ) {
+                        H.alert("请选择返校活动开始时间！");
+                        return false;
+                    }
+                    else if ($.trim(backSchoolEndTime) == '') {
+                        H.alert("请选择返活动校结束时间！");
+                        return false;
+                    }else if(CompareDate(d,joinStartTime)){
+                        H.alert('当前时间不能大于报名开始时间！');
+                        return false;
+                    }else if(CompareDate(joinStartTime,joinEndTime)){
+                        H.alert('报名开始时间不能大于报名截至时间！');
+                        return false;
+                    }else if(CompareDate(joinEndTime,backSchoolStartTime)){
+                        H.alert('报名结束时间不能大于返校开始时间！');
+                        return false;
+                    }else if(CompareDate(backSchoolStartTime,backSchoolEndTime)){
+                        H.alert('返校开始时间不能大于返校结束时间！');
+                        return false;
+                    } else if ($.trim(this.classInFo) == '') {
+                        H.alert(function () {
+                        }, "请选择报名范围！");
+                    } else if ($.trim(this.describe) == '') {
+                        H.alert(function () {
+                        }, "请输入计划详情描述！");
+                    } else if($.trim(upload) == ''){
+                        H.alert(function () {
+                            $("#upload").focus();
+                        }, "请上传海报图片！");
+                        return false;
+                    } else if(!/^[1-9][0-9\.]{0,12}$/.test(this.cost)&&this.cost!=''){
+                        H.alert("请输入正确的费用格式");
+                        return false;
+                    } else if ($.trim(this.memberCount) <2&& $.trim(this.memberCount)!='') {
+                        /*alert($.trim(this.memberCount))*/
+                        H.alert(function () {
+                        }, "人数不得少余2人！");
+                    } else if(!/^[1-9]\d{0,12}$/.test(this.memberCount)&&this.memberCount!='不限'){
+                        H.alert('请输入正确的人数格式')
+                        return false;
+                    }else{
+                        $('.sub').hide();
+                        $('.sub1').show();
+
+                        $.ajax({
+                        	traditional: true,
+                            type: 'post',
+                            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                            data:{
+                                uploadFileBase64:upload1,
+                                uploadFileName:uploadFileName,
+                                jsonStr:'{"command": "74","content": {userId: "'+this.accountNum+'","topic": "'+this.topic+'",place: "'+this.place+'","name": "'+this.userName+'",signupStartTime: "'+joinStartTime+'",signupEndTime: "'+joinEndTime+'","time": "'+backSchoolStartTime+'",endTime: "'+backSchoolEndTime+'","classinfo": "'+this.classId+'",other: "'+this.describe+'",isFree: "'+isFree+'",cost: "'+this.cost+'",costComment: "'+this.costIntroduce+'","number": "'+memberCount1+'","needSignIn": "'+needSignIn+'"}}'
+
+                            },
+                            dataType: 'json',
+                            success: function(data){
+                                console.log(data);
+                                localStorage.setItem('id',data.obj.id)
+								if(data.success==true){
+
+                                    createChat(accountNum,$('#topic').val())
+                                }
+
+                            },
+                            error: function(xhr, type){
+                                alert("error")
+
+                            }
+                        });
+                    }
+                },//创建计划
+                showClassInFo:function(){
+                    $.ajax({
+                        type: 'POST',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "101",  "content": { "accountNum": "'+this.accountNum+'"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data);
+                            vm.classList=data.obj;
+                        },
+                        error: function(xhr, type){
+                            // 加载出错
+                        }
+                    });
+                },//渲染班级
+                getClassInFo:function(){
+                    $('.meng').fadeIn(200);
+                    $('.delsure-3').fadeIn(500);
+                    $("body").on("touchmove", function (e) {
+                        e.preventDefault(); //阻止默认事件
+                        e.stopPropagation();
+                    }, false);
+                    $('.divbl-3').click(function(){
+                        $("body").off("touchmove");
+                        $('.meng').fadeOut(200);
+                        $('.delsure-3').fadeOut(500);
+                    })
+                },
+                getClassId:function(val,index){
+                    this.flag=index;
+                    this.classId= val.classId;
+                    this.classInFo=val.strClass;
+                    $("body").off("touchmove");
+                    $('.meng').fadeOut(200);
+                    $('.delsure-3').fadeOut(500);
+                },//获取班级
+                getUserName:function(){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{ "command": "27", "content": { "accountNum": "'+this.accountNum+'" }}'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data);
+                            vm.userName=data.obj.name
+                        },
+                        error: function(xhr, type){
+                            alert("error")
+                        }
+                    });
+                },//渲染用户名
+                changeBtn:function(){
+                    var wd=$('.s3').width()-$('.btn1').width();
+                    if($('.btn1').hasClass('active')){
+                        $('.btn1').animate({'margin-left':'0%'},function () {
+                            $('.btn1').parent().css('background-color','#888888 ');
+                            $('.btn1').removeClass('active')
+                        });
+                    }else {
+                        $('.btn1').animate({'margin-left':wd+'px'},function () {
+                            $('.btn1').parent().css('background-color','#2091EF ');
+                        });
+                        $('.btn1').addClass('active');
+                    }
+                },//滑动按钮
+                getCost:function(){
+                   var cost1=vm.cost;
+                    var costIntroduce1=vm.costIntroduce;
+                    $('.meng').fadeIn(200);
+                    $('.delsure-1').fadeIn(500);
+                    $("body").on("touchmove", function (e) {
+                        e.preventDefault(); //阻止默认事件
+                        e.stopPropagation();
+                    }, false);
+                    $('.divbr-1').off('click').on('click',(function () {
+                        $("body").off("touchmove");
+                        $('.meng').fadeOut(200);
+                        $('.delsure-1').fadeOut(500);
+                        vm.cost=cost1;
+                        vm.costIntroduce=costIntroduce1;
+                       /* alert(vm.cost)
+                        alert(vm.filterCost)
+                        alert(vm.costIntroduce)*/
+                    }));
+                    $('.divbl-1').off('click').on('click',(function () {
+                        $("body").off("touchmove");
+                        $('.meng').fadeOut(200);
+                        $('.delsure-1').fadeOut(500);
+                        $("body").off("touchmove");
+                        if(vm.flag2==1){
+                            vm.cost='';
+                             vm.filterCost='免费';
+                            vm.costIntroduce=''
+                        }else{
+                            vm.filterCost=(vm.cost==0||vm.cost==''?'免费':vm.cost+'元');
+                            vm.cost=(vm.cost==0||vm.cost==''?'':vm.cost);
+                            vm.costIntroduce=(vm.cost==0||vm.cost==''?'':vm.costIntroduce)
+                        }
+                     /*   alert(vm.cost)
+                        alert(vm.filterCost)
+                        alert(vm.costIntroduce)*/
+                    }))
+                },//获取费用及费用说明
+                getMemberCount:function(){
+                  var memberCount1=vm.memberCount;
+                    var flag=false;
+                    $("body").on("touchmove", function (e) {
+                        e.preventDefault(); //阻止默认事件
+                        e.stopPropagation();
+                    }, false);
+                    $('.inp').show();
+                    $('.ds-p1 .l1').css('background-color','white ');
+                    $('.inp input').val('');
+                    $('.ds-p1 .l1,.ds-p1 .l2').click(function () {
+                        flag=true;
+                        $('.ds-p1 .l1').css('background-color','#0F88EB ');
+                        $('.inp').hide();
+
+                    });
+                    $('.meng').fadeIn(200);
+                    $('.delsure').fadeIn(500);
+
+                    $('.divbr').off('click').on('click',(function () {
+                        $("body").off("touchmove");
+                        $('.meng').fadeOut(200);
+                        $('.delsure').fadeOut(500);
+                        vm.memberCount= memberCount1;
+                      /*  alert( vm.memberCount)
+                        alert( vm.filterMemberCount)*/
+                    }));
+
+                    $('.divbl').off('click').on('click',(function () {
+                        $("body").off("touchmove");
+                        $('.meng').fadeOut(200);
+                        $('.delsure').fadeOut(500)
+                        if(flag){
+                            vm.memberCount='不限'
+                            vm.filterMemberCount='不限';
+                        }else{
+                            vm.filterMemberCount=(vm.memberCount==0||vm.memberCount=='不限'?'不限':vm.memberCount+'人');
+                        }
+                    }))
+                },//获取参入人员人数
+                statInputNum:function(textArea, numItem){
+                    var max = numItem.text(),
+                            curLength;
+                    textArea[0].setAttribute("maxlength", max);
+                    curLength = textArea.val().length;
+                    numItem.text(max - curLength);
+                    textArea.on('input propertychange', function() {
+                        numItem.text(max - $(this).val().length);
+                    });
+                },
+                runStatInputNum:function(){
+                    //先选出 textarea 和 统计字数 dom 节点
+                    var wordCount = $("#wordCount"),
+                            textArea = wordCount.find("textarea"),
+                            word = wordCount.siblings('p').find (".word");
+                    /* word = wordCount.find(".word");*/
+                    //调用
+                    this.statInputNum(textArea, word);
+                },//文本域字数统计
+
+                focusHide:function(){
+                    $('.H-textbox') .focus(function () {
+                        this.removeAttribute('placeholder');
+                    } )
+                }//获取焦点 placehoder消失
+
+
+            },
+            mounted:function(){
+                this.$nextTick(function(){
+                    this.getUserName();
+                    this.runStatInputNum();
+                    this.showClassInFo();
+                    this.focusHide()
+                })
+            }
+        });
+
+
+
+    var upload1=[];
+    var uploadFileName=[];
+    function selectPic(){
+        $("#upload").trigger("click");
+    }
+    function getPicUrl(obj) {
+        // 验证上传图片
+        var fileExt = document.getElementById('upload').value;
+        var fileName = "";
+
+        if (fileExt != null && fileExt != '') {
+
+            fileName = fileExt.substring(0, fileExt.lastIndexOf("."));
+            fileName = fileName.substr(fileName.lastIndexOf("\\") + 1, fileName.length);
+
+            fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+            if (fileExt == null || fileExt == '') {
+                $('.live-int').html('上传失败！');
+                $('.live-int').fadeIn(200);
+                $('.live-int').fadeOut(2000);
+                return;
+            }
+
+            fileExt = fileExt.toLowerCase();
+            if (fileExt == '.gif' || fileExt == '.jpg' || fileExt == '.png' || fileExt == '.bmp' || fileExt == '.jpeg') {
+            } else {
+                $('.live-int').html('上传失败！');
+                $('.live-int').fadeIn(200);
+                $('.live-int').fadeOut(2000);
+                return;
+            }
+        }
+        // 图片压缩
+
+        lrz(obj.files[0], {
+            width: 400,
+            quality: 0.8,
+            done: function(results) {
+
+                // 预览选择的图片
+                $('.upload-box').empty();
+                $('.upload-box').css("background-image","url('"+results.base64+"')");
+
+
+
+                /* vm.upload.push(results.base64.substring(results.base64.lastIndexOf(",") + 1));
+                 vm.uploadFileName.push(fileName + fileExt);*/
+
+                upload1[0]=results.base64.substring(results.base64.lastIndexOf(",") + 1);
+                uploadFileName[0]=fileName + fileExt;
+                console.log(results.base64.substring(results.base64.lastIndexOf(",") + 1));
+                console.log(fileName + fileExt);
+            }
+        });
+    }
+
+        /* 创建群聊*/
+        function createChat(accountNum,groupName){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{ "command": "46", "content": { "userId": "'+accountNum+'","groupName": "'+groupName+'","members": "'+accountNum+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    if(data.success==true){
+                        localStorage.setItem('groupId',data.obj.groupId);
+                        var groupId = localStorage.getItem('groupId');
+                        var id = localStorage.getItem('id');
+                        sendId(id,groupId)
+
+                    }
+
+                    /* window.location.href='personal-success.html'*/
+
+
+             },
+                error: function(xhr, type){
+                    consoe.log("error")
+                }
+            });
+
+        }
+        /*传参接口*/
+        function sendId(id,groupId){
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{ "command": "79", "content": { "id": "'+id+'","groupId": "'+groupId+'"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    if(data.success==true){
+                         window.location.href='personal-success.html'
+                    }
+                },
+                error: function(xhr, type){
+                    consoe.log("error")
+                }
+            });
+
+        }
+
+
+
+
+
+    var jsonStr = {
+        "title":"创建返校计划",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback()"
+        }
+
+
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+
+    }
+    function fallback() {
+    	window.history.back()
+    }
+
+</script>
+</html>

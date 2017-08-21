@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>完善信息</title>
+    <!--css-->
+    <link href="../../wechat/static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../../wechat/static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="../../wechat/static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../../wechat/static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+
+    <style type="text/css">
+        html{background-color: #f4f5f9;}
+        ::-webkit-input-placeholder {color:#999;}
+        :-moz-placeholder {color:#999;}
+        ::-moz-placeholder {color:#999;}
+        :-ms-input-placeholder {color:#999;}
+
+        #floatBox{
+            float:left;
+            position:relative;
+            width:100%;
+        }
+
+        .onFloat{
+            position:fixed;
+            _position:absolute;
+            top: -50px;
+            z-index: 999;
+            background: #ddd;
+            color: #555;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+            width: 98%;
+            margin-left: 1%;
+        }
+        .floatLink{
+            float: left;
+            margin-left: 10px
+        }
+        .floatButton{
+            float: right;
+            margin-right: 10px
+        }
+        .realNameShowArea{
+            border-bottom:1px solid #ebebeb
+        }
+        .realNameInputArea{
+            border-bottom:1px solid #ebebeb
+        }
+
+        .onError{
+            border: 2px solid #e16544;
+        }
+
+        .bottomButton{
+            padding: 3%;
+            width: 94%;
+            bottom: 0;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div id="floatBox">
+        <div id="floatArea" class="onFloat">
+            <span class="floatLink jump_link">已有账号？</span><span class="jump_link" style="color:#1a7ee5">前去绑定</span>
+            <span class="floatButton">关闭</span>
+        </div>
+    </div>
+    <div tapmode=""
+         class="H-flexbox-horizontal  H-theme-background-color-white H-margin-vertical-top-10 H-padding-vertical-both-10
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb; position:relative;overflow: hidden;height:74px;">
+
+        <div class="H-flex-item H-padding-horizontal-both-10 H-theme-font-color15 H-font-size-16">头像</div>
+
+        <!--在本地文件中选择图片-->
+        <div id="picShowArea" class="H-flex-item" style="position:absolute;">
+            <!--uploadImg-->
+            <div id="uploadImg" class="H-padding-horizontal-right-10 H-padding-vertical-both-10 H-display-block" style="position:absolute;right:0;top:-10px">
+                <img id="userAvatar" class=" H-vertical-align-middle H-width-50 H-border-radius-circle" style="width:54px; height:54px" tapmode=""
+                     onerror="javascript:this.src='../mobile/wechat/static/img/default_profile.png';">
+            </div>
+        </div>
+
+        <!--获得存储上传图片的地址-->
+        <input type="file" id="picNative" name="picNative"  onchange="getPicUrl(this)" style="display:none;" />
+    </div>
+
+    <div class="H-theme-background-color-white H-border-vertical-both-after">
+        <div class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">微信昵称</div>
+            <div id="weChatNickName" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14 H-padding-vertical-both-12 H-text-align-right"
+                 style="color:#818181"></div>
+        </div>
+        <div id="realNameShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active realNameShowArea">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">真实姓名</div>
+            <div id="realName" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14 H-padding-vertical-both-12 H-text-align-right"
+                 style="color:#818181"></div>
+        </div>
+        <div id="realNameInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active realNameInputArea" style="display:none">
+            <input id="realNameEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="真实姓名">
+        </div>
+
+        <div id="sexShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">性别</div>
+            <div id="sex" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <div id="birthShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">生日</div>
+            <div id="birthday" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+
+        <div id="addressShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">地址</div>
+            <div id="address" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+
+        <div id="addressInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb;display:none">
+            <input id="addressEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入地址">
+        </div>
+    </div>
+
+    <div class="H-margin-vertical-top-10 H-theme-background-color-white H-border-vertical-both-after">
+        <div  id="workUtilShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">工作单位</div>
+            <div id="workUtil" class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <div id="workUtilInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb;display:none">
+            <input id="workUtilEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入工作单位">
+        </div>
+        <div id="jobShowArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb">
+            <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-16 H-padding-vertical-both-12">职业</div>
+            <div id="job"  class="item H-flex-item H-padding-horizontal-right-10 H-display-block H-font-size-14
+            H-padding-vertical-both-12 H-text-align-right" style="color:#818181"></div>
+        </div>
+        <div id="jobInputArea" class="H-text-list H-flexbox-horizontal  H-theme-background-color-white
+         H-vertical-middle H-touch-active" style="border-bottom:1px solid #ebebeb;display:none">
+            <input id="jobEdit" type="text" class="H-textbox H-vertical-align-middle H-vertical-middle H-font-size-16
+            H-flex-item H-box-sizing-border-box H-border-none H-outline-none H-padding-12" placeholder="请输入职业">
+        </div>
+
+    </div>
+
+    <div class="bottomButton">
+        <button id="nextStep" class="H-button H-width-100-percent  H-font-size-15 H-outline-none H-padding-vertical-both-10
+        H-padding-horizontal-both-20 H-theme-background-color1 H-theme-font-color-white H-theme-border-color1
+        H-theme-border-color1-click H-theme-background-color1-click H-theme-font-color1-click H-border-radius-3">下一步</button>
+    </div>
+
+</div>
+
+
+<!--引入脚本文件-->
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../wechat/static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../../wechat/static/js/lrz.mobile.min.js"></script>
+<script src="../../wechat/static/js/dropload.min.js" type="text/javascript" ></script>
+<script src="../../wechat/static/layer/layer.js" type="text/javascript"></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<!--js-->
+<script type="text/javascript">
+    // 接收参数
+    var openId = localStorage.getItem("openId");
+    var appId = localStorage.getItem("appId");
+    if(openId && openId != "null") {
+        // 微信端
+
+        var shareData = {
+            title: '個人信息',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }else{
+        openId = '';
+    }
+    if(!appId || appId == "null") {
+        appId = '';
+    }
+
+    H.ready(function () {
+        //选择性别
+        $('#sexShowArea').click(function () {
+            H.actionSheet(
+                function (ret, err) {
+                    if(ret.buttonIndex == 1)
+                        $("#sex").text("男");
+                    else if(ret.buttonIndex == 2){
+                        $("#sex").text("女");
+                    }
+                }, '请选择性别', ['男', '女']);
+        });
+
+        //选择生日
+        $('#birthShowArea').click(function () {
+            H.dateTip(this,function (date) {
+                $('#birthday').text(date.year + '-' + date.month + '-' + date.day);
+            });
+        });
+
+        $('#nextStep').click(function () {
+
+            var realName = $.trim($('#realNameEdit').val());
+            if(realName == ''){
+                layer.open({content: "姓名不能为空！", skin: "msg", time: 2});
+                $('#realNameShowArea').css('display', 'none');
+                $('#realNameInputArea').css('display', 'block');
+                $('#realNameEdit').focus();
+                $('#realNameInputArea').addClass('onError');
+                return false;
+            }
+            if(!(/^[\u4e00-\u9fa5 ]{2,20}$/.test(realName))){
+                layer.open({content: "名字认真填，别瞎写！", skin: "msg", time: 2});
+                $('#realNameShowArea').css('display', 'none');
+                $('#realNameInputArea').css('display', 'block');
+                $('#realNameEdit').focus();
+                $('#realNameInputArea').addClass('onError');
+                return false;
+            }
+
+            var formDate = {
+                picture : $("#userAvatar").attr("src"),
+                name : realName,
+                sex: ($("#sex").text() == '男'?0:1),
+                birthday: $("#birthday").text(),
+                address: $("#address").text(),
+                workUtil: $("#workUtil").text(),
+                position: $("#position").text()
+
+            };
+            H.openWin("还差一步", "bind_cell_phone.html?formData=" + JSON.stringify(formDate));
+        });
+    });
+
+    $(function(){
+
+        pushHistory();
+        window.addEventListener("popstate", function(e) {
+            history.back();
+        }, false);
+        function pushHistory() {
+            var state = {
+                title: "title",
+                url: "#"
+            };
+            window.history.pushState(state, "title", "#");
+        }
+
+        var time=0.5;
+        var interval = setInterval(function () {
+            if(time <= 0){
+                clearInterval(interval);
+            }
+
+            $('#floatArea').css('top', (-50 + ((0.5-time)/0.5*52))+'px');
+            time -= 0.01;
+        },10);
+
+        // 顶部提示绑定的浮动链接
+        var oDiv=document.getElementById("floatArea");
+        var H=0,iE6;
+        var Y=oDiv;
+        while(Y){H+=Y.offsetTop;Y=Y.offsetParent};
+        iE6=window.ActiveXObject&&!window.XMLHttpRequest;
+        if(!iE6){
+            window.onscroll=function()
+            {
+                var s=document.body.scrollTop||document.documentElement.scrollTop;
+                if(s>H){
+                    oDiv.className="onFloat";
+                    if(iE6){
+                        oDiv.style.top=(s-H)+"px";
+                    }
+                }
+            };
+        }
+
+
+        $('.jump_link').click(function () {
+            location.href =  "login.html?ts=" + B.getRandomInt(4);
+        });
+
+        $('.floatButton').click(function () {
+            time = 0.5;
+            var interval = setInterval(function () {
+                if(time <= 0){
+                    clearInterval(interval);
+                }
+
+                $('#floatArea').css('top', (2 - ((0.5-time)/0.5*52))+'px');
+                time -= 0.01;
+            },10);
+        });
+
+        B.ready(function () {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "72","content": {"accountNum": "","openId": "'+openId+'","accountAppId": "'+appId+'","page":"1","rows":"1" }}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    var nickName = data.obj.userName;
+                    var sex = (data.obj.sex ? data.obj.sex : 0);
+                    var pic = B.getImageAbsoluteUrl(data.obj.userPic);
+                    if(nickName && nickName != '' && nickName != 'null'){
+                        $('#weChatNickName').text(nickName);
+                    }
+                    if(sex && sex != '' && sex != 'null'){
+                        if(sex == '0')
+                            $('#sex').text('男');
+                        else
+                            $('#sex').text('女');
+                    }else{
+                        $('#sex').text('男');
+                    }
+                    if(pic && pic != '' && pic != 'null'){
+                        $('#userAvatar').attr('src', pic);
+                    }
+
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+
+
+
+        // 选择头像
+        $('#picShowArea').click(function () {
+            $("#picNative").trigger("click");
+        });
+
+        //姓名输入
+        $('#realNameShowArea').click(function () {
+            $('#realNameShowArea').css('display', 'none');
+            $('#realNameInputArea').css('display', 'block');
+            $('#realNameEdit').focus();
+        });
+        $('#realNameEdit').bind('input propertychange', function () {
+            var realName = $.trim($('#realNameEdit').val());
+            if(realName == ''){
+                $('#realNameInputArea').addClass('onError');
+                $('#realNameEdit').focus();
+                return false;
+            }
+            if(!(/^[\u4e00-\u9fa5 ]{2,20}$/.test(realName))){
+                $('#realNameInputArea').addClass('onError');
+                $('#realNameEdit').focus();
+                return false;
+            }
+            $('#realNameInputArea').removeClass('onError');
+        });
+
+        $('#realNameEdit').blur(function(){
+            var realName = $.trim($('#realNameEdit').val());
+            if(realName == ''){
+                layer.open({content: "姓名不能为空！", skin: "msg", time: 2});
+                $('#realNameInputArea').addClass('onError');
+                $('#realNameEdit').focus();
+                return false;
+            }
+            if(!(/^[\u4e00-\u9fa5 ]{2,20}$/.test(realName))){
+                layer.open({content: "名字认真填，别瞎写！", skin: "msg", time: 2});
+                $('#realNameEdit').focus();
+                return false;
+            }
+
+            $("#realName").text(realName);
+            $('#realNameShowArea').css('display', '-webkit-box');
+            $('#realNameInputArea').css('display', 'none');
+        });
+
+
+        //地址输入
+        $('#addressShowArea').click(function () {
+            $('#addressShowArea').css('display', 'none');
+            $('#addressInputArea').css('display', 'block');
+            $('#addressEdit').focus();
+        });
+        $('#addressEdit').blur(function(){
+            var address = $.trim($('#addressEdit').val());
+            $("#address").text(address);
+            $('#addressShowArea').css('display', '-webkit-box');
+            $('#addressInputArea').css('display', 'none');
+        });
+
+
+        //工作单位输入
+        $('#workUtilShowArea').click(function () {
+            $('#workUtilShowArea').css('display', 'none');
+            $('#workUtilInputArea').css('display', 'block');
+            $('#workUtilEdit').focus();
+        });
+        $('#workUtilEdit').blur(function(){
+            var workUtil = $.trim($('#workUtilEdit').val());
+            $("#workUtil").text(workUtil);
+            $('#workUtilShowArea').css('display', '-webkit-box');
+            $('#workUtilInputArea').css('display', 'none');
+        });
+
+        //职业输入
+        $('#jobShowArea').click(function () {
+            $('#jobShowArea').css('display', 'none');
+            $('#jobInputArea').css('display', 'block');
+            $('#jobEdit').focus();
+        });
+        $('#jobEdit').blur(function(){
+            var job = $.trim($('#jobEdit').val());
+            $("#job").text(job);
+            $('#jobShowArea').css('display', '-webkit-box');
+            $('#jobInputArea').css('display', 'none');
+        });
+    });
+
+    // 获取图片改变后的地址
+    function getPicUrl(obj){
+        // 验证上传图片
+        var fileExt = document.getElementById('picNative').value;
+        var fileName = "";
+
+        if(fileExt != null && fileExt != ''){
+
+            fileName = fileExt.substring(0,fileExt.lastIndexOf("."));
+            fileName = fileName.substr(fileName.lastIndexOf("\\")+1, fileName.length);
+
+            fileExt = fileExt.substr(fileExt.lastIndexOf("."), fileExt.length);
+            if(fileExt == null || fileExt == ''){
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请确认上传的文件包含正确的扩展名',
+                    button:["确认"]
+                });
+                return;
+            }
+
+            fileExt = fileExt.toLowerCase();
+            if(fileExt=='.gif' || fileExt=='.jpg' || fileExt=='.png' || fileExt=='.bmp' || fileExt=='.jpeg'){
+            }else{
+                $.dialog({
+                    title:'温馨提示',
+                    content:'请上传正确的图片文件',
+                    button:["确认"]
+                });
+                return;
+            }
+        }
+
+        // 图片压缩
+        lrz(obj.files[0], {
+            width: 400,
+            quality: 0.8,
+            done: function (results) {
+
+                var uploadImgParam = {
+                    uploadFileBase64:results.base64.substring(results.base64.lastIndexOf(",") + 1),
+                    uploadFileName:fileName + fileExt,
+                    jsonStr:'{"command": "1","content": {"accountNum": "tmpUser", type: "1"}}'
+                };
+
+                // 上传图片到服务器，返回图片在服务器的完整地址,并且服务端将用户与新头像关联上.
+                $.ajax({
+                    type: 'post',
+                    url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                    data:uploadImgParam,
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data);
+                        // 显示更改后的头像
+                        $("#userAvatar").attr("src", data.obj);
+
+                    },
+                    error: function(xhr, type){
+                        // 保存失败
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

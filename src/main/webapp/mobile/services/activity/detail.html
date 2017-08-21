@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
+	<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+	<!-- UC强制全屏 -->
+	<meta name="full-screen" content="yes">
+	<!-- QQ强制全屏 -->
+	<meta name="x5-fullscreen" content="true">
+	<title>活动详情</title>
+
+	<link href="../static/css/Hui.css" rel="stylesheet" type="text/css">
+	<link href="../static/css/iconfont.css" rel="stylesheet" type="text/css">
+
+  <style>
+    #contentdetail {
+      width: 390px;
+      line-height: 26px;
+	  text-indent:2em;
+    }
+    a {
+      text-decoration: none;
+      color: dodgerblue;
+    }
+	.spanchange{padding-left: 0;color:#656565;}
+	.change{text-align: right;color:#949494;}
+	.change::before{content:'';}
+	.H-icon-arrow-right:before{content:''}
+	.bg{background:#fff;color:#888;}
+  </style>
+  
+
+<script type="text/html" id="eventTppl">
+		<!--img-->
+
+		<div onclick="closeEwm()" class="ewm-manban" style=" display:none; position: fixed; z-index: 999999; top: 0; left: 0; right: 0; bottom: 0; background: rgba(1,1,1,0.5)">
+			<div style="width: 250px; height: 385px; position: absolute; top: 50%; left: 50%; margin-top: -192.5px; margin-left: -125px;">
+				<%
+				if(eventObj.id && eventObj.id!='' && eventObj.deptId && eventObj.deptId != ''  ) {
+				%>
+				<img style="width: 250px; height: 250px;" src="<%=B.serverUrl%>/event/eventAction!doNotNeedSessionAndSecurity_getErWeiMa.action?ei=<%=eventObj.id%>&ed=<%=eventObj.deptId%>" />
+				<%
+				}
+				%>
+				<img style="width: 135px; margin-left: 56px" src="../../img/icon_signin.png" />
+			</div>
+		</div>
+
+	
+		<div class="ewm-manban2" style=" display:none; text-align: center; position: fixed; z-index: 999999; top: 0; left: 0; right: 0; bottom: 0; background: rgba(1,1,1,0.5)">
+        <div class="ewm-jiaoyan" style=" display: block; border-radius: 5px; overflow: hidden; width: 300px; height: 140px; top: 50%; left: 50%; margin-top: -100px; margin-left: -150px; position: absolute; background: #ffffff;">
+				<p style="margin: 0; margin-bottom: 30px; padding: 9px 0; background: #5a9ee6; color: #ffffff; font-size: 14px; text-align: center;">
+					请输入校验码查看二维码
+					<div onclick="closeEwm2()" class="close-jiaoyanma" style=" position: absolute; top: 0; right: 0; text-align: center; line-height: 39px; font-size: 16px; width: 50px; height: 39px; color: #ffffff; background: #3b86d5;">
+						关闭
+					</div>
+				</p>
+				<input class="sr-jiaoyanma" placeholder="请输入校验" style=" display: inline-block; text-indent: 5px ; margin-right: 5px; border: 1px solid #c1c1c1; outline: none; border-radius: 3px; width: 150px; height: 25px;" type="text" />
+				<div onclick="testJiaoyanma()" style=" display: inline-block; margin-left:5px; width: 50px; text-align: center; line-height: 29px; background: #5a9ee6; color: #ffffff; border-radius: 3px; height: 29px; border: none;">确认</div>
+			</div>
+			<div onclick="closeEwm2()" class="emw-show" style=" display: none ;width: 250px; height: 385px; position: absolute; top: 50%; left: 50%; margin-top: -192.5px; margin-left: -125px;">
+				<img style="width: 250px; height: 250px;" src="<%=B.serverUrl%>/event/eventAction!doNotNeedSessionAndSecurity_getErWeiMa.action?ei=<%=eventObj.id%>&ed=<%=eventObj.deptId%>" />
+				<img style="width: 135px; margin-left: 17px" src="../../img/icon_signin.png" />
+			</div>
+		</div>
+
+		<div class="H-margin-vertical-bottom-10" style="position: relative;">
+			<%
+			if(eventObj.pictureUrl && eventObj.pictureUrl!='') {
+			%>
+
+			<!--未开始-->
+			<%
+			if(eventObj.eventState == "0") {
+			%>
+			<div style=" position: absolute; background: #515aff; color: #ffffff; -webkit-transform: rotate(-45deg); line-height: 30px; text-align: center; width: 150px; top: 13px; left: -49px;">未开始</div>
+			<%
+			}
+			%>
+
+			<!--进行中-->
+			<%
+			if(eventObj.eventState == "1") {
+			%>
+			<div style=" position: absolute; background: #ff2528; color: #ffffff; -webkit-transform: rotate(-45deg); line-height: 30px; text-align: center; width: 100px; top: 13px; left: -26px;">进行中</div>
+			<%
+			}
+			%>
+
+			<!--已结束-->
+			<%
+			if(eventObj.eventState == "2") {
+			%>
+			<div style=" position: absolute; background:#949494; color: #ffffff; -webkit-transform: rotate(-45deg); line-height: 30px; text-align: center; width: 100px; top: 13px; left: -26px;">已结束</div>
+			<%
+			}
+			%>
+
+
+			<img onerror="javascript:this.src='../static/img/tupian@2x.png';" src="<%=B.getImageAbsoluteUrl(eventObj.picUrl)%>" class="H-width-100-percent H-display-block" style="height: 195px;">
+			<%
+			}else{
+			%>
+			<img onerror="javascript:this.src='../static/img/tupian@2x.png';" src="<%=B.getImageAbsoluteUrl(eventObj.picUrl)%>" class="H-width-100-percent H-display-block" style="height: 195px;">
+			<%
+				if(eventObj.userProfile && eventObj.userProfile.accountNum && eventObj.userProfile.accountNum !=accountNum){
+			%>
+			<!--	<div class="jubao" style="position: absolute;top: 10px;right: 0px;width: 50px;height: 40px;border-bottom-left-radius: 20px;border-top-left-radius: 20px;background: rgba(255,255,255,.7);font-size: 12px;color: #000;text-align:center;padding-left: 5px;">
+					<img src="../static/img/jubao.png" style="width: 16px;margin-top: 5px;vertical-align: middle;">
+					<div>举报</div>
+				</div>-->
+			<%
+				}
+			}
+			%>
+
+            <!--
+			<div style="position: absolute;bottom: 0;width: 100%;" class="H-background-color-transparent-5 H-theme-font-color-white H-font-size-12 H-padding-vertical-both-5">
+			-->
+			
+			<div class="H-flexbox-vertical H-theme-background-color-white H-margin-vertical-bottom-10">
+			    <div class="left_boxx" style="float: left;padding-right: 60px;padding-left: 10px;height: 120px;">
+					<span  style="font-size:25px; font-weight:bold ;"><%=eventObj.title%></span>				
+					
+				<div style="" class="H-flexbox-horizontal H-padding-vertical-both-2 H-vertical-middle">
+				<span class="spanchange H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999"> 发起人：</span>	
+				<%
+                if(eventObj.userProfile != null && eventObj.userProfile != ""){
+				if(eventObj.userProfile.picture != null && eventObj.userProfile.picture != "") {
+				%>
+				<img onerror="javascript:this.src='../static/img/icons/default_profile.png';" src="<%=B.getImageAbsoluteUrl(eventObj.userProfile.picture)%>" class=" H-vertical-align-middle H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}else{
+				%>
+				<img src="../static/img/icons/default_profile.png" class=" H-vertical-align-middle H-border-radius-circle H-width-45 H-height-45">
+				<%
+				}
+                }
+				%>
+
+			   <%
+				if(eventObj.type == '99'){
+				%>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999">
+					<%=eventObj.associationName%>
+				</div>
+				<%
+				}
+				else if(eventObj.userProfile && eventObj.userProfile.name){
+				%>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999">
+					<%=eventObj.userProfile.name%>
+				</div>
+				<%
+				}
+				else{
+				%>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999">
+					<%=eventObj.alumniName%>
+				</div>
+				<%
+				}
+				%>
+				</div>
+					
+				
+				</div>
+
+				<div onclick="chakanEwm(this)" style="position: absolute;right: 20px">
+					<img style="width: 25px; height: 25px; margin-top: 4px;background-color:dodgerblue;" src="../../img/yige-ewm.png" />
+					<%
+					if(eventObj.isJoin=='3') {
+					%>
+					<img style=" margin-left: 50px; position: absolute; top: 0; right: 7px; width: 83px;" src="../../img/icon_success.png" />
+					<%
+					}
+					%>
+
+					<%
+					if(eventObj.userProfile && eventObj.userProfile.accountNum) {
+					%>
+					<span style="display: none"><%=eventObj.userProfile.accountNum%></span>
+					<%
+					}
+					%>
+				</div>
+
+
+			</div>
+		</div>
+
+		<!--icon 文本list-->
+		<div class="H-flexbox-vertical H-theme-background-color-white H-margin-vertical-bottom-10">
+			
+					
+			<div class="H-flexbox-horizontal  H-padding-horizontal-both-10 H-padding-vertical-both-2 H-vertical-middle">
+					<span class="H-icon H-vertical-middle">
+						<i class="H-iconfont H-icon-time H-font-size-16 H-theme-font-color-999"></i>
+					</span>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999 H-text-show-row-1">
+					<%=eventObj.startTime%>-<%=eventObj.endTime%>
+				</div>
+			</div>
+			
+            <div class="H-flexbox-horizontal  H-padding-horizontal-both-10 H-padding-vertical-top-5 H-padding-vertical-bottom-2 H-vertical-middle ">
+					<span class="H-icon H-vertical-middle">
+						<i class="H-iconfont H-icon-position H-font-size-16 H-theme-font-color-999"></i>
+					</span>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999 H-text-show-row-1">
+					<%=eventObj.place%>
+				</div>
+			</div>
+			
+			
+				
+            <div class="H-flexbox-horizontal  H-padding-horizontal-both-10 H-padding-vertical-top-5 H-padding-vertical-bottom-2 H-vertical-middle ">
+					<span class="H-icon H-vertical-middle">
+					<i style="font-size: 1.3rem; color: #333" class="H-iconfont  H-icon-user2 H-font-size-16 H-theme-font-color-999"></i>
+					</span>
+				<div type="text" class="H-flex-item H-padding-horizontal-both-10 H-box-sizing-border-box H-font-size-14 H-theme-font-color-999 H-text-show-row-1">
+					报名人数：
+						<%if(eventObj.maxPeople=='0') {	%>
+						<%=eventObj.signupNum%>					
+						<%}else{%>
+						<%=eventObj.signupNum%>/<%=eventObj.maxPeople%>				
+						<%}	%>
+				</div>
+			</div>
+					
+		</div>
+
+		<!--活动详情-->
+		<div class="H-accordion-area H-theme-background-color-white H-margin-vertical-bottom-10">
+			<!--H-border-vertical-bottom-margin-left-10-after-->
+			
+			
+			<div class=" H-accordion-title H-text-list H-flexbox-horizontal H-padding-vertical-both-5 H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+				<span class="H-icon H-display-block H-margin-horizontal-left-10">
+					<i class="H-iconfont H-icon-tishi H-font-size-16 H-vertical-middle H-theme-font-color1"></i>
+				</span>
+				<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-0">活动详情</div>
+				<!--
+				<span class="H-icon H-padding-horizontal-right-5 H-display-block">
+					<i class="H-accordion-icon H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i>
+				</span>
+				-->
+			</div>			
+			
+			<div class="H-accordion-main H-padding-vertical-both-10 H-border-vertical-bottom-after H-display-block-important">
+				<div   class="H-flex-item H-padding-horizontal-both-10 H-font-size-13 H-theme-font-color-999" style="line-height: 20px;">
+					<div id="contentdetail" >				
+				    <%=B.changeSrcFromRelativeToAbsolute(eventObj.content)%>
+					</div>
+					
+				</div>
+			</div>			
+			
+		</div>
+		<div class="H-accordion-area H-theme-background-color-white H-margin-vertical-bottom-10">
+			<!--H-border-vertical-bottom-margin-left-10-after-->
+			<div class=" H-accordion-title H-text-list H-flexbox-horizontal H-padding-vertical-both-5 H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+				<span class="H-icon H-display-block H-margin-horizontal-left-10"><i class="H-iconfont H-icon-tishi H-font-size-16 H-vertical-middle H-theme-font-color1"></i></span>
+				<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-0">费用:<%=eventObj.cost%></div>
+				<span class="H-icon H-padding-horizontal-right-5 H-text-align-right H-font-size-14 H-display-block">				
+					<i class="change H-accordion-icon H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle">点击查看收费说明</i>
+				</span>
+			</div>
+			<div class="H-accordion-main H-padding-vertical-both-10 H-border-vertical-bottom-after H-display-none-important">
+				<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-12 H-theme-font-color-999" style="line-height: 20px;">
+					 <%if(eventObj.costMemo && eventObj.costMemo != 'null' && eventObj.costMemo !=''){%>
+						<%=eventObj.costMemo%>
+					<%} else {%> 
+						<%= ''%>
+					 <%}%> 
+				</div>
+			</div>
+		</div>
+
+		<!--报名成员-->
+		<div class="H-accordion-area H-theme-background-color-white H-margin-vertical-bottom-10">
+			<%
+			if(eventObj.isOwner){
+			%>
+			<div onclick="goRegisterList()" class="H-text-list H-flexbox-horizontal H-padding-vertical-both-5 H-border-vertical-bottom-after H-vertical-middle">
+				<%
+				}
+				else {
+				%>
+				<div class="H-text-list H-flexbox-horizontal H-padding-vertical-both-5 H-border-vertical-bottom-after H-vertical-middle">
+					<%
+					}
+					%>
+					<span class="H-icon H-display-block H-margin-horizontal-left-10"><i class="H-iconfont H-icon-user2 H-font-size-16 H-vertical-middle H-theme-font-color1"></i></span>
+					<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-0">报名成员</div>
+					<span class="H-badge H-display-block">
+						<%
+							if(eventObj.maxPeople=='0') {
+						%>
+							<label class="bg H-display-inline-block H-theme-background-color1 H-vertical-middle H-theme-font-color-white H-font-size-12">
+								<%=eventObj.signupNum%>人
+							</label>
+						<%
+							}else{
+						%>
+		          			<label class="H-display-inline-block H-theme-background-color1 H-vertical-middle H-theme-font-color-white H-font-size-12">
+								<%=eventObj.signupNum%>/<%=eventObj.maxPeople%>
+							</label>
+	          			<%
+	          				}
+	          			%>
+					</span>
+					<%
+					if(eventObj.isOwner){
+					%>
+					<span class="H-icon H-padding-horizontal-both-5 H-display-block"><i class="H-accordion-icon H-iconfont H-icon-arrow-right H-theme-font-color-ccc H-font-size-14 H-vertical-middle"></i></span>
+					<%
+					}
+					else {
+					%>
+					<span class="H-icon H-padding-horizontal-both-5 H-display-block"></span>
+					<%
+					}
+					%>
+				</div>
+				<div class="H-padding-vertical-both-10 H-theme-background-color-white H-border-vertical-bottom-after">
+					<div class=" H-text-align-center H-padding-vertical-both-10 H-padding-horizontal-both-10">
+						<%
+						if(eventObj.members && eventObj.members.length > 0){
+						for(var key in eventObj.members){
+						if(eventObj.members[key]){
+						%>
+						<div class=" H-float-left H-theme-background-color-white H-touch-active H-padding-horizontal-both-10" style=" position: relative;min-height: 80px;">
+							<%
+							if(eventObj.members[key].picture != null && eventObj.members[key].picture != "") {
+							%>
+							<img onerror="javascript:this.src='../static/img/icons/default_profile.png';" src="<%=B.getImageAbsoluteUrl(eventObj.members[key].picture)%>" class=" H-vertical-align-middle H-border-radius-circle H-width-45 H-height-45">
+							<%
+							}else{
+							%>
+							<img src="../static/img/icons/default_profile.png" class=" H-vertical-align-middle H-border-radius-circle H-width-45 H-height-45">
+							<%
+							}
+							%>
+
+							<%
+							if(eventObj.members[key].isSignIn != null && eventObj.members[key].isSignIn != "" && eventObj.members[key].isSignIn == "1") {
+							%>
+							<img class="qiandaoBz" style=" top: 33px; right: 12px; width: 12px; height: 12px; position: absolute" src="../../img/icon_check_ok.png">
+							<%
+							}
+							%>
+
+							<label class="H-display-block H-font-size-13 H-margin-vertical-top-5"><%=eventObj.members[key].name%></label>
+						</div>
+						<%
+						}
+						}
+						}
+						%>
+					</div>
+				</div>
+			</div>
+
+			<!--花絮 没有下拉-->
+			<div onclick="goFeatureList(); " class="H-margin-vertical-bottom-10 H-padding-vertical-both-10 H-padding-vertical-both-10H-text-list H-flexbox-horizontal
+					H-border-vertical-bottom-after H-vertical-middle H-touch-active H-theme-background-color-white ">
+				<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14">现场花絮</div>
+					<span class="H-icon H-padding-horizontal-right-5 H-display-block H-font-size-14">
+					<%=CountBoard%>条花絮
+				</span>
+			</div>
+	      <div onclick="gobbsList(); " class="H-padding-vertical-both-10 H-text-list H-flexbox-horizontal 
+					H-border-vertical-bottom-after H-vertical-middle H-touch-active H-theme-background-color-white ">
+				<div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14">评论</div>
+					<span class="H-icon H-padding-horizontal-right-5 H-display-block H-font-size-14">
+					<%=CountComment%>条评论
+				</span>
+			</div>
+
+			<%
+			if(eventObj.isOwner && eventObj.signCode){
+			%>
+			<div style="margin-top:10px; padding: 5px 10px;  background: #ffffff; font-size: 1.4rem;">校验码:
+				<span style="float: right;"><%=eventObj.signCode%></span>
+			</div>
+			<%
+			}
+			%>
+			<div style="height:60px;">
+
+			</div>
+		</div>
+
+			<!-- button-->
+			<%
+			if(!eventObj.isOwner){
+			if(eventObj.applyState=="0"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>报名尚未开始</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.applyState=="1" && eventObj.isJoin=="0"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" onclick="goRegist()" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color1 H-theme-font-color-white H-theme-border-color1 H-theme-border-
+	color1-click
+							H-theme-background-color1-click H-theme-font-color1-click H-border-radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>我要报名</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.isJoin=="0" && eventObj.applyState=="2"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>报名已结束</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if((eventObj.applyState=="1" || eventObj.applyState=="2" ) && (eventObj.eventState=="0" || eventObj.eventState=="1" ) && eventObj.isJoin=="1"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" onclick="outRegist()" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>取消报名</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="1" && eventObj.needSignIn == "1"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已开始,请尽快签到</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="1" && eventObj.needSignIn == "0"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已开始</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="1" && eventObj.isJoin=="1"  && eventObj.needSignIn == "1"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已开始,请尽快签到</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="1" && eventObj.isJoin=="1"  && eventObj.needSignIn == "0"){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已开始</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="1" && eventObj.isJoin=="3" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>您已签到</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="2" && eventObj.isJoin=="3" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已结束,感谢您的参加!</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="2" && eventObj.isJoin=="0" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已结束</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="2" && eventObj.isJoin=="1"  && eventObj.needSignIn == "0" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已结束,感谢您的参加!</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if(eventObj.eventState=="2" && eventObj.isJoin=="1"  && eventObj.needSignIn == "1" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>活动已结束,未参加!</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else if((eventObj.applyState=="1" || eventObj.applyState=="2") && eventObj.isJoin=="3" ){
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>已签到</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}else{
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-gray H-theme-font-color-white H-theme-border-color-gray H-border-
+	radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span><%=eventObj.nowStatus%></span>
+					</button>
+				</li>
+			</ul>
+			<%
+			}
+			}else{
+			%>
+			<ul class="H-flexbox-horizontal H-theme-background-color-white H-border-vertical-top-after" style="position: fixed; z-index: 9999; bottom: 0;">
+				<li class="H-flex-item H-padding-5">
+					<button id="submitBtn" onclick="removeEvent()" class="H-button H-font-size-15 H-width-100-percent H-outline-none
+							H-padding-vertical-both-8 H-theme-background-color-red H-theme-font-color-white H-theme-border-color-red H-theme-
+
+	border-color1-click
+							H-theme-background-color1-click H-theme-font-color1-click H-border-radius-3">
+							<span class="H-icon H-margin-horizontal-left-10 H-display-inline-block H-background-color-transparent-0" >
+								<i class="H-iconfont H-icon-pen H-theme-font-color-white"></i>
+							</span>
+						<span>删除该活动</span>
+					</button>
+				</li>
+			</ul>
+
+			<%
+			}
+			%>
+	</script>	
+</head>
+
+<body>
+<header id="header"></header>
+
+<!--展示窗友信息-->
+<div id="eventInfo"></div>
+
+<div id="addhuaxu" onclick="go_huaxu()" class="add_active" style="position: fixed;right: 20px;bottom: 70px;display: none;">
+	<span class="H-icon H-center-all H-border-radius-circle H-margin-horizontal-auto" style="height: 42px; width: 42px; left: 0px; top: 261px; background: rgba(1,1,1,.5)">
+		<i class="H-iconfont H-icon-add H-font-size-22 H-theme-font-color-white"></i>
+	</span>
+</div>
+
+
+<script src="../../js/jquery.min.js" type="text/javascript" ></script>
+<script src="../static/plug/layer/layer.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/zepto.min.js"></script>
+<script type="text/javascript" src="../../js/H.js" ></script>
+<script type="text/javascript" src="../../js/xdomain.min.js"></script>
+<script type="text/javascript" src="../../js/B.js" ></script>
+<script src="../../js/jbase64.js" type="text/javascript"></script>
+<script src="../../js/wechat.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+
+
+	// 接收url中的参数
+	var eventId = B.getUrlParamByName("eventId");
+	var urlAttr = eventId.split(',');
+	if(urlAttr.length >= 2){
+	    eventId = urlAttr[0];
+	}
+	var sourceFlag = B.getUrlParamByName("sourceFlag");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+	var fromMain = B.getUrlParamByName("fromMain");
+
+	var teamId = B.getUrlParamByName("teamId");
+
+	var detailFlag = B.getUrlParamByName("detailFlag");
+
+	var associationId =  B.getUrlParamByName("associationId");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''||accountNum == 'null'){
+            accountNum = '';
+        }
+    }else{
+        if(!accountNum || accountNum == '' || accountNum == 'null')
+            accountNum = '';
+	}
+    var rnumber = Math.floor(Math.random()*1000);
+    var t = B.getUrlParamByName("t");
+
+	var CountComment=getCountComment();
+	var CountBoard=getCountBoard();
+	
+    var needAuthButNot = false;
+	var isOwner = false;
+	var jiaoyanma = "";
+	var backUrl = "";
+	switch(sourceFlag) {
+		case '1': backUrl = "/mobile/services/activity/list_user.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum; break;
+		case '2': backUrl = "/mobile/services/activity/list_user_create.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum; break;
+		default: backUrl = "/mobile/services/activity/list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum;
+	}
+
+	// 初始化页面
+	$(function() {
+		// 定义模板标识符
+		H.tppl_flag = ["<%", "%>"];
+		//判断是否已认证
+
+		// 跨域请求
+		B.ready(function() {
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "214","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+				},
+				dataType: 'json',
+				success: function(data) {
+				    needAuthButNot = data.obj.needAuthButNot;
+					//transData(data);								
+						
+					if(data.obj) {
+
+						huodongdezt=data.obj.eventState;
+						jiaoyanma=data.obj.signCode;
+						if(typeof(data.obj.pageView) == "undefined"){
+							pageViewX=1;
+						}else{
+							pageViewX=data.obj.pageView;
+						}
+
+						var render = H.tppl(H.D("#eventTppl").innerHTML);
+						var result = render({
+							eventObj: data.obj,
+							pageV:pageViewX
+						});
+
+
+
+						$('#eventInfo').html(result);
+
+						isOwner = data.obj.isOwner;
+
+						// //活动详情、报名成员，控制向下展开或向上收缩
+						H.on(H.Ds(".H-accordion-title"), "touchend", function(event) {
+							var area = H.getParents(event.target, "H-accordion-area");
+//							alert("area=="+area.innerHTML)
+							var title = H.D(".H-accordion-title", area);
+							var main = H.D(".H-accordion-main", area);
+//							alert("main="+main.innerHTML);
+							var icon = H.D(".H-accordion-icon", area);
+							if(H.isElement(main)) {
+								if(H.hasClass(main, "H-display-none-important")) {
+									H.removeClass(icon, "H-icon-arrow-right");
+									H.addClass(icon, "H-icon-arrow-down");
+
+									H.removeClass(title, "H-background-color-white");
+									H.addClass(title, "H-background-color-white");
+
+									H.removeClass(main, "H-display-none-important");
+								} else {
+									H.removeClass(icon, "H-icon-arrow-down");
+									H.addClass(icon, "H-icon-arrow-right");
+
+									H.removeClass(title, "H-background-color-white");
+									H.addClass(title, "H-background-color-white");
+
+									H.addClass(main, "H-display-none-important");
+								}
+							}
+						});
+						shareStr.title =  data.obj.title;
+						shareStr.desc = '活动地点：'+ (data.obj.place ? data.obj.place : '')+ '\n活动时间：' + data.obj.startTime.replace(/&nbsp;/g, ' ') + '~'+ data.obj.endTime.replace(/&nbsp;/g, ' ') ;
+						shareStr.img =B.getImageAbsoluteUrl(data.obj.pic_xd);
+					}
+                    if(openId && openId != '' && openId != 'null'){
+                        $('.left_boxx').css("padding-right","10px");
+                        var title = data.obj.title ? data.obj.title : '';
+//                        var desc = data.obj.place ? data.obj.place : '';
+						var desc = '活动地点：'+ (data.obj.place ? data.obj.place : '')+ '\n活动时间：' + data.obj.startTime.replace(/&nbsp;/g, ' ') + '~'+ data.obj.endTime.replace(/&nbsp;/g, ' ') ;
+                        var imgUrl = data.obj.pic_xd ? B.getImageAbsoluteUrl(data.obj.pic_xd) : '';
+                        var shareData = {
+                            title: title,
+                            desc: desc,
+                            link: location.href.split('?')[0]+'?eventId='+eventId,
+                            imgUrl: imgUrl
+                        };
+                        mkShareInfo(location.href, shareData, 0);
+                        //判定是否签到行为
+                        if(urlAttr.length >= 2){
+                            if(!checkLogin()) return;
+                            setSign();
+						}
+
+                    }
+
+				},
+				error: function(xhr, type) {
+					// 加载错误
+				}
+			});
+		});
+	});
+
+    // 跳转至评论列表
+	function gobbsList() {
+		H.openWin("活动评论", "event_comment_detail.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+associationId+"&teamId="+teamId +"&detailFlag="+detailFlag);
+	}
+
+	// 跳转至花絮列表
+	function goFeatureList() {
+		H.openWin("花絮列表", "feature_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+associationId+"&teamId="+teamId +"&detailFlag="+detailFlag);
+	}
+
+	// 跳转至已报名校友列表
+	function goRegisterList() {
+        if(!checkLogin()) return;
+        H.openWin("报名校友", "register_list.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+associationId+"&teamId="+teamId +"&detailFlag="+detailFlag);
+	}
+
+	// 评论统计
+	function getCountComment() {
+		if(!checkLogin()) return ;
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "286","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+				},
+				dataType: 'json',
+				success: function(data) {
+				    CountComment = data.obj;	
+				},
+				error: function(xhr, type) {
+					// 加载错误
+				}
+	     });
+	}		
+			
+	//花絮统计
+	function getCountBoard() {
+		if(!checkLogin()) return ;
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "287","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+				},
+				dataType: 'json',
+				success: function(data) {
+				    CountBoard = data.obj;	
+				},
+				error: function(xhr, type) {
+					// 加载错误
+				}
+	     });
+	}	
+	
+	// 报名活动
+	function goRegist() {
+		if(!checkLogin()) {
+			$('.list div').css('pointer-events', 'none');
+			return ;
+		}
+
+		if( needAuthButNot ){
+		    goToAuth();
+		}else{
+
+			layer.confirm('您确定要报名该活动吗？', function(index){
+				regist();
+				layer.close(index);
+			});
+
+//			H.confirm(function(ret) {
+//				if(ret.buttonIndex == '1') {
+//                    regist();
+//				}
+//			}, '确认提示：', '您确定要报名该活动吗？');
+		}
+	}
+
+
+	function regist() {
+		$.ajax({
+			type: 'post',
+			url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+			data: {
+				jsonStr: '{"command": "215","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+			},
+			dataType: 'json',
+			success: function(data) {
+				layer.alert(data.msg,{closeBtn: 0}, function(index){
+					location.reload();
+					layer.close(index);
+				});
+
+//				H.alert(function() {
+//					location.reload();
+//				}, data.msg);
+			},
+			error: function(xhr, type) {}
+
+		});
+    }
+    function setSign() {
+	    if(needAuthButNot){
+            goToAuth();
+        }else{
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "409","content": {"eventId": "' + eventId + '", "accountNum": "' + accountNum + '"}}'
+                },
+                dataType: 'json',
+                success: function(data) {
+//                    H.alert(function() {
+//                        location.href = location.href.split('?')[0]+'?t='+t+'&accountNum='+accountNum+ '&eventId=' + eventId+'&mod='+rnumber+'&sourceFlag='+sourceFlag+'&fromMain='+fromMain +'&teamId='+teamId;
+//                    }, data.msg);
+
+					layer.alert(data.msg,{closeBtn: 0}, function(index){
+						location.href = location.href.split('?')[0]+'?t='+t+'&accountNum='+accountNum+ '&eventId=' + eventId+'&mod='+rnumber+'&sourceFlag='+sourceFlag+'&fromMain='+fromMain +'&teamId='+teamId;
+						layer.close(index);
+					});
+				},
+                error: function(xhr, type) {}
+
+            });
+		}
+    }
+	//取消报名
+	function outRegist() {
+        if(!checkLogin()) {
+			$('.list div').css('pointer-events', 'none');
+			return ;
+		}
+		layer.confirm('您确定要取消报名吗？',{title:'确认提示'}, function(index){
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "244","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+				},
+				dataType: 'json',
+				success: function (data) {
+//						H.alert(function () {
+//							location.reload();
+//						}, data.msg);
+
+					layer.alert(data.msg,{closeBtn: 0}, function(index){
+						location.reload();
+						layer.close(index);
+					});
+				},
+				error: function (xhr, type) {
+				}
+
+			});
+			layer.close(index);
+		});
+
+//		H.confirm(function (ret) {
+//			if (ret.buttonIndex == '1') {
+//				$.ajax({
+//					type: 'post',
+//					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//					data: {
+//						jsonStr: '{"command": "244","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+//					},
+//					dataType: 'json',
+//					success: function (data) {
+////						H.alert(function () {
+////							location.reload();
+////						}, data.msg);
+//
+//						layer.alert(data.msg,{closeBtn: 0}, function(index){
+//							location.reload();
+//							layer.close(index);
+//						});
+//					},
+//					error: function (xhr, type) {
+//					}
+//
+//				});
+//			}
+//		}, '确认提示：', '您确定要取消报名吗？');
+	}
+
+	function goToAuth() {
+        if (openId && openId != '' && openId != 'null') {
+
+			layer.confirm('该活动需要认证才能参与，是否去认证？？', {
+				btn: ['确认', '取消'],closeBtn: 0
+			}, function(index, layero){
+				//按钮【确认】的回调
+				backUrl= B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4);
+				if(fromMain && fromMain=='1'){
+					H.openWin("认证页面", "../../wechat/verify/class_list.html?ts=" + B.getRandomInt(4) + "&accountNum=" + accountNum + "&backUrl=" + backUrl +"&fromMain="+fromMain);
+
+				}else{
+					H.openWin("认证页面", "../../wechat/verify/class_list.html?ts=" + B.getRandomInt(4) + "&accountNum=" + accountNum + "&backUrl=" + backUrl);
+				}
+				setTimeout(function () {
+					$('.list div').css('pointer-events', 'auto');
+				}, 400);
+
+				layer.close(index)
+			}, function(index){
+				//按钮【取消】的回调
+				setTimeout(function () {
+					$('.list div').css('pointer-events', 'auto');
+				}, 400);
+			});
+
+//            H.confirm(function (ret) {
+//                if (ret.buttonIndex == 1) {
+//                    backUrl= B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag)+"&ts=" + B.getRandomInt(4);
+//                    if(fromMain && fromMain=='1'){
+//                        H.openWin("认证页面", "../../wechat/verify/class_list.html?ts=" + B.getRandomInt(4) + "&accountNum=" + accountNum + "&backUrl=" + backUrl +"&fromMain="+fromMain);
+//
+//                    }else{
+//                        H.openWin("认证页面", "../../wechat/verify/class_list.html?ts=" + B.getRandomInt(4) + "&accountNum=" + accountNum + "&backUrl=" + backUrl);
+//                    }
+//
+//                    setTimeout(function () {
+//                        $('.list div').css('pointer-events', 'auto');
+//                    }, 400);
+//                } else {
+//                    setTimeout(function () {
+//                        $('.list div').css('pointer-events', 'auto');
+//                    }, 400);
+//                }
+//            }, '确认提示：', '该活动需要认证才能参与，是否去认证？');
+        }else {
+			layer.confirm('该活动需要认证才能参与，是否去认证？',{title:'确认提示'},function(index){
+				//按钮【确认】的回调
+				var u = navigator.userAgent, app = navigator.appVersion;
+				var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //g
+				var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+				if (isAndroid) {
+					window.stub.goAuth();
+				}
+				if (isIOS) {
+					window.webkit.messageHandlers.goAuth.postMessage(null);
+				}
+
+				setTimeout(function () {
+					$('.list div').css('pointer-events', 'auto');
+				}, 400);
+
+				layer.close(index)
+			});
+
+		}
+	}
+	function transData(data){
+		//alert(JSON.stringify(data)) ;
+		if(!data.obj) return;
+		var startTmp = data.obj.startTime;
+		var endTmp = data.obj.endTime;
+		var signStart = data.obj.signupStartTime;
+		var signEnd = data.obj.signupEndTime;
+
+		startTmp = startTmp.substring(0,16);
+		endTmp = endTmp.substring(0,16);
+		signStart = signStart.substring(0,16);
+		signEnd = signEnd.substring(0,16);
+
+		if(startTmp.substring(0,4) == endTmp.substring(0,4)){
+			if(startTmp.substring(5,7) == endTmp.substring(5,7)){
+				if(startTmp.substring(8,10) == endTmp.substring(8,10)){
+					startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日&nbsp;'+startTmp.substring(11,16);
+					endTmp = endTmp.substring(11,16);
+				}else{
+					startTmp = startTmp.substring(5,7)+'月'+startTmp.substring(8,10)+'日';
+					endTmp = endTmp.substring(5,7)+'月'+endTmp.substring(8,10)+'日';
+				}
+			}else{
+				startTmp = startTmp.substring(0,4)+'年'+startTmp.substring(5,7)+'月';
+				endTmp = endTmp.substring(5,7)+'月';
+			}
+		}else{
+			startTmp = startTmp.substring(0,4)+'年';
+			endTmp = endTmp.substring(0,4)+'年';
+		}
+
+		if(signStart.substring(0,4) == signEnd.substring(0,4)){
+			if(signStart.substring(5,7) == signEnd.substring(5,7)){
+				if(signStart.substring(8,10) == signEnd.substring(8,10)){
+					signStart = signStart.substring(5,7)+'月'+signStart.substring(8,10)+'日&nbsp;'+signStart.substring(11,16);
+					signEnd = signEnd.substring(11,16);
+				}else{
+					signStart = signStart.substring(5,7)+'月'+signStart.substring(8,10)+'日';
+					signEnd = signEnd.substring(5,7)+'月'+signEnd.substring(8,10)+'日';
+				}
+			}else{
+				signStart = signStart.substring(0,4)+'年'+signStart.substring(5,7)+'月';
+				signEnd = signEnd.substring(5,7)+'月';
+			}
+		}else{
+			signStart = signStart.substring(0,4)+'年';
+			signEnd = signEnd.substring(0,4)+'年';
+		}
+
+		data.obj.startTime = startTmp;
+		data.obj.endTime = endTmp;
+		data.obj.signupStartTime = signStart;
+		data.obj.signupEndTime = signEnd;
+
+		return data;
+	}
+
+	// 取消该活动
+	function removeEvent() {
+        if(!checkLogin()) return;
+
+		layer.confirm('您确定要删除该活动吗?', function(index){
+			//创建时正在加载
+			var manban=$('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;"><div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;"><img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif"><p style="margin: 0;">加载中...</p></div></div>');
+			$("body").append(manban);
+
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+				data: {
+					jsonStr: '{"command": "216","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+				},
+				dataType: 'json',
+				success: function(data) {
+
+					//删除正在加载
+					//获取div节点对象
+					var divNode2 = document.getElementById("manban");
+					//获取父节点
+					var parentNode = divNode2.parentNode;
+					parentNode.removeChild(divNode2);
+
+					layer.alert(data.msg,{closeBtn: 0}, function(index){
+						H.openWin('我的活动',{closeBtn: 0}, "list_user_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum +"&fromMain="+fromMain +"&teamId="+teamId);
+						layer.close(index);
+					});
+//						H.alert(function() {
+//							H.openWin('我的活动', "list_user_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum +"&fromMain="+fromMain +"&teamId="+teamId);
+//						}, data.msg);
+				},
+				error: function(xhr, type) {
+
+				}
+			});
+
+			layer.close(index);
+		});
+
+//		H.confirm(function(ret) {
+//			if(ret.buttonIndex == '1') {
+//
+//				//创建时正在加载
+//				var manban=$('<div id="manban" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 9999; background: transparent;"><div style=" position: absolute; left: 50%; top: 50%; margin-left: -65px; margin-top: -55px; width: 130px; height: 110px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-box-align: center; text-align: center; background: rgba(0, 0, 0, 0.65); border-radius: 6px; color: #fff; font-size: 16px;"><img style="width: 37px; margin-top:20px;margin-bottom: 5px" src="../../img/loading-jiazai.gif"><p style="margin: 0;">加载中...</p></div></div>');
+//				$("body").append(manban);
+//
+//				$.ajax({
+//					type: 'post',
+//					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//					data: {
+//						jsonStr: '{"command": "216","content": {"eventId": "' + eventId + '", "userId": "' + accountNum + '"}}'
+//					},
+//					dataType: 'json',
+//					success: function(data) {
+//
+//						//删除正在加载
+//						//获取div节点对象
+//						var divNode2 = document.getElementById("manban");
+//						//获取父节点
+//						var parentNode = divNode2.parentNode;
+//						parentNode.removeChild(divNode2);
+//
+//						layer.alert(data.msg,{closeBtn: 0}, function(index){
+//							H.openWin('我的活动',{closeBtn: 0}, "list_user_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum +"&fromMain="+fromMain +"&teamId="+teamId);
+//							layer.close(index);
+//						});
+////						H.alert(function() {
+////							H.openWin('我的活动', "list_user_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum +"&fromMain="+fromMain +"&teamId="+teamId);
+////						}, data.msg);
+//					},
+//					error: function(xhr, type) {
+//
+//					}
+//				});
+//			}
+//		}, '确认提示：', '您确定要删除该活动吗？');
+	}
+
+	//弹出二维码
+	function chakanEwm(obj){
+        if(!checkLogin()) return;
+		var userProfileNum=$(obj).children("span").html();
+        //alert(accountNum+"---------"+userProfileNum +"---------"+jiaoyanma)
+		if(accountNum==userProfileNum){
+			$(".ewm-manban").show();
+		}else if(jiaoyanma){
+
+			$(".ewm-manban2").show();
+			//layer.alert("只有活动的发起人才能获得二维码");
+		}else if(huodongdezt=="2"){
+			layer.alert("活动已结束");
+		}
+		else{
+			layer.alert("此活动不需要签到");
+		}
+	}
+	//关闭二维码
+	function closeEwm(){
+		//alert("1")
+		$(".ewm-manban").hide();
+	}
+	function closeEwm2(){
+		//alert("1")
+		$(".ewm-manban2").hide();
+		$(".emw-show").hide();
+		$(".ewm-jiaoyan").show();
+		$(".sr-jiaoyanma").val("");
+	}
+	//检验校验码
+	function  testJiaoyanma() {
+		var ys_jiaoyanma=$(".sr-jiaoyanma").val();
+		if( jiaoyanma && ys_jiaoyanma==jiaoyanma){
+			$(".ewm-jiaoyan").hide();
+			$(".emw-show").fadeIn();
+			$(".sr-jiaoyanma").val("");
+		}else {
+			layer.alert("输入错误，请从新输入");
+			$(".sr-jiaoyanma").val("");
+		}
+	}
+
+	//检测图连链接
+	function CheckImgExists(imgurl) {
+		var ImgObj = new Image(); //判断图片是否存在
+		ImgObj.src = imgurl;
+		//没有图片，则返回-1
+		if (ImgObj.fileSize > 0 || (ImgObj.width > 0 && ImgObj.height > 0)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	//创建花絮
+	function go_huaxu(){
+		if(!checkLogin()) {
+			return ;
+		}
+		H.openWin("创建花絮", "feature_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&teamId="+teamId +"&detailFlag="+detailFlag+"&associationId="+associationId);
+	}
+
+//	//ios返回刷新
+//	$(function () {
+//		var u = navigator.userAgent, app = navigator.appVersion;
+//		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+//		var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+//		if (isAndroid) {
+//		}
+//		/*if (isIOS) {
+//			history.replaceState({mod:rnumber}, 'Title', randomUrl);
+//			window.onpopstate = function(event) {
+//				location.reload();
+//			};
+//		}*/
+//	});
+
+
+	//点击举报
+	$('#eventInfo').on('click','.jubao',function(){
+		H.openWin("举报页面", "jubao_create.html?ts="+B.getRandomInt(4)+"&accountNum=" + accountNum + "&eventId=" + eventId + "&isOwner=" + isOwner + "&sourceFlag=" + sourceFlag +"&fromMain="+fromMain +"&associationId="+associationId+"&teamId="+teamId +"&detailFlag="+detailFlag);
+	});
+
+	//返回
+	var jsonStrBut = {
+		"title":"活动详情",
+		"btn1":{
+			"imgname":"icon_Back@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+			"name":"返回",
+			"action":"fallback"
+		},
+		"btn3":{
+			"imgname":"icon_more_detail@2x.png",
+			"imgversion":"20170214",
+			"imgbase64":"iVBORw0KGgoAAAANSUhEUgAAAAQAAAASCAYAAAB8fn/4AAAAAXNSR0IArs4c6QAAADBJREFUGBlj+P//vycQP4ZiTwYoA0iBwWMmBnQAFEfVgq6ACD6GGUABkBtgYPBaCwAdi4T3K1E4vwAAAABJRU5ErkJggg==",
+			"name":"",
+			"droplist":[
+				{
+					"name":"分享",
+					"action":"share"
+				}
+			]
+		}
+	}
+
+/**********************************************************************************************************/
+	var shareStr = {
+		"title":"",
+		"desc":"",
+		"img":"",
+		"link":location.href.split('?')[0]+'?eventId='+eventId
+	}
+	appShareInfo(10, shareStr);
+	function shareAndroid() {
+		var str= JSON.stringify(shareStr);
+		window.stub.jsMethodTwo(str);
+		return shareStr;
+	}
+	function shareIos() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: shareStr});
+		return shareStr;
+	}
+	/************************************************************************************************************/
+	function menuConfig() {
+		window.webkit.messageHandlers.AppModel.postMessage({body: jsonStrBut});
+		return jsonStrBut;
+	}
+	function jsonConfig() {
+		var str = JSON.stringify(jsonStrBut);
+		window.stub.jsMethod(str);
+		return jsonStrBut;
+	}
+
+	function fallback() {
+		if(associationId && associationId != '' && associationId != 'null'){
+			window.location.href = B.serverUrl + "/mobile/services/team/detail.html?accountNum=" + accountNum + "&associationId=" +associationId +"&detailFlag="+detailFlag;
+		}else{
+			if(sourceFlag && sourceFlag != '' && sourceFlag != 'null'){
+				if(sourceFlag == 0){
+					window.location.href = B.serverUrl + "/mobile/services/activity/list.html?accountNum=" + accountNum +"&teamId="+teamId;
+				}else if(sourceFlag == 1){
+					window.location.href = B.serverUrl + "/mobile/services/activity/list_user.html?accountNum=" + accountNum +"&teamId="+teamId;
+				}else if(sourceFlag == 10){
+					window.location.href = B.serverUrl + "/mobile/services/team/my_team.html?accountNum=" + accountNum ;
+				}else{
+					window.location.href = B.serverUrl + "/mobile/services/activity/list_user_create.html?accountNum=" + accountNum +"&teamId="+teamId;
+				}
+			}else {
+				window.location.href = B.serverUrl + "/mobile/services/activity/list.html?accountNum=" + accountNum +"&teamId="+teamId;
+			}
+		}
+	}
+
+    function checkLogin() {
+            if(!accountNum || accountNum == '' || accountNum == 'null'){
+				if(openId && openId != 'null'){
+
+					layer.confirm('尚未登陆，是否登陆账号?', function(index){
+						if(fromMain && fromMain=='1'){
+							H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag+"&teamId="+teamId)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain);
+						}else{
+							H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag+"&teamId="+teamId)+"&ts=" + B.getRandomInt(4));
+						}
+						layer.close(index);
+					});
+
+//					H.confirm(function (ret) {
+//						if(ret.buttonIndex==1){
+//							if(fromMain && fromMain=='1'){
+//								H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag+"&teamId="+teamId)+"&ts=" + B.getRandomInt(4) +"&fromMain="+fromMain);
+//							}else{
+//								H.openWin("登陆页面", "../../wechat/login.html?backUrl=" + B.encrypt('../services/activity/detail.html?eventId=' + eventId + '&sourceFlag=' + sourceFlag+"&teamId="+teamId)+"&ts=" + B.getRandomInt(4));
+//							}
+//						}
+//					}, '确认提示：', '尚未登陆，是否登陆账号？');
+					return false;
+				}else {
+					layer.alert('亲，您尚未登陆，请先去登陆吧！',{closeBtn: 0});
+//					H.alert('亲，您尚未登陆，请先去登陆吧！');
+					return false;
+				}
+            }else{
+                return true;
+			}
+    }
+</script>
+  
+</body>
+</html>
+
+ <script>
+ 	 //init();//
+     function init(){
+        var len = 60;      //默认显示字数
+        var ctn = document.getElementById("contentdetail");  //获取div对象
+        var content = ctn.innerText;                   //获取div里的内容
+        //var content=$("#contentdetail").text();
+       
+        //alert(content);
+        var span = document.createElement("span");     //创建<span>元素
+        var a = document.createElement("a");           //创建<a>元素
+        span.innerHTML = content.substring(0,len);     //span里的内容为content的前len个字符
+
+        a.innerHTML = content.length>len?"... 展开":"";  //判断显示的字数是否大于默认显示的字数    来设置a的显示
+        a.href = "javascript:void(0)";
+
+        a.onclick = function(){
+            if(a.innerHTML.indexOf("展开")>0){      //如果a中含有"展开"则显示"收起"
+              a.innerHTML = "<<&nbsp;收起";
+              span.innerHTML = content;
+            }else{
+                a.innerHTML = "... 展开";
+                span.innerHTML = content.substring(0,len);
+            }
+        }
+        // 设置div内容为空，span元素 a元素加入到div中
+        ctn.innerHTML = "";       
+        ctn.appendChild(span);
+        ctn.appendChild(a);
+     }
+  　setTimeout("init()",1000); //这样就行拉
+  </script>

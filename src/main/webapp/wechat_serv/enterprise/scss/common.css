@@ -1,0 +1,69 @@
+@charset "UTF-8";
+/* Variables */
+/* Mixins */
+.hide {
+  display: none; }
+
+.show {
+  display: block; }
+
+/* 设置文字显示多少行 */
+.H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  word-wrap: break-word;
+  white-space: normal !important;
+  -webkit-box-orient: vertical; }
+
+.H-text-show-row-1 {
+  line-clamp: 1;
+  -webkit-line-clamp: 1; }
+
+.H-text-show-row-2 {
+  line-clamp: 2;
+  -webkit-line-clamp: 2; }
+
+.H-text-show-row-3 {
+  line-clamp: 3;
+  -webkit-line-clamp: 3; }
+
+.H-text-show-row-4 {
+  line-clamp: 4;
+  -webkit-line-clamp: 4; }
+
+.H-text-show-row-5 {
+  line-clamp: 5;
+  -webkit-line-clamp: 5; }
+
+.H-text-show-row-6 {
+  line-clamp: 6;
+  -webkit-line-clamp: 6; }
+
+/* General Styles*/
+html {
+  box-sizing: border-box;
+  font-size: 16px; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+body {
+  font-family: "Droid Sans", "Arial", sans-serif;
+  font-size: 0.13rem;
+  line-height: 2; }
+
+a {
+  color: #333;
+  text-decoration: none; }
+  a:hover, a:focus {
+    color: #0F88EB; }
+
+ul {
+  padding: 0;
+  margin: 0; }
+
+li {
+  list-style: none; }
+
+/*# sourceMappingURL=common.css.map */

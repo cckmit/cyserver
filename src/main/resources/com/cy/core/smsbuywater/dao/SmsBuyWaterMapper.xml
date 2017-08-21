@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.smsbuywater.dao.SmsBuyWaterMapper">
+    <resultMap type="com.cy.core.smsbuywater.entity.SmsBuyWater" id="smsBuyWaterResultMap">
+        <id column="id" property="id"/>
+        <result column="account_id" property="accountId" />
+        <result column="account" property="account" />
+        <result column="order_no" property="orderNo" />
+        <result column="buy_time" property="buyTime" />
+        <result column="buy_num" property="buyNum" />
+        <result column="buy_price" property="buyPrice" />
+        <result column="surplus_num" property="surplusNum"/>
+        <result column="surplus_price" property="surplusPrice"/>
+        <result column="single_price" property="singlePrice"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="pay_status" property="payStatus"/>
+        <result column="flow_packet_detail_id" property="flowPacketDetailId"/>
+    </resultMap>
+    <select id="selectSmsBuyWater" parameterType="map" resultMap="smsBuyWaterResultMap">
+        SELECT csabw.*, csa.account
+        FROM cy_sms_app_buy_water csabw
+        LEFT JOIN cy_sms_account csa ON csa.id = csabw.account_id
+        WHERE csabw.del_flag = 0
+        <if test="accountId !=null and accountId != '' ">
+            AND csabw.account_id = #{accountId}
+        </if>
+        <if test="useAble != null and useAble != '' and useAble == '1' ">
+            AND csabw.buy_price > 0
+        </if>
+        <if test="except != null and except != '' ">
+            AND csabw.order_no != #{except}
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            AND csabw.pay_status = #{payStatus}
+        </if>
+        <if test="account != null and account != ''">
+            AND csa.account like concat('%',#{account},'%')
+        </if>
+        <!--<if test='isNotLimit != "1"'>
+            limit ${start},${rows}
+        </if>-->
+
+    </select>
+   <select id="getSmsBuyWaterById" parameterType="string" resultMap="smsBuyWaterResultMap">
+        SELECT csbaw.*, csa.account FROM cy_sms_app_buy_water csbaw LEFT JOIN cy_sms_account csa ON csa.id = csbaw.account_id
+        WHERE csbaw.id = #{id}
+    </select>
+    <select id="countSmsBuyWater" parameterType="map" resultType="long">
+        select count(id) from cy_sms_app_buy_water csabw
+        WHERE csabw.del_flag = 0
+        <if test="accountId !=null and accountId != '' ">
+            AND csabw.account_id = #{accountId}
+        </if>
+    </select>
+
+    <insert id="insert"  parameterType="com.cy.core.smsbuywater.entity.SmsBuyWater">
+        insert into
+        cy_sms_app_buy_water(
+        id,
+        account_id,
+        order_no,
+        buy_time,
+        buy_num,
+        buy_price,
+        surplus_num,
+        surplus_price,
+        single_price,
+        start_time,
+        end_time,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks,
+        pay_status,
+        notify_url,
+        result_url,
+        flow_packet_detail_id
+        )
+        values(
+        #{id},
+        #{accountId},
+        #{orderNo},
+        #{buyTime},
+        #{buyNum},
+        #{buyPrice},
+        #{surplusNum},
+        #{surplusPrice},
+        #{singlePrice},
+        #{startTime},
+        #{endTime},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks},
+        #{payStatus},
+        #{notifyUrl},
+        #{resultUrl},
+        #{flowPacketDetailId}
+        )
+    </insert>
+    <update id="update" parameterType="com.cy.core.smsbuywater.entity.SmsBuyWater">
+        update cy_sms_app_buy_water set
+        account_id=#{accountId},
+        order_no=#{orderNo},
+        buy_time=#{buyTime},
+        buy_num=#{buyNum},
+        buy_price=#{buyPrice},
+        surplus_num=#{surplusNum},
+        surplus_price=#{surplusPrice},
+        single_price=#{singlePrice},
+        start_time=#{startTime},
+        end_time=#{endTime},
+        del_flag=#{delFlag},
+        update_date=#{updateDate},
+        update_by=#{updateBy},
+        remarks=#{remarks}
+        <if test="payStatus !=null and payStatus != '' and payStatus != '0' ">
+            ,pay_status=#{payStatus}
+        </if>
+        where
+        id=#{id}
+    </update>
+    <update id="delete" parameterType="list">
+        update cy_sms_app_buy_water SET del_flag=1 where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+
+    <delete id="remove" parameterType="list">
+        DELETE FROM cy_sms_app_buy_water where id in
+        <foreach collection="list" open="(" close=")" item="ids" separator=",">
+            #{ids}
+        </foreach>
+    </delete>
+
+    <select id="getSmsBuyWaterByOrderNum"  parameterType="string" resultMap="smsBuyWaterResultMap" >
+        SELECT
+            csbaw.*, csa.account
+        FROM
+            cy_sms_app_buy_water csbaw
+        LEFT JOIN cy_sms_account csa ON csa.id = csbaw.account_id
+        WHERE
+            csbaw.order_no = #{orderNo}
+    </select>
+</mapper>

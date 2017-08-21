@@ -1,0 +1,589 @@
+@charset "utf-8";
+@import 'common';
+
+
+.nav_box{
+  width:100%;
+  font-size:$font-12;
+  background-color: $white;
+  display: flex;
+
+  .nav_list{
+    width:100%;
+    padding: px2rem(11px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    li{
+      i{
+        font-size:$font-12;
+      }
+
+    }
+  }
+
+}
+
+/*panel_1*/
+.ser_box{
+  width:100%;
+
+  .ser_form{
+    position: relative;
+    background-color:$bg-color;
+    padding:px2rem(8px) px2rem(10px);
+    color: $gray;
+    .ser_input{
+      width:91%;
+      height:px2rem(34px);
+      line-height: px2rem(34px);
+      padding-left:0.3rem;
+      background: #FFFFFF;
+      border: 1px solid #D0D0D0;
+      border-radius: px2rem(6px);
+      font-size:$font-12;
+    }
+
+    .icon_ser{
+      position:absolute;
+      top:0.15rem;
+      left:px2rem(20px);
+      font-size:$font-13;
+
+    }
+    .icon_clear{
+      display:none;
+      position:absolute;
+      top: 0.15rem;
+      right: 0.2rem;
+      font-size:$font-13;
+    }
+    .ser_tip{
+      display: block;
+      position:absolute;
+    line-height: px2rem(34px);
+
+      top:px2rem(9px);
+      left:px2rem(40px);
+      font-size:$font-12;
+    }
+
+
+  }
+}
+
+.firm_list{
+  background-color:$bg-color;
+  .firm_item{
+    background-color:$white;
+    display:flex;
+    margin:0;
+    margin-bottom: 0.06rem;
+    color:$black;
+    border-color: #f2f2f2;
+    .item_l{
+      width:px2rem(100px);
+      height:px2rem(100px);
+      margin-right: px2rem(10px);
+      img{
+        width:1rem;
+        height: 1rem;
+      }
+    }
+    .item_r{
+      width:2.45rem;
+      .name{
+        font-size:$font-15;
+        line-height: 0.225rem;
+
+        a{
+        }
+        a:hover{
+          cursor:pointer;
+          color:$blue;
+        }
+      }
+      .link{
+        color:$blue;
+        font-size:$font-13;
+        line-height: $line-height-base;
+        a{
+          color:$blue;
+        }
+
+      }
+      .business,.add{
+        font-size:$font-13;
+        line-height: $line-height-base;
+
+      }
+
+
+    }
+  }
+}
+
+
+.dropload_down{
+    background-color:$bg-color;
+    width:100%;
+    position:fixed;
+    bottom:0px;
+    text-align:center;
+    font-size: $font-14;
+    color: #747474;
+    letter-spacing: px2rem(-0.29px);
+
+  }
+
+
+/*panel_2*/
+.panel_2{
+  height:100%;
+  padding:px2rem(20px) 0px;
+  background-color:$bg-color;
+}
+.type_list{
+  width:100%;
+  display:flex;
+  flex-wrap: wrap;
+
+  .type_item{
+    flex:0 0 ((100% - 20) / 3);
+    margin-bottom:px2rem(20px);
+    margin-right:px2rem(10px);
+    margin-left:px2rem(10px);
+
+    height:px2rem(31px);
+    border: 1px solid $gray;
+    border-radius:px2rem(3px);
+    padding:px2rem(2px) px2rem(13px);
+
+    font-size: $font-13;
+    color: $black;
+    letter-spacing: px2rem(-0.32px);
+    text-align:center;
+
+    @include max($xxs) {
+      flex:0 0 ((100% - 21) / 3);
+      font-size:$font-12;
+      padding:px2rem(2px) px2rem(0px);
+    }
+
+  }
+
+  .chkBg_activ{
+    background:#0F88EB;
+    color:#fff;
+    border:1px solid #0F88EB;
+  }
+
+
+}
+
+//product_list
+.title{
+  @include clearfix();
+  background-color:$bg-color;
+  padding: 0.03rem 0.1rem;
+  span{
+    color:$black;
+    vertical-align: middle;
+    font-size:$font-14;
+    line-height: $font-14;
+  }
+  i{
+    font-size: 0.22rem;
+    line-height: $font-20;
+    vertical-align: middle;
+
+  }
+  .more_btn{
+    float:right;
+    color:$blue;
+    font-size: $font-12;
+    line-height: 0.26rem;
+  }
+
+
+
+}
+
+
+
+.pro_list{
+  background-color:$bg-color;
+  .pro_item{
+    background-color:$white;
+    display:flex;
+    margin-bottom:px2rem(3px);
+    padding: 0rem;
+    color:$black;
+    border-color: #f2f2f2;
+    .item_l{
+      width:px2rem(115px);
+      height:px2rem(115px);
+      margin: px2rem(10px);
+      margin-right: 0;
+      img{
+        width:px2rem(115px);
+        height:px2rem(115px);
+      }
+    }
+    .item_r{
+      flex:1;
+      width:1.99rem;
+      margin: 0.1rem;
+      .name{
+        text-align: left;
+        font-size:$font-15;
+        line-height: $line-height-base;
+
+      }
+      .detail_name{
+
+      }
+      .intro{
+        //height:1.08rem;
+        color:$gray;
+        font-size:$font-13;
+        line-height: 0.2rem;
+      }
+
+    }
+  }
+}
+
+/*加入我们*/
+.job_list{
+  background-color:$bg-color;
+  .job_item{
+    background-color:$white;
+    display:flex;
+    padding:px2rem(10px);
+    margin-bottom:px2rem(2px);
+    color:$black;
+    border: none;
+    .item_l{
+      //flex:1;
+      .name{
+         font-size:$font-15;
+        color:$blue;
+        a{
+          color:$blue;
+        }
+       }
+      .require{
+        font-size:$font-13;
+        line-height:$font-13;
+      }
+    }
+    .item_r{
+      flex:1;
+      font-size:$font-13;
+      line-height:$font-13;
+      text-align: right;
+      .money{
+        line-height:2;
+      }
+    }
+  }
+}
+
+
+/*联系我们*/
+.contact_list{
+  background-color: $bg-color;
+  width:100%;
+  li{
+    width:100%;
+    padding:0 px2rem(10px);
+    display: inline-flex;
+    margin-bottom:px2rem(2px);
+    background-color:$white;
+    height:px2rem(33px);
+    line-height: px2rem(33px);
+    .li_l{
+      flex:1;
+      color:#555;
+      font-size:$font-13;
+    }
+    .li_r{
+      color:$black;
+      font-size:$font-15;
+      text-align: right;
+    }
+
+  }
+
+}
+
+/*团队风采*/
+.member_box{
+  padding:px2rem(10px);
+  @include clearfix();
+  .member_item{
+    float:left;
+    margin-right:10px;
+    .m_pic{
+      width:px2rem(120px);
+      height:px2rem(120px);
+      display: block;
+    }
+
+    .m_txt{
+      font-size:$font-14;
+      line-height:$font-14;
+      margin-top:0.1rem;
+      width:px2rem(120px);
+      text-align: center;
+    }
+  }
+}
+
+/*我们的产品*/
+/*企业信息*/
+.ent_banner{
+  width:100%;
+  padding:px2rem(10px) px2rem(0px);
+  background-image: linear-gradient(0deg, rgba(255,147,56,0.10) 0%, rgba(127,209,255,0.24) 100%);
+  .logo_box{
+    margin:px2rem(10px) auto;
+    width:px2rem(58px);
+    height:px2rem(58px);
+    img{
+      width:px2rem(58px);
+      height:px2rem(58px);
+      border-radius:50%;
+    }
+  }
+  .ent_name{
+    text-align: center;
+    margin-bottom:px2rem(10px);
+    font-size:$font-15;
+    line-height:$font-15;
+  }
+
+}
+
+/*企业简介*/
+.pro_box_bg{
+  background-color: $bg-color;
+  margin-bottom: 0.1rem;
+
+}
+.pro_box{
+  background-color:$white;
+  padding:0.1rem
+}
+.firm_intro{
+  margin: 0.1rem;
+  margin-bottom:0;
+  background-color:$white;
+  font-size:$font-13;
+  color:$gray;
+  line-height:px2rem(18px);
+}
+
+.ent_intro{
+  background-color:$white;
+  font-size:$font-13;
+  color:$gray;
+  line-height:px2rem(18px);
+
+}
+.intro_short{
+  height:0.36rem;
+}
+.intro_long{
+  height:1.08rem;
+}
+.icon_toggle{
+  display: block;
+  width: 100%;
+  padding:px2rem(10px);
+  font-size:$font-13;
+  line-height: $font-13;
+  text-align: right;
+  color:$blue;
+
+}
+
+
+/*产品详情*/
+.bg{
+  background-color:$bg-color;
+}
+.ent_pro{
+  padding: 0.15rem 0.1rem;
+  background-color: $white;
+  margin-bottom: 0.1rem;
+  .ent_div{
+    font-size:$font-14;
+    line-height: $font-14;
+    display: flex;
+    .name_l{
+      flex:1;
+      .ent_name{
+        margin-bottom:0.1rem;
+      }
+      .ent_link{
+        display: block;
+        color:$blue;
+      }
+    }
+    .name_r{
+      .icon-zan{
+        //font-size:$font-15;
+        //line-height:$font-15;
+      }
+      .zan_num{
+        font-size:$font-12;
+        line-height: $font-12;
+      }
+      line-height: px2rem(38px);
+    }
+  }
+}
+
+
+.ent_banner .ent_name{
+  display: inherit;
+}
+
+.pro_title{
+  padding: 0.02rem 0.1rem;
+  margin-bottom: 0.02rem;
+  padding-left: 0;
+  background-color:$white;
+  .icon_flag{
+    vertical-align: middle;
+    display: inline-block;
+    width:px2rem(5px);
+    height:px2rem(25px);
+    background:$blue;
+  }
+}
+
+/*职位详情*/
+.position_tabs{
+  .row{
+    height:px2rem(48px);
+    line-height:px2rem(48px);
+    background-color:$white;
+    margin-bottom: 0.06rem;
+    .tab{
+      @include clearfix();
+      width:50%;
+      padding:0 10%;
+      float:left;
+      i{
+        font-size:$font-20;
+        vertical-align: middle;
+      }
+      span{
+        font-size:$font-12;
+        vertical-align: middle;
+      }
+
+    }
+
+  }
+
+
+}
+
+//ent_intro
+
+/*职位信息*/
+.position_item{
+  background-color:$white;
+  padding:px2rem(10px);
+  display:flex;
+  margin-bottom:px2rem(6px);
+  color:$black;
+  .item_l{
+    width:px2rem(100px);
+    height:px2rem(100px);
+    margin-right: 10px;
+    img{
+      width:px2rem(100px);
+      height:px2rem(100px);
+      width:100%;
+    }
+  }
+  .item_r{
+    margin:px2rem(10px) 0;
+    .name{
+      font-size:$font-15;
+      line-height: $font-15;
+      margin-bottom:$font-20;
+    }
+    .firm{
+      font-size:$font-15;
+      line-height: $font-15;
+      margin-bottom:$font-20;
+    }
+
+    .post{
+      font-size:$font-13;
+      line-height: $font-13;
+      a{
+        color:$blue;
+      }
+
+    }
+
+  }
+}
+
+.post_box{
+  background-color:#fff;
+}
+.des_box{
+  background-color:$white;
+  padding:0.1rem
+}
+/*评论列表*/
+.comment_list{
+  li{
+    display: flex;
+    padding:px2rem(10px);
+    margin-bottom:px2rem(2px);
+    background-color:$white;
+    .item_l{
+      width:px2rem(30px);height:px2rem(30px);
+      margin-right:px2rem(10px);
+      margin-top:px2rem(10px);
+      img{
+        width:px2rem(30px);height:px2rem(30px);
+        border-radius:50%;
+
+      }
+    }
+
+    .item_r{
+      flex:1;
+      .r_row1{
+        display: flex;
+
+        .r_row1_l{
+          color:$blue;
+
+        }
+        .r_row1_r{
+          flex:1;
+          text-align: right;
+          font-size:px2rem(10px);
+          color:$gray;
+          line-height: px2rem(26px);
+        }
+      }
+      .r_row2{
+
+      }
+
+    }
+  }
+}
+

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.chatRecord.dao.ChatRecordMapper">
+
+    <resultMap type="com.cy.core.chatRecord.entity.ChatRecord" id="chatRecordResultMap">
+        <id column="id" property="id"/>
+        <result column="chat_type" property="chatType"/>
+		<result column="from_id" property="fromId"/>
+		<result column="to_id" property="toId"/>
+		<result column="TYPE" property="type"/>
+		<result column="msg" property="msg"/>
+		<result column="file_name" property="fileName"/>
+		<result column="file_url" property="fileUrl"/>
+		<result column="file_length" property="fileLength"/>
+		<result column="addr_name" property="addrName"/>
+		<result column="lng" property="lng"/>
+		<result column="lat" property="lat"/>
+		<result column="send_time" property="sendTime"/>
+		<result column="ext" property="ext"/>
+		<result column="create_date" property="createDate"/>
+		<result column="create_by" property="createBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="remarks" property="remarks"/>
+		<result column="del_flag" property="delFlag"/>
+    </resultMap>
+
+    <select id="query" parameterType="com.cy.core.chatRecord.entity.ChatRecord" resultMap="chatRecordResultMap">
+        select c.*
+       	from cy_chat_record c
+        WHERE c.del_flag = '0'
+			<if test="chatType!= null and chatType!= ''">
+				and c.chat_type= #{chatType}
+			</if>
+			<if test="fromId!= null and fromId!= ''">
+				and c.from_id= #{fromId}
+			</if>
+			<if test="toId!= null and toId!= ''">
+				and c.to_id= #{toId}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="msg!= null and msg!= ''">
+				and c.msg= #{msg}
+			</if>
+			<if test="fileName!= null and fileName!= ''">
+				and c.file_name= #{fileName}
+			</if>
+			<if test="fileUrl!= null and fileUrl!= ''">
+				and c.file_url= #{fileUrl}
+			</if>
+			<if test="fileLength!= null and fileLength!= ''">
+				and c.file_length= #{fileLength}
+			</if>
+			<if test="addrName!= null and addrName!= ''">
+				and c.addr_name= #{addr_name}
+			</if>
+			<if test="lng!= null and lng!= ''">
+				and c.lng= #{lng}
+			</if>
+			<if test="lat!= null and lat!= ''">
+				and c.lat= #{lat}
+			</if>
+			<if test="sendTime!= null and sendTime!= ''">
+				and c.send_time= #{sendTime}
+			</if>
+			<if test="ext!= null and ext!= ''">
+				and c.ext= #{ext}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+        order by c.update_date desc
+        limit #{start},#{rows}
+    </select>
+
+    <select id="count" parameterType="com.cy.core.chatRecord.entity.ChatRecord" resultType="long">
+        select count(c.id) from cy_chat_record c
+        WHERE c.del_flag = '0'
+			<if test="chatType!= null and chatType!= ''">
+				and c.chat_type= #{chatType}
+			</if>
+			<if test="fromId!= null and fromId!= ''">
+				and c.from_id= #{fromId}
+			</if>
+			<if test="toId!= null and toId!= ''">
+				and c.to_id= #{toId}
+			</if>
+			<if test="type!= null and type!= ''">
+				and c.TYPE= #{type}
+			</if>
+			<if test="msg!= null and msg!= ''">
+				and c.msg= #{msg}
+			</if>
+			<if test="fileName!= null and fileName!= ''">
+				and c.file_name= #{fileName}
+			</if>
+			<if test="fileUrl!= null and fileUrl!= ''">
+				and c.file_url= #{fileUrl}
+			</if>
+			<if test="fileLength!= null and fileLength!= ''">
+				and c.file_length= #{fileLength}
+			</if>
+			<if test="addrName!= null and addrName!= ''">
+				and c.addr_name= #{addr_name}
+			</if>
+			<if test="lng!= null and lng!= ''">
+				and c.lng= #{lng}
+			</if>
+			<if test="lat!= null and lat!= ''">
+				and c.lat= #{lat}
+			</if>
+			<if test="sendTime!= null and sendTime!= ''">
+				and c.send_time= #{sendTime}
+			</if>
+			<if test="ext!= null and ext!= ''">
+				and c.ext= #{ext}
+			</if>
+			<if test="createDate!= null and createDate!= ''">
+				and c.create_date= #{createDate}
+			</if>
+			<if test="createBy!= null and createBy!= ''">
+				and c.create_by= #{createBy}
+			</if>
+			<if test="updateDate!= null and updateDate!= ''">
+				and c.update_date= #{updateDate}
+			</if>
+			<if test="updateBy!= null and updateBy!= ''">
+				and c.update_by= #{updateBy}
+			</if>
+			<if test="remarks!= null and remarks!= ''">
+				and c.remarks= #{remarks}
+			</if>
+    </select>
+
+    <select id="getById" parameterType="java.lang.String" resultMap="chatRecordResultMap">
+        select c.*
+        from cy_chat_record c
+       	where c.id=#{id}
+    </select>
+
+    <update id="update" parameterType="com.cy.core.chatRecord.entity.ChatRecord">
+        update cy_chat_record set
+		<if test="chatType!= null and chatType!= ''">
+			and c.chat_type= #{chatType}
+		</if>
+		<if test="fromId!= null and fromId!= ''">
+			and c.from_id= #{fromId}
+		</if>
+		<if test="toId!= null and toId!= ''">
+			and c.to_id= #{toId}
+		</if>
+		<if test="type!= null and type!= ''">
+			and c.TYPE= #{type}
+		</if>
+		<if test="msg!= null and msg!= ''">
+			and c.msg= #{msg}
+		</if>
+		<if test="fileName!= null and fileName!= ''">
+			and c.file_name= #{fileName}
+		</if>
+		<if test="fileUrl!= null and fileUrl!= ''">
+			and c.file_url= #{fileUrl}
+		</if>
+		<if test="fileLength!= null and fileLength!= ''">
+			and c.file_length= #{fileLength}
+		</if>
+		<if test="addrName!= null and addrName!= ''">
+			and c.addr_name= #{addr_name}
+		</if>
+		<if test="lng!= null and lng!= ''">
+			and c.lng= #{lng}
+		</if>
+		<if test="lat!= null and lat!= ''">
+			and c.lat= #{lat}
+		</if>
+		<if test="sendTime!= null and sendTime!= ''">
+			and c.send_time= #{sendTime}
+		</if>
+		<if test="ext!= null and ext!= ''">
+			and c.ext= #{ext}
+		</if>
+		<if test="updateBy! = null and updateBy! = ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks! = null and remarks! = ''">
+			remarks = #{remarks} ,
+		</if>
+			update_date = now()
+        where id=#{id}
+    </update>
+
+    <delete id="deleteByIdList" parameterType="list">
+        update cy_chat_record
+		set
+			del_flag=1,
+			update_date = now()
+			<if test="updateBy != null and updateBy != ''">
+				, update_by = #{updateBy}
+			</if>
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+    </delete>
+
+    <delete id="delete" parameterType="com.cy.core.chatRecord.entity.ChatRecord">
+        update cy_chat_record
+        set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+        where id = #{id}
+    </delete>
+</mapper>

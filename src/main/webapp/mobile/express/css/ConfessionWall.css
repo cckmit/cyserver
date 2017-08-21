@@ -1,0 +1,284 @@
+html,body {
+    background-color: #f3f3f3;
+
+}
+.live-int {
+    width: 14rem;
+    height: 3rem;
+    text-align: center;
+    line-height: 3rem;
+    font-size: 1.4rem;
+    color: #ffffff;
+    background: #333333;
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+    top: 70%;
+    left: 50%;
+    z-index: 20;
+    border-radius: 1rem;
+
+    margin-left: -7rem
+}
+.p-no{
+    text-align: center;
+    font-size: 1.4rem;
+    color: #fea4c0;
+    margin-top: 8rem
+}
+.writeConfession {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    z-index: 5;
+    right: 15%;
+    top: 6.5rem;
+    background: url("../images/write.png") no-repeat;
+    background-size: 100% 100%;
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+}
+
+.imgTheme {
+    width: 100%;
+    height: 12rem;
+}
+
+.imgTheme img {
+    width: 100%;
+    height: 100%;
+}
+
+.banner {
+    width: 100%;
+    margin: 1rem 0;
+}
+
+.banner img {
+    width: 100%;
+    height: 100%;
+}
+
+.comment-box {
+    padding-left: 3rem;
+    padding-right: 2rem;
+}
+
+.comment:first-child {
+    margin-top: 0;
+}
+
+.comment {
+    width: 100%;
+    margin-top: 2rem;
+}
+
+.comment .img-box {
+    width: 10%;
+    margin-top: 0.7rem;
+}
+
+.comment .img-box img {
+    width: 70%;
+    height: 70%;
+}
+
+.comment .message {
+    width: 90%;
+    background-color: #ffffff;
+    padding: 0.7rem 1.5rem 0.5rem;
+    box-sizing: border-box;
+    box-shadow: 3px 6px 15px lightgray;
+    border-radius: 0.3rem
+}
+
+.comment .message .p1 {
+    color: #fea4c0;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.5rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.comment .message .p2 {
+    line-height: 2.5rem;
+    font-size: 1.3rem;
+    padding-bottom: 1.5rem;
+    padding-top: 0.5rem;
+    word-break: break-all;
+    word-wrap: break-word;/*自动换行*/
+    color: #6d6d6d;
+    text-indent: 3rem
+}
+.p-more,.p-less {
+    text-align: right;
+    margin-right: 2rem;
+    color: #546BE1;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+}
+
+.comment .message .p3 {
+    overflow: hidden;
+    height: 3rem;
+    line-height: 3rem
+}
+
+.comment .message .p3 .userName {
+    font-size: 1.4rem;
+    color: #6d6d6d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comment .message .p3 .timeAgo {
+    font-size: 1rem
+}
+
+.comment .message .p3 img {
+    height: 2.8rem;
+    line-height: 2.8rem;
+    display: inline-block;
+    margin-bottom: 0.5rem
+}
+
+.pageBar {
+    text-align: center;
+    margin-top: 3rem;
+    height: 5rem;
+}
+
+.pageBar > span {
+    color: black;
+    display: inline-block;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    text-align: center;
+    height: 3rem;
+    line-height: 3rem;
+    border: 1px solid darkgray;
+    padding: 0 0.5rem;
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+
+}
+
+/*.pageBar .first{width: 14%}
+.pageBar .prev{width: 18%;}
+.pageBar .selectPage{width: 28%}
+.pageBar .next{width: 18%;}
+.pageBar .last{;}*/
+
+.meng {
+    width: 100%;
+    height: 100%;
+    background: #484848;
+    z-index: 5;
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
+}
+
+.send {
+    width: 80%;
+    height: 25rem;
+    background: #d6d6d6;
+    top: 30%;
+    left: 10%;
+    border: .1rem solid #eee;
+    border-radius: 1.2rem;
+    margin-top: -6rem;
+    z-index: 20;
+    padding: 0 2rem;
+    box-sizing: border-box;
+}
+
+.send .tittle {
+    color: red;
+    height: 3rem;
+    line-height: 3rem;
+    text-align: center;
+    font-size: 1.6rem
+}
+
+.send .toForm {
+    background-color: #f7f7f7;
+    padding: 0 1rem
+}
+
+.send .toForm .toInput {
+    height: 3.5em;
+    border-bottom: 0.1rem solid grey;
+}
+
+.send .toForm .toInput span {
+    font-size: 1.5rem;
+    line-height: 3.5rem;
+    color: #000000
+}
+
+.send .toForm .toInput input {
+    text-indent: 0.3rem;
+    font-size: 1.4rem;
+    height: 2rem;
+    color: #808080;
+    line-height: 2rem;
+    width: 12rem;
+    background-color: #f7f7f7;
+
+}
+
+.send .toForm .toTextArea {
+    height: 9rem;
+    padding-bottom: 1rem;
+    margin-top: 0.5rem;
+}
+
+.send .toForm .toTextArea textarea {
+    width: 100%;
+    height: 100%;
+    border: .1rem solid #F2F2F2;
+    box-sizing: border-box;
+    resize: none;
+    font-size: 1.4rem;
+    padding: 0.5rem;
+    background: #f7f7f7;
+    color: #808080;
+
+}
+
+.send .des-b {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 0.6rem;
+}
+
+.send .des-b .sub, .send .des-b .esc {
+    width: 50%;
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.2rem;
+}
+
+.send .des-b .sub p {
+    width: 6rem;
+    text-align: center;
+    background-color: #ff004a;
+    float: right;
+    margin-right: 1rem;
+    color: white;
+    border-radius: 0.3rem;
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+}
+
+.send .des-b .esc p {
+    width: 6rem;
+    text-align: center;
+    background-color: #ffffff;
+    float: left;
+    margin-left: 1rem;
+    border-radius: 0.3rem;
+    -webkit-tap-highlight-color: rgba(0,0,0,0)
+}

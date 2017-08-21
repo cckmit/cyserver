@@ -1,0 +1,440 @@
+
+    <style>
+        body{
+            background:#f2f2f2;
+            font-family:"Microsoft YaHei";
+        }
+       /* .fl{float:left;}
+        .fr{float:right;}
+        .clearfix{
+            overflow:hidden;
+        .zoom:1;
+        }*/
+        .personal_head{
+            height:1.4rem;
+            line-height:1.4rem;
+            padding:0 0.2rem;
+            background:#fff;
+            border-bottom:solid 0.02rem #f2f2f2;
+            font-size:0.26rem;
+            color:#555;
+            margin-top:0.1rem;
+        }
+        .personal_head img{
+            width:0.8rem;
+            height:0.8rem;
+            float:right;
+            line-height:1.4rem;
+            padding-top:0.3rem;
+        }
+
+        /*update by jl*/
+        ul{
+            background:#fff;
+        }
+        ul li{
+            line-height:1rem;
+            border-bottom:solid 0.01rem #f2f2f2;
+            padding:0 0.2rem;
+            overflow:hidden;
+            .zoom:1;
+
+            display: flex;
+        }
+        ul li span{
+            font-size:0.26rem  ;
+            color:#555;
+        }
+        ul li p{
+            flex:1;
+            font-size:0.28rem;
+            color:#000;
+            height: 1rem;
+            text-align: right;
+        }
+        ul li p .fa{
+            line-height: 1rem;
+            margin-left:0.1rem;
+        }
+
+        ul li p .input_item{
+            width:100%;
+           box-sizing: border-box;
+           padding-top: 0;
+           text-align: right;
+           height: 1rem;
+            line-height: 1rem;
+
+           }
+        ul li p .birth_show{
+            height: 1rem;line-height: 1rem;
+        }
+
+        ul li p .sex{
+            text-align: right;
+            border:none;
+            background:none;
+            outline:none;
+        }
+
+        ul li .birth_r{
+            display: flex;
+        }
+        ul li .birth_r input{
+            flex:1;
+        }
+
+        /*city*/
+        .city_box div{
+            display: block;
+            color: #888;
+            font-size: 0.26rem;
+            width: 40%;
+
+        }
+        .city_box p{
+             display: flex;
+             width: 60%;
+
+         }
+
+        .city_box p .city_item{
+            width: 100%;
+            text-align: right;
+
+        }
+
+        .btn{
+            margin:0.8rem 0.2rem 0rem;
+            background:#0F88EB;
+            color:#fff;
+            font-size:0.3rem;
+            line-height:1rem;
+            text-align:center;
+            border-radius:0.1rem;
+        }
+
+        /*弹出框*/
+        /*选择城市*/
+        .confirmMark{
+            position: fixed;
+            z-index: 6;
+            top:0;
+            left:0;
+            width: 100%;
+            height:100%;
+            background: rgba(1,1,1,0.1);
+        }
+        .citySelConfirm{
+            background-color:#fff;
+            width:5.8rem;
+            border-radius: 0.1rem;
+            border: 0.02rem solid #ccc;
+
+            position:absolute;
+            left:10%;
+            bottom:20%;
+
+        }
+        .citySelConfirm .title{
+
+            font-size: 0.3rem;
+            color: #333333;
+            letter-spacing: 0;
+            text-align: center;
+            line-height: 1rem;
+        }
+        .citySelConfirm .confirmContent{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.28rem;
+            color: #555555;
+            line-height: 0.6rem;
+
+            /*scroll 限制最外层高度*/
+            height: 2.5rem;
+
+        }
+        .citySelConfirm .confirmContent .con_l{
+            flex:1;
+            text-align: center;
+
+            height:100%;
+            overflow: auto;
+        }
+        .citySelConfirm .confirmContent .con_l .con_item{
+           /* line-height: 0.6rem;
+            font-size: 0.28rem;
+            color: #555555;*/
+        }
+
+        .citySelConfirm .confirmContent .con_m{
+            width:0.04rem;
+            height:2.6rem;
+            background-color:#ddd;
+        }
+        .citySelConfirm .confirmContent .con_r{
+            flex:1;
+            text-align: center;
+
+            height:100%;
+            overflow: auto;
+        }
+        .citySelConfirm .btn_box{
+            width:100%;
+            border-top:0.04rem solid #ddd;
+            margin-top:0.3rem;
+        }
+        .citySelConfirm .btn_box a{
+            display: block;
+            font-size: 0.3rem;
+            color: #0F88EB;
+            line-height: 0.8rem;
+            text-align: center;
+        }
+
+        .chk_item{
+            font-size: 14px;
+            color: #0F88EB;
+        }
+
+        select,input {
+            border: none;
+            outline: none;
+            background: none;
+
+            appearance:none;
+            -moz-appearance:none;
+            -webkit-appearance:none;
+        }
+        /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+        select::-ms-expand { display: none; }
+        input::-ms-expand { display: none; }
+
+        /*对字数做限制*/
+
+        .H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6 {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            word-wrap: break-word;
+            white-space: normal !important;
+            -webkit-box-orient: vertical; }
+
+        /*限制一行*/
+        .H-text-show-row-1 {
+            line-clamp: 1;
+            -webkit-line-clamp: 1; }
+
+
+        /*test touxiang*/
+        .chk_pic{
+            display: block;
+            position: absolute;
+            top: 0rem;
+            left: 0rem;
+            height: 1.4rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .picboxs{
+            position: fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .cropArea {
+            background: rgba(1,1,1,0.5);
+            overflow: hidden;
+            z-index: 999;
+            flex: 1;
+        }
+        .myImage{
+            z-index: 9999;
+        }
+        .pic_btn{
+            height:1rem;
+            padding: 0.1rem;
+            box-sizing: border-box;
+            background: #fff;
+            display: flex;
+            font-size: 12px;
+        }
+        .pic_qx{
+            flex: 1;
+            margin-right: 5px;
+            display: flex;
+            background: #ff0000;
+            color: #fff;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+        }
+        .pic_qd{
+            flex: 1;
+            margin-left: 5px;
+            display: flex;
+            background: #0F88EB;
+            color: #fff;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+        }
+
+    </style>
+
+<div class="container">
+    <div class="personal_head" style="position:relative;">
+        <span>头像</span>
+        <img onerror="javascript:this.src='img/head.png';" ng-src="{{pic | filter_pic}}">
+
+        <label class="chk_pic">
+            <input id="fileInput" style="width:0px;height: 0px;" type="file" ng-model="yuantu" />
+        </label>
+    </div>
+
+    <ul>
+        <li>
+            <span>姓名</span>
+            <p>{{name}}</p>
+        </li>
+        <li ng-click="sexSel()">
+            <span>性别</span>
+            <p>
+                <select ng-model="sex" class="sex">
+                    <option value="男">男</option>
+                    <option value="女">女</option>
+                </select>
+                <i ng-show="iconVar" class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+
+        <li ng-click="birthSel()">
+            <span>出生日期</span>
+            <p class="birth_r">
+                <input ng-show="birthInput" ng-model="birthDate" type="date" style="opacity: 1;padding: 0;" ng-change="editDate()" class="input_item" />
+                <span ng-show="tipVar">请选择出生日期</span>
+                <span ng-show="birthShow" class="birth_show" style="color:#333333;">{{birthDate | date:'yyyy-MM-dd'}}</span>
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+
+        <li class="city_box" ng-click="resideSel()">
+            <div>现居住城市</div>
+            <p>
+                <input style="color: #333333;"  ng-model="resideCity" class="city_item" placeholder="请选择您现在的居住城市"/>
+                <i ng-show="iconVar" class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+        <li class="city_box" ng-click="originSel()">
+            <div>户口所在地</div>
+            <p>
+                <input style="color: #333333;"  ng-model="originCity" class="city_item" placeholder="请选择您现在的户口所在地"/>
+                <i ng-show="iconVar" class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+
+        <li>
+            <span>手机号码</span>
+            <p>{{telephone}}</p>
+        </li>
+        <li ng-click="emailInput()">
+            <span>电子邮箱</span>
+            <p>
+                <input type="email" class="input_item"  ng-model="email" placeholder="请填写您的电子邮箱" required/>
+            </p>
+        </li>
+        <li ui-sref="users_hobby({'id':id,'txt':hobbyTxt})">
+            <span>兴趣爱好</span>
+            <p>
+                <input style="color:#333;" placeholder="请填写您的兴趣爱好" class="input_item H-text-show-row-1 " ng-model="hobbyTxt"/>
+                <i ng-show="iconVar" class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+        <li ui-sref="users_comment({'id':id,'txt':commentTxt})">
+            <span>个人评价</span>
+            <p>
+                <input style="color:#333;" placeholder="请填写您的个人评价" class="input_item H-text-show-row-1" ng-model="commentTxt">
+                <i ng-show="iconVar" class="fa fa-angle-right" aria-hidden="true"></i>
+            </p>
+        </li>
+    </ul>
+    <div class="btn" ng-click="saveUserInfo()">保&nbsp;&nbsp;存</div>
+</div>
+
+
+
+    <!--弹窗-->
+
+    <!--选择居住城市-->
+    <div class="confirmMark" ng-show="resideVar">
+        <div class="citySelConfirm">
+            <div class="title">现居住城市</div>
+            <div class="confirmContent">
+
+                <div class="con_l l_list">
+                    <div class="con_item p_name" ng-class="{'chk_item':focusIndex1==p_item.id}"  ng-repeat="p_item in provinceList"
+                         ng-click="getCityList(p_item)">{{p_item.text}}</div>
+                </div>
+                <div class="con_m line"></div>
+                <div class="con_r r_list">
+                    <div class="con_item c_name" ng-class="{'chk_item':focusIndex2==c_item.id}" ng-repeat="c_item in cityList"
+                         ng-click="getCity(c_item)">{{c_item.text}}</div>
+                </div>
+
+            </div>
+            <div class="btn_box" ng-click="confirmReside()">
+                <a href="javascript:;">确定</a>
+            </div>
+        </div>
+    </div>
+
+    <!--选择户口所在地-->
+    <div class="confirmMark" ng-show="hukouVar">
+        <div class="citySelConfirm">
+            <div class="title">户口所在地</div>
+            <div class="confirmContent">
+
+                <div class="con_l l_list">
+                    <div class="con_item p_name" ng-class="{'chk_item':focusIndex1==p_item.id}"  ng-repeat="p_item in provinceList"
+                         ng-click="getCityHkList(p_item)">{{p_item.text}}</div>
+                </div>
+                <div class="con_m line"></div>
+                <div class="con_r r_list">
+                    <div class="con_item c_name" ng-class="{'chk_item':focusIndex2==c_item.id}" ng-repeat="c_item in cityHkList"
+                         ng-click="getCityHk(c_item)">{{c_item.text}}</div>
+                </div>
+
+            </div>
+            <div class="btn_box" ng-click="confirmHukou()">
+                <a href="javascript:;">确定</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="picboxs" ng-show="touxiangbox">
+        <div class="cropArea">
+            <!-- 截取图片框  -->
+            <img-crop image="myImage" area-type="circle" result-image="myCroppedImage"></img-crop>
+        </div>
+        <div class="pic_btn">
+            <div class="pic_qx" ng-click="picquxiao()">取消</div>
+            <div class="pic_qd" ng-click="picshangchuan()">确定</div>
+        </div>
+    </div>
+
+
+
+    <!--<script type="text/javascript" src="js/lrz.mobile.min.js"></script>-->
+
+
+
+
+

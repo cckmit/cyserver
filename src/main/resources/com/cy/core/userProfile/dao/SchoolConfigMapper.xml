@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.userProfile.dao.SchoolConfigMapper">
+	<resultMap type="com.cy.core.userProfile.entity.SchoolConfigEntity" id="SchoolConfigResultMap">
+	    <id column="baseId" property="baseId" />
+		<result column="schoolName" property="schoolName" />
+		<result column="province" property="province" />
+		<result column="city" property="city" />
+		<result column="pushServer" property="pushServer" />
+		<result column="pushServerPort" property="pushServerPort" />
+		<result column="pushServerAccount" property="pushServerAccount" />
+		<result column="pushServerPassword" property="pushServerPassword" />
+		<result column="webServer" property="webServer" />
+		<result column="webServerPort" property="webServerPort" />
+		<result column="fileServer" property="fileServer" />
+		<result column="fileServerPort" property="fileServerPort" />
+		<result column="chatServer" property="chatServer" />
+		<result column="chatServerPort" property="chatServerPort" />
+		<result column="chatServerDomain" property="chatServerDomain" />
+		<result column="codeSecretKey" property="codeSecretKey" />
+		<result column="welcomePicture" property="welcomePicture" />	
+		<result column="telphone" property="telphone" />
+	</resultMap>
+	<select id="selectByBaseId" parameterType="list" resultMap="SchoolConfigResultMap">
+		select * from cy_school_config where baseId in
+		<foreach collection="list" open="(" close=")" item="baseIdList"
+			separator=",">
+			#{baseIdList}
+		</foreach>
+	</select>
+	<select id="selectAllSupportedSchools" resultMap="SchoolConfigResultMap">
+		select baseId,schoolName,province,city from cy_school_config
+	</select>
+	<select id="countSchoolConfigEntity" parameterType="map" resultType="long">
+		select count(baseId) from cy_school_config
+		<where>
+			<if test="baseId!=null and baseId!=''">
+				baseId=#{baseId}
+			</if>
+			<if test="schoolName!=null and schoolName!=''">
+				schoolName=#{schoolName}
+			</if>
+		</where>
+	</select>
+	<insert id="save" parameterType="com.cy.core.userProfile.entity.SchoolConfigEntity">
+		insert into cy_school_config(baseId,schoolName,province,city,pushServer,pushServerPort,pushServerAccount,pushServerPassword,webServer,webServerPort,fileServer,
+		fileServerPort,chatServer,chatServerPort,chatServerDomain,codeSecretKey,welcomePicture,telphone) 
+		values(#{baseId},#{schoolName},#{province},#{city},#{pushServer},#{pushServerPort},#{pushServerAccount},#{pushServerPassword},#{webServer},#{webServerPort},#{fileServer},
+		#{fileServerPort},#{chatServer},#{chatServerPort},#{chatServerDomain},#{codeSecretKey},#{welcomePicture},#{telphone})
+	</insert>
+	<update id="update" parameterType="com.cy.core.userProfile.entity.SchoolConfigEntity">
+	    update cy_school_config
+			<set>
+			    baseId=#{baseId} 
+          		<if test="schoolName!=null and schoolName!=''">          
+               		,schoolName=#{schoolName} 
+           		</if>
+           		<if test="province!=null and province!=''">          
+               		,province=#{province} 
+           		</if>
+           		<if test="city!=null and city!=''">          
+               		,city=#{city} 
+           		</if>
+           		<if test="pushServer!=null and pushServer!=''">          
+               		,pushServer=#{pushServer} 
+           		</if>
+           		<if test="pushServerPort!=null and pushServerPort!=''">          
+               		,pushServerPort=#{pushServerPort} 
+           		</if>
+           		<if test="pushServerAccount!=null and pushServerAccount!=''">          
+               		,pushServerAccount=#{pushServerAccount} 
+           		</if>
+           		<if test="pushServerPassword!=null and pushServerPassword!=''">          
+               		,pushServerPassword=#{pushServerPassword} 
+           		</if>
+           		<if test="webServer!=null and webServer!=''">          
+               		,webServer=#{webServer} 
+           		</if>
+           		<if test="webServerPort!=null and webServerPort!=''">          
+               		,webServerPort=#{webServerPort} 
+           		</if>
+           		<if test="fileServer!=null and fileServer!=''">          
+               		,fileServer=#{fileServer} 
+           		</if>
+           		<if test="fileServerPort!=null and fileServerPort!=''">          
+               		,fileServerPort=#{fileServerPort} 
+           		</if>
+           		<if test="chatServer!=null and chatServer!=''">          
+               		,chatServer=#{chatServer} 
+           		</if>
+           		<if test="chatServerPort!=null and chatServerPort!=''">          
+               		,chatServerPort=#{chatServerPort} 
+           		</if>
+           		<if test="chatServerDomain!=null and chatServerDomain!=''">          
+               		,chatServerDomain=#{chatServerDomain} 
+           		</if>
+           		<if test="codeSecretKey!=null and codeSecretKey!=''">          
+               		,codeSecretKey=#{codeSecretKey} 
+           		</if>
+           		<if test="welcomePicture!=null and welcomePicture!=''">          
+               		,welcomePicture=#{welcomePicture} 
+           		</if>
+           		<if test="telphone!=null and telphone!=''">          
+               		,telphone=#{telphone} 
+           		</if>
+		    </set>
+		    where baseId=#{baseId}
+	</update>
+	<delete id="deleteByBaseId" parameterType="list">
+		delete from cy_school_config where  baseId in
+		<foreach collection="list" open="(" close=")" item="baseIdList"
+			separator=",">
+			#{baseIdList}
+		</foreach>
+	</delete>
+</mapper>

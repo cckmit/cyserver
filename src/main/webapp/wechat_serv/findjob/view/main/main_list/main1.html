@@ -1,0 +1,684 @@
+
+<style>
+
+    .main_view{
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+
+    .seach_box{
+        height: 46px;
+        width: 100%;
+        background: #f8f8f8;
+        display: table;
+    }
+    input[type="search"]{-webkit-appearance:none;}
+    input::-webkit-search-cancel-button {display: none;}
+
+    .seach_zhong{
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .sousuo_box{
+        position: relative;
+        width: 90%;
+        background: #fff;
+        height:26px;
+        border: 1px solid #d0d0d0;
+        border-radius: 5px;
+        display: inline-block;
+        box-sizing: content-box;
+
+    }
+    .sousuo_box .iconss{
+        position: absolute;
+        top: 0;
+        left: 0px;
+        width: 28px;
+        height:28px;
+        text-align: center;
+        line-height: 28px;
+        color: #757575;
+    }
+    .clear_seach{
+        position: absolute;
+        top: 0;
+        right: 0px;
+        width: 28px;
+        height:28px;
+        text-align: center;
+        line-height: 26px;
+    }
+    .clear_seach i{
+        color: #757575 ;
+    }
+    .sousuo_box input{
+        width: 100%;
+        height:100%;
+        border:none;
+        outline: none;
+        padding-right: 28px;
+        line-height: 28px;
+        font-size: 12px;
+        padding-left: 28px;
+        box-sizing: border-box;
+        background: none;
+        padding-top: 0;
+    }
+
+
+    .list_container{
+        flex:1;
+        position: relative;
+    }
+
+    .main1_center{
+
+    }
+
+    .qz_list li{
+        display: flex;
+        padding: 10px;
+        box-sizing: border-box;
+        background: #ffffff;
+        margin-bottom: 2px;
+    }
+    .qz_left_pic{
+        width: 2.4rem;
+        height: 2.4rem;
+    }
+    .qz_left_pic img{
+        width: 100%;
+        height: 100%;
+    }
+    .qz_right_xx{
+        margin-left: 10px;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .qz_wenzi{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: flex;
+    }
+    .wenzi_qian{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        flex: 1;
+    }
+    .wenzi_hou{
+        box-sizing: border-box;
+        padding-left: 10px;
+    }
+    .qz_zhiwei{
+        margin-top: 0.3rem;
+        font-size: 15px;
+        color: #333333;
+    }
+    .qz_gongsi{
+        margin-top: 0.4rem;
+        font-size: 13px;
+        color: #576B95;
+    }
+    .qz_tiaojian{
+        margin-top: 0.4rem;
+        font-size: 12px;
+        color: #555555;
+        line-height: 20px;
+    }
+
+    .qz_zhiwei .wenzi_hou{
+        color: #F15B4B;
+    }
+    .qz_gongsi .wenzi_hou{
+        font-size: 12px;
+        color: #888888;
+    }
+    .qz_tiaojian .wenzi_hou{
+        font-size: 12px;
+        color: #0F88EB;
+        border:1px solid #0F88EB;
+        border-radius: 3px;
+        padding: 0px 3px;
+    }
+
+
+
+
+
+
+
+
+
+    .xuanze{
+        display: flex;
+        height: 1rem;
+    }
+    .xuanze div{
+        flex: 1;
+        display: flex;
+        font-size: 14px;
+        color: #666666;
+        align-items: center;
+        justify-content: center;
+    }
+    .xuanze div i{
+        padding-left: 3px;
+    }
+    .xuanze div.dq_xuanze{
+        color: #0F88EB;
+    }
+
+
+
+    .nodata{
+        line-height: 30px;
+        font-size: 14px;
+        text-align: center;
+        color: #666666;
+    }
+
+
+
+    .quyu_box{
+        background: rgba(1,1,1,0.5);
+        position: absolute;
+        top: 1rem;
+        bottom:1rem;
+        left:0px;
+        width: 100%;
+        z-index: 2;
+
+        /*-webkit-animation-duration:0.3s;*/
+        /*animation-duration:0.3s;*/
+    }
+
+    /*行业类型的*/
+    .find_qz{
+        background: #fff;
+        border-bottom: 1px solid #EEEEEE;
+        border-top: 1px solid #EEEEEE;
+        padding: 1px 10px;
+
+        /*-webkit-animation-duration:0.3s;*/
+        /*animation-duration:0.3s;*/
+    }
+    .find_qz li{
+        border-bottom: 1px solid #eeeeee;
+        padding: 1px;
+    }
+
+
+
+    .item {
+        border: none;
+        border-bottom: 1px solid #eeeeee;
+        padding: 1px;
+        background: none;
+    }
+    .item-radio .item-content {
+        position: relative;
+        z-index: 2;
+        border: none;
+        background-color: #fff;
+        padding: 8px 0px;
+        font-size: 14px;
+    }
+    .item-radio .radio-icon {
+        position: absolute;
+        top: 1px;
+        right: 0;
+        z-index: 3;
+        visibility: hidden;
+        padding: 0px;
+        font-size: 12px;
+        color: #fff;
+        background: #06E0D3;
+        border-radius: 50%;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        margin-top: 7px;
+        margin-right: 0px;
+    }
+    .item-radio input:checked + .radio-content .item-content {
+        background: none;
+        color: #0F88EB;
+    }
+
+
+
+    /*城市的*/
+    .find_dd{
+        background: #f8f8f8;
+        height: 100%;
+    }
+    .find_dd_box{
+        box-sizing: border-box;
+        padding: 0.2rem;
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .dd_tabs{
+        display: flex;
+    }
+    .squyus{
+        flex: 1;
+        overflow: hidden;
+    }
+    .dd_tabs div{
+        flex:1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #333333;
+        line-height: 0.8rem;
+    }
+    .dd_tabs div.dq_cy{
+        color: #0f88eb;
+    }
+
+    .squyus ul{
+        width: 100%;
+        height:100%;
+        overflow: auto;
+    }
+
+    .squyus ul::-webkit-scrollbar{width:0;height:0}
+    .squyus li{
+        display: inline-block;
+        width: 30%;
+        margin: 1.2%;
+        text-align: center;
+        margin-top: 0.15rem;
+    }
+    .squyus li span{
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        background: #FFFFFF;
+        font-size: 12px;
+        color: #333333;
+        border: 1px solid #EBEBEB;
+        border-radius: 0.4rem;
+    }
+    .squyus li span.dq_city {
+        background: #0f88eb;
+        color: #fff;
+    }
+
+
+    .shixian{
+        box-sizing: border-box;
+        width: 100%;
+        height:100%;
+        display: flex;
+    }
+    .city_shi{
+        width: 3.2rem;
+        height:100%;
+        background: #EEEEEE;
+        overflow: hidden;
+    }
+    .city_shi ul{
+        height:100%;
+        overflow: auto;
+        padding: 10px;
+    }
+
+    .city_shi ul::-webkit-scrollbar{width:0;height:0}
+
+    .city_shi li{
+        font-size: 12px;
+        color: #333333;
+        line-height: 30px;
+    }
+    .city_shi li.dq_shi{
+        color: #0F88EB;
+    }
+
+    .city_xian{
+        height:100%;
+        background: none;
+        overflow: hidden;
+        flex: 1;
+    }
+    .city_xian ul{
+        height:100%;
+        overflow: auto;
+        padding: 10px;
+    }
+    .city_xian ul::-webkit-scrollbar{width:0;height:0}
+
+    .city_xian li{
+        font-size: 14px;
+        color: #333333;
+        line-height: 40px;
+    }
+    .city_xian li.dq_xian{
+        color: #0F88EB;
+    }
+
+
+
+    /*要求的*/
+    .find_yaoqiu{
+        background: #f8f8f8;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .yaoqiu_top{
+        padding: 20px 10px;
+        font-size: 12px;
+        color: #888888;
+        overflow: hidden;
+    }
+    .chongzhi{
+        float: left;
+    }
+    .chongzhi i{
+        margin-right: 10px;
+    }
+    .queding{
+        float: right;
+        color: #0F88EB;
+    }
+    .moneys{
+        font-size: 14px;
+        color: #333333;
+        line-height: 30px;
+        padding: 0 10px;
+        font-weight: bold;
+    }
+    .huakuai{
+        width: 100%;
+        padding: 30px;
+        box-sizing: border-box;
+    }
+    .hk_box{
+        width: 100%;
+    }
+
+    .scale{
+        display: none;
+    }
+
+    .theme-green .back-bar .pointer-label.minT{
+        float: left;
+    }
+    .theme-green .back-bar .pointer-label.maxT{
+        float: right;
+        right: 0;
+    }
+
+    .slider-container .scale {
+        top: -33px;
+    }
+
+    .theme-green .back-bar .selected-bar {
+        border-radius: 2px;
+        background-color: #0f88eb;
+        background-image: -moz-linear-gradient(top, #bdfade, #76fabc);
+        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0f88eb), to(#0f88eb));
+        background-image: -webkit-linear-gradient(top, #0f88eb, #0f88eb);
+        background-image: -o-linear-gradient(top, #bdfade, #76fabc);
+        background-image: linear-gradient(to bottom, #0f88eb, #0f88eb);
+        background-repeat: repeat-x;
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffbdfade', endColorstr='#ff76fabc', GradientType=0);
+    }
+    .theme-green .back-bar .pointer {
+        top: 0px;
+        width: 0;
+        height: 0;
+        border: none;
+        border-radius: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-bottom: 10px solid black;
+        background: none;
+
+        height:20px;
+        background: none;
+    }
+    .high{
+        margin-left: -10px;
+    }
+
+    .yq_kuai{
+        padding: 10px 0;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .yq_kuai li{
+        display: block;
+        float: left;
+        width: 25%;
+        text-align: center;
+        padding:5px;
+        box-sizing: border-box;
+    }
+    .yq_kuai li span{
+        display: block;
+        width:100%;
+        background: #fff;
+        border: 1px solid #EBEBEB;
+        border-radius: 3px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 12px;
+        color: #333333;
+        height: 0.72rem;
+        line-height: 0.72rem;
+    }
+    .yq_kuai li span.dq_yqjy{
+        background: #0F88EB;
+        color: #ffffff;
+        border: 1px solid #0F88EB;
+    }
+    .yq_kuai li span.dq_yqxl{
+        background: #0F88EB;
+        color: #ffffff;
+        border: 1px solid #0F88EB;
+    }
+
+    /*行业的*/
+    .find_hangye{
+        background: #f8f8f8;
+        height: 100%;
+    }
+
+
+
+
+
+
+
+
+    .index_center{
+        width: 100%;
+        height:100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .views{
+        flex:1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    footer{
+        display: flex;
+        border-top: 1px solid #EEEEEE;
+        height:1rem;
+        width: 100%;
+        background: #FFFFFF;
+        position: relative;
+        z-index: 4;
+    }
+    .footer_div{
+        flex:1;
+        font-size: 12px;
+        color: #888888;
+        display: flex;
+        align-items:center;
+        justify-content: center;
+    }
+    .footer_div i{
+        font-size: 16px;
+    }
+    .footer_div div{
+        text-align: center;
+        padding: 2px;
+    }
+
+    .footer_div.active{
+        color: #0F88EB;
+    }
+
+    .pane, .view{
+        background: #f8f8f8;
+    }
+</style>
+
+
+
+
+<div class="index_center">
+    <div class="views">
+
+        <div class="xuanze">
+            <!--<div class="dq_xuanze">找全职<i class="fa fa-chevron-down"></i></div>-->
+            <div ng-class="{'dq_xuanze':dq_find1}" ng-click="findFround(1)">{{typedata.text}}<i class="fa fa-chevron-down"></i></div>
+            <div ng-class="{'dq_xuanze':dq_find2}" ng-click="findFround(2)">{{citydata.text || '区域'}}<i class="fa fa-chevron-down"></i></div>
+            <div ng-class="{'dq_xuanze':dq_find3}" ng-click="findFround(3)">要求<i class="fa fa-chevron-down"></i></div>
+            <div ng-class="{'dq_xuanze':dq_find4}" ng-click="findFround(4)">行业<i class="fa fa-chevron-down"></i></div>
+        </div>
+
+        <div class="quyu_box" ng-show="xuanqu_box">
+            <gong-zuo></gong-zuo>
+
+            <gong-adre></gong-adre>
+
+            <gong-yao-qiu></gong-yao-qiu>
+
+            <gong-hang-ye></gong-hang-ye>
+        </div>
+
+        <div class="seach_box">
+            <div class="seach_zhong">
+                <div class="sousuo_box">
+                    <from action="" onsubmit="return false;">
+                        <i class="fa fa-search iconss"></i>
+                        <input ng-change="seachMain()" type="search" placeholder="搜索职位/公司" ng-model="searchs">
+                        <a class="clear_seach" ng-show="clearbtn" href="javascript:;" ng-click="clearInput()"><i class="fa fa-close"></i></a>
+                    </from>
+                </div>
+            </div>
+        </div>
+
+        <div class="list_container">
+
+            <ion-view>
+                <ion-content class="main1_center">
+                    <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+                    <ul class="qz_list">
+                        <li ng-repeat="list in zpList" ui-sref="zhiweicenter({id: list.id})">
+                            <div class="qz_left_pic">
+                                <img onerror="javascript:this.src='img/none.png';" ng-src="list.enterpriseLogo | filter_pic">
+                            </div>
+                            <div class="qz_right_xx">
+                                <div class="qz_wenzi qz_zhiwei" >
+                                    <div class="wenzi_qian">{{list.name}}</div>
+                                    <div class="wenzi_hou">{{list.salaryMin}}k-{{list.salaryMax}}k</div>
+                                </div>
+                                <div class="qz_wenzi qz_gongsi">
+                                    <div class="wenzi_qian">{{list.enterpriseName}}</div>
+                                    <div class="wenzi_hou">5分钟前</div>
+                                </div>
+                                <div class="qz_wenzi qz_tiaojian">
+                                    <div class="wenzi_qian">{{list.city}}/{{list.demand}}/{{list.education}} </div>
+                                    <div class="wenzi_hou">{{list.typeName}}</div>
+                                </div>
+                            </div>
+                        </li>
+
+                        <!--<li>-->
+                        <!--<div class="qz_left_pic">-->
+                        <!--<img src="img/none.png">-->
+                        <!--</div>-->
+                        <!--<div class="qz_right_xx">-->
+                        <!--<div class="qz_wenzi qz_zhiwei">-->
+                        <!--<div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司武汉金森医药科技有限公司司司司司司司司司司</div>-->
+                        <!--<div class="wenzi_hou">2k-3k</div>-->
+                        <!--</div>-->
+                        <!--<div class="qz_wenzi qz_gongsi">-->
+                        <!--<div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司</div>-->
+                        <!--<div class="wenzi_hou">5分钟前</div>-->
+                        <!--</div>-->
+                        <!--<div class="qz_wenzi qz_tiaojian">-->
+                        <!--<div class="wenzi_qian"> 武汉-武昌区／学历不限／本科 武汉-武昌区／学历不限／本科</div>-->
+                        <!--<div class="wenzi_hou">实习</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</li>-->
+
+                        <!--<li>-->
+                        <!--<div class="qz_left_pic">-->
+                        <!--<img src="img/none.png">-->
+                        <!--</div>-->
+                        <!--<div class="qz_right_xx">-->
+                        <!--<div class="qz_wenzi qz_zhiwei">-->
+                        <!--&lt;!&ndash;<div class="wenzi_qian">{{list.title}}</div>&ndash;&gt;-->
+                        <!--<div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司武汉金森医药科技有限公司司司司司司司司司司</div>-->
+                        <!--<div class="wenzi_hou">2k-3k</div>-->
+                        <!--</div>-->
+                        <!--<div class="qz_wenzi qz_gongsi">-->
+                        <!--<div class="wenzi_qian">武汉金森医药科技有限公司司司司司司司司司司</div>-->
+                        <!--<div class="wenzi_hou">5分钟前</div>-->
+                        <!--</div>-->
+                        <!--<div class="qz_wenzi qz_tiaojian">-->
+                        <!--<div class="wenzi_qian"> 武汉-武昌区／学历不限／本科 武汉-武昌区／学历不限／本科</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</li>-->
+                    </ul>
+
+                    <div class="nodata" ng-if="dataNull">没有更多了!</div>
+                    <!-- ion-infinite-scroll 上拉加载数据指令 distance默认1% nf-if的值为false时，就禁止执行on-infinite  -->
+                    <ion-infinite-scroll ng-if="moredata" on-infinite="loadMore()" distance="1%" >没有更多了</ion-infinite-scroll>
+                </ion-content>
+            </ion-view>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="footer_div active" ui-sref="main1">
+            <div>
+                <div><i class="fa fa-shopping-bag"></i></div>
+                <div>找工作</div>
+            </div>
+        </div>
+        <div class="footer_div" ui-sref="main2">
+            <div>
+                <div><i class="fa fa-user-o"></i></div>
+                <div>我的</div>
+            </div>
+        </div>
+    </footer>
+</div>

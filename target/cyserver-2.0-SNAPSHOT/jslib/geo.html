@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.3&key=bb5214cafd4e5d2e1b499444676cd00a"></script>
+  	<script type="text/javascript" src="https://webapi.amap.com/demos/js/liteToolbar.js"></script>
+	<title></title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script type="text/javascript"
+	src="./jslib/jquery-1.11.1.min.js"></script>
+<script type="text/javascript"
+	src="./jslib/ExtJquery.js"></script>
+<script type="text/javascript"
+	src="./jslib/jquery-dateFormat.min.js"></script>
+<link id="easyuiTheme" rel="stylesheet"
+	href="./jslib/easyui/themes/<%=easyuiTheme%>/easyui.css"
+	type="text/css">
+<script type="text/javascript"
+	src="./jslib/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="./jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript"
+	src="./jslib/ExtEasyUI.js"></script>
+<script type="text/javascript"
+	src="./jslib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript"
+	src="./jslib/kindeditor/kindeditor-min.js"></script>
+<script type="text/javascript"
+	src="./jslib/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript"
+	src="./jslib/ajaxupload.3.6.js"></script>
+
+<script type="text/javascript" src="./jslib/umeditor/umeditor.config.js"></script>
+<script type="text/javascript" src="./jslib/umeditor/umeditor.min.js"></script>
+<script type="text/javascript" src="./jslib/umeditor/lang/zh-cn/zh-cn.js"></script>
+<link href="./jslib/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+
+<link rel="stylesheet"
+	href="./css/icon.css" type="text/css"/>
+<link rel="stylesheet"
+	href="./jslib/easyui/themes/icon.css"
+	type="text/css"/>
+<link rel="stylesheet"
+	href="./css/frame.css" type="text/css"/>
+<link rel="stylesheet" href="./icons/icon-all.min.css"/>
+<link rel="stylesheet" href="./css/cy.css"/>
+<link href="favicon.ico" rel="shortcut icon" />
+	<style>
+		.ta001 th{
+			width: 107px;
+		}
+		.ta001 td{
+			height: 33px;
+		}
+		#container{
+			height: 394px;
+		}
+		body,html,#container{
+      height: 100%;
+      margin: 0px;
+      font-size: 12px;
+    }
+    .panel{
+      position: absolute;
+      right: 5px;
+      bottom: 20px;
+      background-color: #fff;
+      padding: 6px;
+      border: solid 1px silver;
+      box-shadow: 3px 4px 3px 0px silver;
+      border-radius: 3px;
+    }
+    .panel .bt{
+      float: left;
+      padding: 6px;
+      color: #09f;
+      border: solid 1px #09f;
+      background-color: #fff;
+      margin: 3px 9px;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+    .mes{
+      border-top: solid 1px #09f;
+      margin-top: 19px;
+      padding: 5px 0;
+      padding-bottom: 0;
+      border-radius: 0;
+      border: 0;
+      color: #aaa;
+    }
+	</style>
+	<script type="text/javascript">
+
+		var map;
+		//实例化插件
+		var geocoder;//编码地址转化实例
+		var MSearch;  //地图搜索实例
+		var clickListener;//绑定点击事件实例用于判断是否重复绑定
+		$(function(){
+			//实例化地图
+    		map = new AMap.Map('container',{
+		      resizeEnable: true,
+		      zoom: 10,
+		      center: [116.39,39.9]
+		    });	
+		    
+		    //加载插件
+		    AMap.service(['AMap.Geocoder',"AMap.PlaceSearch"],function(){//回调函数
+		      //实例化Geocoder
+		      geocoder = new AMap.Geocoder();
+		      //实例化MSearch搜索
+		      MSearch = new AMap.PlaceSearch({
+		        map:map
+		      });  
+		    });		
+
+		    //当点击地图时获取地图的坐标点经geocoder事例调用getAddress方法返回地址信息
+		    var _onClick = function(e){
+		      var lnglat = e.lnglat;
+		      getAddress(lnglat,"");
+		    }; 			
+
+		    //绑定地图点击事件
+		    var bind = function(){
+		      reset();
+		      clickListener = AMap.event.addListener(map, "click", _onClick);
+		    }		
+
+		    //移除地图点击事件
+		    var remove = function(){
+		      if(clickListener) {
+		        AMap.event.removeListener(clickListener);//移除事件，以绑定时返回的对象作为参数
+		      }
+		    }		
+
+		    //防止重复绑定
+		    var reset = function(){
+		      remove();
+		    }		
+
+		    bind();
+
+		    $('#city').change(function(){
+		    	var city = $(this).val();
+		    	map.setCity(city);
+		    });
+		    $('#city').change();
+		})
+
+		//用户点击搜索按钮之后，首先根据用户所选的城市设定为中心城市，默认为北京是中心城市
+		//同时可以搜索出用户所输入信息的周边的地址来供用户选择，
+		function chaxun() {
+			//获取用户所输入的信息
+			var keyword  =	$('#address').val();
+			//获取当前城市
+			var city = $('#city').val();
+			//实例化MSearch搜索格局城市
+		    MSearch = new AMap.PlaceSearch({
+		    	city:city,
+		    	map:map
+		    });  
+			//搜素用户输入信息的周边地址并作出标记
+			MSearch.search(keyword,function(status,result){
+		        if (status === 'complete') {
+		        	//获得了有效的地址信息:
+		        	//即，result.regeocode.formattedAddress
+		        	//alert(result.info);
+		        }else{
+		          //获取地址失败
+		        }
+		     });
+
+			//添加搜索后的marker点击事件
+		    AMap.event.addListener(MSearch, "markerClick", function(e){
+		        //alert(e.data.location);//当前marker的经纬度信息
+		        //alert(e.data.address);//获取当前marker的具体地址信息
+		        //alert(e.data);//则是包含所有的marker数据
+		        //console.log(e.data);
+		       /* $('#address').val(e.data.pname+e.data.cityname+e.data.address);*/
+		       	getAddress(e.data.location.lng+','+e.data.location.lat,e.data.address);
+		    });
+		}
+
+
+
+		function getAddress(location,add){
+			geocoder.getAddress(location, function(status, result) {
+		        if (status === 'complete' && result.info === 'OK') {
+		          //获得了有效的地址信息:
+		          //即，result.regeocode.formattedAddress
+		          //alert(result.regeocode.formattedAddress+","+lnglat)
+		          console.log(result.regeocode);
+		          var data = result.regeocode.addressComponent;
+		          var address = data.province+data.city+data.district+data.street+data.streetNumber;
+		          $('#address').val(address);
+		        }else{
+		          //获取地址失败
+		        }
+		    });
+		}
+
+
+
+	</script>
+</head>
+
+<body>
+<form method="post" class="form" style="position: relative">
+	<fieldset>
+		<legend>
+			企业信息
+		</legend>
+		<div style="width:512px;height:384px;border:2px solid gray;position: absolute; top:204px; left:130px" id="container"></div>
+		<table class="ta001">
+			<tr>
+				<th>
+					城市
+				</th>
+				<td colspan="3">
+					<input name="enterprise.name" id="city" class="easyui-validatebox"
+						   style="width: 250px;"
+						   maxlength="40" value="北京"/>
+				</td>
+			</tr>
+
+			<tr>
+				<th>
+					企业地址
+				</th>
+				<td colspan="3">
+					<input  name="enterprise.longitude" id="longitude" type="hidden" class="easyui-validatebox"/>
+					<input  name="enterprise.latitude"  id="latitude" type="hidden" class="easyui-validatebox"/>
+					<input  name="enterprise.locationDesc" id="locationDesc" type="hidden" class="easyui-validatebox"/>
+					<input   name="enterprise.address" id="address" class="easyui-validatebox"
+						   style="width: 250px;"
+						   data-options="required:true,validType:'customRequired'"
+						   maxlength="40" value=""/>
+					<input type="button"  onclick="chaxun()" value="搜索"/>
+
+				</td>
+
+			</tr>
+
+			<tr>
+				<th>
+					选择详细企业地址
+				</th>
+				<td id="">
+
+			   </td>
+			</tr>
+
+		</table>
+	</fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.electronicBook.dao.ElectronicBookMapper">
+
+    <resultMap type="com.cy.core.electronicBook.entity.ElectronicBook" id="electronicBookResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="author" property="author"/>
+        <result column="version" property="version"/>
+        <result column="upload" property="uploadUrl"/>
+        <result column="logo" property="logoUrl"/>
+        <result column="del_flag" property="delFlag"/>
+        <result column="update_date" property="updateDate"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="create_date" property="createDate"/>
+        <result column="create_by" property="createBy"/>
+        <result column="remarks" property="remarks"/>
+        <result column="alumniName" property="alumniName"/>
+        <result column="uploadOrganization" property="uploadOrganization"/>
+        <result column="introduction" property="introduction"/>
+    </resultMap>
+
+    <select id="query" parameterType="map" resultMap="electronicBookResultMap">
+        SELECT
+        e.*, a.alumniName
+        FROM cy_electronic_book e
+        LEFT JOIN cy_alumni a ON e.uploadOrganization = a.alumniId
+        <where>del_flag = '0'
+            <if test="name!=null and name!=''">
+                AND name like concat('%',#{name},'%')
+            </if>
+            <if test="author!=null and author!=''">
+                and author like concat('%',#{author},'%')
+            </if>
+            <if test="version!=null and version!=''">
+                and version like concat('%',#{version},'%')
+            </if>
+            <if test="alumniName!=null and alumniName!=''">
+                and a.alumniName = #{alumniName}
+            </if>
+
+        </where>
+        order by id desc
+        limit #{start},#{rows}
+    </select>
+
+    <select id="queryAll" resultMap="electronicBookResultMap">
+        select * from cy_electronic_book
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(e.id)
+        FROM cy_electronic_book e
+        LEFT JOIN cy_alumni a ON e.uploadOrganization = a.alumniId
+        <where>del_flag = '0'
+            <if test="name!=null and name!=''">
+                AND name like concat('%',#{name},'%')
+            </if>
+            <if test="author!=null and author!=''">
+                and author like concat('%',#{author},'%')
+            </if>
+            <if test="version!=null and version!=''">
+                and version like concat('%',#{version},'%')
+            </if>
+            <if test="alumniName!=null and alumniName!=''">
+                and a.alumniName = #{alumniName}
+            </if>
+        </where>
+
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="electronicBookResultMap">
+        SELECT
+        e.*, a.alumniName
+        FROM cy_electronic_book e
+        LEFT JOIN cy_alumni a ON e.uploadOrganization = a.alumniId where id=#{id}
+    </select>
+
+    <insert id="add" parameterType="com.cy.core.electronicBook.entity.ElectronicBook">
+        insert into cy_electronic_book
+        (
+        id,
+        name,
+        author,
+        upload,
+        version,
+        logo,
+        introduction,
+        uploadOrganization,
+        del_flag,
+        update_date,
+        update_by,
+        create_date,
+        create_by,
+        remarks)
+        values
+        ( #{id},
+        #{name},
+        #{author},
+        #{uploadUrl},
+        #{version},
+        #{logoUrl},
+        #{introduction},
+        #{uploadOrganization},
+        #{delFlag},
+        #{updateDate},
+        #{updateBy},
+        #{createDate},
+        #{createBy},
+        #{remarks})
+    </insert>
+
+    <update id="update" parameterType="com.cy.core.electronicBook.entity.ElectronicBook">
+        update cy_electronic_book
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+
+            <if test="author!=null and author!=''">
+                author=#{author},
+            </if>
+
+            <if test="version!=null and version!=''">
+                version=#{version},
+            </if>
+            <if test="upload!=null and upload!=''">
+                upload=#{uploadUrl},
+            </if>
+            <if test="uploadOrganization!=null and uploadOrganization!=''">
+                uploadOrganization=#{uploadOrganization},
+            </if>
+            <if test="introduction!=null and introduction!=''">
+                introduction=#{introduction},
+            </if>
+            logo=#{logoUrl},
+
+            del_flag=#{delFlag},
+            update_date=#{updateDate},
+            update_by=#{updateBy},
+            create_date=#{createDate},
+            create_by=#{createBy},
+            remarks=#{remarks}
+
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="list">
+        delete from cy_electronic_book where id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </delete>
+</mapper>

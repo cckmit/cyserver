@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>9选3认证</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+    </style>
+
+</head>
+<body>
+<div class="H-padding-10 H-theme-background-color-white">
+    <p class="tip_txt">请选出三名您的同班同学。(<span class="verify_num">0</span>/3)</p>
+    <div class="name_wrap">
+        <!-- <div class="name_row">
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+     </div>
+         <div class="name_row">
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+         </div>
+         <div class="name_row">
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+             <div class="name_item">
+                 <label>
+                     <span>吴　祥</span>
+                     <input type="checkbox">
+                 </label>
+             </div>
+         </div>-->
+    </div>
+    <div  class="H-padding-15 H-margin-vertical-top-10">
+        <button onclick="submitVerify()" class="submit_verify H-button H-width-100-percent H-font-size-16 H-outline-none H-padding-vertical-both-8
+                H-padding-horizontal-both-20  H-theme-border-color16 H-border-radius-3"
+                style="background-color:#3498db;color:#fefefe">申请认证</button>
+    </div>
+
+    <!--<p class="tip_txt">无法通过九选三认证?<br>-->
+        <!--请<a href="javascript:;" class="others" >点击此处</a>选择其他认证方式。</p>-->
+</div>
+
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+
+<script type="text/javascript">
+    var pathId = B.getUrlParamByName("pathId");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("verify/verify_form.html?ts=" + B.getRandomInt(4)) + "&pathId=" + pathId;
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '3f9',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+
+    }
+
+    $(function () {
+        //获取班级成员列表(9)
+        getMemberList();
+
+    })
+
+
+    //获取班级成员列表(9)
+    function getMemberList(){
+
+        B.ready(function(){
+
+//            console.log('{"command": "218","content": {"strStudyPathId": \"'+pathId+'\"} }');
+
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "218","content": {"strStudyPathId": \"'+pathId+'\"} }'
+                },
+                dataType: 'json',
+                success: function(data) {
+//                    console.log(JSON.stringify(data));
+
+                    //添加同学姓名
+                    var nameArr = new Array();
+                    if(data.success && data.obj) {
+                        nameArr = data.obj;
+
+                        //为了显示美观,对每个名字
+
+                        if(nameArr.length >=9 ) {
+                            var nli ='';
+
+                            for(var i in nameArr) {
+
+                                var item = '<div class="name_item">'+
+                                        '       <label class="label_bg"><span class="">'+nameArr[i]+'</span><input onclick="chkName(this)" type="checkbox"></label>'+
+                                        '</div>';
+
+
+                                if( i == 0){                                            //第一个元素起始行div
+                                    nli += '<div class="name_row">';
+                                }else if(i%3 == 0){                                     //每够3个姓名换行
+                                    nli += '</div><div class="name_row">';
+                                }
+
+                                nli += item;
+
+                                if(i == (nameArr.length-1)){                            //最后一个元素结尾封闭当前行
+                                    nli += '</div>';
+                                }
+                            }
+
+
+                            $('.name_wrap').append(nli);
+
+                        }else{
+                            H.alert('人数不够9人');
+
+                        }
+
+
+
+
+                    }
+                },
+                error: function(xhr, type) {
+                    //alert("调用失败");
+                }
+            });
+        })
+    }
+
+
+    //定义了一个全局变量,存放选中的人名
+    var finalNames = [];
+
+    //选中姓名,将姓名存储到数组finalNames中
+    function chkName(obj) {
+        //改变样式
+        $(obj).toggleClass('checked');
+
+
+        //定义一个局部变量的数组
+        var chkNamesArr = [];
+        var $chkNames = $('.checked');
+        var len = $chkNames.length;
+        //获得点击姓名的数量
+        $('.verify_num').text(len);
+
+        for(var i=0; i<len;i++) {
+            chkNamesArr.push($($chkNames[i]).siblings().text());
+        }
+
+        //length 3 disabled
+        if(len>=3) {
+            //不能点击其他的没有".checked"
+            $('input').not('.checked').each(function(index,item){
+                $(item).attr("disabled",true);
+                if(len==3) {
+                    $('.submit_verify').removeAttr("disabled");
+                }else if(len>3) {
+                    $('.submit_verify').attr("disabled",true);
+                }
+
+            });
+        }else{
+            $('input').each(function(index, item){
+                $(item).removeAttr("disabled");
+                $('.submit_verify').attr("disabled",true);
+
+            });
+        }
+
+        //点击该姓名,进行样式修改
+        if(len<=3) {
+            $(obj).parent().toggleClass('checkedLabel');
+        }
+
+//        console.log(chkNamesArr);
+        finalNames = chkNamesArr;
+
+    }
+
+
+
+    //提交申请
+    function submitVerify() {
+
+        var nameArr = finalNames;
+//        console.log("nameArr==="+finalNames);
+
+        var chk_name1 = nameArr[0];
+        var chk_name2 = nameArr[1];
+        var chk_name3 = nameArr[2];
+
+        //提交表单
+        B.ready(function(){
+
+//            console.log('{"command": "15","content": {"accountNum": \"'+accountNum+'\","classmates": [\"'+chk_name1+'\",\"'+chk_name2+'\",\"'+chk_name3+'\"],"baseInfoId": [\"'+pathId+'\"]}}')
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr: '{"command": "15","content": {"accountNum": \"'+accountNum+'\","classmates": [\"'+chk_name1+'\",\"'+chk_name2+'\",\"'+chk_name3+'\"],"baseInfoId": [\"'+pathId+'\"]}}'
+                },
+                dataType: 'json',
+                success: function(data) {
+//                    console.log(JSON.stringify(data));
+
+                    if(data.success){
+                        H.alertTipForSuccuss(function () {
+                            //跳转到学习经历
+                            H.openWin("学习经历","../study_path.html?ts="+B.getRandomInt(4)+"&accountNum="+accountNum+'&fromFoundation='+fromFoundation);
+
+                        },data.msg)
+                    }else{
+                        H.alertTipForFail(function () {
+
+                        },data.msg)
+                    }
+
+                },
+                error: function(xhr, type) {
+                    alert("调用失败");
+                }
+            });
+        });
+
+
+
+    }
+
+
+
+    //ios返回刷新页面
+//    var rnumber = Math.floor(Math.random()*1000)
+//    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&userId='+userId+'&mod='+rnumber+'&fromFoundation='+fromFoundation);
+//    window.onpopstate = function(event) {
+//        location.reload();
+//        //alert("location: " + document.location);
+//    };
+
+</script>

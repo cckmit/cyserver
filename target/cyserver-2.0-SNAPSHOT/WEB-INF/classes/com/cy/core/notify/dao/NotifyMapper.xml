@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.notify.dao.NotifyMapper">
+	<resultMap type="com.cy.core.notify.entity.Notify" id="notifyResultMap">
+		<id column="id" property="id"/>
+		<result column="type" property="type"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="buss_id" property="bussId"/>
+		<result column="way" property="way"/>
+		<result column="status" property="status"/>
+		<result column="readFlag" property="readFlag"/>
+		<result column="channel" property="channel" />
+		<result column="markings" property="markings" />
+		<result column="del_flag" property="delFlag"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_date" property="createDate"/>
+		<result column="update_by" property="updateBy"/>
+		<result column="update_date" property="updateDate"/>
+		<result column="remarks" property="remarks"/>
+		<result column="extras" property="extras"/>
+	</resultMap>
+
+	<select id="query" parameterType="com.cy.core.notify.entity.Notify" resultMap="notifyResultMap">
+		select c.*
+		from cy_notify c
+		WHERE c.del_flag = '0'
+		<if test="channel != null and channel != ''">
+			and c.channel= #{channel}
+		</if>
+		<if test="markings!= null and markings!= ''">
+			and c.markings= #{markings}
+		</if>
+		<if test="type != null and type != ''">
+			and c.type= #{type}
+		</if>
+		<if test="way!= null and way!= ''">
+			and c.way= #{way}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.status= #{status}
+		</if>
+		<if test="state!= null and state!= ''">
+			AND a
+		</if>
+		order by c.update_date desc
+
+		<if test='isNotLimit != "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+
+
+	<select id="count" parameterType="com.cy.core.notify.entity.Notify" resultType="long">
+		select count(c.id) from cy_notify c
+		WHERE c.del_flag = '0'
+		<if test="channel != null and channel != ''">
+			and c.channel= #{channel}
+		</if>
+		<if test="markings!= null and markings!= ''">
+			and c.markings= #{marking}
+		</if>
+		<if test="type != null and type != ''">
+			and c.type= #{type}
+		</if>
+		<if test="way!= null and way!= ''">
+			and c.way= #{way}
+		</if>
+		<if test="status!= null and status!= ''">
+			and c.status= #{status}
+		</if>
+	</select>
+
+	<select id="getById" parameterType="java.lang.String" resultMap="notifyResultMap">
+		select c.*
+		from cy_notify c
+		where c.id=#{id}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO cy_notify(
+			id,
+			type ,
+			title ,
+			content ,
+			buss_id ,
+			way ,
+			extras ,
+			status ,
+			channel ,
+			markings ,
+			del_flag ,
+			create_by ,
+			create_date,
+			update_by ,
+			update_date,
+			remarks
+
+		) VALUES (
+			#{id},
+			#{type} ,      
+			#{title} ,     
+			#{content} ,   
+			#{bussId} ,   
+			#{way} ,       
+			#{extras} ,
+			#{status} ,
+			#{channel} ,
+			#{markings} ,
+			#{delFlag} ,  
+			#{createBy} , 
+			#{createDate},
+			#{updateBy} , 
+			#{updateDate},
+			#{remarks}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.cy.core.notify.entity.Notify">
+		update cy_notify set
+		<if test="type != null and type != ''">
+			type = #{type} ,
+		</if>
+		<if test="title!= null and title!= ''">
+			title = #{title} ,
+		</if>
+		<if test="content!= null and content!= ''">
+			content = #{content} ,
+		</if>
+		<if test="bussId!= null and bussId!= ''">
+			buss_id = #{bussId} ,
+		</if>
+		<if test="way!= null and way!= ''">
+			way = #{way} ,
+		</if>
+		<if test="markings!= null and markings!= ''">
+			markings = #{markings} ,
+		</if>
+		<if test="extras!= null and extras!= ''">
+			extras = #{extras} ,
+		</if>
+		<if test="status!= null and status!= ''">
+			status = #{status} ,
+		</if>
+		<if test="channel!= null and channel!= ''">
+			channel = #{channel} ,
+		</if>
+		<if test="updateBy!= null and updateBy!= ''">
+			update_by = #{updateBy} ,
+		</if>
+		<if test="remarks!= null and remarks!= ''">
+			remarks = #{remarks} ,
+		</if>
+		update_date = #{updateDate}
+		where id=#{id}
+	</update>
+
+	<delete id="deleteByIdList" parameterType="list">
+		update cy_notify
+		set
+		del_flag=1,
+		update_date = now()
+		where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<delete id="delete" parameterType="com.cy.core.notify.entity.Notify">
+		update cy_notify
+		set del_flag=1 ,update_date = #{updateDate} ,update_by = #{updateBy}
+		where id = #{id}
+	</delete>
+
+	<!-- 查詢用戶推送信息 -->
+	<select id="selectPersonalNotifies" parameterType="map" resultMap="notifyResultMap">
+		SELECT
+		n.id,n.type,n.title,n.content,n.buss_id,n.way,n.channel,n.markings,n.create_date,nr.read_flag AS readFlag
+		FROM
+		cy_notify n
+		LEFT JOIN cy_notify_record nr ON n.id=nr.notify_id
+		WHERE
+		n.del_flag = '0' AND nr.del_flag = '0' AND n.content IS NOT NULL AND n.content != '' AND nr.user_id = #{userId}
+		<if test="readFlag != null and readFlag != '' ">
+			AND nr.read_flag = #{readFlag}
+		</if>
+		<if test="type != null and type != '' ">
+			AND n.type = #{type}
+		</if>
+		ORDER BY nr.create_date DESC
+		<if test='isNotLimit != "1"'>
+			limit ${start},${rows}
+		</if>
+	</select>
+
+	<select id="countPersonalNotifies" parameterType="map" resultType="long">
+		SELECT
+		count(nr.id)
+		FROM
+		cy_notify n
+		LEFT JOIN cy_notify_record nr ON n.id=nr.notify_id
+		WHERE
+		n.del_flag = '0' AND nr.del_flag = '0' AND n.content IS NOT NULL AND n.content != '' AND nr.user_id = #{userId}
+		<if test="readFlag != null and readFlag != '' ">
+			AND nr.read_flag = #{readFlag}
+		</if>
+		<if test="type != null and type != ''">
+			AND n.type = #{type}
+		</if>
+	</select>
+
+</mapper>

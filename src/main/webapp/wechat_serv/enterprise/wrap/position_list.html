@@ -1,0 +1,128 @@
+<link href="css/ionic.css" rel="stylesheet" type="text/css" />
+
+<style>
+
+    .list_bg{
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+    .pane{
+        position: relative;
+        flex: 1;
+
+    }
+    .list{
+        background-color:#f2f2f2;
+    }
+    .job_list .item-content{
+        position: inherit;
+        width:100%;
+        z-index: 2;
+        padding: 0;
+        border: none;
+        background-color: #fff;
+        display: flex;
+    }
+
+
+    .no_more{
+        font-size: 14px;
+        color: #747474;
+        letter-spacing: -0.29px;
+        text-align: center;
+        background-color: #f2f2f2;
+    }
+    .pane, .view{
+        background: none;
+    }
+
+</style>
+
+<div class="list_bg">
+
+
+    <div class="title"><span>我们在找的所有职位&nbsp;</span>
+        <span>(</span>
+        <span ng-if="total && total > 0 " class="num">{{total}}</span>
+        <span ng-if="total && total == 0 " class="num">{{0}}</span>
+        <span>)</span></div>
+    <!--job_list-->
+
+    <ion-pane>
+        <ion-content>
+            <ion-refresher pulling-text="下拉刷新" on-refresh="doRefreshJob()"></ion-refresher>
+            <ion-list class="job_list">
+                <ion-item class="job_item" ng-repeat="jItem in jobItems" ui-sref="position_detail({'id':jItem.id})">
+
+                  <!--  <div class="item_l">
+                        <div class="name" ui-sref="position_detail(id)">{{jItem.name}}</div>
+                        <div class="require">
+                            <span class="add">{{jItem.city}}&nbsp;/&nbsp; </span>
+                            <span class="year">
+                                {{jItem.experienceMin}}-{{jItem.experienceMax}}年&nbsp;/&nbsp;
+                            </span>
+                            <span class="grade" ng-if="jItem.education && jItem.education!='' ">{{jItem.education}}</span>
+                        </div>
+                    </div>
+                    <div class="item_r">
+                        <div class="r_li money">
+                            {{jItem.salaryMin}}-{{jItem.salaryMax}}k
+                        </div>
+                        <div class="r_li ask_num">招聘人数:
+                            <span class="num">{{jItem.recruitersNum}}</span>人
+                        </div>
+                    </div>-->
+
+                    <div class="item_l">
+                        <div class="name" ui-sref="position_detail(id)">{{jItem.name}}</div>
+                        <div class="require">
+                            <span class="add">{{jItem.city}}&nbsp;/&nbsp; </span>
+                            <span class="year" ng-if="jItem.experienceMin && jItem.experienceMin!='0' && jItem.experienceMax && jItem.experienceMax!='0' ">
+                                {{jItem.experienceMin}}-{{jItem.experienceMax}}年&nbsp;/&nbsp;
+                            </span>
+                            <span class="year" ng-if="(!jItem.experienceMin || jItem.experienceMin=='0') && (!jItem.experienceMax || jItem.experienceMax=='0' )">
+                                不限&nbsp;/&nbsp;
+                            </span>
+                            <span class="year" ng-if="jItem.experienceMin && jItem.experienceMin!='0' && jItem.experienceMax && jItem.experienceMax=='0' ">
+                                {{jItem.experienceMin}}-不限&nbsp;/&nbsp;
+                            </span>
+                            <!--  <span class="year" ng-if="jItem.experienceMin && jItem.experienceMin=='0' && jItem.experienceMax && jItem.experienceMax!='0' ">
+                                  不限-{{jItem.experienceMin}}&nbsp;/&nbsp;
+                              </span>-->
+                            <span class="grade" ng-if="jItem.education && jItem.education!='' ">{{jItem.education}}</span>
+                        </div>
+                    </div>
+                    <div class="item_r">
+                        <div class="r_li money" ng-if="jItem.salaryMin && jItem.salaryMin !='0' && jItem.salaryMax && jItem.salaryMax!='0' ">
+                            {{jItem.salaryMin}}-{{jItem.salaryMax}}k
+                        </div>
+                        <div class="r_li money" ng-if="jItem.salaryMin && jItem.salaryMin =='0' && jItem.salaryMax && jItem.salaryMax!='0' ">
+                            不限-{{jItem.salaryMax}}k
+                        </div>
+                        <div class="r_li money" ng-if="jItem.salaryMin && jItem.salaryMin =='0' && jItem.salaryMax && jItem.salaryMax=='0' ">
+                            {{jItem.salaryMin}}-不限
+                        </div>
+                        <div class="r_li money" ng-if="(!jItem.salaryMin || jItem.salaryMin =='0') && (!jItem.salaryMax && jItem.salaryMax=='0' )">
+                            不限
+                        </div>
+                        <div class="r_li ask_num">招聘人数:
+                            <span class="num" ng-if="jItem.recruitersNum && jItem.recruitersNum!='0'">{{jItem.recruitersNum}}</span>人</div>
+                        <span class="num" ng-if="!jItem.recruitersNum || jItem.recruitersNum=='0'">不限</span></div>
+                </ion-item>
+            </ion-list>
+
+            <div class="assertive no_more" ng-if="jobNull">没有更多啦!</div>
+            <ion-infinite-scroll ng-if="hasMoreJob" on-infinite="doInfiniteJob()">没有更多啦!</ion-infinite-scroll>
+
+        </ion-content>
+    </ion-pane>
+</div>
+
+
+
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.mobileLocal.dao.MobileLocalMapper">
+	<resultMap type="com.cy.core.mobileLocal.entity.MobileLocal"
+		id="mobileLocalResultMap">
+		<id column="id" property="id" />
+		<result column="mobileNumber" property="mobileNumber" />
+		<result column="mobileArea" property="mobileArea" />
+		<result column="mobileType" property="mobileType" />
+		<result column="areaCode" property="areaCode" />
+		<result column="postCode" property="postCode" />
+	</resultMap>
+	<insert id="insert" parameterType="com.cy.core.mobileLocal.entity.MobileLocal">
+		insert into
+		cy_mobile(mobileNumber,mobileArea,mobileType,areaCode,postCode)
+		values(#{mobileNumber},#{mobileArea},#{mobileType},#{areaCode},#{postCode})
+	</insert>
+	<select id="selectByMobileNumber" parameterType="string"
+		resultMap="mobileLocalResultMap">
+		select
+		id,mobileNumber,mobileArea,mobileType,areaCode,postCode
+		from cy_mobile
+		where mobileNumber=#{mobileNumber}
+	</select>
+</mapper>

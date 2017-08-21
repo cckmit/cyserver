@@ -1,0 +1,129 @@
+@charset "utf-8";
+/* Variables */
+
+//test rem
+@function px2rem($px){
+  $rem : 100px;
+  @return ($px/$rem) + rem;
+}
+
+//font
+$font-20:px2rem(20px);
+$font-18:px2rem(18px);
+$font-15:px2rem(15px);
+$font-14:px2rem(14px);
+$font-13:px2rem(13px);
+$font-12:px2rem(12px);
+$font-10:px2rem(10px);
+
+$font-size-base: px2rem(13px);
+$line-height-base: 2;
+$serif-font: 'Playfair Display', 'Times New Roman', serif;
+$sans-serif-font: 'Droid Sans', 'Arial', sans-serif;
+$accent-font: 'Oswald', $sans-serif-font;
+
+$blue: #0F88EB;
+$black: #333;
+$gray: #888;
+$white:#FFF;
+$bg-color:#f2f2f2;
+
+$xxs:   365px;
+$xs:    412px;
+
+/* Mixins */
+
+@mixin min($width) {
+  @media screen and (min-width: $width) {
+    @content;
+  }
+}
+
+
+@mixin max($width) {
+  @media screen and (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin retina {
+  @media
+  (-webkit-min-device-pixel-ratio: 2),
+  (min-resolution: 192dpi) {
+    @content;
+  }
+}
+
+
+.hide{
+  display:none;
+}
+.show{
+  display:block;
+}
+
+
+//row
+/* 设置文字显示多少行 */
+.H-text-show-row-1, .H-text-show-row-2, .H-text-show-row-3, .H-text-show-row-4, .H-text-show-row-5, .H-text-show-row-6
+{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  //display: box;
+  display: -webkit-box;
+  word-wrap: break-word;
+  white-space: normal !important;
+  -webkit-box-orient: vertical;
+
+}
+.H-text-show-row-1 { line-clamp: 1; -webkit-line-clamp: 1; }
+.H-text-show-row-2 { line-clamp: 2; -webkit-line-clamp: 2; }
+.H-text-show-row-3 { line-clamp: 3; -webkit-line-clamp: 3; }
+.H-text-show-row-4 { line-clamp: 4; -webkit-line-clamp: 4; }
+.H-text-show-row-5 { line-clamp: 5; -webkit-line-clamp: 5; }
+.H-text-show-row-6 { line-clamp: 6; -webkit-line-clamp: 6; }
+
+
+
+/* General Styles*/
+html {
+  box-sizing: border-box;
+  font-size:16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: $sans-serif-font;
+  font-size:$font-size-base;
+  line-height: 2;
+}
+
+a {
+  color: $black;
+  text-decoration: none;
+  &:hover, &:focus {
+    color: $blue;
+  }
+}
+ul{
+  padding:0;
+  margin:0;
+}
+li{
+  list-style: none;
+}
+
+@mixin clearfix(){
+  &:before,
+  &:after{
+    content:"";
+    display:table;
+  }
+  &:after{
+    clear:both;
+  }
+}
+

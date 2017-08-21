@@ -1,0 +1,900 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>校友会</title>
+	<link rel="stylesheet" href="../css/style.css" type="text/css" />
+	<link rel="stylesheet" href="../css/user.css" type="text/css" />
+	<link href="../css/artDialog/ui-dialog.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="../css/friends.css" type="text/css" />
+
+	<script type="text/javascript" src="../js/jquery-1.8.3.min.js"></script>
+	<script src="../js/xdomain.min.js" type="text/javascript"></script>
+	<script src="../js/B.js" type="text/javascript"></script>
+	<script src="../js/common.js" type="text/javascript"></script>
+	<script src="../js/interfacepath.js" type="text/javascript"></script>
+
+	<script src="../js/title_style.js" type="text/javascript"></script>
+
+
+	<!--动态加载数据-->
+	<script type="text/javascript">
+
+		var accountNum = '';
+
+
+		var avatarStr= '';
+		var innerStr = '';
+
+		$(function() {
+
+			B.ready(function() {
+				accountNum = getCookie("accountNum");
+
+				setLeftNavDate();
+
+				if( accountNum && accountNum != ''){
+
+				}
+				//左侧导航:图片
+
+			});
+
+			initFoot();
+		});
+
+
+		window.onresize = function () {
+			initFoot();
+		}
+
+		function initFoot(){
+			var windowHeight = $(window).height() ;
+			if(windowHeight > 200) {
+				$(".section").css("min-height",windowHeight-195);
+			}
+		}
+
+	</script>
+</head>
+<body>
+<!--这是顶部::start-->
+<div id="head">
+
+	<div class="lines">
+	</div>
+
+	<div class="header_nav">
+	</div>
+
+	<div class="header_content">
+	</div>
+
+</div>
+<!--这是顶部::end-->
+
+<table width="980" border="0" align="center" cellpadding="0" cellspacing="0" style="margin: auto ;margin-top:10px; margin-bottom: 20px;">
+	<tr>
+		<td  align="left" valign="top">
+
+			<div class="section clearfix">
+				<div class="line30"></div>
+
+				<div class="info-wrap">
+					<!--左侧导航-->
+					<div class="info-box">
+						<div class="avatar-box">
+							<a href="javascript:;" class="img-box">
+
+								<img src="../image/user-avatar.png" class="user_tx"/>
+
+							</a>
+
+						</div>
+						<ul class="side-nav">
+							<li>
+								<a href="user_personal.html" >个人资料</a>
+							</li>
+							<li>
+								<a href="user_studyPath.html">学习经历</a>
+							</li>
+							<li>
+								<a class="side-nav-style" href="user_rzclass.html">班级认证</a>
+							</li>
+							<li>
+								<a href="user_branch.html">所属分会</a>
+							</li>
+							<li>
+								<a href="user_friends.html">我的好友</a>
+							</li>
+							<li>
+								<a href="../service/donate/myDonate.html">我的捐赠</a>
+							</li>
+							<li>
+								<a href="user_changePwd.html">修改密码</a>
+							</li>
+							<li>
+								<a href="javascript:;" onclick="logoutConfirm()">退出登录</a>
+							</li>
+						</ul>
+					</div>
+					<!--/左侧导航-->
+
+					<!--右侧内容-->
+					<div class="home-box">
+
+						<!--会员中心-->
+						<div class="u-tab-content">
+							<div class="head-box clearfix class_box1">
+								<p class="bjrz_p1">班级列表</p>
+								<input class="njrz_xzbj bj_xuanze" placeholder="请选择您的班级"/>
+
+								<!--<a href="javascript:;" class="user_sqclass">申请加入班级</a>-->
+
+								<div class="user_bjrz_nav">
+									<ul class="user_bjrzi_nav_ul">
+										<li class="user_bjrzi_dq"><a href="javascript:void(0);" >九选三认证</a></li>
+										<li class=""><a href="javascript:void(0);" >学号认证</a></li>
+										<li class=""><a href="javascript:void(0);" >身份证认证</a></li>
+										<li class=""><a href="javascript:void(0);" >邀请码认证</a></li>
+									</ul>
+								</div>
+								<div class="user_bjrz_content">
+									<div class="user_bjrz_list user_bjrz_list1">
+										<p class="user_bjrz_p1">请选出三名您的同班同学。（<span class="renshu_gs">0</span>/3)</p>
+										<div class="bj_name_renshu">
+
+										</div>
+										<div class="qrrz_anniu">
+											<a href="javascript:;" class="user_calss_qrrz user_calss_qrrz_xr">确认认证</a>
+										</div>
+									</div>
+									<div style="display: none" class="user_bjrz_list">
+										<p class="bjrz_p1">请输入您的学号</p>
+										<input class="njrz_xzbj user_rz_schoolNum" placeholder="学号"/>
+										<div class="qrrz_anniu">
+											<a href="javascript:;" class="user_calss_qrrz user_calss_qrrz_xh">确认认证</a>
+										</div>
+									</div>
+									<div style="display: none" class="user_bjrz_list">
+										<p class="bjrz_p1">请输入您的身份证号</p>
+										<input class="njrz_xzbj user_rz_userNum" placeholder="身份号"/>
+										<div class="qrrz_anniu">
+											<a href="javascript:;" class="user_calss_qrrz user_calss_qrrz_sf">确认认证</a>
+										</div>
+									</div>
+									<div style="display: none" class="user_bjrz_list">
+										<p class="bjrz_p1">请输入您的邀请码</p>
+										<input class="njrz_xzbj user_rz_yaoqinglNum" placeholder="邀请码"/>
+										<div class="qrrz_anniu">
+											<a href="javascript:;" class="user_calss_qrrz user_calss_qrrz_yq">确认认证</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div style="display: none" class="head-box clearfix class_box2">
+								<p class="bjrz_p1">请依次选择</p>
+								<a href="javascript:;" class="user_backrzclass">返回班级认证</a>
+								<div class="sqjr_box1">
+									<p>
+										<select class="user_sqjr_in0">
+											<option value ="" class="inpyi">请选择您的学校</option>
+										</select>
+									</p>
+									<p>
+										<select class="user_sqjr_in1">
+										</select>
+									</p>
+									<p>
+										<select class="user_sqjr_in2">
+										</select>
+									</p>
+									<p>
+										<select class="user_sqjr_in3">
+										</select>
+									</p>
+									<div class="qrrz_anniu">
+										<a href="javascript:;" class="user_sqjr_tj querenzq1">申请加入班级</a>
+									</div>
+								</div>
+
+								<p class="bjrz_p1" style="color: #000000">若未找到班级，请自行填写班级数据
+									<a href="javascript:;" class="zdy_class">自定义填写&nbsp;&nbsp;∨</a>
+								</p>
+								<div class="zxtx_box" style="display: none;">
+									<div class="sqjr_box2">
+										<p>
+											<input type="text" placeholder="学校名称" class="schoolname1"/>
+										</p>
+										<p>
+											<input type="text" placeholder="院系名称" class="deparname1"/>
+										</p>
+										<p>
+											<!--<input type="text" onKeyUp="if(this.value.length>4){this.value=this.value.substr(0,4)};this.value=this.value.replace(/[^\d]/g,'');" placeholder="年级(请输入四位数)" class="gradename1"/>-->
+											<select class="shijian_nianji">
+
+											</select>
+										</p>
+										<p>
+											<input type="text" placeholder="班级名称" class="classname1"/>
+										</p>
+									</div>
+									<div class="qrrz_anniu">
+										<a href="javascript:;" class="user_sqjr_tj querenzq2">申请加入班级</a>
+									</div>
+								</div>
+							</div>
+
+							<div class="clear" style="display: none"></div>
+
+						</div>
+						<!--/会员中心-->
+
+					</div>
+					<!--/右侧内容-->
+				</div>
+			</div>
+
+
+		</td>
+	</tr>
+</table>
+
+<!--班级列表-->
+<ul class="listUlbj">
+	<li onclick="bj_xz(this)" class="zanwu">其他班级</li>
+</ul>
+
+<div class="theme-pop">
+	<div class="theme-poptit">
+		<a href="javascript:;" onclick="closeConfirm();" title="关闭" class="close">×</a>
+		<h3>警告</h3>
+	</div>
+	<div class="theme-popbod dform">
+		<p style="margin-top: 18px; font-size: 13px;">确认退出登录？</p>
+		<div style="margin: 0 auto; margin-top: 30px; padding: 0; width: 220px">
+			<input style="width: 70px; float:left;" class="confirmBtn" onclick="logout()" value=" 确认退出 " />
+			<input style="width: 70px; float:right;" class="quitBtn " onclick="closeConfirm();" value=" 我再看看吧" />
+		</div>
+	</div>
+</div>
+<div class="theme-pop-mask"></div>
+
+<div class="theme-message">
+	<div class="theme-popbod dform">
+		<p style="margin-top: 18px; font-size: 13px;" id="messageWin"></p>
+	</div>
+</div>
+<div class="theme-message-mask"></div>
+<script type="text/javascript">
+	function logoutConfirm(){
+		$('.theme-pop-mask').fadeIn(100);
+		$('.theme-pop').slideDown(200);
+	}
+
+	function closeConfirm() {
+		$('.theme-pop-mask').fadeOut(100);
+		$('.theme-pop').slideUp(200);
+	}
+
+
+</script>
+
+<div id="footer_line"></div>
+
+
+</body>
+</html>
+
+<script src="../js/public.js"></script>
+<script src="../js/G.js"></script>
+<script language="javascript" type="text/javascript">
+	$(function(){
+
+
+
+
+		//获取班级数据
+		class_hqshuju()
+
+		var phoneNum=getCookie("phoneNum");
+		var password=getCookie("password");
+		var name=getCookie("name");
+		var picture=getCookie("picture");
+		//alert(name+"  "+picture);
+		$(".user_name").html(name);
+		if(picture==""){
+			$(".user_tx").attr("src","img/user-avatar.png");
+		}else{
+			$(".user_tx").attr("src",picture);
+		}
+	})
+
+
+	$(".close_uesr").click(function(){
+		if(confirm("点击确定退出登陆"))
+		{
+			//alert("把确定的事件写到这里吧！");
+			addCookie("phoneNum","",-1);
+			addCookie("password","",-1);
+			window.location.href="../index.html";
+		}
+		else
+		{
+			//alert("如果取消，就写一个返回事件吧！");
+		}
+	})
+
+	$(".user_bjrzi_nav_ul li").click(function(){
+		$(this).addClass("user_bjrzi_dq").siblings().removeClass("user_bjrzi_dq");
+		var index=$(this).index();
+		$(".user_bjrz_content .user_bjrz_list").eq(index).show().siblings().hide();
+	})
+
+
+
+	function aqaq(val){
+		var dd=$(val)
+		dd.toggleClass("xzdq");
+	}
+
+
+
+
+	var accountNum=getCookie("accountNum");
+
+
+	//获取班级数据----
+	function class_hqshuju(){
+		$(function(){
+			//获取班级数据
+
+			$(".listUlbj li:not('.zanwu')").remove();
+
+			B.ready(function() {
+				interface.userstudyClass.jsonData.content.accountNum = accountNum.toString();
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + interface.userstudyClass.url,
+					data: {
+						jsonStr: JSON.stringify(interface.userstudyClass.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						//console.log(data.obj[0]);
+						//添加班级数据列表
+						var banjs=new Array();
+						banjs=data.obj
+						for(x=0; x<banjs.length; x++){
+							console.log(banjs[x].fullStudyPath);
+							var li_s="<li onclick='bj_xz(this)'>"+
+									"<p class='li_wez'>"+banjs[x].fullStudyPath+"</p>"+
+									"<span style='display: none'>"+banjs[x].strStudyPathId+"</span>"+
+									"</li>";
+							$(".listUlbj").prepend(li_s);
+						}
+
+					},
+					error: function(xhr, type) {
+						//alert("调用失败");
+					}
+				});
+			})
+		})
+
+	}
+
+	//点击后判断班级ul是否隐藏
+	$(function(){
+		$(".bj_xuanze").click(function(){
+
+			if($(".listUlbj li").length>1){
+				//$(".zanwu").hide();
+			}else {
+				$(".zanwu").show();
+			}
+
+
+			var dheight=$(".bj_xuanze").offset().top
+			var dwidth=$(".bj_xuanze").offset().left
+			$(".listUlbj").css("top",dheight+29);
+			$(".listUlbj").css("left",dwidth);
+			var ul = $(".listUlbj");
+			if(ul.css("display")=="none"){
+				ul.slideDown(200);
+			}else{
+				ul.slideUp(200);
+			}
+
+		});
+		//选中某个内容后赋值给p标签，并隐藏ul列表
+
+	});
+
+	//点击获取班级九个学生姓名
+	function bj_xz(val){
+		$(".bj_name_renshu div").remove();
+		var txt = $(val).children(".li_wez").text();
+		$(".bj_xuanze").val(txt);
+		$(".listUlbj").hide();
+		var strStudyPathId = $(val).children("span").text();
+
+		var password=getCookie("password");
+		var name=getCookie("name");
+		var phoneNum=getCookie("phoneNum");
+		//alert(password+name+phoneNum+strStudyPathId);
+
+		//9选3认证
+		B.ready(function() {
+			//alert('{"command": "218","content": {"strStudyPathId": \"'+strStudyPathId+'\"} }');
+			interface.userstudyChose.jsonData.content.strStudyPathId = strStudyPathId.toString();
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + interface.userstudyChose.url,
+				data: {
+					jsonStr: JSON.stringify(interface.userstudyChose.jsonData)
+				},
+				dataType: 'json',
+				success: function(data) {
+					//console.log(JSON.stringify(data));
+
+					//添加学生姓名列表
+					var bj_name=new Array();
+					bj_name=data.obj;
+					//console.log(bj_name[0]);
+					//alert(strStudyPathId);
+					if(data && data.obj && data.obj!= ''){
+						for( var x=0; x<bj_name.length; x++) {
+							bj_name[x] = bj_name[x].replace(/\s+/g,"");
+							if(bj_name[x].length == 2)
+								bj_name[x] = bj_name[x].substring(0,1) + "　" +  bj_name[x].substring(1,2);
+						}
+						var name1 = bj_name[0];
+						var name2 = bj_name[1];
+						var name3 = bj_name[2];
+						var name4 = bj_name[3];
+						var name5 = bj_name[4];
+						var name6 = bj_name[5];
+						var name7 = bj_name[6];
+						var name8 = bj_name[7];
+						var name9 = bj_name[8];
+
+						if(bj_name.length>=9){
+							var li_s='<div class="user_bjrz1_box">'+
+									'<div class="user_bjrz1_left">'+
+									'<label>'+
+									'<span class="" onclick="aqaq(this)">'+name1+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz1_zhong">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name2+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz1_right">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name3+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'</div>'+
+									'<div class="user_bjrz1_box">'+
+									'<div class="user_bjrz2_left">'+
+									'<label>'+
+									'<span class="" onclick="aqaq(this)">'+name4+'</span>'+
+									' <input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz2_zhong">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name5+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz2_right">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name6+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'</div>'+
+									'<div class="user_bjrz1_box">'+
+									'<div class="user_bjrz3_left">'+
+									'<label>'+
+									'<span class="" onclick="aqaq(this)">'+name7+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz3_zhong">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name8+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									'<div class="user_bjrz3_right">'+
+									'<label>'+
+									'<span onclick="aqaq(this)">'+name9+'</span>'+
+									'<input type="checkbox"/>'+
+									'</label>'+
+									'</div>'+
+									' </div>';
+							$(".bj_name_renshu").append(li_s);
+
+							//选择人数-----
+							$(".user_bjrz_list1 input").click(function() {
+								$(".renshu_gs").html($(".user_bjrz1_box .xzdq").length);
+								if ($(".user_bjrz_list1 input:checked").length >= 3) {
+									$(".user_bjrz_list1 input").attr('disabled', true);
+									$(".user_bjrz_list1 input:checked").attr('disabled', false);
+								} else {
+									$(".user_bjrz_list1 input").attr('disabled', false);
+								}
+
+								if ($(".user_bjrz1_box .xzdq").length >= 3) {
+									$(".user_bjrz1_box span").attr("onclick","");
+									$(".user_bjrz1_box .xzdq").attr("onclick","aqaq(this)");
+									//xzdqs=new Array();
+									var xzdqs=new Array();
+									var xzdqs=$(".xzdq");
+									for(x in xzdqs){
+										var xzdqs1=xzdqs[0];
+										var xzdqs2=xzdqs[1];
+										var xzdqs3=xzdqs[2];
+									}
+									var rz_name1=$(xzdqs1).html().replace(/[　]/g,"");
+									var rz_name2=$(xzdqs2).html().replace(/[　]/g,"");
+									var rz_name3=$(xzdqs3).html().replace(/[　]/g,"");
+
+									//alert(rz_name1+rz_name2+rz_name3+password+name+phoneNum);
+									$(".user_calss_qrrz_xr").click(function(){
+										//提交9选3用户认证
+										interface.userstudyChoseComit.jsonData.content.password = password.toString();
+										interface.userstudyChoseComit.jsonData.content.phoneNum = phoneNum.toString();
+										interface.userstudyChoseComit.jsonData.content.name = name.toString();
+										interface.userstudyChoseComit.jsonData.content.classmates =[rz_name1.toString(),rz_name2.toString(),rz_name3.toString()];
+										interface.userstudyChoseComit.jsonData.content.baseInfoId = [strStudyPathId.toString()];
+
+										console.log(JSON.stringify(interface.userstudyChoseComit.jsonData))
+										B.ready(function() {
+											$.ajax({
+												type: 'post',
+//												url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//												data: {
+//													jsonStr: '{"command": "15","content": {"password": \"'+password+'\","name": \"'+name+'\","phoneNum": \"'+phoneNum+'\","classmates": [\"'+rz_name1+'\",\"'+rz_name2+'\",\"'+rz_name3+'\"],"baseInfoId": [\"'+strStudyPathId+'\"]}}'
+//												},
+												url: B.serverUrl + interface.userstudyChoseComit.url,
+												data: {
+													jsonStr: JSON.stringify(interface.userstudyChoseComit.jsonData)
+												},
+												dataType: 'json',
+												success: function(data) {
+
+													showMsgWin(data.msg, data.success, 1);
+												},
+												error: function(xhr, type) {
+													//alert("调用失败");
+												}
+											});
+										})
+									})
+
+								}else{
+									$(".user_bjrz1_box span").attr("onclick","aqaq(this)");
+								}
+							});
+
+						}else{
+							showMsgWin(data.msg, data.success);
+						}
+					}
+
+
+
+
+
+				},
+				error: function(xhr, type) {
+					//alert("调用失败");
+				}
+			});
+		})
+
+		//学号认证
+		$(".user_calss_qrrz_xh").click(function(){
+			var studentnumber=$(".user_rz_schoolNum").val();
+			//提交用户认证
+			B.ready(function() {
+				interface.userstudyCardComit.jsonData.content.phoneNum = phoneNum.toString();
+				interface.userstudyCardComit.jsonData.content.password = password.toString();
+				interface.userstudyCardComit.jsonData.content.studentnumber = studentnumber.toString();
+				interface.userstudyCardComit.jsonData.content.name = name.toString();
+				interface.userstudyCardComit.jsonData.content.baseInfoIdx = strStudyPathId.toString();
+
+				$.ajax({
+					type: 'post',
+//					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//					data: {
+//						jsonStr: '{"command": "202","content": {"phoneNum": \"'+phoneNum+'\","password": \"'+password+'\","studentnumber": \"'+studentnumber+'\","name": \"'+name+'\","baseInfoIdx": \"'+strStudyPathId+'\"}}'
+//					},
+					url: B.serverUrl + interface.userstudyCardComit.url,
+					data: {
+						jsonStr: JSON.stringify(interface.userstudyCardComit.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						showMsgWin(data.msg, data.success, 1);
+					},
+					error: function(xhr, type) {
+						//alert("调用失败");
+					}
+				});
+			})
+		})
+
+		//身份证认证
+		$(".user_calss_qrrz_sf").click(function(){
+			var card=$(".user_rz_userNum").val();
+			//提交用户认证
+			B.ready(function() {
+
+				interface.userstudyCardShenfenComit.jsonData.content.phoneNum = phoneNum.toString();
+				interface.userstudyCardShenfenComit.jsonData.content.password = password.toString();
+				interface.userstudyCardShenfenComit.jsonData.content.card = card.toString();
+				interface.userstudyCardShenfenComit.jsonData.content.name = name.toString();
+				interface.userstudyCardShenfenComit.jsonData.content.baseInfoIdx = strStudyPathId.toString();
+
+
+				$.ajax({
+					type: 'post',
+					url: B.serverUrl + interface.userstudyCardShenfenComit.url,
+					data: {
+						jsonStr: JSON.stringify(interface.userstudyCardShenfenComit.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						showMsgWin(data.msg, data.success, 1);
+					},
+					error: function(xhr, type) {
+						//alert("调用失败");
+					}
+				});
+			})
+		})
+
+		//邀请码认证
+		$(".user_calss_qrrz_yq").click(function(){
+			var invitecode=$(".user_rz_yaoqinglNum").val();
+			//alert(invitecode)
+			//提交用户认证
+			B.ready(function() {
+
+				interface.userstudyCardYaoqingComit.jsonData.content.phoneNum= phoneNum.toString();
+				interface.userstudyCardYaoqingComit.jsonData.content.password= password.toString();
+				interface.userstudyCardYaoqingComit.jsonData.content.invitecode= invitecode.toString();
+				interface.userstudyCardYaoqingComit.jsonData.content.name= name.toString();
+				interface.userstudyCardYaoqingComit.jsonData.content.baseInfoIdx= strStudyPathId.toString();
+
+
+				$.ajax({
+					type: 'post',
+//					url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+//					data: {
+//						jsonStr: '{"command": "205","content": {"phoneNum": \"'+phoneNum+'\","password": \"'+password+'\","invitecode": \"'+invitecode+'\","name": \"'+name+'\","baseInfoIdx": \"'+strStudyPathId+'\"}}'
+//					},
+					url: B.serverUrl + interface.userstudyCardYaoqingComit.url,
+					data: {
+						jsonStr: JSON.stringify(interface.userstudyCardYaoqingComit.jsonData)
+					},
+					dataType: 'json',
+					success: function(data) {
+						showMsgWin(data.msg, data.success, 1);
+					},
+					error: function(xhr, type) {
+						//alert("调用失败");
+					}
+				});
+			})
+		})
+
+	}
+
+	function showMsgWin( aMsg, result, type){
+		$('#messageWin').text( aMsg );
+		$('.theme-message-mask').fadeIn(100);
+		$('.theme-message').slideDown(200);
+		setTimeout(function(){
+			$('.theme-message-mask').fadeOut(100);
+			$('.theme-message').slideUp(200);
+		}, 2500);
+	}
+
+	//申请加入班级按钮
+	$(".zanwu").click(function(){
+		$(".class_box1").hide();
+		$(".class_box2").show();
+	})
+	//返回班级认证按钮
+	$(".user_backrzclass").click(function(){
+		class_hqshuju();
+		$(".class_box1").show();
+		$(".class_box2").hide();
+	})
+
+	//申请班级-------
+	//获取学院ID
+	$(function(){
+		sq_huoqu("0","","","",".user_sqjr_in0");
+		$(".user_sqjr_in0").change(function() {
+			SelectChange(".user_sqjr_in", 0);
+			$(".user_sqjr_in1").removeClass("qqqq");
+			$(".user_sqjr_in2").removeClass("qqqq");
+			$(".user_sqjr_in3").removeClass("qqqq");
+			$(".user_sqjr_in0").addClass("qqqq");
+		});
+		$(".user_sqjr_in1").change(function() {
+			SelectChange(".user_sqjr_in", 1);
+			$(".user_sqjr_in2").removeClass("qqqq");
+			$(".user_sqjr_in3").removeClass("qqqq");
+			$(".user_sqjr_in1").addClass("qqqq")
+		});
+		$(".user_sqjr_in2").change(function() {
+			SelectChange(".user_sqjr_in", 2);
+			$(".user_sqjr_in3").removeClass("qqqq");
+			$(".user_sqjr_in2").addClass("qqqq")
+		});
+		$(".user_sqjr_in3").change(function() {
+			$(".user_sqjr_in3").addClass("qqqq")
+		});
+	})
+	function SelectChange( classtmp, abc ) {
+		//获取下拉框选中项的text属性值
+		var selectValue = $(classtmp+abc).val();
+		switch (abc){
+			case 0:
+				$('.user_sqjr_in1').empty();
+				$('.user_sqjr_in1').val('');
+				$('.user_sqjr_in2').empty();
+				$('.user_sqjr_in2').val('');
+				$('.user_sqjr_in3').empty();
+				$('.user_sqjr_in3').val('');
+				sq_huoqu(abc+1,selectValue,'','',classtmp+'1');
+				break;
+			case 1:
+				$('.user_sqjr_in2').empty();
+				$('.user_sqjr_in2').val('');
+				$('.user_sqjr_in3').empty();
+				$('.user_sqjr_in3').val('');
+				sq_huoqu(abc+1,'',selectValue,'',classtmp+'2');
+				break;
+			case 2:
+				$('.user_sqjr_in3').empty();
+				$('.user_sqjr_in3').val('');
+				sq_huoqu(abc+1,'','',selectValue,classtmp+'3');
+				break;
+		}
+	}
+
+	function sq_huoqu(level,schoolId,collegeId,gradeId,inyi){
+		B.ready(function() {
+			interface.userstudyPathGet.jsonData.content.level = level.toString();
+			interface.userstudyPathGet.jsonData.content.schoolId = schoolId.toString();
+			interface.userstudyPathGet.jsonData.content.collegeId = collegeId.toString();
+			interface.userstudyPathGet.jsonData.content.gradeId = gradeId.toString();
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + interface.userstudyPathGet.url,
+				data: {
+					jsonStr: JSON.stringify(interface.userstudyPathGet.jsonData)
+				},
+				dataType: 'json',
+				success: function(data) {
+					if(level > 0){
+						var departmentClass = '';
+						switch (level){
+							case 1: departmentClass = '院系';
+								break;
+							case 2: departmentClass = '年级';
+
+								break;
+							case 3: departmentClass = '班级';
+								break;
+						}
+						$(inyi).append('<option value ="" class="inpyi">请选择您的'+ departmentClass +'</option>');
+					}
+
+					if(data.obj && data.obj.length >0){
+						var schoolxx=data.obj;
+						var daxueList = '';
+						for(var x=0; x<schoolxx.length; x++){
+							//console.log(schoolxx[x].deptName);
+							daxueList +='<option value="'+schoolxx[x].deptId+'">'+schoolxx[x].deptName+'</option>';
+						}
+						$(inyi).append(daxueList);
+						$(".inpyi").hide();
+					}
+
+				},
+				error: function(xhr, type) {
+					//alert("调用失败");
+				}
+			});
+		})
+	}
+
+
+	$(".querenzq1").click(function(){
+		var schoolName=$(".user_sqjr_in0 option:selected").text();
+		var departName=$(".user_sqjr_in1 option:selected").text();
+		var gradeName0=$(".user_sqjr_in2 option:selected").text();
+		var className=$(".user_sqjr_in3 option:selected").text();
+		var gradeName=gradeName0.substring(0,4);
+		if(schoolName!=''&& departName!=''&& gradeName!=''&& className!='请选择您的班级'){
+			qqjr_class(schoolName,departName,gradeName,className)
+		}
+	})
+
+	for(var i=2016;i>=1930;i--){
+		var x=i;
+		var optipns = "<option>"+x+"级"+"</option>";
+		$(".shijian_nianji").append(optipns)
+	}
+	$(".shijian_nianji").click(function(){
+		$(".shijian_nianji").css("color","#000000");
+	})
+	$(".querenzq2").click(function(){
+		var schoolName=$(".schoolname1").val();
+		var departName=$(".deparname1").val();
+		var className=$(".classname1").val();
+		var gradeName=$(".shijian_nianji option:selected").html().substring("0","4");
+		//$(".gradeName").change()
+		//alert(schoolName+departName+className+gradeName)
+		if(schoolName!=''&& departName!=''&& gradeName!=''&& className!='请选择您的班级'){
+			qqjr_class(schoolName,departName,gradeName,className)
+		}
+	})
+
+	//申请加入班级----
+	function qqjr_class(schoolN,departN,gradeN,classN){
+		B.ready(function() {
+			interface.userstudyFor.jsonData.content.schoolName =schoolN.toString();
+			interface.userstudyFor.jsonData.content.departName =departN.toString();
+			interface.userstudyFor.jsonData.content.gradeName =gradeN.toString();
+			interface.userstudyFor.jsonData.content.className =classN.toString();
+			interface.userstudyFor.jsonData.content.accountNum =accountNum.toString();
+
+			$.ajax({
+				type: 'post',
+				url: B.serverUrl + interface.userstudyFor.url,
+				data: {
+					jsonStr: JSON.stringify(interface.userstudyFor.jsonData)
+				},
+				dataType: 'json',
+				success: function(data) {
+					showMsgWin(data.msg, data.success, 0);
+				},
+				error: function(xhr, type) {
+					//alert("调用失败");
+				}
+			});
+		})
+	}
+
+
+	$(".zdy_class").click(function(){
+		$(".zxtx_box").toggle()
+		$(".sqjr_box1").toggle()
+		var wenzi=$(this).html();
+		if(wenzi=="自定义填写&nbsp;&nbsp;∨"){
+			$(this).html("选择填写&nbsp;&nbsp;∧");
+		}else{
+			$(this).html("自定义填写&nbsp;&nbsp;∨");
+		}
+
+	});
+
+
+
+</script>

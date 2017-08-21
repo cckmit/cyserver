@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.event.dao.EventMapper">
+
+    <resultMap type="com.cy.core.event.entity.Event" id="eventResultMap">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="type" property="type"/>
+        <result column="category" property="category"/>
+        <result column="place" property="place"/>
+        <result column="content" property="content"/>
+        <result column="pic" property="picUrl"/>
+        <!--<result column="pic" property="pic"/>-->
+        <result column="organizer" property="organizer"/>
+        <result column="startTime" property="startTime"/>
+        <result column="endTime" property="endTime"/>
+        <result column="signupStartTime" property="signupStartTime"/>
+        <result column="signupEndTime" property="signupEndTime"/>
+        <result column="minPeople" property="minPeople"/>
+        <result column="maxPeople" property="maxPeople"/>
+        <result column="needSignIn" property="needSignIn"/>
+        <result column="signInCode" property="signInCode"/>
+        <result column="createTime" property="createTime"/>
+        <result column="userId" property="userId"/>
+        <result column="userInfoId" property="userInfoId"/>
+        <result column="needNotification" property="needNotification"/>
+        <result column="notification" property="notification"/>
+        <result column="auditStatus" property="auditStatus"/>
+        <result column="auditOpinion" property="auditOpinion"/>
+        <result column="auditUserId" property="auditUserId"/>
+        <result column="auditTime" property="auditTime"/>
+        <result column="status" property="status"/>
+        <result column="score" property="score"/>
+        <result column="region" property="region"/>
+        <result column="signupNum" property="signupNum"/>
+        <result column="signInNum" property="signInNum"/>
+        <result column="eventStatus" property="eventStatus"/>
+        <result column="nowStatus" property="nowStatus"/>
+        <result column="alumniName" property="alumniName"/>
+        <result column="dept_id" property="dept_id"/>
+        <result column="dept_name" property="dept_name"/>
+        <result column="page_view" property="pageView"/>
+        <result column="qr_code_url" property="qrCodeUrl"/>
+        <result column="associationId" property="associationId" />
+        <result column="associationName" property="associationName" />
+        <result column="need_auth" property="needAuth"/>
+        <result column="reportCount" property="reportCount" />
+        <result column="handlCount" property="handlCount" />
+        <result column="cost" property="cost" />
+        <result column="cost_memo" property="costMemo" />
+        <result column="groupId" property="groupId" />
+        <result column="groupEasemobId" property="groupEasemobId" />
+        <result column="groupTitle" property="groupTitle" />
+        <result column="reasons" property="reasons" />
+ 
+        <association column="userId" property="user" javaType="com.cy.core.user.entity.User">
+			<id column="userId" property="userId" />
+			<result column="userName" property="userName" />
+			<result column="telephone" property="telephone" />
+		</association>
+		<association column="userInfoId" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="userInfoId" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+
+
+    <sql id="userProfileFrom">
+        (
+            SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+            FROM cy_userprofile t
+        )
+    </sql>
+
+    <resultMap type="com.cy.core.event.entity.EventBoard" id="eventBoardResultMap">
+        <id column="id" property="id"/>
+        <result column="eventId" property="eventId"/>
+        <result column="userInfoId" property="userInfoId"/>
+        <result column="comment" property="comment"/>
+        <result column="createTime" property="createTime"/>
+        <result column="status" property="status"/>
+        <result column="commentNum" property="commentNum"/>
+        <result column="praiseNum" property="praiseNum"/>
+        <result column="complaintNum" property="complaintNum"/>
+		<association column="userInfoId" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="userInfoId" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+    
+    <resultMap type="com.cy.core.event.entity.EventBoardComment" id="eventBoardCommentResultMap">
+        <id column="id" property="id"/>
+        <result column="boardId" property="boardId"/>
+        <result column="userInfoId" property="userInfoId"/>
+        <result column="comment" property="comment"/>
+        <result column="createTime" property="createTime"/>
+		<association column="userInfoId" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="userInfoId" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+    
+    <resultMap type="com.cy.core.event.entity.Complaint" id="eventBoardComplaintResultMap">
+        <id column="id" property="id"/>
+        <result column="boardId" property="boardId"/>
+        <result column="userInfoId" property="userInfoId"/>
+        <result column="reason" property="reason"/>
+        <result column="createTime" property="createTime"/>
+		<association column="userInfoId" property="userProfile" javaType="com.cy.core.userProfile.entity.UserProfile">
+			<id column="userInfoId" property="accountNum" />
+			<result column="name" property="name" />
+			<result column="phoneNum" property="phoneNum" />
+			<result column="picture" property="picture" />
+		</association>
+    </resultMap>
+
+    <sql id="eventForm">
+        (
+            SELECT
+                e.*, u.userName,
+                u.telephone,
+                up. NAME,
+                up.phoneNum,
+                up.picture,
+         (SELECT count(up.accountNum) FROM cy_event_sign es LEFT JOIN cy_userprofile up ON es.userInfoId=up.accountNum WHERE es.eventId=e.id) AS signupNum,
+        <!--(SELECT count(up.accountNum) FROM cy_event_sign es LEFT JOIN cy_userprofile up ON es.userInfoId=up.accountNum WHERE es.eventId=e.id AND es.isSignIn = 1) AS signInNum,
+        (SELECT count(1) FROM cy_report cre LEFT JOIN cy_event cev ON cre.buss_id = cev.id WHERE cre.buss_id=e.id) AS reportCount,
+		(SELECT count(1) FROM cy_report cre LEFT JOIN cy_event cev ON cre.buss_id = cev.id WHERE cre.buss_id=e.id  AND cre.handle_status = 10) AS handlCount, -->
+                a.alumniName,
+                a.alumniName AS dept_name,
+                CASE WHEN e.type= '99' THEN ca.`name` ELSE "" END AS associationName,
+                CASE WHEN e.type= '99' THEN ca.id ELSE "" END AS associationId,
+                a.alumniId,
+                es.eventId eventId,
+                ccg.easemob_group_id as groupEasemobId,
+                ccg.name as groupTitle,
+                <![CDATA[
+                CASE
+                    WHEN e. STATUS = 1 THEN
+                    '10'
+                    WHEN e. STATUS = 2 THEN
+                    '20'
+                    WHEN e.auditStatus = 0 THEN
+                    '30'
+                    WHEN e.auditStatus = 2 THEN
+                    '40'
+                    WHEN now() < e.signupStartTime THEN
+                    '50'
+                    WHEN now() >= e.startTime && now()<= e.endTime THEN
+                    '60'
+                    WHEN now() > e.endTime THEN
+                    '70'
+                    WHEN now() >= e.signupStartTime && now()<= e.signupEndTime THEN
+                    '80'
+                    WHEN now() > e.signupEndTime THEN
+                    '90'
+                    ELSE
+                    ''
+                END AS eventStatus
+                ]]>,
+                <![CDATA[
+                CASE
+                    WHEN e. STATUS = 1 THEN
+                    '已取消'
+                    WHEN e. STATUS = 2 THEN
+                    '已删除'
+                    WHEN e.auditStatus = 0 THEN
+                    '未审核'
+                    WHEN e.auditStatus = 2 THEN
+                    '审核未通过'
+                    WHEN now() < e.signupStartTime THEN
+                    '未开始'
+                    WHEN now() >= e.startTime && now()<= e.endTime THEN
+                    '进行中'
+                    WHEN now() > e.endTime THEN
+                    '已结束'
+                    WHEN now() >= e.signupStartTime && now()<= e.signupEndTime THEN
+                    '报名中'
+                    WHEN now() > e.signupEndTime THEN
+                    '报名已截止'
+                    ELSE
+                    ''
+                END AS nowStatus
+                ]]>
+            FROM cy_event e
+            LEFT JOIN cy_user u ON e.userId = u.userId
+            LEFT JOIN cy_alumni a ON u.dept_id = a.alumniId
+            LEFT JOIN cy_userprofile up ON e.userInfoId = up.accountNum
+            LEFT JOIN cy_event_sign es ON e.id = es.eventId
+            LEFT JOIN cy_dept_info d ON e.dept_id = d.dept_id
+            LEFT JOIN cy_association ca ON e.dept_id = ca.id
+            LEFT JOIN cy_alumni aa ON ca.alumni_id = aa.alumniId
+            LEFT JOIN cy_chat_group ccg ON e.groupId = ccg.id
+            WHERE e.del_flag != '1'
+            AND CASE
+                WHEN a.alumniId IS NOT NULL AND a.alumniId + 0 > 1 AND a.main = 1
+                THEN
+                    a.academyid IS NOT NULL AND a.academyid != ''
+                WHEN aa.alumniId IS NOT NULL AND aa.alumniId + 0 > 1 AND aa.main = 1
+                THEN
+                    aa.academyid IS NOT NULL AND aa.academyid != ''
+                ELSE
+                    TRUE
+            END
+            GROUP BY e.create_date DESC ,es.eventId
+            ORDER BY e.create_date DESC
+        ) e
+    </sql>
+
+    <select id="query" parameterType="map" resultMap="eventResultMap">
+        <!--select e.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,count(es.eventId) as signupNum,a.alumniName,a.alumniName dept_name,
+	    <![CDATA[    
+	    	case when e.status=1 then '已取消'
+			 when e.status=2 then '已删除'
+			 when e.auditStatus=0 then '未审核'
+			 when e.auditStatus=2 then '审核未通过'			 
+		     when now() < e.signupStartTime then '未开始'
+		     when now() >= e.startTime && now() <= e.endTime then '进行中' 
+		     when now() > e.endTime then '已结束'
+		     when now() >= e.signupStartTime && now() <= e.signupEndTime then '报名中' 
+		     when now() > e.signupEndTime then '报名已截止'
+			else '' end as nowStatus
+		]]>
+       	from cy_event e
+       	left join cy_user u on e.userId=u.userId
+       	left join cy_alumni a on u.dept_id = a.alumniId
+       	left join cy_userprofile up on e.userInfoId=up.accountNum
+       	left join cy_event_sign es on e.id = es.eventId
+       	left join cy_dept_info d on e.dept_id = d.dept_id-->
+        SELECT e.*
+        FROM <include refid="eventForm" />
+        <where> del_flag=0
+            <if test="deptList!=null and deptList.size()>0">
+				<foreach collection="deptList" open="and (" separator="or"
+					close=")" item="dept">
+					e.dept_id = #{dept.deptId}
+				</foreach>
+			</if>
+            <if test="title!=null and title!=''">
+                and e.title like concat('%',#{title},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                <choose>
+                    <when test='type == "0"'>
+                        and e.type = '0'  <!-- and e.dept_id = '1' -->
+                    </when>
+                    <when test='type == "1"'>
+                        and e.type = '0' and e.dept_id IS NOT NULL and e.dept_id != '' and e.dept_id != '0' and e.dept_id != '1'
+                    </when>
+                    <otherwise>
+                        and e.type = #{type}
+                    </otherwise>
+                </choose>
+            </if>
+            <if test="category!=null and category!=''">
+                and e.category = #{category}
+            </if>
+            <if test="place!=null and place!=''">
+                and e.place like concat('%',#{place},'%')
+            </if>  
+            <if test="organizer!=null and organizer!=''">
+                and e.organizer like concat('%',#{organizer},'%')
+            </if>  
+            <if test="startFrom!=null and startFrom!=''">
+                and <![CDATA[e.startTime >= #{startFrom}]]>
+            </if>
+            <if test="startTo!=null and startTo!=''">
+                and <![CDATA[e.startTime <= #{startTo}]]>
+            </if>
+            <if test="endFrom!=null and endFrom!=''">
+                and <![CDATA[e.endTime >= #{endFrom}]]>
+            </if>
+            <if test="endTo!=null and endTo!=''">
+                and <![CDATA[e.endTime <= #{endTo}]]>
+            </if>
+            <if test="userInfoId!=null and userInfoId!=''">
+                and e.userInfoId = #{userInfoId}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and e.userId = #{userId}
+            </if>
+            <if test="auditStatus!=null and auditStatus!=''">
+                and e.auditStatus = #{auditStatus}
+            </if>
+            <if test="status!=null and status!=''">
+                and e.status = #{status}
+            </if>
+            <if test="alumniId!=null and alumniId!=''">
+                and e.alumniId = #{alumniId}
+            </if>
+            <if test="associationId!=null and associationId!=''">
+                and e.dept_id = #{associationId}
+            </if>
+            <if test="eventStatus!=null and eventStatus!=''">
+                and e.eventStatus = #{eventStatus}
+            </if>
+            <if test="eventStatusScope!=null and eventStatusScope!=''">
+                AND find_in_set(e.eventStatus ,#{eventStatusScope})
+            </if>
+            <if test="region!=null and region!=''">
+                and e.region like concat('%',#{region},'%')
+            </if>
+            <if test="userAlumniId!=null and userAlumniId!=''">
+                and e.dept_id = #{userAlumniId}
+            </if>
+            <if test="alumniIds!=null and alumniIds!=''">
+                AND find_in_set(e.dept_id ,#{alumniIds})
+            </if>
+            <if test="authorityAlumniId != null and authorityAlumniId != ''">
+                AND e.id IN (
+                    SELECT buss_id
+                    FROM cy_buss_authority
+                    WHERE del_flag != '1' AND buss_type = '10' AND alumni_id = #{authorityAlumniId}
+                )
+            </if>
+            <choose>
+                <when test='flag == "2"'><!-- 查询我的活动的 -->
+                    AND e.userInfoId = #{currUserId}
+                </when>
+                <when test='flag == "3"'><!-- 查询我参与的活动的 -->
+                    AND e.id IN (
+                      SELECT eventId FROM cy_event_sign WHERE userInfoId = #{currUserId}
+                    )
+                </when>
+            </choose>
+        </where>
+        <if test='flag == "1"'>
+            ORDER BY e.signupNum DESC
+        </if>
+        <!-- group by e.id,e.eventId
+        order by id desc-->
+        <if test='isNotLimni != "1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+
+    <select id="count" parameterType="map" resultType="long">
+        <!-- select count(e.id) from cy_event e
+        left join cy_user u on e.userId=u.userId
+       	left join cy_alumni a on u.dept_id = a.alumniId -->
+        select count(e.id)
+        FROM <include refid="eventForm" />
+        <where> del_flag=0
+            <if test="deptList!=null and deptList.size()>0">
+                <foreach collection="deptList" open="and (" separator="or"
+                         close=")" item="dept">
+                    e.dept_id = #{dept.deptId}
+                </foreach>
+            </if>
+            <if test="title!=null and title!=''">
+                and e.title like concat('%',#{title},'%')
+            </if>
+            <if test="type!=null and type!=''">
+                and e.type = #{type}
+            </if>
+            <if test="category!=null and category!=''">
+                and e.category = #{category}
+            </if>
+            <if test="place!=null and place!=''">
+                and e.place like concat('%',#{place},'%')
+            </if>
+            <if test="organizer!=null and organizer!=''">
+                and e.organizer like concat('%',#{organizer},'%')
+            </if>
+            <if test="startFrom!=null and startFrom!=''">
+                and <![CDATA[e.startTime >= #{startFrom}]]>
+            </if>
+            <if test="startTo!=null and startTo!=''">
+                and <![CDATA[e.startTime <= #{startTo}]]>
+            </if>
+            <if test="endFrom!=null and endFrom!=''">
+                and <![CDATA[e.endTime >= #{endFrom}]]>
+            </if>
+            <if test="endTo!=null and endTo!=''">
+                and <![CDATA[e.endTime <= #{endTo}]]>
+            </if>
+            <if test="userInfoId!=null and userInfoId!=''">
+                and e.userInfoId = #{userInfoId}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and e.userId = #{userId}
+            </if>
+            <if test="auditStatus!=null and auditStatus!=''">
+                and e.auditStatus = #{auditStatus}
+            </if>
+            <if test="status!=null and status!=''">
+                and e.status = #{status}
+            </if>
+            <if test="alumniId!=null and alumniId!=''">
+                and e.alumniId = #{alumniId}
+            </if>
+            <if test="eventStatus!=null and eventStatus!=''">
+                and e.eventStatus = #{eventStatus}
+            </if>
+            <if test="eventStatusScope!=null and eventStatusScope!=''">
+                AND find_in_set(e.eventStatus ,#{eventStatusScope})
+            </if>
+            <if test="region!=null and region!=''">
+                and e.region like concat('%',#{region},'%')
+            </if>
+            <if test="userAlumniId!=null and userAlumniId!=''">
+                and e.dept_id = #{userAlumniId}
+            </if>
+            <if test="alumniIds!=null and alumniIds!=''">
+                AND find_in_set(e.dept_id ,#{alumniIds})
+            </if>
+            <if test="authorityAlumniId != null and authorityAlumniId != ''">
+                AND e.id IN (
+                SELECT buss_id
+                FROM cy_buss_authority
+                WHERE del_flag != '1' AND buss_type = '10' AND alumni_id = #{authorityAlumniId}
+                )
+            </if>
+            <choose>
+                <when test='flag == "2"'><!-- 查询我的活动的 -->
+                    AND e.userInfoId = #{currUserId}
+                </when>
+                <when test='flag == "3"'><!-- 查询我参与的活动的 -->
+                    AND e.id IN (
+                    SELECT eventId FROM cy_event_sign WHERE userInfoId = #{currUserId}
+                    )
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getById" parameterType="string" resultMap="eventResultMap">
+        <!-- select e.*,u.userName,u.telephone,up.name,up.phoneNum,up.picture,count(es.eventId) as signupNum,a.alumniName,d.dept_name,
+        <![CDATA[  
+        	case when e.auditStatus=0 then '未审核'
+			 when e.auditStatus=2 then '审核未通过'
+			 when e.status=1 then '已取消'
+		     when now() < e.signupStartTime then '未开始'
+		     when now() >= e.startTime && now() <= e.endTime then '进行中' 
+		     when now() > e.endTime then '已结束'
+		     when now() >= e.signupStartTime && now() <= e.signupEndTime then '报名中' 
+		     when now() > e.signupEndTime then '报名已截止'
+			else '' end as nowStatus
+		]]>
+       	from cy_event e
+       	left join cy_user u on e.userId=u.userId
+       	left join cy_alumni a on u.dept_id = a.alumniId
+       	left join cy_userprofile up on e.userInfoId=up.accountNum
+       	left join cy_event_sign es on e.id = es.eventId
+       	left join cy_dept_info d on e.dept_id = d.dept_id -->
+
+
+        SELECT e.*
+        FROM <include refid="eventForm" />
+        where e.id=#{id}
+    </select>
+
+    <insert id="add" parameterType="com.cy.core.event.entity.Event" >
+        insert into cy_event (id, title, type, category, place, content, pic, organizer, startTime, endTime, signupStartTime, signupEndTime, minPeople, maxPeople, needSignIn, signInCode, createTime, userId, userInfoId, auditStatus, status, region, dept_id, del_flag, create_date, create_by, update_date, update_by, remarks, is_free, cost,cost_memo,qr_code_url,page_view, need_auth)
+        values (#{id}, #{title}, #{type}, #{category}, #{place}, #{content}, #{picUrl}, #{organizer}, #{startTime}, #{endTime}, #{signupStartTime}, #{signupEndTime}, #{minPeople}, #{maxPeople}, #{needSignIn}, #{signInCode}, Now(), #{userId}, #{userInfoId}, #{auditStatus}, 0, #{region}, #{dept_id}, #{delFlag}, #{createDate}, #{createBy}, #{updateDate}, #{updateBy}, #{remarks}, #{isFree}, #{cost},#{costMemo},#{qrCodeUrl},0,#{needAuth});
+    </insert>
+
+    <select id="selectLastInsertId" resultType="String">
+        SELECT LAST_INSERT_ID()
+    </select>
+
+    <update id="update" parameterType="com.cy.core.event.entity.Event">
+        update cy_event
+        set	title=#{title},
+        type=#{type},
+        category=#{category},
+        place=#{place},
+        content=#{content},
+        <!-- pic=#{pic}, -->
+        pic=#{picUrl},
+        organizer=#{organizer},
+        startTime=#{startTime},
+        endTime=#{endTime},
+        signupStartTime=#{signupStartTime},
+        signupEndTime=#{signupEndTime},
+        minPeople=#{minPeople},
+        maxPeople=#{maxPeople},
+        needSignIn=#{needSignIn},
+        signInCode = #{signInCode},
+        dept_id = #{dept_id},
+        needNotification=#{needNotification},
+        notification=#{notification},
+        remarks = #{remarks},
+        page_view =#{pageView},
+        qr_code_url=#{qrCodeUrl},
+        <if test="isFree != null and isFree !='' ">
+            is_free = #{isFree},
+        </if>
+        <if test="cost != null and cost != '' ">
+            cost = #{cost},
+        </if>
+         <if test="costMemo != null and costMemo != '' ">
+            cost_memo = #{costMemo},
+        </if>
+        <if test="delFlag!= null and delFlag!='' ">
+            del_flag = #{delFlag},
+        </if>
+
+        <if test="needAuth != null and needAuth != ''">
+            need_auth = #{needAuth},
+        </if>
+
+        update_date = #{updateDate},
+        update_by = #{updateBy}
+
+        where id=#{id}
+    </update>
+    
+    <update id="resetNotification" parameterType="com.cy.core.event.entity.Event">
+    	<if test="needNotification==0">
+        	update cy_event_sign set viewNotification=1 where eventId=#{id}
+        </if>
+        <if test="needNotification==1">
+        	update cy_event_sign set viewNotification=0 where eventId=#{id}
+        </if>
+    </update>
+    
+    <update id="audit" parameterType="com.cy.core.event.entity.Event">
+        update cy_event
+        set	auditStatus=#{auditStatus},
+            auditOpinion=#{auditOpinion},
+			auditUserId=#{auditUserId},
+           	auditTime=now()
+        where id=#{id}
+    </update>
+     <!-- 删除活动：将del_flag改为1-->
+    <update id="delete" parameterType="list">
+    update cy_event set del_flag=1 where id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+    <!-- 删除活动：将del_flag改为1-->
+    <update id="deleteBussAuthority" parameterType="list">
+        update cy_buss_authority set del_flag=1 where buss_id in
+        <foreach collection="list" item="ids" open="(" separator="," close=")">
+            #{ids}
+        </foreach>
+    </update>
+    <update id="undoDelete" parameterType="string">
+        update cy_event set status=0 where id = #{id}
+    </update>
+    
+    <select id="querySignUser" parameterType="map" resultType="com.cy.core.event.entity.SignUserProfile">
+        select
+        es.userInfoId as signAccountNum,
+        es.isSignIn,
+        es.signinTime AS signInTime,
+        up.*,
+        GROUP_CONCAT(REPLACE(d.full_name,',',' ')) as fullName from cy_event_sign es
+		left join cy_userprofile up on es.userInfoId = up.accountNum
+		left join cy_user_info ui on es.userInfoId = ui.accountNum
+		left join cy_dept_info d on LEFT(ui.user_id,16)=d.dept_id
+		where es.eventId = #{eventId} AND up.accountNum IS NOT NULL AND (ui.user_id IS NULL OR ui.user_id = '' OR ui.checkflag = 1)
+		<if test='isSignIn != null and isSignIn != ""'>
+          AND es.isSignIn = #{isSignIn}
+        </if>
+        <if test='name != null and name != ""'>
+            AND up.name LIKE CONCAT('%',#{name},'%')
+        </if>
+		group by es.userInfoId
+		order by es.signupTime
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countSignUser" parameterType="map" resultType="long">
+        select count(es.id) from cy_event_sign es
+        LEFT JOIN cy_userprofile up on es.userInfoId = up.accountNum
+        where es.eventId = #{eventId} AND up.accountNum IS NOT NULL
+        <if test='isSignIn != null and isSignIn != ""'>
+            AND es.isSignIn = #{isSignIn}
+        </if>
+        <if test='name != null and name != ""'>
+            AND up.name LIKE CONCAT('%',#{name},'%')
+        </if>
+    </select>
+    
+    <select id="queryEventBoard" parameterType="map" resultMap="eventBoardResultMap">
+        select tmp2.*,count(complaint.boardId) as complaintNum from
+		(
+			select tmp.*,count(praise.boardId) as praiseNum from 
+				(
+					select b.*,up.name,up.phoneNum,up.picture,count(comm.boardId) as commentNum
+					from cy_event_board b
+					left join cy_userprofile up on b.userInfoId=up.accountNum
+					left join cy_event_board_comment comm on b.id = comm.boardId
+					where b.eventId = #{eventId}
+					group by b.id,comm.boardId
+				) tmp
+			left join cy_event_board_praise praise on tmp.id = praise.boardId
+			group by tmp.id,praise.boardId
+		) tmp2 
+		left join cy_event_board_complaint complaint on tmp2.id = complaint.boardId
+		group by tmp2.id,complaint.boardId
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countEventBoard" parameterType="map" resultType="long">
+        select count(b.id) from cy_event_board b
+		where b.eventId = #{eventId}
+    </select>
+    
+    <select id="queryEventBoardComment" parameterType="map" resultMap="eventBoardCommentResultMap">
+		select c.*,up.name,up.phoneNum,up.picture
+		from cy_event_board_comment c
+		left join cy_userprofile up on c.userInfoId=up.accountNum
+		where c.boardId = #{boardId}
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countEventBoardComment" parameterType="map" resultType="long">
+        select count(c.id) from cy_event_board_comment c
+		where c.boardId = #{boardId}
+    </select>
+    
+    
+    <select id="queryEventBoardComplaint" parameterType="map" resultMap="eventBoardComplaintResultMap">
+		select c.*,up.name,up.phoneNum,up.picture
+		from cy_event_board_complaint c
+		left join cy_userprofile up on c.userInfoId=up.accountNum
+		where c.boardId = #{boardId}
+		limit #{start},#{rows}
+    </select>
+
+    <select id="countEventBoardComplaint" parameterType="map" resultType="long">
+        select count(c.id) from cy_event_board_complaint c
+		where c.boardId = #{boardId}
+    </select>
+    
+    
+    
+    <select id="queryComplaint" parameterType="map" resultType="com.cy.core.event.entity.BoardComplaint">
+			select c.boardId,b.userinfoid,b.status,
+			(SELECT reason FROM cy_event_board_complaint where boardId= c.boardId order by createtime desc limit 1) reasons,
+			(SELECT createTime FROM cy_event_board_complaint where boardId= c.boardId order by createtime desc limit 1) createTime,
+			count(c.id) as complaintNum,
+			b.eventId, b.`comment` as boardComment,
+			b.createTime as boardCreateTime,
+			b.status as boardStatus, 
+			up_b.`name` as boardUserName,
+			up_b.sex as boardsex,
+			up_b.picture as boardpicture,
+			e.title as eventTitle,
+			e.type as eventType
+			from cy_event_board_complaint c 			
+			inner join cy_event_board b on c.boardId = b.id 			
+			left join cy_userprofile up_b on b.userInfoId=up_b.accountNum 			
+			inner join cy_event e on b.eventId = e.id 
+		<where>
+            <if test="userId!=null and userId!=''">
+                and e.userId = #{userId}
+            </if>
+            <if test="status!=null and status!=''">
+                and b.status = #{status}
+            </if>
+            <if test="status==null or status==''">
+                and b.status !=0
+            </if>
+            <if test="dept_id!=null and dept_id!=''">
+               and  e.dept_id = #{dept_id}
+            </if>
+        </where>
+		group by boardId
+		limit #{start},#{rows}
+    </select>
+   
+    <select id="countComplaint" parameterType="map" resultType="long">
+        select count(distinct boardId) from cy_event_board_complaint c
+		inner join cy_event_board b on c.boardId = b.id
+		inner join cy_event e on b.eventId = e.id
+		<where>
+            <if test="userId!=null and userId!=''">
+                and e.userId = #{userId}
+            </if>
+            <if test="status!=null and status!=''">
+                and b.status = #{status}
+            </if>
+            <if test="status==null or status==''">
+                and b.status !=0
+            </if>
+            <if test="dept_id!=null and dept_id!=''">
+               and  e.dept_id = #{dept_id}
+            </if>
+        </where>
+    </select>
+    
+    
+    <update id="handleBoardStatus" parameterType="map">
+        update cy_event_board
+        set	status=#{handleStatus}
+        where id=#{boardId}
+    </update>
+    
+    <select id="getPicByBoardId" parameterType="long" resultType="string">
+        select pic from cy_event_board_pic
+		where boardId = #{boardId}
+    </select>
+    
+     <select id="getCommentByBoardId" parameterType="long" resultType="string">
+        SELECT `comment` FROM cy_event_board where id = #{boardId}
+    </select>
+    
+    <select id="getRegionOfUser" parameterType="long" resultType="string">
+        select a.region from cy_user u
+		inner join cy_alumni a on u.dept_id = a.alumniId
+		where u.userId = #{userId}
+    </select>
+
+    <insert id="saveBussAuthority" parameterType="com.cy.core.event.entity.BussAuthority">
+        INSERT INTO cy_buss_authority (
+            id,
+            buss_id,
+            buss_type,
+            alumni_id,
+            `status`,
+            create_date,
+            create_by,
+            update_date,
+            update_by,
+            remarks,
+            del_flag
+        )
+        VALUES
+            (
+            #{id},
+            #{bussId},
+            #{bussType},
+            #{alumniId},
+            #{status},
+            #{createDate},
+            #{createBy},
+            #{updateDate},
+            #{updateBy},
+            #{remarks},
+            #{delFlag}
+            )
+    </insert>
+
+
+    <insert id="saveSigner" parameterType="map">
+        INSERT INTO cy_event_sign(
+        eventId,
+        userInfoId,
+        signupTime,
+        viewNotification,
+        isSignIn,
+        signinTime
+        )VALUES (
+        #{eventId},
+        #{userId},
+        NOW(),
+        #{viewNotification},
+        #{isSignIn},
+        #{signinTime}
+        )
+    </insert>
+    <update id="removeEvent" parameterType="Map">
+        UPDATE cy_event SET del_flag=#{delFlag}
+        WHERE id=#{eventId}
+    </update>
+
+    <select id="getMembers" parameterType="Map" resultType="Map">
+        SELECT
+            up.`name`,
+            up.accountNum,
+            (es.isSignIn+0) isSignIn,
+            up.picture,
+            up.phoneNum
+        FROM
+            cy_event_sign es
+        JOIN cy_userprofile up ON up.accountNum = es.userInfoId
+        WHERE
+            eventId = #{eventId} AND up.accountNum IS NOT NULL
+        ORDER BY es.isSignIn DESC
+        <if test='isLimit == "1"'>
+            limit #{start},#{rows}
+        </if>
+    </select>
+
+    <!-- 获取报名人数 -->
+    <select id="getMemberCount" parameterType="map" resultType="Integer">
+        SELECT count(up.accountNum)
+        FROM cy_event_sign es
+        JOIN cy_userprofile up ON es.userInfoId=up.accountNum
+        WHERE 1=1
+        <if test="eventId != null and eventId != ''">
+            and es.eventId = #{eventId}
+        </if>
+        <if test='isSignIn != null and isSignIn != ""'>
+            AND es.isSignIn = #{isSignIn}
+        </if>
+    </select>
+    <!-- 获取举报数 -->
+    <select id="getReportCount" parameterType="map" resultType="String">
+        SELECT count(1)
+        FROM cy_report cre
+        JOIN cy_event cev ON cre.buss_type='10' and cre.buss_id = cev.id
+        WHERE 1=1
+        <if test="eventId != null and eventId != ''">
+            and cre.buss_id=#{eventId}
+        </if>
+        <if test='handleStatus != null and handleStatus != ""'>
+            AND cre.handle_status = #{handle_status}
+        </if>
+    </select>
+
+    <update id="setIsSignIn" parameterType="map" >
+        UPDATE cy_event_sign s SET
+        s.signinTime = now(),
+        s.isSignIn= 1 where userInfoId = #{accountNum} AND eventId = #{eventId}
+    </update>
+
+    <update id="updateEventGroupId" parameterType="Map">
+        UPDATE  cy_event
+        SET groupId = #{groupId}
+        WHERE
+        id = #{id}
+    </update>
+
+</mapper>

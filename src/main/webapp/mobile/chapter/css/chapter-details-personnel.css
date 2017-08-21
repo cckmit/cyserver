@@ -1,0 +1,6 @@
+body{background-color:#f8f8f8}
+.person-box{background-color: white}
+.person-box li{width: 20%;text-align: center;padding: 1rem;box-sizing: border-box}
+.person-box li img{width: 3.5rem;height: 3.5rem;border-radius: 50%;}
+.person-box li p{margin-top: 1rem;font-size: 1.2rem;box-sizing: border-box}
+.footer{text-align: center;padding-top: 3rem;background-color: #f8f8f8;color: #888888;font-size: 1.2rem;box-sizing: border-box}

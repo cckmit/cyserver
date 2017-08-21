@@ -1,0 +1,206 @@
+
+
+<style>
+    html{
+        display: block;
+        overflow: scroll;
+        width:100%;
+        height:100%;
+    }
+
+    .row_1{
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .firm_intro_long{
+        height:auto;
+
+    }
+    .firm_intro_short{
+        height:1.08rem;
+    }
+
+    /*test*/
+    .image_box{
+        overflow: auto;
+        width: 100%;
+        background: #fff;
+    }
+    .scroll_item{
+        display: inline-block;
+    }
+
+    .pro_list .item-content{
+        position: inherit;
+        z-index: 2;
+        padding: 0;
+        border: none;
+        background-color: #fff;
+        display: flex;
+    }
+
+    .image_scroll{
+        overflow: auto;
+
+    }
+    .member_item{
+        display: inline-block;
+    }
+
+</style>
+
+<div>
+<!--banner-->
+    <div class="ent_banner">
+        <div class="logo_box">
+            <img class="logo_pic"
+                 onerror="javascript:this.src='../../images/wechat_serv/default_profile.png' "
+                 ng-src="{{firmDetail.logoUrl | filter_pic}}"/>
+
+            <!--firmDetail.posterPicUrl-->
+        </div>
+        <div class="ent_name">
+            {{firmDetail.name}}
+        </div>
+        <div class="ent_name">
+            {{firmDetail.website}}
+        </div>
+    </div>
+
+
+    <!--ent_intro-->
+    <div class="title">
+        <i class="icon iconfont icon-qiye"></i>
+        <span>企业简介</span>
+    </div>
+    <div ng-if="firmDetail.summary.length<=160">
+        <div class="firm_intro">{{firmDetail.summary}}</div>
+    </div>
+    <div ng-if="firmDetail.summary.length>160" style="background: #fff">
+        <div class="firm_intro intro_more H-text-show-row-6 firm_intro_short">
+            {{firmDetail.summary}}
+        </div>
+        <a class="icon_toggle" onclick="slideToggle(this)">展开</a>
+    </div>
+
+
+
+    <!--mem_list-->
+    <div class="mem_wrap" ng-if="memberList.length >= 1">
+        <div class="title">
+            <i class="icon iconfont icon-tuandui"></i>
+            <span>团队风采</span>
+        </div>
+
+        <div class="image_box">
+            <!--<div class="member_box image_scroll" ng-style="len" style="width:{{len}}px">-->
+            <div class="member_box image_scroll" ng-style="len">
+                <div class="member_item" ng-repeat="mItem in memberList">
+                    <img class="mem_pic" onerror="javascript:this.src='../../images/wechat_serv/default_profile.png' "
+                         ng-src="{{mItem.picUrl | filter_pic}}" width="{{mPic}}px" />
+                    <div class="m_txt">
+                        <p class="m_name">{{mItem.fullName}}</p>
+                        <p class="m_position">{{mItem.position}}</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--pro_list-->
+    <div class="pro_wrap" ng-if="pItems.length >= 1">
+        <div class="title">
+            <i class="icon iconfont icon-chanpin"></i>
+            <span>我们的产品</span>
+            <a ui-sref="product_list({'id':firmDetail.id})" class="more_btn">查看更多</a>
+        </div>
+        <div class="pro_list">
+            <div class="pro_item" ng-repeat="proItem in pItems" ui-sref="product_detail({'id':proItem.id})">
+
+                <div class="item_l">
+                    <img class="logo_pic"
+                         onerror="javascript:this.src='../../images/wechat_serv/default_profile.png' "
+                         ng-src="{{proItem.posterPic | filter_pic | filter_picss}}" />
+                </div>
+                <div class="item_r">
+                    <div class="r_li name detail_name">{{proItem.name}}</div>
+                    <div class="r_li intro H-text-show-row-4">
+                       {{proItem.summary}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--job_list-->
+    <div class="title" ng-if="jobItems.length >= 1">
+        <i class="icon iconfont icon-jiarubanji"></i>
+        <span>加入我们</span>
+        <a ui-sref="position_list({'id':firmDetail.id})" class="more_btn">查看更多</a>
+    </div>
+    <div class="job_list">
+        <div class="job_item" ng-repeat="jItem in jobItems" ui-sref="position_detail({'id':jItem.id})">
+            <div class="item_l">
+                <div class="name">{{jItem.name}}</div>
+                <div class="require">
+                    <span class="add">{{jItem.city}}&nbsp;/&nbsp; </span>
+                    <span class="year">{{jItem.experienceMin}}-{{jItem.experienceMax}}年&nbsp;/&nbsp; </span>
+                    <span class="grade">{{jItem.typeName}}</span>
+                </div>
+            </div>
+            <div class="item_r">
+                <div class="r_li money">{{jItem.salaryMin}}-{{jItem.salaryMax}}k</div>
+                <div class="r_li ask_num">招聘人数:<span class="num">{{jItem.recruitersNum}}</span>人</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--contact_list-->
+    <div class="title">
+        <i class="icon iconfont icon-lianxi"></i>
+        <span>联系我们</span>
+    </div>
+    <ul class="contact_list">
+        <li>
+           <span class="li_l">联系人</span>
+           <span class="li_r c_depart">{{firmDetail.linkman}}</span>
+        </li>
+        <li>
+            <span class="li_l">联系电话</span>
+            <span class="li_r c_tel">{{firmDetail.contactNumber}}</span>
+        </li>
+        <li>
+            <span class="li_l">公司地址</span>
+            <span class="li_r row_1" style="    overflow: auto;    text-overflow: inherit;">{{firmDetail.address}}</span>
+        </li>
+
+
+    </ul>
+    <div style="width: 100%; height: 10px; background: #f2f2f2"></div>
+</div>
+
+<script>
+    //toggle open
+    function slideToggle(item){
+        if($(".intro_more").hasClass('firm_intro_long')){
+            $('.intro_more').removeClass('firm_intro_long').addClass('firm_intro_short');
+            $('.intro_more').addClass('H-text-show-row-6')
+            $(item).text('展开');
+        }else if($('.intro_more').hasClass('firm_intro_short')){
+            $('.intro_more').removeClass('firm_intro_short').addClass('firm_intro_long');
+            $('.intro_more').removeClass('H-text-show-row-6')
+            $(item).text('收起');
+        }
+
+    }
+
+
+
+
+</script>
+

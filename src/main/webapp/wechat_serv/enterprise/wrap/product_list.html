@@ -1,0 +1,76 @@
+<link href="../jslib/ionic/css/ionic.css" rel="stylesheet">
+
+<style>
+    .list_bg{
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: #f2f2f2;
+    }
+    .pane{
+        position: relative;
+        flex: 1;
+
+    }
+    .pane, .view{
+        background: none;
+    }
+    .list{
+        background-color:#f2f2f2;
+    }
+    .pro_list .item-content{
+        position: inherit;
+        width:100%;
+        z-index: 2;
+        padding: 0;
+        border: none;
+        background-color: #fff;
+        display: flex;
+    }
+
+
+    .no_more{
+        font-size: 14px;
+        color: #747474;
+        letter-spacing: -0.29px;
+        text-align: center;
+        background-color: #f2f2f2;
+    }
+
+
+</style>
+
+<div class="list_bg">
+
+    <div class="title">
+        <span>我们的产品&nbsp;</span>
+        <span>(</span><span style="color:#0F88EB;" class="num">{{total}}</span><span>)</span>
+    </div>
+
+    <ion-pane>
+        <ion-content>
+            <!--下拉刷新-->
+            <ion-refresher pulling-text="下拉刷新" on-refresh="doRefresh()"></ion-refresher>
+            <ion-list class="pro_list">
+                <ion-item ng-repeat="proItem in pItems" class="pro_item" ui-sref="product_detail({'id':proItem.id})">
+                        <div class="item_l">
+                            <img class="logo_pic" onerror="javascript:this.src='../../images/wechat_serv/default_profile.png';"
+                                 ng-src="{{proItem.posterPicUrl | filter_pic}}"/>
+                        </div>
+                        <div class="item_r">
+                            <div class="r_li name H-text-show-row-1">{{proItem.name}}</div>
+                            <div class="r_li intro H-text-show-row-4">
+                                {{proItem.summary}}
+                            </div>
+                        </div>
+                </ion-item>
+            </ion-list>
+                <div class="assertive no_more"  style="margin-top: -0.03rem;"
+                     ng-if="dataNull" immediate-check="false">{{'没有更多啦!'}}</div>
+            <ion-infinite-scroll ng-if="hasMore" on-infinite="doInfinite()" immediate-check="false"></ion-infinite-scroll>
+
+        </ion-content>
+    </ion-pane>
+
+
+</div>

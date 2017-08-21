@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>申请班级列表</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        .chked{
+            color:#52ace5;
+        }
+        .dropload-down{
+            background: #f4f5f9;
+        }
+    </style>
+
+</head>
+<body>
+<div class="background-color: #ebebeb;" style="position:relative;">
+    <img class="imgpost" src="../static/img/stydyban.png" style=" width:100%;vertical-align: middle">
+    <!--顶层社团tabs: 未认证|申请记录-->
+    <div class="tab-group team-tabs-group H-tabs-channel H-overflow-scrolling H-position-absolute H-width-100-percent" style="bottom:-5px;">
+        <ul class="tab_list H-width-100-percent H-auto-height H-flexbox-horizontal H-clear-both H-theme-background-color-transparent H-padding-5
+        H-box-sizing-border-box H-theme-font-color-white" style="font-size:16px; background-color: rgba(255,255,255,0.3);">
+            <li tapmode="" id="shz" onclick="unverifiedClassList()"
+                class="H-channel-item H-flex-item H-tabs-active H-margin-horizontal-right-5
+                H-text-align-center">未认证
+            </li>|
+            <li tapmode="" id="wsh"
+                class="H-channel-item H-flex-item  H-margin-horizontal-right-5 H-text-align-center chked">申请记录
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+<div class="class_list">
+
+    <!--申请状态条tabs: 申请中|未通过-->
+    <div style="background-color:#ebebeb;padding:8px 10px;">
+        <div class="">
+        <ul class="chk_tabs H-flexbox-horizontal H-theme-background-color-white H-border-radius-9">
+            <li tapmode="" id="wait" class="H-flex-item H-text-show-row-1 H-padding-vertical-both-10 H-box-sizing-border-box H-touch-active
+H-font-size-14 H-center-all chked">
+                <i class="H-iconfont H-icon-radio-null H-display-block H-font-size-12 H-padding-horizontal-right-5"></i>
+                申请中
+            </li>
+            <li tapmode=""  id="unpassed" class="H-flex-item H-text-show-row-1 H-padding-vertical-both-10 H-box-sizing-border-box H-touch-active
+H-font-size-14  H-center-all">
+                <i class="H-iconfont H-icon-radio-null H-display-block H-icon-shopping-cart H-font-size-12 H-padding-horizontal-right-5"></i>
+                未通过
+            </li>
+        </ul>
+    </div>
+    </div>
+    <div class="content">
+        <div class="verify_list" style="background-color:#ebebeb;">
+
+
+           <!-- <div>
+                <div class="classItem H-border-radius3-px H-theme-background-color-white H-margin-vertical-bottom-5
+                 H-border-vertical-both-after H-border-horizontal-both-after">
+                    <div class="H-padding-vertical-both-8 H-padding-horizontal-both-10 H-flexbox-horizontal H-theme-font-color16 H-font-size-14
+                H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box" style="padding-bottom:0;">
+                        <span class="H-display-block H-flex-item H-text-align-left" style="border-bottom:1px solid #ebebeb; padding-left:5px;">
+                            2012级 [测试一般]
+                        </span>
+                    </div>
+                    <div class="H-theme-background-color-white H-border-vertical-bottom-after">
+                        <div class="H-padding-vertical-both-10 H-font-size-12 H-display-block H-text-show-row-1"
+                             style="padding-left: -3px;color: #999; padding-left:15px">
+                            广州科技贸易职业学院北京分校&gt;计算机科学与技术学院
+                        </div>
+                    </div>
+
+                </div>
+                <div class="msg_box H-box-sizing-border-box H-border-vertical-bottom-after H-padding-horizontal-both-10 H-padding-vertical-both-8 H-font-size-14"
+                     style="display:none;background-color:#ebebeb;">
+                    <div class="H-theme-background-color-white">
+                        testing
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="classItem H-border-radius3-px H-theme-background-color-white H-margin-vertical-bottom-5
+                 H-border-vertical-both-after H-border-horizontal-both-after">
+                        <div class="H-padding-vertical-both-8 H-padding-horizontal-both-10 H-flexbox-horizontal H-theme-font-color16 H-font-size-14
+                H-flexbox-horizontal H-text-horizontal-left H-box-sizing-border-box" style="padding-bottom:0;">
+                        <span class="H-display-block H-flex-item H-text-align-left" style="border-bottom:1px solid #ebebeb; padding-left:5px;">
+                            2012级 [测试一般]
+                        </span>
+                        </div>
+                        <div class="H-theme-background-color-white H-border-vertical-bottom-after">
+                            <div class="H-padding-vertical-both-10 H-font-size-12 H-display-block H-text-show-row-1"
+                                 style="padding-left: -3px;color: #999; padding-left:15px">
+                                广州科技贸易职业学院北京分校&gt;计算机科学与技术学院
+                            </div>
+                        </div>
+
+                    </div>
+                <div class="msg_box H-box-sizing-border-box H-border-vertical-bottom-after H-padding-horizontal-both-10 H-padding-vertical-both-8 H-font-size-14"
+                         style="display:none;background-color:#ebebeb;">
+                        <div class="H-theme-background-color-white">
+                            testing
+                        </div>
+                </div>
+            </div>-->
+
+
+        </div>
+    </div>
+
+</div>
+
+<!--没有申请任何的学习经历, 跳转至 verify_select.html, 申请 学习经历
+对于 刚注册的用户,都是没有学习经历的,首先要去选择或是手动提交申请学习经历-->
+<div class="H-margin-horizontal-both-15 H-margin-vertical-top-15">
+        <span tapmode="" onclick="goApplyStudyPath()"
+              class="H-theme-font-color16 H-float-right H-font-size-14">申请其他班级</span>
+</div>
+
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/html" id="tppl">
+
+    <%for(var key in objList){%>
+    <div class="" style="background-color: #ebebeb;">
+        <%if(objList[key].checkFlag == '2'){%>
+            <div class="showMsg H-vertical-middle H-overflow-hidden H-margin-vertical-bottom-5">
+                <div class="H-flexbox-horizontal H-box-sizing-border-box H-theme-background-color-white H-border-vertical-bottom-after H-clear-both H-padding-horizontal-both-10 H-padding-vertical-both-8 H-touch-active">
+                    <div class="H-flex-item H-vertical-middle H-overflow-hidden">
+                        <div class="H-width-100-percent">
+                            <span class="H-display-block H-theme-font-color16 H-font-size-14 H-text-show-row-1" style="border-bottom:1px solid #ebebeb;padding-bottom: 5px;">
+                                <%=objList[key].className.split(',')[2] + '【' +objList[key].className.split(',')[3] + '】'%>
+                            </span>
+                            <div class="H-theme-font-color-999 H-font-size-12 H-padding-vertical-top-5 H-text-show-row-1">
+                                <%=objList[key].className.split(',')[0] + objList[key].className.split(',')[1] + ' > '+objList[key].className.split(',')[3]%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="H-font-size-12 H-theme-font-color-999 H-text-align-right" style="position: absolute;right:10px;top:10px">
+                        <label class="H-display-block"><%=objList[key].createTime.substring(0, 10) %></label>
+                     </div>
+                </div>
+            </div>
+            <div class="msg_box H-box-sizing-border-box H-border-vertical-bottom-after H-padding-horizontal-both-10 H-font-size-14"
+                 style="display: none;background-color:#ebebeb;padding-bottom: 5px;">
+                <%if(objList[key].checkIdea && objList[key].checkIdea != ""){%>
+                    <div class="H-theme-background-color-white" style="font-size: 12px; color: #E91E63;padding: 3px;">
+                        <%=objList[key].checkIdea%>
+                    </div>
+                <%}else{%>
+                    <div class="H-theme-background-color-white" style="font-size: 12px; color: #E91E63;padding: 3px;">
+                        您没有通过审核
+                    </div>
+                <%}%>
+            </div>
+        <%}else{%>
+            <div class="H-vertical-middle H-overflow-hidden H-margin-vertical-bottom-5">
+                <div class="H-flexbox-horizontal H-box-sizing-border-box H-theme-background-color-white H-border-vertical-bottom-after H-clear-both H-padding-horizontal-both-10 H-padding-vertical-both-8 H-touch-active">
+                    <div class="H-flex-item H-vertical-middle H-overflow-hidden">
+                        <div class="H-width-100-percent">
+                            <span class="H-display-block H-theme-font-color16 H-font-size-14 H-text-show-row-1" style="border-bottom:1px solid #ebebeb;padding-bottom: 5px;">
+                                <%=objList[key].className.split(',')[2] + '【' +objList[key].className.split(',')[3] + '】'%>
+                            </span>
+                            <div class="H-theme-font-color-999 H-font-size-12 H-padding-vertical-top-5 H-text-show-row-1">
+                                <%=objList[key].className.split(',')[0] + objList[key].className.split(',')[1] + ' > '+objList[key].className.split(',')[3]%>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="H-font-size-12 H-theme-font-color-999 H-text-align-right" style="position: absolute;right:10px;top:10px">
+                        <label class="H-display-block"><%=objList[key].createTime.substring(0, 10) %></label>
+                    </div>
+                </div>
+            </div>
+        <%}%>
+
+        </div>
+
+    <%}%>
+
+</script>
+
+
+<script type="text/javascript">
+    // 接收参数
+    var accountNum = B.getUrlParamByName("accountNum");
+    var fromFoundation = B.getUrlParamByName("fromFoundation");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("verify/verify_list.html?ts=" + B.getRandomInt(4));
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '認證列表',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+
+    $(function () {
+
+        //定义模板标签符
+        H.tppl_flag = ["<%", "%>"];
+
+        //获取未认证的班级列表
+        getVerifyList('0');
+
+        var chkFlage='';
+        //点击选项卡, 变化样式
+        $('.chk_tabs').on('click','li',function(){
+            $(this).addClass('chked').siblings().removeClass('chked');
+            switch ($(this).attr('id')){
+                case 'wait':chkFlage = '0';break;
+                case 'unpassed':chkFlage = '2';break;
+                default:chkFlage='';
+            }
+            getVerifyList(chkFlage);
+        });
+    })
+
+    function getVerifyList(chkFlage) {
+
+        $('.dropload-down').remove();
+        $('.verify_list').empty();
+
+
+        // 跨域请求
+        B.ready(function () {
+            // 页码
+            var page=1;
+            var pageSize = 2;
+
+            // 下拉刷新上拉加载
+            $('.content').dropload({
+                scrollArea : window,
+                /*domUp : {
+                 domClass   : 'dropload-up',
+                 domRefresh : '<div class="dropload-refresh">↓下拉刷新-捐赠项目</div>',
+                 domUpdate  : '<div class="dropload-update">↑释放更新-捐赠项目</div>',
+                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>'
+                 },
+                 domDown : {
+                 domClass   : 'dropload-down',
+                 domRefresh : '<div class="dropload-refresh">↑上拉加载更多-捐赠项目</div>',
+                 domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                 domNoData  : '<div class="dropload-noData"></div>'
+                 },*/
+                loadDownFn : function(me) {
+
+                    $.ajax({
+                        type: "post",
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data: {
+                            jsonStr: '{"command": "276","content": {"accountNum": "' + accountNum + '","checkFlag": "' + chkFlage + '","page":"'+page+'","rows":"'+pageSize+'"}}'
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            console.log(JSON.stringify(data))
+                            if (data) {
+                                if(!data.success || !data.obj.rows || data.obj.rows.length==0){
+                                    $('.dropload-down').remove();
+                                    me.lock();
+                                    me.noData(true);
+                                }else{
+                                    var render = H.tppl(H.D("#tppl").innerHTML);
+                                    var result = render({objList:data.obj.rows});
+
+                                    $('.verify_list').append(result);
+
+                                    page++;
+                                }
+
+                                // 每次数据加载完，必须重置
+                                me.resetload();
+                            }
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+        });
+
+    }
+
+    //点击 "未通过"的班级条目:展开留言
+    $('.verify_list').on('click','.showMsg',function () {
+        $(this).siblings('.msg_box').toggle();
+        $(this).parent().siblings().children('.msg_box').hide();
+    })
+
+
+    //没有学习经历的用户,要去申请学习经历
+    function goApplyStudyPath() {
+        H.openWin("申请其他班级","verify_select.html?ts="+B.getRandomInt(4)+'&fromFoundation='+fromFoundation);
+    }
+
+    //未认证班级列表
+    function unverifiedClassList(){
+        H.openWin("认证申请状态","class_list.html?ts="+B.getRandomInt(4)+'&fromFoundation='+fromFoundation);
+
+    }
+</script>

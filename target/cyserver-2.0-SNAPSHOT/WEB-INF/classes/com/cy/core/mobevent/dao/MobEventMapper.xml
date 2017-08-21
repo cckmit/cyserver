@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.mobevent.dao.MobEventMapper">
+
+	<sql id="userProfileFrom">
+		(
+			SELECT
+				(SELECT GROUP_CONCAT(left(u.user_id,16)) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id WHERE u.accountNum = t.accountNum) groupName ,
+				(SELECT GROUP_CONCAT(d.full_name SEPARATOR '_') FROM cy_user_info u JOIN cy_dept_info d ON left(u.user_id,16) = d.dept_id JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) classes ,
+				(SELECT GROUP_CONCAT(u.user_id) FROM cy_user_info u JOIN cy_userbase_info b ON u.user_id = b.user_id  WHERE u.accountNum = t.accountNum) baseInfoId ,
+				picture,
+				accountNum,
+				password,
+				name,
+				phoneNum,
+				address,
+				sign,
+				intrestType,
+				channels,
+				email,
+				authenticated,
+				sex,
+				workUtil,
+				profession,
+				hobby,
+				position,
+				mu_longitud,
+				mu_latitude,
+				gps_time,
+				alumni_id
+			FROM cy_userprofile t
+		)
+	</sql>
+
+	<select id="getEventBoardList" parameterType="com.cy.core.mobevent.entity.CyEventBoard" resultType="com.cy.core.mobevent.entity.CyEventBoard">
+		select 
+			eb.*,
+			(select count(id) from cy_event_board_comment where boardId = eb.id) as commentNum,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_board eb LEFT JOIN cy_userprofile u
+		on 
+			eb.userInfoId = u.accountNum 
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eb.eventId = #{eventId} and eb.status in(0,1)
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and eb.userInfoId = #{userInfoId}
+			</if>
+			
+		</where>
+		order by id desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	
+	<select id="countEventBoard" parameterType="com.cy.core.mobevent.entity.CyEventBoard" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_board
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId} and status in(0,1)
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+		
+	</select>
+	
+	<select id="countEventComment" parameterType="com.cy.core.mobevent.entity.CyEventComment" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_comment
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId} 
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+		
+	</select>
+	
+
+	<select id="findEventBoardList" parameterType="String" resultType="com.cy.core.mobevent.entity.CyEventBoard">
+		select
+			eb.*,
+			(select count(id) from cy_event_board_comment where boardId = eb.id) as commentNum,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from
+			cy_event_board eb LEFT JOIN cy_userprofile u
+		on
+			eb.userInfoId = u.accountNum
+		where eb.eventId = #{eventId} and eb.status in(0,1)
+		order by id desc
+	</select>
+
+	<select id="getPraise" parameterType="map" resultType="Long">
+		SELECT count(id) FROM cy_event_board_praise
+		where
+			 userInfoId=#{userId} and boardId=#{boardId}
+	</select>
+	
+	<select id="getEventBoard" parameterType="com.cy.core.mobevent.entity.CyEventBoard" resultType="com.cy.core.mobevent.entity.CyEventBoard">
+		select 
+			eb.*,
+			(select count(id) from cy_event_board_comment where boardId = eb.id) as commentNum,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_board eb LEFT JOIN cy_userprofile u
+		on 
+			eb.userInfoId = u.accountNum 
+		<where>
+			<if test="id!=null and id!=''">
+				and eb.id = #{id} and eb.status in(0,1)
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and eb.userInfoId = #{userInfoId}
+			</if>			
+		</where>
+		order by id desc limit 1
+	</select>
+	
+	
+	<select id="getEventBoardPicList" parameterType="com.cy.core.mobevent.entity.CyEventBoardPic" resultType="com.cy.core.mobevent.entity.CyEventBoardPic">
+		select id,boardId,pic AS picUrl from cy_event_board_pic where boardId = #{boardId} order by id desc
+	</select>
+	
+	<select id="getEventBoardPicListForEventDetail" parameterType="com.cy.core.mobevent.entity.CyEventBoard" resultType="com.cy.core.mobevent.entity.CyEventBoardPic">
+		select id,boardId,pic AS picUrl from cy_event_board_pic where id in(select max(id) from cy_event_board_pic where boardId in(select id from cy_event_board where eventId = #{eventId}) group by boardId) order by id desc limit 3
+	</select>
+	
+	<select id="getEventBoardCommentList" parameterType="com.cy.core.mobevent.entity.CyEventBoardComment" resultType="com.cy.core.mobevent.entity.CyEventBoardComment">
+		select 
+			ebc.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_board_comment ebc LEFT JOIN cy_userprofile u
+		on 
+			ebc.userInfoId = u.accountNum 
+		where boardId = #{boardId} order by id desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	<select id="getEventCommentList" parameterType="com.cy.core.mobevent.entity.CyEvent" resultType="com.cy.core.mobevent.entity.CyEventComment">
+		select 
+			ebc.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_comment ebc LEFT JOIN cy_userprofile u
+		on 
+			ebc.userInfoId = u.accountNum 
+		where eventId = #{id} order by id desc limit #{currentRow},#{incremental}  
+	</select>
+	
+	<select id="countEventBoardComplaint" parameterType="com.cy.core.mobevent.entity.CyEventBoardComplaint" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_board_complaint
+		
+		<where>
+			<if test="boardId!=null and boardId!=''">
+				and boardId = #{boardId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="countEventBoardComment" parameterType="com.cy.core.mobevent.entity.CyEventBoardComment" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_board_comment
+		
+		<where>
+			<if test="boardId!=null and boardId!=''">
+				and boardId = #{boardId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+	</select>
+	
+	<!--  
+    <select id="countEventComment" parameterType="com.cy.core.mobevent.entity.CyEventComment" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_comment		
+		<where>
+			<if test="boardId!=null and boardId!=''">
+				and boardId = #{boardId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+	</select>
+	-->	
+	
+	<select id="countEventBoardPraise" parameterType="com.cy.core.mobevent.entity.CyEventBoardPraise" resultType="long">
+		select 
+			count(id)
+		from 
+			cy_event_board_praise
+		
+		<where>
+			<if test="boardId!=null and boardId!=''">
+				and boardId = #{boardId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+	</select>
+	
+	
+	<insert id="insertEventBoardComplaint" parameterType="com.cy.core.mobevent.entity.CyEventBoardComplaint">
+		insert into cy_event_board_complaint(boardId, userInfoId, reason, createTime,buss_id,buss_type)
+		values(#{boardId}, #{userInfoId}, #{reason}, now(),#{bussId},#{bussType})
+	</insert>
+	
+	
+	<insert id="insertEventBoardComment" parameterType="com.cy.core.mobevent.entity.CyEventBoardComment">
+		insert into cy_event_board_comment(boardId, userInfoId, comment, createTime) 
+		values(#{boardId}, #{userInfoId}, #{comment}, now())
+	</insert>
+	
+	<insert id="insertEventBoardPraise" parameterType="com.cy.core.mobevent.entity.CyEventBoardPraise">
+		insert into cy_event_board_praise(boardId, userInfoId, createTime) 
+		values(#{boardId}, #{userInfoId}, now())
+	</insert>	
+	
+	<insert id="insertEventComment" parameterType="com.cy.core.mobevent.entity.CyEventComment">
+		insert into cy_event_comment(eventId, userInfoId, comment, createTime) 
+		values(#{eventId}, #{userInfoId}, #{comment}, now())
+	</insert>
+	
+	<delete id="deleteEventBoardPraise" parameterType="com.cy.core.mobevent.entity.CyEventBoardPraise">
+		delete from cy_event_board_praise where boardId = #{boardId} and userInfoId = #{userInfoId}
+	</delete>
+	
+	
+	<delete id="deleteEventBoardComment" parameterType="com.cy.core.mobevent.entity.CyEventBoardComment">
+		delete from cy_event_board_comment where id = #{id} and userInfoId = #{userInfoId}
+	</delete>
+	
+	
+	<update id="deleteEventBoard" parameterType="com.cy.core.mobevent.entity.CyEventBoard">
+		update cy_event_board set status = 3 where id = #{id} and userInfoId = #{userInfoId}
+	</update>
+	
+	
+	<update id="deleteEvent" parameterType="com.cy.core.mobevent.entity.CyEvent">
+		update cy_event set status = 2 where id = #{id} and userInfoId = #{userInfoId}
+	</update>
+	
+	<delete id="deleteEventComment" parameterType="com.cy.core.mobevent.entity.CyEventComment">
+		delete from cy_event_comment where id = #{id} and userInfoId = #{userInfoId}
+	</delete>
+	
+	
+	<select id="getEventById" parameterType="string" resultType="com.cy.core.mobevent.entity.CyEvent">
+		select 
+			e.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event e LEFT JOIN cy_userprofile u
+		on 
+			e.userInfoId = u.accountNum 
+		
+		where id = #{id}
+	</select>
+	
+	
+	<select id="getEventSign" parameterType="com.cy.core.mobevent.entity.CyEventSign" resultType="com.cy.core.mobevent.entity.CyEventSign">
+		select 
+			e.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_sign e LEFT JOIN cy_userprofile u
+		on 
+			e.userInfoId = u.accountNum 
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+			<if test="viewNotification!=null and viewNotification!=''">
+				and viewNotification = #{viewNotification}
+			</if>
+			<if test="isSignIn!=null and isSignIn!=''">
+				and isSignIn = #{isSignIn}
+			</if>
+		</where>
+		
+		limit 1
+	</select>
+	
+	
+	<select id="getEventSignList" parameterType="map" resultType="com.cy.core.mobevent.entity.CyEventSign">
+		select 
+			e.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_sign e LEFT JOIN cy_userprofile u
+		on 
+			e.userInfoId = u.accountNum 
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+			<if test="viewNotification!=null and viewNotification!=''">
+				and viewNotification = #{viewNotification}
+			</if>
+			<if test="isSignIn!=null and isSignIn!=''">
+				and isSignIn = #{isSignIn}
+			</if>
+		</where>
+		<if test="limit!=null and limit!=''">
+			limit ${limit}
+		</if>
+	</select>
+	
+	
+	
+	<select id="pullEventSignList" parameterType="com.cy.core.mobevent.entity.CyEventSign" resultType="com.cy.core.mobevent.entity.CyEventSign">
+		select 
+			e.*,
+			IFNULL(u.name,'') as userName,
+			IFNULL(u.picture,'') as userAvatarUrl,
+			IFNULL(u.phoneNum,'') as userTel,
+			IFNULL(u.sex,'') as userSex
+		from 
+			cy_event_sign e LEFT JOIN cy_userprofile u
+		on 
+			e.userInfoId = u.accountNum 
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+			<if test="viewNotification!=null and viewNotification!=''">
+				and viewNotification = #{viewNotification}
+			</if>
+			<if test="isSignIn!=null and isSignIn!=''">
+				and isSignIn = #{isSignIn}
+			</if>
+		</where>
+		limit #{currentRow},#{incremental}  
+	</select>
+	
+	
+	<select id="countEventSign" parameterType="com.cy.core.mobevent.entity.CyEventSign" resultType="long">
+		select count(id) from cy_event_sign
+		
+		<where>
+			<if test="eventId!=null and eventId!=''">
+				and eventId = #{eventId}
+			</if>
+			<if test="userInfoId!=null and userInfoId!=''">
+				and userInfoId = #{userInfoId}
+			</if>
+		</where>
+		
+	</select>
+
+	<delete id="cancelEventSign" parameterType="com.cy.core.mobevent.entity.CyEventSign">
+		delete from cy_event_sign where eventId = #{eventId} and userInfoId = #{userInfoId}
+	</delete>
+
+
+	<select id="verifyEventSignInCode" parameterType="com.cy.core.mobevent.entity.CyEvent" resultType="long">
+		select count(id) from cy_event where id = #{id} and signInCode = #{signInCode}
+	</select>
+	
+	
+	<update id="updateEventSign" parameterType="com.cy.core.mobevent.entity.CyEventSign">
+		update cy_event_sign 
+		<set>
+			<if test="viewNotification!=null and viewNotification!=''">
+				viewNotification = #{viewNotification},
+			</if>
+			<if test="isSignIn!=null and isSignIn!=''">
+				isSignIn = #{isSignIn}, signinTime = now(),
+			</if>
+		</set>
+		where eventId = #{eventId} and userInfoId = #{userInfoId}
+	</update>
+	
+	
+	<insert id="insertEventSign" parameterType="com.cy.core.mobevent.entity.CyEventSign">
+		insert cy_event_sign(eventId, userInfoId, signupTime, viewNotification, isSignIn, signinTime) 
+		values(#{eventId}, #{userInfoId}, #{signupTime}, #{viewNotification}, #{isSignIn}, #{signinTime})
+	</insert>
+	
+	
+	<select id="listMobEvens" parameterType="com.cy.core.mobevent.entity.CyEvent" resultType="com.cy.core.mobevent.entity.CyEvent">
+		SELECT ta.*, tb.viewNotification, tb.isSignIn, tc.joinedPeople FROM cy_event ta 
+			LEFT OUTER JOIN (SELECT eventId, viewNotification, isSignIn FROM cy_event_sign WHERE userInfoId=#{userInfoId}) tb
+			ON ta.id = tb.eventId
+			LEFT OUTER JOIN (SELECT count(id) AS joinedPeople, eventId FROM cy_event_sign GROUP BY eventId) tc
+			ON ta.id = tc.eventId
+		<where>
+			
+		    <!-- 我参与的活动 -->
+			<if test="type==1">
+				AND (ta.id IN
+				(SELECT distinct(eventId) AS eventId FROM cy_event_sign WHERE userInfoId=#{userInfoId})
+				AND ta.status != 2)
+				
+			</if>
+			
+			<!-- 全部活动 及相关地域刷选后的活动 -->
+			<if test="type==2">
+				<!-- AND (ta.endTime > Now())  -->	
+				<if test="region!=null and region!='' and region!='全部'">
+					AND ta.region LIKE concat('%',#{region},'%')
+				</if>
+				AND ta.status = 0 AND ta.auditStatus = 1
+			</if>
+			
+			<!-- 我现在可以参与的活动 -->
+			<if test="type==4">
+				AND ta.id NOT IN 
+				(SELECT distinct(eventId) AS eventId FROM cy_event_sign WHERE userInfoId=#{userInfoId})
+				AND ta.status = 0 AND ta.auditStatus = 1 
+				AND (ta.maxPeople = 0 OR ta.maxPeople > (SELECT count(id) FROM cy_event_sign WHERE eventId=ta.id) )
+				AND 
+				((Now() between ta.signupStartTime and ta.signupEndTime) OR (ta.signupStartTime > Now()))
+				AND ta.userInfoId != #{userInfoId}
+			</if>
+			
+			<!-- 我创建的活动 -->
+			<if test="type==3">
+				AND ta.userInfoId = #{userInfoId}
+				AND ta.status != 2
+			</if>
+			
+			<!-- 所有的官方活动 -->
+			<if test="type==0">
+				AND ta.type = #{type}
+				AND ta.status != 2
+			</if>
+			
+			<!-- 该用户所在地方的活动 -->
+			<if test="type==5">
+				AND ta.region LIKE concat('%',#{region},'%')
+				AND ta.status = 0 AND ta.auditStatus = 1
+			</if>
+				
+		</where>
+		order by createTime desc limit #{currentRow},#{incremental}  
+		
+	</select>
+	
+	<select id="listMobEvensNum" parameterType="com.cy.core.mobevent.entity.CyEvent" resultType="long">
+	    SELECT count(ta.id) FROM cy_event ta 
+		<where>
+			
+		    <!-- 我参与的活动 -->
+			<if test="type==1">
+				AND (ta.id IN
+				(SELECT distinct(eventId) AS eventId FROM cy_event_sign WHERE userInfoId=#{userInfoId})
+				AND ta.status != 2)
+				
+			</if>
+			
+			<!-- 全部活动 及相关地域刷选后的活动 -->
+			<if test="type==2">
+				<if test="region!=null and region!='' and region!='全部'">
+					AND ta.region LIKE concat('%',#{region},'%')
+				</if>
+				AND ta.status = 0 AND ta.auditStatus = 1
+			</if>
+			
+			<!-- 我现在可以参与的活动 -->
+			<if test="type==4">
+				AND ta.id NOT IN 
+				(SELECT distinct(eventId) AS eventId FROM cy_event_sign WHERE userInfoId=#{userInfoId})
+				AND ta.status = 0 AND ta.auditStatus = 1 
+				AND (ta.maxPeople = 0 OR ta.maxPeople > (SELECT count(id) FROM cy_event_sign WHERE eventId=ta.id) )
+				AND 
+				((Now() between ta.signupStartTime and ta.signupEndTime) OR (ta.signupStartTime > Now()))
+				AND ta.userInfoId != #{userInfoId}
+			</if>
+			
+			<!-- 我创建的活动 -->
+			<if test="type==3">
+				AND ta.userInfoId = #{userInfoId}
+				AND ta.status != 2
+			</if>
+			
+			<!-- 所有的官方活动 -->
+			<if test="type==0">
+				AND ta.type = #{type}
+				AND ta.status != 2
+			</if>
+			
+			<!-- 该用户所在地方的活动 -->
+			<if test="type==5">
+				AND ta.region LIKE concat('%',#{region},'%')
+				AND ta.status = 0 AND ta.auditStatus = 1
+			</if>
+				
+		</where>
+	</select>
+	
+	<insert id="saveMobEvent" parameterType="com.cy.core.mobevent.entity.CyEvent">
+		
+		insert into cy_event
+		(title,
+		 type,
+		 category,
+		 place,
+		 content,
+		 pic,
+		 organizer,
+		 startTime,
+		 endTime,
+		 signupStartTime,
+		 signupEndTime,
+		 minPeople,
+		 maxPeople,
+		 needSignIn,
+		 signInCode,
+		 createTime,
+		 userId,
+		 userInfoId,
+		 needNotification,
+		 notification,
+		 auditStatus,
+		 auditOpinion,
+		 auditUserId,
+		 auditTime,
+		 status,
+		 score,
+		 region)
+		 
+		VALUES
+		
+		(#{title},
+		 #{type},
+		 #{category},
+		 #{place},
+		 #{content},
+		 #{pic},
+		 #{organizer},
+		 #{startTime},
+		 #{endTime},
+		 #{signupStartTime},
+		 #{signupEndTime},
+		 #{minPeople},
+		 #{maxPeople},
+		 #{needSignIn},
+		 #{signInCode},
+		 #{createTime},
+		 #{userId},
+		 #{userInfoId},
+		 #{needNotification},
+		 #{notification},
+		 #{auditStatus},
+		 #{auditOpinion},
+		 #{auditUserId},
+		 #{auditTime},
+		 #{status},
+		 #{score},
+		 #{region})
+
+		
+	</insert>
+	
+	<select id="getDicts" parameterType="String" resultType="com.cy.core.dict.entity.Dict">
+		select dict_name AS dictName from cy_dict where dict_type_id = 
+		(select dict_type_id from cy_dict_type where dict_type_name=#{dictTypeName} limit 0,1)
+	</select>
+	
+	
+	<select id="getNumOfNotifyForMyEvents" parameterType="String" resultType="com.cy.core.mobevent.entity.CyEvent">
+		SELECT count(id) AS joinedPeople FROM cy_event_sign WHERE eventId IN(
+		SELECT id FROM cy_event ta
+		WHERE (ta.id IN
+			(SELECT distinct(eventId) AS eventId FROM cy_event_sign WHERE userInfoId=#{userInfoId})
+			OR ta.userInfoId = #{userInfoId})
+		    AND needNotification = 1
+		) AND viewNotification = 0 AND userInfoId = #{userInfoId}
+	</select>
+	
+	<insert id="saveMobEventBoard" parameterType="com.cy.core.mobevent.entity.CyEventBoard">
+		
+	    <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS id
+		</selectKey>
+	    
+		insert into cy_event_board
+		(eventId,
+		 userInfoId,
+		 comment,
+		 createTime,
+		 status,
+		 address)
+		 
+		VALUES
+		
+		(#{eventId},
+		 #{userInfoId},
+		 #{comment},
+		 #{createTime},
+		 #{status},
+		  #{address}
+		  )
+		
+	</insert>
+	
+	<insert id="saveMobEventBoardPic" parameterType="com.cy.core.mobevent.entity.CyEventBoardPic">
+		
+		insert into cy_event_board_pic
+		(boardId,
+		 pic)
+		 
+		VALUES
+		
+		(#{boardId},
+		 #{pic})
+		
+	</insert>
+	
+	<select id="getRegionFromAlumniByAccountNum" parameterType="com.cy.core.mobevent.entity.CyEvent" resultType="com.cy.core.mobevent.entity.CyEvent">
+		SELECT tb.region AS region, ta.address AS place FROM cy_userprofile ta
+			INNER JOIN cy_alumni tb ON ta.alumni_id = tb.alumniId WHERE ta.accountNum = #{userInfoId}
+	</select>
+
+	<select id="getMobEventBoardCommentList" parameterType="String" resultType="com.cy.core.mobevent.entity.CyEventBoardComment">
+		select
+		ebc.*,
+		IFNULL(u.name,'') as userName,
+		IFNULL(u.picture,'') as userAvatarUrl,
+		IFNULL(u.phoneNum,'') as userTel,
+		IFNULL(u.sex,'') as userSex
+		from
+		cy_event_board_comment ebc LEFT JOIN cy_userprofile u
+		on
+		ebc.userInfoId = u.accountNum
+		where boardId = #{boardId} order by id
+	</select>
+
+      <select id="getMobEventCommentList" parameterType="String" resultType="com.cy.core.mobevent.entity.CyEventComment">
+		select
+		ebc.*,
+		IFNULL(u.name,'') as userName,
+		IFNULL(u.picture,'') as userAvatarUrl,
+		IFNULL(u.phoneNum,'') as userTel,
+		IFNULL(u.sex,'') as userSex
+		from
+		cy_event_comment ebc LEFT JOIN cy_userprofile u
+		on
+		ebc.userInfoId = u.accountNum
+		where boardId = #{boardId} order by id
+	</select>
+	
+</mapper>

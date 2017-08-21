@@ -1,0 +1,138 @@
+
+    .bg{ background: url("../images/bg.png") no-repeat ;background-size: 100% 100%;}
+    .go{width: 42%;height: 6%; bottom: 8%;left: 29%;}
+.star1{
+    width: 102px;
+    height:77px;
+    background: url("../images/star1.png") no-repeat;
+    z-index: 5;
+   animation: star1 3s ease 1;
+    left:65%;
+    top:5%;
+    opacity: 0;
+}
+
+@keyframes star1 {
+
+    0%{
+       opacity:1 ;
+        left:65%;
+        top:5%;
+    }
+    100%{
+        opacity: 0;
+        left:0%;
+        top:80%;
+    }
+}
+    .star2{
+        width: 102px;
+        height:77px;
+        background: url("../images/star2.png") no-repeat;
+        z-index: 5;
+        animation: star2 2s linear 1s 1;
+        left:80%;
+        top:-20%;
+    }
+
+    @keyframes star2 {
+        0%{
+            opacity:1 ;
+            left:80%;
+            top:1%;
+        }
+        100%{
+            opacity: 0;
+            left:0%;
+            top:30%;
+        }
+    }
+
+
+ .star3{
+        width: 102px;
+        height:77px;
+        background: url("../images/star2.png") no-repeat;
+        z-index: 5;
+        animation: star3 3s ease 3s 1;
+        left:65%;
+        top:25%;
+        opacity: 0;
+    }
+    @keyframes star3 {
+        0%{
+            opacity:1 ;
+            left:100%;
+            top:25%;
+        }
+        100%{
+            opacity: 0;
+            left:0%;
+            top:80%;
+        }
+    }
+ .star4{
+        width: 102px;
+        height:77px;
+        background: url("../images/star2.png") no-repeat;
+        z-index: 5;
+        animation: star4 1s linear 1s 1;
+        left:65%;
+        top:50%;
+        opacity: 0;
+    }
+    .star4{
+        width: 102px;
+        height:77px;
+        background: url("../images/star2.png") no-repeat;
+        z-index: 5;
+        animation: star4 2s ease-in-out 1s 1;
+        left:65%;
+        top:50%;
+        opacity: 0;
+    }
+
+    @keyframes star4 {
+        0%{
+            opacity:1 ;
+            left:100%;
+            top:50%;
+        }
+        100%{
+            opacity: 0;
+            left:0%;
+            top:80%;
+        }
+    }
+
+    .star5{
+        width: 102px;
+        height:77px;
+        background: url("../images/star1.png") no-repeat;
+        z-index: 5;
+        animation: star5 3s ease 1s 1;
+        left:65%;
+        top:-30%;
+    }
+    .star5{
+        width: 102px;
+        height:77px;
+        background: url("../images/star1.png") no-repeat;
+        z-index: 5;
+        animation: star5 2s linear 3s 1;
+        left:65%;
+        top:-30%;
+    }
+
+    @keyframes star5 {
+        0%{
+            opacity:1 ;
+            left:60%;
+            top:-30%;
+        }
+        100%{
+            opacity: 0;
+            left:0%;
+            top:10%;
+        }
+    }

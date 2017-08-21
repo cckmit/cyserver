@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>校友企业</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link href="../static/font/iconfont.css" type="text/css" rel="stylesheet" />
+    <link href="../static/css/product.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        #wrapper {
+            position: absolute;
+            z-index: 1;
+            top: 45px;
+            height: 35px;
+            top: 0px;
+            left: 0;
+            width: 100%;
+            background: #f4f5f9;
+            overflow: hidden;
+        }
+        #scroller {
+            position: absolute;
+            z-index: 1;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            /*width: 752px;*/
+            height: 100%;
+            background-color: #ffffff;
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-text-size-adjust: none;
+            -moz-text-size-adjust: none;
+            -ms-text-size-adjust: none;
+            -o-text-size-adjust: none;
+            text-size-adjust: none;
+        }
+        #scroller ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+        #scroller li {
+            display: block;
+            float: left;
+            width: 94px;
+            height: 100%;
+            line-height: 35px;
+            background-color: #fff;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        #scroller .dqa{
+            color: #3498db;
+        }
+
+
+        input[type=search]{
+            border-radius: 5px;
+            border: 1px solid #ebebeb;//必须对默认的border:2px inset覆盖，要不然下面的样式也是白搭
+        width: 98%;
+            height: 30px;
+            outline: none;
+        }
+
+        input[type=search]::-webkit-search-cancel-button{
+            -webkit-appearance: none;//此处只是去掉默认的小×
+        }
+
+        /*input[type=search]::-webkit-search-cancel-button{*/
+            /*-webkit-appearance: none;*/
+            /*position: relative;*/
+            /*height: 20px;*/
+            /*width: 20px;*/
+            /*border-radius: 50%;*/
+            /*background-color: #EBEBEB;*/
+        /*}*/
+
+        /*input[type=search]::-webkit-search-cancel-button:after{*/
+            /*position: absolute;*/
+            /*z-index: 3;*/
+            /*display: block;*/
+            /*background: #6e6e6e;*/
+            /*width: 20px;*/
+            /*height: 20px;*/
+            /*line-height: 18px;*/
+            /*text-align: center;*/
+            /*border-radius: 50%;*/
+            /*content: '×';*/
+            /*right:0px;*/
+            /*top: 0px;*/
+            /*font-size: 15px;*/
+            /*color: #fff;*/
+        /*}*/
+    </style>
+</head>
+<body>
+
+
+<script  type="text/html" id="tablist">
+    <ul id="tab_listbox">
+        <li onclick="huoquxinxi('qb',this)" flag="qb">
+            全部
+        </li>
+        <%
+        for(var i in tablist){
+        %>
+        <li onclick="huoquxinxi('<%=tablist[i].dictValue%>',this)" flag="<%=tablist[i].dictValue%>">
+            <%=tablist[i].dictName%>
+        </li>
+        <%
+        }
+        %>
+
+    </ul>
+</script>
+
+<div class="H-theme-background-color-white" style="box-shadow:0px 0px 10px #afafaf;">
+    <div class="input_wai">
+        <form action="" onsubmit="return false;" class=" H-position-relative">
+            <div id="ser" class="H-position-absolute H-z-index-100 H-width-100-percent H-height-100-percent H-vertical-middle H-text-align-center H-theme-font-color-999  H-border-radius-15"  style="">
+                <span class="H-display-block H-width-100-percent H-font-size-14">
+                    <i id="ss_brn" class="H-iconfont H-icon-search H-font-size-14"></i>
+                    <span id="ss_title">请输入企业名称</span>
+                </span>
+            </div>
+            <input onsearch="suosou()" type="search" class="top-input" id="sousuo_byn" placeholder=""/>
+            <div class="sanchu" style="display: none;position: absolute;top: 5px;right: 5px;width: 60px;height: 22px;line-height: 22px;font-size:12px;text-align: center">
+                <span class="H-display-block H-font-size-13 H-vertical-middle H-theme-font-color-999 H-padding-horizontal-both-10 H-icon H-display-block H-horizontal-center">
+                    <i class="H-iconfont H-icon-search H-vertical-middle" onclick="suosou()"></i>
+                    <i class="H-iconfont H-vertical-middle">&emsp;</i>
+                    <i class="H-iconfont H-icon-close H-vertical-middle" onclick="quxiao()"></i>
+                </span>
+            </div>
+        </form>
+
+        <!--<input type="text" class="top-input" placeholder="请输入企业名称或企业类型">-->
+    </div>
+
+    <div class="H-clear-both H-width-100-percent H-display-table H-box-sizing-border-box H-padding-horizontal-left-10 H-theme-font-color-666">
+        <div class="H-display-table-cell H-float-left  H-box-sizing-border-box H-width-avg-2 H-padding-horizontal-right-10 H-margin-vertical-bottom-10">
+            <div class="H-border-radius-3 H-overflow-hidden H-position-relative">
+                <img src="../static/img/youcetupian@2x.png" class="H-width-100-percent H-display-block" alt="" title="">
+                <div class="H-position-absolute H-theme-font-color-white" style="display: block;width:100%; text-align:center;top:50%;margin-top: -12px">
+                    <span style="display: inline-block;width: 100px;height: 24px;font-size: 18px;border-bottom: 1px solid #fff;padding-bottom: 5px;">校友企业</span>
+                </div>
+            </div>
+        </div>
+        <div onclick="gopro_list()" class="H-display-table-cell H-float-left  H-box-sizing-border-box H-width-avg-2 H-padding-horizontal-right-10 H-margin-vertical-bottom-10">
+            <div class="H-border-radius-3 H-overflow-hidden H-position-relative">
+                <img src="../static/img/zuocetupian-@2x.png" class="H-width-100-percent H-display-block" alt="" title="">
+                <div class="H-position-absolute H-theme-font-color-white" style="display: block;width:100%; text-align:center;top:50%;margin-top: -12px">
+                    <span style="display: inline-block;width: 100px;height: 24px;font-size: 18px;padding-bottom: 5px;">校友产品</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="H-flexbox-horizontal H-theme-background-color-white H-position-relative" style="height:36px;border-bottom: 1px solid #3498db">
+        <div id="wrapper">
+            <div id="scroller">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="mq_conter_box">
+    <div class="mq_conter_list">
+    </div>
+</div>
+<script type="text/html" id="mq_conterlist">
+    <%
+    for(var key in list){
+    %>
+    <div class="mq_lists" onclick="go_pro_detail('<%=list[key].id%>')">
+        <img onerror="javascript:this.src='../static/img/banner@3x.png';" src="<%=B.getImageAbsoluteUrl(list[key].posterPicUrl)%>">
+        <div class="mq_list_title">
+            <div class="list_left H-font-size-12 H-text-show-row-1">
+                <%=list[key].typeName%>
+            </div>
+            <div class="mq_right">
+                <img onerror="javascript:this.src='<%=B.getImageAbsoluteUrl(list[key].schoolLogo)%>';" src="<%=B.getImageAbsoluteUrl(list[key].logoUrl)%>">
+            </div>
+            <div class="mq_jianjie H-theme-font-color-white">
+                <div style="font-size: 14px" class="H-text-show-row-1">
+                    <%=list[key].name%>
+                </div>
+                <div style="font-size: 12px;color: #e8e8e8;" class="H-text-show-row-1">
+                    主营业务：
+                    <%=list[key].mainBusiness%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%
+    }
+    %>
+</script>
+
+
+</body>
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script src="../static/js/iscroll.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript">
+    // 接收URL中的参数
+    var accountNum = B.getUrlParamByName("accountNum");
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+        var shareData = {
+            title: '校友企业',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 0);
+    }
+
+    // 初始化页面
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        //加载tab字典
+        loadtab();
+    });
+
+
+
+    // 单击跳转校友产品
+    function gopro_list() {
+        H.openWin("校友产品", "product_list.html?accountNum="+accountNum);
+    }
+
+    // 单机跳转企业详情
+    function go_pro_detail(enterpriseId){
+        H.openWin("企业详情", "company_detail.html?accountNum="+accountNum+"&enterpriseId="+enterpriseId);
+    }
+
+
+    //加载tab字典
+    function loadtab(){
+        B.ready(function(){
+            // 下拉刷新上拉加载
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "267","content": {"dictTypeId":"25"}}'
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data)
+
+                    var V_width=window.screen.width/4;
+
+                    if(data.obj && data.obj.length>0) {
+                        var render = H.tppl(H.D("#tablist").innerHTML);
+                        var result = render({tablist: data.obj});
+                        $('#scroller').append(result);
+                        $('#tab_listbox li').eq(0).addClass('dqa');
+                        $('#tab_listbox li').css('width',V_width);
+
+                        for(var i in data.obj){
+                            var dictValue=data.obj[0].dictValue;
+                        }
+                        huoquxinxi('qb','.dqa');
+
+                        $('#scroller').css("width",$('#tab_listbox li').length*V_width+"px");
+                        //出发iscrol的横向滚动
+                        var myScroll;
+                        loaded ();
+                        function loaded () {
+                            myScroll = new IScroll('#wrapper', { scrollX: true, scrollY: false, mouseWheel: true ,preventDefault:false});
+                        }
+                    }
+                },
+                error: function(xhr, type){
+                }
+            });
+        });
+    }
+
+
+
+    //点击获取tab列表数据
+    function huoquxinxi(dictValue,obj){
+
+        //alert($(obj).html());
+        $(obj).css('pointer-events','none').siblings().css('pointer-events','auto');
+        //style="pointer-events:none"
+
+        $('.mq_conter_list').empty();
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+
+        //$(obj).addclass('dqa').siblings().removeClass('dqa');
+
+        if(dictValue=='qb'){
+            dictValue='';
+        }
+
+        B.ready(function(){
+            // 下拉刷新上拉加载
+            var page=1;
+            $('.mq_conter_box').dropload({
+                scrollArea : window,
+
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-校友企业</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+
+                loadDownFn : function(me){
+                    console.log('上拉'+'{"command": "262","content": {"page": "'+page+'","rows": "3","accountNum":"'+accountNum+'" ,"type":"'+dictValue+'"  } }')
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "262","content": {"page": "'+page+'","rows": "3","accountNum":"'+accountNum+'" ,"type":"'+dictValue+'"  } }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data)
+                            if(data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                            }else{
+                                var render = H.tppl(H.D("#mq_conterlist").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.mq_conter_list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+
+
+        });
+    }
+
+    $('#wrapper').on('click','li',function(){
+        $(this).addClass('dqa').siblings().removeClass('dqa')
+    })
+
+
+    //搜索框
+    $('.top-input').val('')
+    H.D("#ser").addEventListener("touchend", function (e) {
+        $("#ser").css('width','30px');
+        $('#ss_title').hide();
+        $('.top-input').css('text-align','left');
+        $('.top-input').attr("placeholder", "请输入企业名称");
+    });
+
+    $('.top-input').focus(function(){
+        $('.sanchu').show();
+        $('.top-input').css("width", ($('form').width()-70) + "px");
+    });
+    /*$('.top-input').blur(function(){
+        if($('.top-input').val()==''){
+            $("#ser").css('width','100%');
+            $('#ss_title').show();
+            $('.top-input').css("width", "100%");
+            $('.top-input').css('text-align','center').val('');
+            $('.top-input').attr("placeholder", " ");
+            $('.sanchu').hide();
+            suosou();
+        }
+    })*/
+    function quxiao(){
+        $("#ser").css('width','100%');
+        $('#ss_title').show();
+        $('.top-input').css("width", "100%");
+        $('.top-input').css('text-align','center').val('');
+        $('.top-input').attr("placeholder", " ");
+        $('.sanchu').hide();
+        suosou();
+    }
+
+    //搜索企业
+    function suosou(){
+        $('.mq_conter_list').empty();
+        $('.dropload-up').remove();
+        $('.dropload-down').remove();
+        var names = $("#sousuo_byn").val();
+
+        $('#tab_listbox li').css('pointer-events','auto')
+
+        var dqtype=$('.dqa').attr('flag');
+        if(dqtype=='qb'){
+            dqtype='';
+        };
+
+        B.ready(function(){
+            var page=1;
+            $('.mq_conter_box').dropload({
+                scrollArea : window,
+                domDown : {
+                    domClass   : 'dropload-down',
+                    domRefresh : '<div class="dropload-refresh">↑上拉加载更多-校友企业</div>',
+                    domLoad    : '<div class="dropload-load"><span class="loading"></span>加载中-亲，请耐心等待喔...</div>',
+                    domNoData  : '<div class="dropload-noData"></div>'
+                },
+                loadDownFn : function(me){
+                    //alert('{"command": "262","content": {"page": "'+page+'","rows": "3","accountNum":"'+accountNum+'" ,""name"":"'+names+'"  } }')
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "262","content": {"page": "'+page+'","rows": "3","accountNum":"'+accountNum+'" ,"name":"'+names+'","type":"'+dqtype+'"  } }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(data)
+                            if(data.obj.rows.length==0){
+                                me.lock();
+                                me.noData(true);
+                            }else{
+                                var render = H.tppl(H.D("#mq_conterlist").innerHTML);
+                                var result = render({list:data.obj.rows});
+
+                                $('.mq_conter_list').append(result);
+
+                                page++;
+                            }
+
+                            // 每次数据加载完，必须重置
+                            me.resetload();
+                        },
+                        error: function(xhr, type){
+                            // 即使加载出错，也得重置
+                            me.resetload();
+                        }
+                    });
+                },
+                threshold : 50
+            });
+
+        })
+
+    }
+    //ios返回刷新
+
+    var t = B.getUrlParamByName("t");
+    /*$(function () {
+        var u = navigator.userAgent, app = navigator.appVersion;
+        var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+        var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if (isAndroid) {
+
+        }
+        if (isIOS) {
+
+            var rnumber = Math.floor(Math.random()*1000)
+            history.replaceState({mod:rnumber}, 'Title', '?t='+t+'&accountNum='+accountNum+'&mod='+rnumber);
+            window.onpopstate = function(event) {
+                location.reload();
+            };
+        }
+    });
+    */
+
+    if(!t || t=='null' || t!=1){
+        $(function(){
+            pushHistory();
+            window.addEventListener("popstate", function(e) {
+                pushHistory();
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger") {
+                    WeixinJSBridge.call('closeWindow');
+                } else if(ua.indexOf("alipay")!=-1){
+                    AlipayJSBridge.call('closeWebview');
+                }else if(ua.indexOf("baidu")!=-1){
+                    BLightApp.closeWindow();
+                }
+                else{
+                    window.close();
+                }
+            }, false);
+            function pushHistory() {
+                var state = {
+                    title: "title",
+                    url: "#"
+                };
+                window.history.pushState(state, "title", "#");
+            }
+        });
+    }
+    //返回
+    var jsonStr = {
+        "title":"校友企业",
+        "btn1":{
+            "imgname":"icon_Back@2x.png",
+            "imgversion":"20170214",
+            "imgbase64":"iVBORw0KGgoAAAANSUhEUgAAABoAAAAsCAYAAAB7aah+AAAAAXNSR0IArs4c6QAAAN1JREFUWAntlkEOgkAMRRkTVl7EA3gPD+D53MjGa7lyr4vxF2gghkIHqnHxmzQdMp3+6YOkVFWw5ZxP8Cu8Di49lOtFnohiN3i8GIpKJyqCZWuxYig5JdJrdZ3thsbXrUQEJxt4PCa90kIn0tF2dBRR3K5IXC5MmkRcSsIVicuFSZOIS0l4owy+M3xuaF1SSi9vQTMP76aGy4CyTP4DZIpuNxSiGDHaBPiB2GwKdoixAJadSow2m4Kdf8N4x4X2Bfe3U2c6e2DvaJ9csTMhFi+i9xqJfU/kQ+ygzz+Pb1Kohi6oSMRTAAAAAElFTkSuQmCC",
+            "name":"返回",
+            "action":"fallback"
+        }
+    }
+    function menuConfig() {
+        window.webkit.messageHandlers.AppModel.postMessage({body: jsonStr});
+        return jsonStr;
+    }
+    function jsonConfig() {
+        var str = JSON.stringify(jsonStr);
+        window.stub.jsMethod(str);
+        return jsonStr;
+    }
+    function fallback() {
+
+        window.location.href = B.serverUrl + "/mobile/services/index_body.html?accountNum=" + accountNum;
+
+    }
+</script>
+
+</html>

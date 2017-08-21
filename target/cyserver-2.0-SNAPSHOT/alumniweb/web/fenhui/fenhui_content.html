@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8"/>
+		<title>分会介绍</title>
+		<!--避免IE使用兼容模式-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--使用webkit内核-->
+		<meta name="renderer" content="webkit">
+	    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+	    <meta content="校友会" name="description"/>
+	    <meta content="校友会" name="author"/>
+		<!--引入css文件-->
+		<link href="../css/style.css" type="text/css" rel="stylesheet" />
+
+		<link href="../css/fenhui_style.css" type="text/css" rel="stylesheet"  />
+		<link rel="stylesheet" href="../css/user.css" type="text/css" />
+
+		<!--引入js文件-->
+		<script src="../js/jquery-1.8.3.min.js" type="text/javascript"></script>
+		<script src="../js/xdomain.min.js" type="text/javascript"></script>
+		<script src="../js/B.js" type="text/javascript"></script>
+		<script src="../js/common.js"></script>
+		<script src="../js/interfacepath.js"></script>
+
+
+		<script language="javascript">
+			// 接收参数
+			var newsId = B.getUrlParamByName("newsId");
+
+			var deptId=B.getUrlParamByName("deptId");
+
+			$(function(){
+
+				$(".shoouye").attr("href",'funhui_index.html?alumniId='+deptId+'');
+				$(".login_tk_dlh").attr("href",B.clientUrl+"users/user_personal.html");
+				$(".zhuce_tk").attr("href",B.clientUrl+"users/user_register.html");
+				//当前分会
+				fenhuiDq()
+
+				navTestCookie()
+
+				initFoot();
+			})
+
+			window.onresize = function () {
+				initFoot();
+			}
+			function initFoot(){
+				var windowHeight = $(window).height() ;
+				if(windowHeight > 200) {
+					$(".content_box").css("min-height",windowHeight-200);
+				}
+			}
+
+
+			// 全局变量-网站栏目（包括子栏目）
+			var categoryTreeData = [];
+
+			//导航栏目
+			$(function() {
+				B.ready(function() {
+					// 获取网站所有栏目（包括子栏目和不在导航上显示的校友服务）
+					interface.FenhuiContent.jsonData.content.deptId = deptId.toString();
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + interface.FenhuiContent.url,
+						data: {
+							jsonStr: JSON.stringify(interface.FenhuiContent.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log("------" + JSON.stringify(data));
+
+							if(data && data.obj && data.obj.length > 0) {
+								//$("#left_box").remove(".box_list")
+//								for (x in data.obj){
+//									var list='<li>'+
+//											'<a href="fenhui_list.html?categoryId='+data.obj[x].id+'&&deptId='+deptId+'">'+data.obj[x].text+'</a>'+
+//											'</li>';
+//									$("#nav").append(list);
+//								}
+
+
+							}
+						},
+						error: function(xhr, type) {
+						}
+					});
+
+					interface.FenhuiContentPosition.jsonData.content.id = newsId.toString();
+					$.ajax({
+						type: 'post',
+						url: B.serverUrl + interface.FenhuiContentPosition.url,
+						data: {
+							jsonStr: JSON.stringify(interface.FenhuiContentPosition.jsonData)
+						},
+						dataType: 'json',
+						success: function(data) {
+							console.log(JSON.stringify(data.obj));
+							// 父级栏目名
+							var pCategoryName = data.obj.pCategoryName;
+							// 父级栏目id
+							var pCategory = data.obj.pCategory;
+							// 栏目名
+							var categoryName = data.obj.categoryName;
+							// 栏目id
+							var category = data.obj.category;
+
+							// 所在位置
+							$(".content_box h2").append('<a href="funhui_index.html?deptId='+deptId+'&&alumniId='+deptId+'" >首页</a>');
+							if(pCategoryName) {
+								$(".content_box h2").append('&gt;&gt;<a href="fenhui_list.html?categoryId=' + pCategory + '&&deptId='+deptId+'" >' + pCategoryName + '</a>');
+							}
+							if(categoryName) {
+								$(".content_box h2").append('&gt;&gt;<a href="fenhui_list.html?categoryId=' + category + '&&deptId='+deptId+'" >' + categoryName + '</a>');
+							}
+							$(".content_box h2").append('&gt;&gt;<span class="title">' + data.obj.title + '</span>');
+
+							$(".title").html(data.obj.title);
+							$(".createDate").text(data.obj.createDate.substr(0, 10));
+							$(".clickRate").text(data.obj.clickRate);
+							$(".content1").html(data.obj.content);
+						},
+						error: function(xhr, type) {
+
+						}
+					});
+
+
+				});
+
+				//檢測cookie
+				//checkCookie();
+
+
+			});
+
+		</script>
+	</head>
+
+	<body>
+
+		<div id="head">
+
+			<div class="lines">
+			</div>
+
+			<div class="header_nav">
+			</div>
+
+			<div class="header_content">
+			</div>
+
+		</div>
+		<div class="dengluTankuang"></div>
+		<!--退出登录框-->
+		<div class="logoutTankuaung"></div>
+
+
+		<div class="content_box">
+			<h2>当前位置：
+				<!--<a href="/">首页</a>-->
+				<!--&gt;&gt;<a href="list.html?categoryId=37">...</a>-->
+				<!--&gt;&gt;<span class="title">....</span>-->
+			</h2>
+			<div class="content">
+				<div class="news">
+					<h1 class="title">..</h1>
+					<div class="top">
+						发布时间：<span class="createDate">0000-00-00</span>&nbsp;&nbsp;&nbsp; 查看次数：
+						<span class="clickRate">00</span>
+					</div>
+					<div class="content1">
+
+					</div>
+				</div>
+			</div>
+			<!--
+			<div class="bottom">
+				<a href="javascript:window.opener=null;window.close();">
+					<input type="button" class="clickBtn" style="padding:8px 30px;" value="关闭">
+				</a>
+			</div>
+			-->
+		</div>
+
+
+		<!--顶部线条::start-->
+		<div id="footer_line"></div>
+		<!--顶部线条::end-->
+	</body>
+
+</html>
+<script src="fenhuiPublic/public.js"></script>
+<script src="../js/G.js"></script>

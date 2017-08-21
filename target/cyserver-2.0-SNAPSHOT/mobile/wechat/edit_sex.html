@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>编辑性别</title>
+
+    <!--css-->
+    <link href="static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet"  href="static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="static/css/my_center.css" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        html{background-color: #ebebeb;}
+    </style>
+
+</head>
+<body>
+
+<div class="edit_box H-theme-background-color-eb">
+
+    <div tap="" name="0" onclick="selectSex(this)"
+         class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">男</div>
+        <span class="chk_part H-icon H-padding-horizontal-right-5 H-display-block">
+            <i class="male_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle "></i>
+        </span>
+    </div>
+
+    <div tap="" name="1" onclick="selectSex(this)"
+         class="H-flexbox-horizontal  H-theme-background-color-white H-border-vertical-bottom-after H-vertical-middle H-touch-active">
+        <div class="H-flex-item H-padding-horizontal-both-10 H-font-size-14 H-padding-vertical-both-12">女</div>
+        <span class="H-icon H-padding-horizontal-right-5 H-display-block">
+            <i class="female_checked H-iconfont H-icon-radio-check-fill H-theme-font-color-ccc H-font-size-16 H-vertical-middle"></i>
+        </span>
+    </div>
+
+
+</div>
+
+
+
+</body>
+</html>
+
+<!--引入脚本文件-->
+<script src="static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script src="../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="static/js/lrz.mobile.min.js"></script>
+<script src="static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../js/jbase64.js" ></script>
+<script type="text/javascript" src="../js/wechat.js" ></script>
+
+<script>
+    // 接收参数
+    var sex = B.getUrlParamByName("sex");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("edit_sex.html?ts=" + B.getRandomInt(4)) + "&sex=" + sex;
+                    H.openWin("登陆页面", "login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '編輯性別',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        //根据传递的sex值,初始化性别
+        if(sex==1) {
+            //女
+            $(".female_checked").addClass("H-theme-font-color16");
+            $(".male_checked").addClass("H-display-none-important");
+        }else if(sex==0) {
+            //男
+            $(".male_checked").addClass("H-theme-font-color16");
+            $(".female_checked").addClass("H-display-none-important");
+        }
+    });
+
+    //点击 其中的某个性别, 并跳转回到 personal.html
+    function selectSex(obj){
+
+        //1.对点击的按钮进行显示
+        var t = $(obj).children("span").children("i");
+        t.removeClass("H-display-none-important");
+        t.addClass("H-theme-font-color16");
+
+        //2.对没有点击的按钮进行隐藏
+        var o = $(obj).siblings("div").children("span").children("i");
+        o.addClass("H-display-none-important");
+        o.removeClass("H-theme-font-color16");
+
+        sex=$(obj).attr('name');
+        //3. 拼写字符串
+        var formData={
+            command: "23",
+            content: {
+                accountNum: accountNum,
+                name:"",
+                sex:"",
+                phoneNum:"",
+                birthday:"",
+                address: "",
+                email: "",
+                hobby: "",
+                workUtil: "",
+                profession: "",
+                position:"",
+                sign:""
+            }
+        };
+
+        formData.content.sex = sex;
+        //4.提交表单
+        B.ready(function () {
+            $.ajax({
+                type: 'post',
+                url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data: {
+                    jsonStr:JSON.stringify(formData)
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if(data.success) {
+                        //提交成功后,跳转到 个人信息  personal.html
+                        history.go(-1);
+                    }
+                },
+                error: function(xhr, type) {
+
+                }
+            });
+        })
+    }
+</script>

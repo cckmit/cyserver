@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新好友详情</title>
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <!--css-->
+    <link href="../static/plug/swiper/swiper.min.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/Hui.css" rel="stylesheet" type="text/css" />
+    <link href="../static/css/dropload.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../static/css/font_my_center/iconfont.css" type="text/css" media="screen,print">
+    <link href="../static/css/my_center.css" rel="stylesheet" type="text/css" />
+    <style>
+        /*遮罩层*/
+        .hideBox{
+            position: absolute;
+            top:0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            display: none;
+            margin: 0 auto;
+        }
+        /*圖片*/
+        .imgBox{
+            position:absolute;
+            top:50%;
+            left:50%;
+            margin:-150px 0 0 -150px;
+            width:300px;
+            height:300px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="detail_box">
+    <div class="H-horizontal-center H-padding-vertical-both-10" style="border-bottom: 1px solid #3498db">
+        <div class="H-text-align-center">
+            <div class="friend_avatar_wrap" onclick="$('.hideBox').show()" style="width:93px;">
+                <img id="touxiang_pic" onerror="javascript:this.src='../static/img/default_profile.png';" src="" class="H-border-radius-circle H-margin-vertical-top-10" style="width:80px;height:80px; border: 8px solid #ebebeb;">
+                <img src="../static/img/verify_flag.png" class="verify_pic verify_icon">
+            </div>
+            <div class="H-font-size-18" style="margin-top: 5px">
+                <span id="friend_name"> </span>
+                    <span class="H-icon H-display-inline-block">
+                        <i id="frend_sex" class="H-iconfont H-icon-man H-icon-woman H-vertical-middle H-font-size-16 H-theme-font-color-white"></i>
+                    </span>
+            </div>
+            <div id="friend_jianjie" class="H-font-size-12 H-theme-font-color-gray H-text-show-row-1"> </div>
+        </div>
+    </div>
+
+
+    <div class="friends_xinxi">
+        <div>
+            <span class="H-position-relative"><img src="../static/img/zhenshiname.png" class="H-position-absolute xuebi_png" /></span>
+            <span class="xinxilist">真实姓名：<span class="friend_zsname"> </span></span>
+        </div>
+        <!--<div>
+            <span class="H-position-relative"><img src="../static/img/phone@3x.png" class="H-position-absolute xuebi_png" /></span>
+            <span class="xinxilist">手机号码：<span class="friend_phone"> </span></span>
+        </div>
+        <div>
+            <span class="H-position-relative"><img src="../static/img/classs.png" class="H-position-absolute xuebi_png" /></span>
+            <span class="xinxilist">详细地址：<span class="friend_addres"> </span></span>
+        </div>-->
+        <div>
+            <span class="H-position-relative"><img src="../static/img/addresss.png" class="H-position-absolute xuebi_png" /></span>
+            <span class="xinxilist">所在班级：<span class="friend_szclass"> </span></span>
+        </div>
+
+    </div>
+
+
+    <div class="class_xinxi" style="display: none">
+        <!--<div class="H-position-relative H-theme-font-color-333 H-padding-5 H-font-size-14" onclick="OpenBbs(1);">-->
+        <!--<span class="landian H-position-absolute swiper-pagination-bullet swiper-pagination-bullet-active"></span>-->
+        <!--<span class="wenzixx">一切从简，只为了更懒！Hui是新生帝个人开发，版权所有为中山赢友网络科技有限公司！</span>-->
+        <!--</div>-->
+    </div>
+
+
+</div>
+
+    <div>
+        <div id="xuanze" class="H-margin-horizontal-both-10 H-margin-vertical-bottom-5">
+            <div class="H-flexbox-horizontal H-box-sizing-border-box">
+                <div onclick="addagree()" class="H-flex-item H-box-sizing-border-box H-padding-10 H-theme-background-color-white H-margin-horizontal-right-5 H-border-radius-5" style="background: #3498db;color: #fff;font-size:14px;text-align: center">
+                    同意
+                </div>
+                <div onclick="noaddagree()" class="H-flex-item H-box-sizing-border-box H-padding-10 H-theme-background-color-white  H-margin-horizontal-left-5 H-border-radius-5" style="background: #999999;color: #fff;font-size:14px;text-align: center">
+                    拒绝
+                </div>
+            </div>
+        </div>
+
+        <div id="isfriend" class="zhuangtai" style="display: none;">
+            已是好友
+        </div>
+        <div id="nofriend" class="zhuangtai" style="display: none;color: red;">
+            已拒绝
+        </div>
+    </div>
+
+    <div class="hideBox" onclick="$('.hideBox').hide()">
+        <div class="imgBox">
+            <img id="showImg" onerror="javascript:this.src='../static/img/default_profile.png';" src=""
+                 style="width:300px; margin: 0 auto">
+        </div>
+    </div>
+
+</body>
+
+<!--引入脚本文件-->
+<script src="../static/plug/swiper/swiper.min.js" type="text/javascript"></script>
+<script src="../../js/H.js" type="text/javascript"></script>
+<script src="../../js/zepto.min.js" type="text/javascript" ></script>
+<script src="../../js/xdomain.min.js" type="text/javascript"></script>
+<script src="../../js/B.js" type="text/javascript" ></script>
+<script src="../static/js/lrz.mobile.min.js"></script>
+<script src="../static/js/dropload.min.js" type="text/javascript" ></script>
+<script type="text/javascript" src="../../js/jbase64.js" ></script>
+<script type="text/javascript" src="../../js/wechat.js" ></script>
+<script type="text/javascript">
+    var userId = B.getUrlParamByName("userId");
+
+    var accountNum = B.getUrlParamByName("accountNum");
+
+    var openId = localStorage.getItem("openId");
+    if(openId && openId != "null") {
+        // 微信端
+        accountNum = localStorage.getItem("accountNum");
+
+        if(!accountNum || accountNum == ''){
+            H.confirm(function (ret) {
+                if(ret.buttonIndex==1){
+                    var backUrl = B.encrypt("tongxunlu/newfriend_detail.html?ts=" + B.getRandomInt(4)) + "&userId=" + userId;
+                    H.openWin("登陆页面", "../login.html?ts=" + B.getRandomInt(4) + "&backUrl=" + backUrl);
+                }
+                else{
+                    history.back();
+                }
+            }, '确认提示：', '尚未登陆，是否登陆账号？');
+        }
+        var shareData = {
+            title: '新好友詳情',
+            desc: '',
+            link: location.href.split('?')[0],
+            imgUrl: ''
+        };
+        mkShareInfo(location.href, shareData, 1);
+    }
+
+    $(function(){
+        // 定义模板标识符
+        H.tppl_flag = ["<%", "%>"];
+        B.ready(function(){
+            //获取申请中的好友详情
+            sqfriendxinxi();
+        });
+    });
+
+    //获取申请中的好友详情
+    function sqfriendxinxi(){
+        $.ajax({
+            type: 'post',
+            url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+            data:{
+                jsonStr:'{"command": "45","content": {"currUserId": "'+accountNum+'","userId": "'+userId+'"     } }'
+            },
+            dataType: 'json',
+            success: function(data){
+                //console.log(data.obj.rows.length);
+                if(data.obj && data.success){
+                    $('#touxiang_pic').attr('src',data.obj.pictureUrl);
+                    $('#showImg').attr('src',B.getImageAbsoluteUrl(data.obj.pictureUrl_xd));
+
+                    //判断该好友是否被认证, 添加不同的认证标示
+                    if(data.obj.baseInfoId && data.obj.baseInfoId!=='') {
+                        //已经被认证
+                        $('.verify_pic').attr('src','../static/img/verify_flag.png');
+
+                    }else{
+                        $('.verify_pic').attr('src','../static/img/unverified@3x.png');
+                    }
+
+                    $('#friend_name').html(data.obj.userName);
+                    if(data.obj.sex==0){
+                        $('#frend_sex').css('color','#4e7cfd').removeClass('H-icon-woman');
+                    }else if(data.obj.sex==1){
+                        $('#frend_sex').css('color','#ff9a7c');
+                    }else{
+                        $('#frend_sex').css('display','none');
+                    }
+
+                    if(data.obj.hobby){
+                        $('#friend_jianjie').html(data.obj.hobby);
+                    }
+                    $('.friend_zsname').html(data.obj.userName);
+//                    $('.friend_phone').html(data.obj.phoneNum);
+//                    $('.friend_addres').html(data.obj.address);
+                    //$('.friend_szclass').html(data.obj.departName);
+                    if(data.obj.departName){
+                        $('.class_xinxi').show();
+                        var listarry=new Array();
+                        listarry=data.obj.departName.split('_');
+                        var list='';
+                        for(var i in listarry){
+                            list+='<div class="H-position-relative H-theme-font-color-333 H-padding-5 H-font-size-14" onclick="OpenBbs(1);">'+
+                                    '<span class="landian H-position-absolute swiper-pagination-bullet swiper-pagination-bullet-active"></span>'+
+                                    '<span class="wenzixx">'+listarry[i]+'</span>'+
+                                    '</div>';
+
+                        }
+                        $('.class_xinxi').append(list)
+
+                    }
+
+                }
+
+
+            },
+            error: function(xhr, type){
+
+            }
+        });
+    }
+
+
+    //同意申请
+    function addagree(e){
+        H.confirmTip(function (ret) {
+            if(ret.buttonIndex==1){
+                B.ready(function(){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "43","content": {"userId": "'+accountNum+'","contactId": "'+userId+'","applicantFlag": "0" ,"status":"1"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            console.log(JSON.stringify(data))
+                            if(data.success);
+                            $('#xuanze').hide();
+                            $('#isfriend').show();
+                            H.toastTip(null,'已加为好友', 2000);
+                        },
+                        error: function(xhr, type){
+                        }
+                    });
+                });
+            }
+        }, '确认提示：', '您确定要同意该请求吗？');
+
+    }
+
+    //拒绝申请
+    function noaddagree(e){
+        H.confirmTip(function (ret) {
+            if(ret.buttonIndex==1){
+                B.ready(function(){
+                    $.ajax({
+                        type: 'post',
+                        url: B.serverUrl+'/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "44","content": {"userId": "'+accountNum+'","contactId": "'+userId+'"} }'
+                        },
+                        dataType: 'json',
+                        success: function(data){
+                            if(data.success)
+                            $('#xuanze').hide();
+                            $('#nofriend').show();
+                            H.toastTip(function(){null},'已拒绝好友添加', 2000);
+                        },
+                        error: function(xhr, type){
+                        }
+                    });
+                });
+            }
+        }, '确认提示：', '您确定要拒绝该请求吗？');
+
+    }
+
+//    //ios返回刷新页面
+//    var rnumber = Math.floor(Math.random()*1000)
+//    history.replaceState({mod:rnumber}, 'Title', '?accountNum='+accountNum+'&userId='+userId+'&mod='+rnumber);
+//    window.onpopstate = function(event) {
+//        location.reload();
+//        //alert("location: " + document.location);
+//    };
+
+</script>
+
+
+</html>

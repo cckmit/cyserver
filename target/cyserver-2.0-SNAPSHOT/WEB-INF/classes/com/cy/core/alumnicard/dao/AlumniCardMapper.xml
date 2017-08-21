@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.alumnicard.dao.AlumniCardMapper">
+
+	<resultMap type="com.cy.core.alumnicard.entity.AlumniCard"
+		id="alumniCardMap">
+		<id column="id" property="id" />
+		<result column="id"  property="id"/>
+		<result column="account_num"  property="accountNum"/>
+		<result column="take_way"  property="takeWay"/>
+		<result column="apply_time"  property="applyTime"/>
+		<result column="status"  property="status"/>
+		<result column="checker"  property="checker"/>
+		<result column="check_time"  property="checkTime"/>
+		<result column="suggest"  property="suggest"/>
+		<result column="opinion"  property="opinion"/>
+		<result column="personal_pic"  property="personalPic"/>
+		<result column="deletion"  property="deletion"/>
+		<result column="createDate"  property="createDate"/>
+		<result column="name"  property="name"/>
+		<result column="phone"  property="phone"/>
+		<result column="email"  property="email"/>
+		<result column="address"  property="address"/>
+		<result column="sex"  property="sex"/>
+		<result column="workUnit"  property="workUnit"/>
+		<result column="position"  property="position"/>
+		<result column="card_number"  property="cardNumber"/>
+		<result column="pay_type"  property="payType"/>
+		<result column="pay_status"  property="payStatus"/>
+		<result column="pay_time"  property="payTime"/>
+		<result column="credentials_courier"  property="credentialsCourier"/>
+		<result column="credentials_courier_number"  property="credentialsCourierNumber"/>
+		<result column="industry"  property="industry"/>
+		<result column="postalcode"  property="postalcode"/>
+		<result column="office_tel"  property="officeTel"/>
+		<result column="location"  property="location"/>
+		<result column="home_tel"  property="homeTel"/>
+		<result column="credentials_pic" property="credentialsPic" />
+		<result column="birthday" property="birthday" />
+	</resultMap>
+
+
+	<!-- 查询列表数据并分页 -->
+	<select id="list" parameterType="map" resultMap="alumniCardMap">
+		SELECT cac.* FROM cy_alumni_card cac
+		WHERE
+		cac.deletion != '1'
+		<if test='accountNum != null and accountNum != ""'>
+			AND cac.account_num = #{accountNum}
+		</if>
+		<if test='alumniCardId != null and alumniCardId != ""'>
+			AND cac.id = #{alumniCardId}
+		</if>
+		<if test="name!=null and name!=''">
+			and cac.name like concat('%',#{name},'%')
+		</if>
+		<if test="sex!=null and sex!=''">
+			and cac.sex =#{sex}
+		</if>
+		<if test="address!=null and address!=''">
+			and cac.address like concat('%',#{address},'%')
+		</if>
+		<if test="status!=null and status!=-1">
+			and cac.status=#{status}
+		</if>
+		ORDER BY cac.createDate DESC
+		<if test='isNoLimit != "1"'>
+		 LIMIT #{start},#{rows}
+		</if>
+	</select>
+
+
+	<select id="count" parameterType="map" resultType="long">
+		SELECT COUNT(cac.id) FROM cy_alumni_card cac
+		WHERE cac.deletion != '1'
+		<if test='accountNum != null and accountNum != ""'>
+			AND cac.account_num = #{accountNum}
+		</if>
+		<if test='alumniCardId != null and alumniCardId != ""'>
+			AND cac.id = #{alumniCardId}
+		</if>
+		<if test="name!=null and name!=''">
+			and cac.name like concat('%',#{name},'%')
+		</if>
+		<if test="sex!=null and sex!=''">
+			and cac.sex =#{sex}
+		</if>
+		<if test="address!=null and address!=''">
+			and cac.address like concat('%',#{address},'%')
+		</if>
+		<if test="status!=null and status!=-1">
+			and cac.status=#{status}
+		</if>
+	</select>
+
+
+	<!-- 添加校友卡保存 -->
+	<insert id="save" parameterType="com.cy.core.alumnicard.entity.AlumniCard">
+		insert into cy_alumni_card(
+			id,
+			account_num,
+			take_way,
+			apply_time,
+			status,
+			checker,
+			check_time,
+			suggest,
+			opinion,
+			personal_pic,
+			deletion,
+			createDate,
+			`name`,
+			phone,
+			email,
+			address,
+			sex,
+			workUnit,
+			`position`,
+			card_number,
+			pay_type,
+			pay_status,
+			pay_time,
+			credentials_courier,
+			credentials_courier_number,
+			industry,
+			postalcode,
+			office_tel,
+			location,
+			home_tel,
+			credentials_pic,
+			birthday
+		)
+		value(
+			#{id},
+			#{accountNum},
+			#{takeWay},
+			#{applyTime},
+			#{status},
+			#{checker},
+			#{checkTime},
+			#{suggest},
+			#{opinion},
+			#{personalPic},
+			#{deletion},
+			#{createDate},
+			#{name},
+			#{phone},
+			#{email},
+			#{address},
+			#{sex},
+			#{workUnit},
+			#{position},
+			#{cardNumber},
+			#{payType},
+			#{payStatus},
+			#{payTime},
+			#{credentialsCourier},
+			#{credentialsCourierNumber},
+			#{industry},
+			#{postalcode},
+			#{officeTel},
+			#{location},
+			#{homeTel},
+			#{credentialsPic},
+			#{birthday}
+		)
+	</insert>
+
+	<!-- 批量删除 -->
+	<delete id="delete" parameterType="list">
+		delete from cy_alumni_card where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+
+	<update id="checkToPass" parameterType="list">
+		update cy_alumni_card set status=1 where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</update>
+
+
+	<update id="checkToNotPass" parameterType="list">
+		update cy_alumni_card set status=2 where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</update>
+
+
+	<!-- 校友卡的编辑 -->
+	<update id="update" parameterType="com.cy.core.alumnicard.entity.AlumniCard">
+		UPDATE cy_alumni_card
+		SET
+		<if test='takeWay!=null and takeWay!=""'>
+			take_way = #{takeWay},
+		</if>
+		<if test='applyTime!=null and applyTime!=""'>
+			apply_time = #{applyTime},
+		</if>
+		<if test='checker!=null and checker!=""'>
+			checker = #{checker},
+		</if>
+		<if test='checkTime!=null and checkTime!=""'>
+			check_time = #{checkTime},
+		</if>
+		<if test='suggest!=null and suggest!=""'>
+			suggest = #{suggest},
+		</if>
+		<if test='opinion!=null and opinion!=""'>
+			opinion = #{opinion},
+		</if>
+		<if test='personalPic!=null and personalPic!=""'>
+			personal_pic = #{personalPic},
+		</if>
+		<if test='createDate!=null and createDate!=""'>
+			createDate = #{createDate},
+		</if>
+		<if test='name!=null and name!=""'>
+			`name` = #{name},
+		</if>
+		<if test='phone!=null and phone!=""'>
+			`phone` = #{phone},
+		</if>
+		<if test='email!=null and email!=""'>
+			email = #{email},
+		</if>
+		<if test='address!=null and address!=""'>
+			address = #{address},
+		</if>
+		<if test='sex!=null and sex!=""'>
+			sex = #{sex},
+		</if>
+		<if test='workUnit!=null and workUnit!=""'>
+			workUnit = #{workUnit},
+		</if>
+		<if test='position!=null and position!=""'>
+			`position` = #{position},
+		</if>
+		<if test='cardNumber!=null and cardNumber!=""'>
+			card_number = #{cardNumber},
+		</if>
+		<if test='payType!=null and payType!=""'>
+			pay_type = #{payType},
+		</if>
+		<if test='payStatus!=null and payStatus!=""'>
+			pay_status = #{payStatus},
+		</if>
+		<if test='payTime!=null and payTime!=""'>
+			pay_time = #{payTime},
+		</if>
+		<if test='credentialsCourier!=null and credentialsCourier!=""'>
+			credentials_courier = #{credentialsCourier},
+		</if>
+		<if test='credentialsCourierNumber!=null and credentialsCourierNumber!=""'>
+			credentials_courier_number = #{credentialsCourierNumber},
+		</if>
+		<if test='industry!=null and industry!=""'>
+			industry = #{industry},
+		</if>
+		<if test='postalcode!=null and postalcode!=""'>
+			postalcode = #{postalcode},
+		</if>
+		<if test='officeTel!=null and officeTel!=""'>
+			office_tel = #{officeTel},
+		</if>
+		<if test='location!=null and location!=""'>
+			location = #{location},
+		</if>
+		<if test='homeTel!=null and homeTel!=""'>
+			home_tel = #{homeTel},
+		</if>
+		status = #{status},
+		deletion = #{deletion}
+		where id=#{id}
+	</update>
+
+	<!-- 根据id查询校友卡详细信息 -->
+	<select id="selectById" parameterType="string" resultMap="alumniCardMap">
+		SELECT cac.* FROM cy_alumni_card cac
+		WHERE cac.id = #{id}
+	</select>
+
+</mapper>

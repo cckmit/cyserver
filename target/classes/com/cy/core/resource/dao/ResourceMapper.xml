@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.resource.dao.ResourceMapper">
+	<resultMap type="com.cy.core.resource.entity.Resource" id="resourceResultMap">
+		<id column="id" property="id" />
+		<result column="menu_name" property="menuName" />
+		<result column="name" property="name" />
+		<result column="url" property="url" />
+		<result column="pid" property="pid" />
+		<result column="iconCls" property="iconCls" />
+		<result column="type" property="type" />
+		<result column="seq" property="seq" />
+		<result column="flag" property="flag" />
+		<collection property="roles" ofType="com.cy.core.role.entity.Role">
+			<id column="roleId" property="roleId" />
+			<result column="roleName" property="roleName" />
+		</collection>
+	</resultMap>
+	<select id="selectAll" resultMap="resourceResultMap">
+		select re.*,ro.* from
+		cy_resource re left join cy_role_resource oe on
+		re.id=oe.id left join
+		cy_role ro on
+		oe.roleId=ro.roleId
+		order
+		by re.seq
+	</select>
+	<!--获取全部菜单，创建人：Kent 创建时间：2016-07-25-->
+	<select id="selectAllMenu" resultMap="resourceResultMap">
+		select re.*,ro.* from
+		cy_resource re left join cy_role_resource oe on
+		re.id=oe.id left join
+		cy_role ro on
+		oe.roleId=ro.roleId where re.type='菜单'
+		order
+		by re.seq
+	</select>
+	<!--通过Ids获取菜单列表，创建人：Kent 创建时间：2016-07-25-->
+	<select id="selectMenuByIds" parameterType="string" resultMap="resourceResultMap">
+		select re.*,ro.* from
+		cy_resource re left join cy_role_resource oe on
+		re.id=oe.id left join
+		cy_role ro on
+		oe.roleId=ro.roleId where re.type='菜单'
+		AND re.id in (${_parameter})
+		order
+		by re.seq
+	</select>
+	<!--通过Ids获取功能列表，创建人：Kent 创建时间：2016-07-25-->
+	<select id="selectActionByIds" parameterType="string" resultMap="resourceResultMap">
+		select re.*,ro.* from
+		cy_resource re left join cy_role_resource oe on
+		re.id=oe.id left join
+		cy_role ro on
+		oe.roleId=ro.roleId where re.type='功能'
+		AND re.id in (${_parameter})
+		order
+		by re.seq
+	</select>
+	<select id="selectAllOrderById" resultMap="resourceResultMap">
+		select re.*,ro.* from
+		cy_resource re left join cy_role_resource oe on
+		re.id=oe.id left join
+		cy_role ro on
+		oe.roleId=ro.roleId
+		order
+		by re.id
+	</select>
+
+	<insert id="save" parameterType="com.cy.core.resource.entity.Resource">
+		insert into
+		cy_resource(menu_name,name,url,pid,iconCls,type,seq,flag)
+		values(#{menuName},#{name},#{url},#{pid},#{iconCls},#{type},#{seq},#{flag})
+	</insert>
+	<insert id="save2Id" parameterType="com.cy.core.resource.entity.Resource">
+		insert into
+		cy_resource(id,menu_name,name,url,pid,iconCls,type,seq,flag)
+		values(#{id},#{menuName},#{name},#{url},#{pid},#{iconCls},#{type},#{seq},#{flag})
+	</insert>
+	<select id="getById" parameterType="long" resultMap="resourceResultMap">
+		select *
+		from cy_resource where id=#{id}
+	</select>
+	<update id="update" parameterType="com.cy.core.resource.entity.Resource">
+		update cy_resource set menu_name=#{menuName},
+		name=#{name},url=#{url},pid=#{pid},iconCls=#{iconCls},type=#{type},seq=#{seq},flag=#{flag}
+		where id=#{id}
+	</update>
+	<delete id="delete" parameterType="list">
+		delete from cy_resource where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<!-- 中间表 -->
+	<delete id="deleteRoleAndResource" parameterType="list">
+		delete from cy_role_resource where id in
+		<foreach collection="list" item="ids" open="(" separator=","
+			close=")">
+			#{ids}
+		</foreach>
+	</delete>
+	<select id="selectByNameOrUrl" parameterType="map" resultMap="resourceResultMap">
+		select * from cy_resource where (name = #{name}
+		<if test="url!=null and url!=''">or url = #{url}</if>
+		)
+		<if test="id!=null">
+			and id!=#{id}
+		</if>
+	</select>
+	<select id="getResourcesByRoles" resultMap="resourceResultMap">
+		SELECT DISTINCT(r.id),r.menu_name,r.name,r.url,r.pid,r.iconCls,r.type,r.seq,r.flag  FROM cy_role_resource rr LEFT JOIN cy_resource r ON rr.id=r.id WHERE rr.roleId IN
+		<foreach collection="list" item="role" open="(" separator="," close=")">
+			${role.roleId}
+		</foreach>
+		order
+		by r.seq
+	</select>
+
+	<select id="getMenuByRoles" resultMap="resourceResultMap">
+		SELECT DISTINCT(r.id),r.menu_name,r.name,r.url,r.pid,r.iconCls,r.type,r.seq,r.flag  FROM cy_role_resource rr LEFT JOIN cy_resource r ON rr.id=r.id WHERE r.type = '菜单' AND rr.roleId IN
+		<foreach collection="list" item="role" open="(" separator="," close=")">
+			${role.roleId}
+		</foreach>
+		order
+		by r.seq
+	</select>
+
+    <!--通过id获取所选菜单下的子菜单，创建人：jiangling 创建时间：2016-08-02-->
+    <select id="getCountById" parameterType="long" resultType="int">
+        select count(*) from cy_resource where pid = #{id}
+    </select>
+</mapper>

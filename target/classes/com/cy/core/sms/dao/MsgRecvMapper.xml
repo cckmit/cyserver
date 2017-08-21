@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.core.sms.dao.MsgRecvMapper">
+	<resultMap type="com.cy.core.sms.entity.MsgRecv" id="msgRecvResultMap">
+		<id column="recv_id" property="recvId" />
+		<result column="telphone" property="telphone" />
+		<result column="content" property="content" />
+		<result column="recvtime" property="recvtime" />
+	</resultMap>
+	<insert id="insertMsgRecv" parameterType="com.cy.core.sms.entity.MsgRecv">
+		insert into cy_msg_recv(telphone,content,recvtime)
+		values(#{telphone},#{content},#{recvtime});
+	</insert>
+	<select id="countMsgRecv" resultType="long" parameterType="map" useCache="true">
+		select count(recv_id) from cy_msg_recv as r where <![CDATA[recvtime>#{starttime}]]>
+		and <![CDATA[recvtime< #{endtime}]]>
+		and exists (select telphone from cy_msg_send as s where messagegroup=#{messagegroup} and s.telphone=r.telphone)
+	</select>
+	<select id="selectMsgRecv" parameterType="map" resultMap="msgRecvResultMap" useCache="true">
+		select recv_id,telphone,content from cy_msg_recv as r where <![CDATA[recvtime>#{starttime}]]>
+		and <![CDATA[recvtime< #{endtime}]]>
+		and exists (select telphone from cy_msg_send as s where messagegroup=#{messagegroup} and s.telphone=r.telphone) limit #{start},#{end}
+	</select>
+	<select id="selectByDate" parameterType="map" resultMap="msgRecvResultMap" useCache="false">
+		select * from cy_msg_recv where <![CDATA[recvtime< #{endtime}]]>
+	</select>
+	<delete id="deleteByDate" parameterType="map" flushCache="true">
+		delete from cy_msg_recv where <![CDATA[recvtime< #{endtime}]]>
+	</delete>
+</mapper>

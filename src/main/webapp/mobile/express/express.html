@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>西大告白墙</title>
+</head>
+<link rel="stylesheet" href="css/common.css" type="text/css">
+<link rel="stylesheet" href="css/ConfessionWall.css" type="text/css">
+<body class="relative">
+<div class="absolute live-int dis-n"></div>
+
+<div class="writeConfession fixed">
+</div>
+<div class="send absolute dis-n ">
+    <p class="tittle">好想告诉你</p>
+    <div class="toForm">
+        <div class="toInput">
+            <span>&nbsp;&nbsp;&nbsp;TO:</span>
+            <input type="text" maxlength="10"/>
+        </div>
+        <div class="toInput">
+            <span>&nbsp;&nbsp;&nbsp;FROM:</span>
+            <input type="text" placeholder="匿名" maxlength="9"/>
+        </div>
+        <div class="toTextArea">
+            <textarea placeholder="说点什么..."></textarea>
+        </div>
+    </div>
+    <div class="des-b">
+        <div class="f-l sub"><p>发布</p></div>
+        <div class="f-r esc"><p>取消</p></div>
+    </div>
+</div>
+<div class="meng absolute dis-n">
+</div>
+
+<div class="imgTheme">
+    <img src="images/theme.jpg" alt="">
+</div>
+<div class="banner">
+    <img src="images/banner.png" alt="">
+</div>
+
+<div class="comment-box">
+    <p class="p-no dis-n">表白墙空空如也，快做第一个表白的吧！</p>
+    <!--<div class="comment clearfloat">p-no
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>自动化管理的李清</span></p>
+            <p class="p2">你要相信我</p>
+            <p class="p3"><span class="timeAgo f-l">13分钟前</span><span class="userName f-r">学渣&nbsp; <img
+                    src="image/comment.png"/> </span></p>
+        </div>
+    </div>
+    <div class="comment clearfloat">
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>周二某班级体育委员</span></p>
+            <p class="p2">求qq..</p>
+            <p class="p3"><span class="timeAgo f-l">12天前</span><span class="userName f-r">匿名&nbsp; <img
+                    src="image/comment.png"/> </span></p>
+        </div>
+    </div>
+    <div class="comment clearfloat">
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>机电1302的李阳</span></p>
+            <p class="p2">不知道什么时候开始，我慢慢的喜欢上了你，只是在心里默默的喜欢。但是后来突然见到你和你的女朋友，心里很失落、不过还是祝你幸福。要考研了，不能再想你了。感谢你曾经出现在我的生命中.</p>
+            <p class="p3"><span class="timeAgo f-l">50分钟前</span><span class="userName f-r">匿名&nbsp; <img
+                    src="image/comment.png"/> </span></p>
+        </div>
+    </div>
+    <div class="comment clearfloat">
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>自动化管理的李清</span></p>
+            <p class="p2">你要相信我</p>
+            <p class="p3"><span class="timeAgo f-l">13分钟前</span><span class="userName f-r">学渣&nbsp;<img src="image/comment.png"/> </span></p>
+        </div>
+    </div>
+    <div class="comment clearfloat">
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>周二某班级体育委员</span></p>
+            <p class="p2">求qq..</p>
+            <p class="p3"><span class="timeAgo f-l">12天前</span><span class="userName f-r">匿名&nbsp; <img src="image/comment.png"/> </span></p>
+        </div>
+    </div>
+    <div class="comment clearfloat">
+        <div class="img-box f-l">
+            <img src="image/heart.png" alt="">
+        </div>
+        <div class="message f-r">
+            <p class="p1">TO: <span>机电1302的李阳</span></p>
+            <p class="p2">不知道什么时候开始，我慢慢的喜欢上了你，只是在心里默默的喜欢。但是后来突然见到你和你的女朋友，心里很失落、不过还是祝你幸福。要考研了，不能再想你了。感谢你曾经出现在我的生命中.</p>
+            <p class="p3"><span class="timeAgo f-l">50分钟前</span><span class="userName f-r">匿名&nbsp; <img src="image/comment.png"/> </span></p>
+        </div>
+    </div>-->
+</div>
+<div class="pageBar">
+    <span class="first">首页</span>
+    <span class="prev" style="display: none">上一页</span>
+    <span class="selectPage">第<span class="active"></span>/<span class="total"></span>页</span>
+    <span class="next">下一页</span>
+    <span class="last">尾页</span>
+</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="../js/xdomain.min.js" type="text/javascript" ></script>
+<script src="../js/B.js" type="text/javascript" ></script>
+<script src="../js/H.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery.timeago.js"></script>
+<script>
+
+    window.onload= function () {
+        var rows = 10;//每页数据行数
+        var page = 1;//当前第几页
+        show(page,rows);//渲染页面
+        postWriteConfession(page,rows);//提交表白
+
+        //首页
+        $('.first').on('click', function () {
+            $(this).siblings('.prev').hide();
+            $(this).siblings('.next').show();
+            page=1;
+            $('.comment-box').empty();
+            show(page,rows);
+        });
+        //上一页
+        $('.prev').on('click', function () {
+            page--;
+            $(this).siblings('.next').show();
+            $('.comment-box').empty();
+            show(page,rows)
+            if (page == 1) {
+                $(this).hide()
+            }
+
+        });
+        //下一页
+        $('.next').on('click', function () {
+            var total=Math.ceil(localStorage.getItem('total')/rows);//总页数
+            page++;
+            $('.comment-box').empty();
+            show(page,rows);
+            $(this).siblings('.prev').show();
+            if (page == total) {
+                $(this).hide()
+            }
+        });
+        //尾页
+        $('.last').on('click', function () {
+            var total=Math.ceil(localStorage.getItem('total')/rows);//总页数
+            page=total;
+            $('.comment-box').empty();
+            show(page,rows);
+            $(this).siblings('.next').hide();
+            $(this).siblings('.prev').show();
+
+        })
+
+
+        //渲染页面
+        function show(page,rows){
+            $.ajax({
+                type:'post',
+                url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                data:{
+                    jsonStr:'{"command": "791","content": {"page": "'+page+'","rows": "'+rows+'" } }'
+                },
+                dataType:'json',
+                success:function(data){
+                    console.log(data);
+                    localStorage.setItem('total',data.obj.total);
+                    if(data.obj.total==0){
+                        $('.pageBar').hide();
+                        $('.p-no').show();
+                    }if(data.obj.total<=rows){
+                        $('.next').hide();
+                    }if(data.obj.total>rows){
+                        $('.next').show();
+                    }
+
+                    var result='';
+                    for(var i=0;i<data.obj.rows.length;i++){
+                        result +='<div class="comment clearfloat">' +
+                        '<i class="flag dis-n">'+data.obj.rows[i].expressId+'</i>'+
+                        '  <div class="img-box f-l"> ' +
+                        '   <img src="images/heart.png" alt="">' +
+                        '   </div>' +
+                        '   <div class="message f-r">' +
+                        '       <p class="p1">TO: <span>' + data.obj.rows[i].expressTo+ '</span></p>' +
+                        '       <p class="p2">' + data.obj.rows[i].expressContent + '</p> ' +
+                        '       <p class="p-more dis-n">' +"展开"+ '</p> ' +
+                        '       <p class="p-less dis-n">' +"收起"+ '</p> ' +
+                        '       <p class="p3"><span class="timeAgo f-l" style="color:#546BE1">'+ jQuery.timeago(data.obj.rows[i].createTime) +'</span><span class="userName f-r">' + data.obj.rows[i].expressFrom + '&nbsp; <img class="tz" src="images/comment.png"/> </span></p>' +
+                        '       </div> ' +
+                        '</div>';
+                    }
+                    $('.comment-box').append(result);
+                    $('.pageBar .selectPage').children('.active').text(page)
+                    $('.pageBar .selectPage').children('.total').text(Math.ceil(localStorage.getItem('total')/rows))
+                    if(page>=(Math.ceil(localStorage.getItem('total')/rows))){
+                        $('.next').hide();
+                    }else{
+                        $('.next').show();
+                    }
+                    var more = $('.p2').length;
+                    for(var k=0;k<more;k++){
+                        var cont = $('.p2').eq(k).html();
+                        if(cont.length>60){
+                            $('.p2').eq(k).siblings('.p-more').show();
+                            $('.p2').eq(k).html(cont.substring(0,60)+" . . .")
+                        }else{
+                            $('.p2').eq(k).siblings('.p-more').hide();
+                        }
+
+                    }
+                    /*展开收起*/
+                    $('.p-more').click(function(){
+                        var index =  $('.p-more').index(this);
+                        $(this).hide();
+                        $(this).siblings('.p-less').show();
+                        $('.p2').eq(index).html(data.obj.rows[index].expressContent);
+                    })
+                    $('.p-less').click(function(){
+                        var index =  $('.p-less').index(this);
+                        $(this).hide();
+                        $(this).siblings('.p-more').show();
+                        $('.p2').eq(index).html(data.obj.rows[index].expressContent.substring(0,60)+" . . .");
+                    })
+
+                },
+
+                error: function(xhr, type) {
+                    console.log('Ajax error!');
+                    // 即使加载出错，也得重置
+                }
+            })
+        }
+
+        //提交表白
+        function postWriteConfession(page,rows){
+            $('.writeConfession').click(function () {
+                $('input').eq(0).val('');
+                $('input').eq(1).val('');
+                $('textarea').val('');
+                var sp = $(window).scrollTop();
+                var winHeighe = $(window).height() / 6;
+                $(".meng ").css("top", sp + 'px');
+                $('.send').css('top', winHeighe + sp + 'px');
+                $("body").on("touchmove", function (e) {
+                    e.preventDefault(); //阻止默认事件
+                    e.stopPropagation();
+                }, false);
+                $('.meng').fadeIn(200);
+                $('.send').fadeIn(500)
+            });
+            $('.des-b .esc p').click(function () {
+                $("body").off("touchmove");
+                $('.meng').fadeOut(200);
+                $('.send').fadeOut(500);
+            });
+
+            $('.des-b .sub p').click(function () {
+                var val1 = $('input').eq(0).val().trim();
+                var val2 = $('input').eq(1).val();
+                var val3 = $('textarea').val().trim();
+                $("body").off("touchmove");
+                if(val1==""||val3==""){
+                    $(".live-int").html("表白不能为空");
+                    $(".live-int").show(200);
+                    $(".live-int").hide(1500);
+                }else{
+                    $.ajax({
+                        type:'post',
+                        url: B.serverUrl + '/userProfile/userProfileAction!doNotNeedSessionAndSecurity_userProfileHandler.action',
+                        data:{
+                            jsonStr:'{"command": "790","content": {"expressFrom": "'+val2+'","expressTo": "'+val1+'" ,"expressContent": "'+val3+'"}}'
+                        },
+                        dataType:'json',
+                        success:function(data){
+                            console.log(data)
+
+                            $('.meng').fadeOut(200);
+                            $('.send').fadeOut(500);
+                            $(".live-int").html("发布成功");
+                            $(".live-int").show(200);
+                            $(".live-int").hide(1500);
+                            $('.comment-box').empty();
+                            show(page,rows)
+
+                        },
+                        error: function(xhr, type) {
+                            console.log('Ajax error!');
+                            // 即使加载出错，也得重置
+                        }
+                    });
+                }
+
+
+
+            });
+        }
+
+
+        //跳转评论详情
+        $(function(){
+            var flag = false;
+            $("body").on('touchstart touchmove touchend',".tz", function(event) {
+                var  expressId= parseInt($(this).parents('.comment').find('.flag').html());
+                /*    alert(expressId)*/
+                switch(event.type) {
+                    case 'touchstart':
+                        falg = false;
+                        break;
+                    case 'touchmove':
+                        falg = true;
+                        break;
+                    case 'touchend':
+                        if( !falg ) {
+                            console.log('点击');
+                            window.location.href = "comment.html?expressId="+expressId;
+                        } else {
+                            console.log('滑动');
+                        }
+                        break;
+                }
+            });
+
+        });
+
+
+
+
+    }
+
+</script>
+</html>
