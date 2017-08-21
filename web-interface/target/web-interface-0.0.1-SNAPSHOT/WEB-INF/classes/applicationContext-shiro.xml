@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<description>Shiro Security Config</description>
+
+	<!-- Realm实现 -->
+
+	<!-- Subject工厂 -->
+	<bean id="subjectFactory" class="ltd.moore.ctravel.login.security.StatelessDefaultSubjectFactory" />
+	
+	<!-- 会话管理器 -->
+	<bean id="sessionManager" class="org.apache.shiro.session.mgt.DefaultSessionManager">
+		<property name="sessionValidationSchedulerEnabled" value="false" />
+	</bean>
+	
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="myRealm" />
+		<property name="subjectFactory" ref="subjectFactory" />
+		<property name="sessionManager" ref="sessionManager" />
+	</bean>
+	
+	<!-- 相当于调用SecurityUtils.setSecurityManager(securityManager) -->
+	<bean
+		class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		<property name="staticMethod"
+			value="org.apache.shiro.SecurityUtils.setSecurityManager" />
+		<property name="arguments" ref="securityManager" />
+	</bean>
+
+	<bean id="loginAuthcFilter"
+		class="ltd.moore.ctravel.filter.LoginAuthcFilter" />
+
+	<!-- Shiro的Web过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager" />
+		<property name="filters">
+			<util:map>
+				<entry key="statelessAuthc" value-ref="loginAuthcFilter" />
+			</util:map>
+		</property>
+		<property name="filterChainDefinitions">
+			<value>
+				/pay/webhook =anon
+				/pay/** = anon
+			 	/api/login = anon
+			 	/api/security/captcha = anon
+				/api/file/** = anon
+				/** = statelessAuthc
+			</value>
+		</property>
+	</bean>
+	<bean id="myRealm" class="ltd.moore.ctravel.login.security.UserRealm">
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5"/>
+			</bean>
+		</property>
+		<property name="authorizationCacheName" value="shiro-authorizationCache"/>
+		<property name="cacheManager" ref="redisCacheManager" />
+	</bean>
+	<bean id="redisCacheManager" class="com.hdos.platform.core.shiro.cache.RedisCacheManager" >
+		<property name="redisManager" ref="redisManager" />
+	</bean>
+	<bean id="redisManager" class="com.hdos.platform.core.shiro.cache.RedisManager" >
+		<property name="host" value="${jedis.host}" />
+		<property name="port" value="${jedis.port}" />
+	</bean>
+	<!-- Shiro生命周期处理器-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+</beans>

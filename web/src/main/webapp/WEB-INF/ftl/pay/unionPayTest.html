@@ -1,0 +1,36 @@
+"Content-Type" content="text/html; charset=UTF-8">
+<title>Gateway-Response</title>
+</head>
+<body onload="OnLoadSubmit();">
+<form id="gatewayform" action="https://gateway.test.95516.com/gateway/api/appTransReq.do" method="post">
+    <input type="hidden" name="txnType" id="txnType" value="01"/>
+    <input type="hidden" name="frontUrl" id="frontUrl" value="http://127.0.0.1:8080/ACPSample_B2C/frontRcvResponse"/>
+    <input type="hidden" name="channelType" id="channelType" value="08"/>
+    <input type="hidden" name="currencyCode" id="currencyCode" value="156"/>
+    <input type="hidden" name="merId" id="merId" value="700000000000001"/>
+    <input type="hidden" name="txnSubType" id="txnSubType" value="01"/>
+    <input type="hidden" name="txnAmt" id="txnAmt" value="1"/>
+    <input type="hidden" name="version" id="version" value="5.0.0"/>
+    <input type="hidden" name="signMethod" id="signMethod" value="01"/>
+    <input type="hidden" name="backUrl" id="backUrl" value="http://222.222.222.222:8080/ACPSample_B2C/BackRcvResponse"/>
+    <input type="hidden" name="certId" id="certId" value="11"/>
+    <input type="hidden" name="internal.merReferer" id="internal.merReferer" value="null"/>
+    <input type="hidden" name="internal.origReqInfo" id="internal.origReqInfo" value="|08|0101"/>
+    <input type="hidden" name="encoding" id="encoding" value="UTF-8"/>
+    <input type="hidden" name="bizType" id="bizType" value="000201"/>
+    <input type="hidden" name="internal.logId" id="internal.logId" value="AC101708151052571f1c0081396652"/>
+    <input type="hidden" name="signature" id="signature" value="ibyfOawJJFlBZVL8GjNKkSZGxjgavDyTat74Y4z0H3BDrUaQhmDBNEW6UpwJFu9e5yfzDW3rRkaQyftnyqjl02cSNy/I5uazFeSEFzPT5xdYcA2oVpfppWDPsKmweIQkbqDNl40woZfzV8BIto1szsBz8nOklCeZU1Xq9vfnhRBVmQRkifno8ZBEiT3ddKb0sAJOPW6x1jdxql/EDXM6LhFbIPNgh9Z5pR/KSlkNBQOZN0ySfaF2Pfo5Smit+G5wFBPFJxZdsTzZk5GudGW+m+EXPiJuvS4tTJFVcX3fkncpOqBYvYKaV8gGmZHh5Wpc7fZcRd9ACWzh9LEQbhp1mQ=="/>
+    <input type="hidden" name="orderId" id="orderId" value="20170721101428283412376"/>
+    <input type="hidden" name="txnTime" id="txnTime" value="20170815105302"/>
+    <input type="hidden" name="accessType" id="accessType" value="0"/>
+</form>
+<script type="text/javascript">
+    <!--
+    function OnLoadSubmit()
+    {
+        document.getElementById("gatewayform").submit();
+    }
+    //-->
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.moore.ctravel.register.mapper.RegisterMapper">
+
+
+    <sql id="Column_List">
+    CUSTOMER_ID,ACCOUNT,CUSTOMER_TYPE,PASSWORD,MOBILE,EMAIL,STATUS,CREATE_TIME
+    </sql>
+
+    <sql id="Column_List_Detail">
+        CUSTOMER_ID,NICK_NAME,GENDER,HEAD_IMG,IM_TOKEN,AREA,JOB,SCHOOL,LANGUAGE,IDCARD_IMG,IDCARD_CHECK_STATUS,ACCOUNT_NO
+    </sql>
+
+
+    <insert id="insertCustomerAccount" parameterType="ltd.moore.ctravel.customer.model.CustomerAccountVO">
+
+        INSERT INTO PUB_CUSTOMER_ACCOUNT (<include refid="Column_List"/>)
+        VALUES (
+              #{customerId},
+              #{account},
+              #{customerType},
+              #{password},
+              #{mobile},
+              #{email},
+              #{status},
+              #{createTime}
+        )
+    </insert>
+
+
+    <insert id="insertCustomerAccountDetail" parameterType="ltd.moore.ctravel.customer.model.CustomerDetailVO">
+        INSERT INTO PUB_CUSTOMER_DETAIL(<include refid="Column_List_Detail"/>)
+        VALUES (
+        #{customerId},
+        #{nickName},
+        #{gender},
+        #{headImg},
+        #{imToken},
+        #{area},
+        #{job},
+        #{school},
+        #{language},
+        #{idcardImg},
+        #{idcardCheckStatus},
+        #{accountNo}
+        )
+    </insert>
+    <update id="updateCustomerAccount" parameterType="ltd.moore.ctravel.customer.model.CustomerAccountVO">
+        update PUB_CUSTOMER_ACCOUNT
+        <set>
+            PASSWORD = #{password}
+        </set>
+        where MOBILE = #{mobile}
+    </update>
+</mapper>

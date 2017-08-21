@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.moore.ctravel.customer.mapper.CustomerDetailMapper">
+	
+<sql id="Column_List">
+CUSTOMER_ID
+,NICK_NAME
+,GENDER
+,HEAD_IMG
+,IM_TOKEN
+,AREA
+,JOB
+,SCHOOL
+,LANGUAGE
+,IDCARD_IMG
+,IDCARD_CHECK_STATUS
+,ACCOUNT_NO
+</sql>
+	<sql id="Where_Clause">
+		<where>
+<if test="condition.customerId != null" >AND CUSTOMER_ID = #{customerId}</if>
+<if test="condition.nickName != null" >AND NICK_NAME = #{nickName}</if>
+<if test="condition.gender != null" >AND GENDER = #{gender}</if>
+<if test="condition.headImg != null" >AND HEAD_IMG = #{headImg}</if>
+<if test="condition.imToken != null" >AND IM_TOKEN = #{imToken}</if>
+<if test="condition.area != null" >AND AREA = #{area}</if>
+<if test="condition.job != null" >AND JOB = #{job}</if>
+<if test="condition.school != null" >AND SCHOOL = #{school}</if>
+<if test="condition.language != null" >AND LANGUAGE = #{language}</if>
+<if test="condition.idcardImg != null" >AND IDCARD_IMG = #{idcardImg}</if>
+<if test="condition.idcardCheckStatus != null" >AND IDCARD_CHECK_STATUS = #{idcardCheckStatus}</if>
+<if test="condition.accountNo != null" >AND ACCOUNT_NO = #{accountNo}</if>
+    	</where>
+	</sql>
+	<select id="getById" resultType="ltd.moore.ctravel.customer.model.CustomerDetailVO" parameterType="String">
+		select <include refid="Column_List" />
+    	from PUB_CUSTOMER_DETAIL where CUSTOMER_ID = #{customerId}
+	</select>
+
+	<select id="count" resultType="int" parameterType="map">
+		select COUNT(1)
+    	from PUB_CUSTOMER_DETAIL
+    	<include refid="Where_Clause" />
+	</select>
+
+	<select id="list" resultType="ltd.moore.ctravel.customer.model.CustomerDetailVO" parameterType="map">
+		select <include refid="Column_List" />
+    	from PUB_CUSTOMER_DETAIL
+    	<include refid="Where_Clause" />
+	</select>
+	
+<insert id="insert" parameterType="ltd.moore.ctravel.customer.model.CustomerDetailVO">
+insert into PUB_CUSTOMER_DETAIL (<include refid="Column_List" />)
+values (
+#{customerId}
+,#{nickName}
+,#{gender}
+,#{headImg}
+,#{imToken}
+,#{area}
+,#{job}
+,#{school}
+,#{language}
+,#{idcardImg}
+,#{idcardCheckStatus}
+,#{accountNo}
+)
+</insert>
+	
+<update id="update" parameterType="ltd.moore.ctravel.customer.model.CustomerDetailVO">
+update PUB_CUSTOMER_DETAIL
+<set>
+<if test="customerId != null" >CUSTOMER_ID = #{customerId},</if>
+<if test="nickName != null" >NICK_NAME = #{nickName},</if>
+<if test="gender != null" >GENDER = #{gender},</if>
+<if test="headImg != null and headImg !=''">HEAD_IMG = #{headImg},</if>
+<if test="imToken != null" >IM_TOKEN = #{imToken},</if>
+<if test="area != null" >AREA = #{area},</if>
+<if test="job != null" >JOB = #{job},</if>
+<if test="school != null" >SCHOOL = #{school},</if>
+<if test="language != null" >LANGUAGE = #{language},</if>
+<if test="idcardImg != null and idcardImg !=''" >IDCARD_IMG = #{idcardImg},</if>
+<if test="idcardCheckStatus != null" >IDCARD_CHECK_STATUS = #{idcardCheckStatus},</if>
+<if test="accountNo != null" >ACCOUNT_NO = #{accountNo},</if>
+</set>
+where CUSTOMER_ID = #{customerId}
+</update>
+	
+	<delete id="delete" parameterType="java.lang.String" >
+		delete from PUB_CUSTOMER_DETAIL  where CUSTOMER_ID = #{customerId}
+	</delete>
+	
+	<delete id="deleteInBulk" parameterType="java.lang.String">
+		delete from PUB_CUSTOMER_DETAIL  where CUSTOMER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

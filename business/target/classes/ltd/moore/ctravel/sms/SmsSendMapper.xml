@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.moore.ctravel.sms.mapper.SmsSendMapper">
+
+
+    <sql id="Column_List">
+        USER_ID, STATUS, CREATE_TIME, UPDATE_TIME, SORT_NO, NICK_NAME, USER_NAME, TYPE, GENDER, PHONE, EMAIL, DESCRIPTION, DEPARTMENT_ID,USER_CODE
+    </sql>
+
+    <select id="queryAccountByPhoneNo" resultType="com.hdos.platform.base.user.model.AccountInfoVO" parameterType="java.lang.String">
+        SELECT
+        <include refid="Column_List"/>
+        FROM PUB_USER
+        WHERE PHONE = #{phoneNo}
+    </select>
+    <select id="queryAccountByMobile" resultType="ltd.moore.ctravel.customer.model.CustomerAccountVO" parameterType="java.lang.String">
+        SELECT
+        CUSTOMER_ID,ACCOUNT
+        FROM PUB_CUSTOMER_ACCOUNT
+        WHERE MOBILE = #{mobile}
+    </select>
+</mapper>

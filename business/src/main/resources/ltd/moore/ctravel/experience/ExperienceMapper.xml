@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.moore.ctravel.experience.mapper.ExperienceMapper">
+	
+<sql id="Column_List">
+	EXPERIENCE_ID
+	,CUSTOMER_ID
+	,EXPERIENCE_DETAIL_ID
+	,CURRENCY_TYPE
+	,PRICE
+	,ENABLED
+	,CREATE_TIME
+</sql>
+	<sql id="Where_Clause">
+		<where>
+<if test="condition.experienceId != null" >AND EXPERIENCE_ID = #{experienceId}</if>
+<if test="condition.experienceDetailId != null" >AND EXPERIENCE_DETAIL_ID = #{experienceDetailId}</if>
+<if test="condition.currencyType != null" >AND CURRENCY_TYPE = #{currencyType}</if>
+<if test="condition.price != null" >AND PRICE = #{price}</if>
+<if test="condition.enabled != null" >AND ENABLED = #{enabled}</if>
+    	</where>
+	</sql>
+	<select id="getById" resultType="ltd.moore.ctravel.experience.model.ExperienceVO" parameterType="String">
+		select <include refid="Column_List" />
+    	from PUB_EXPERIENCE where EXPERIENCE_ID = #{experienceId}
+	</select>
+	<select id="getExperienceByCustomerId" resultType="java.lang.String" parameterType="String">
+		select EXPERIENCE_ID
+		from PUB_EXPERIENCE where CUSTOMER_ID = #{customerId}
+	</select>
+	<select id="count" resultType="int" parameterType="map">
+		select COUNT(1)
+    	from PUB_EXPERIENCE
+    	<include refid="Where_Clause" />
+	</select>
+
+	<select id="list" resultType="ltd.moore.ctravel.experience.model.ExperienceVO" parameterType="map">
+		select <include refid="Column_List" />
+    	from PUB_EXPERIENCE
+    	<include refid="Where_Clause" />
+    	ORDER BY UPDATE_TIME DESC
+	</select>
+	
+<insert id="insert" parameterType="ltd.moore.ctravel.experience.model.ExperienceVO">
+insert into PUB_EXPERIENCE (<include refid="Column_List" />)
+values (
+#{experienceId}
+,#{customerId}
+,#{experienceDetailId}
+,#{currencyType}
+,#{price}
+,#{enabled}
+,sysdate()
+)
+</insert>
+	
+<update id="update" parameterType="ltd.moore.ctravel.experience.model.ExperienceVO">
+update PUB_EXPERIENCE
+<set>
+<if test="experienceId != null" >EXPERIENCE_ID = #{experienceId},</if>
+<if test="experienceDetailId != null" >EXPERIENCE_DETAIL_ID = #{experienceDetailId},</if>
+<if test="currencyType != null" >CURRENCY_TYPE = #{currencyType},</if>
+<if test="price != null" >PRICE = #{price},</if>
+<if test="enabled != null and enabled!=''" >ENABLED = #{enabled},</if>
+UPDATE_TIME = sysdate()
+</set>
+where EXPERIENCE_ID = #{experienceId}
+</update>
+	
+	<delete id="delete" parameterType="java.lang.String" >
+		delete from PUB_EXPERIENCE  where EXPERIENCE_ID = #{experienceId}
+	</delete>
+	
+	<delete id="deleteInBulk" parameterType="java.lang.String">
+		delete from PUB_EXPERIENCE  where EXPERIENCE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

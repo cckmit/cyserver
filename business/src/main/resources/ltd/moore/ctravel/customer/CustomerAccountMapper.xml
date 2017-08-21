@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.moore.ctravel.customer.mapper.CustomerAccountMapper">
+	
+<sql id="Column_List">
+CUSTOMER_ID
+,ACCOUNT
+,CUSTOMER_TYPE
+,PASSWORD
+,MOBILE
+,EMAIL
+,QQ
+,WECHAT
+,STATUS
+,CREATE_TIME
+</sql>
+	<sql id="Where_Clause">
+		<where>
+			<if test="condition.customerId != null" >AND CUSTOMER_ID = #{customerId}</if>
+			<if test="condition.account != null and condition.account!='' ">AND ACCOUNT like CONCAT('%','${condition.account}','%' )</if>
+			<if test="condition.customerType != null and condition.customerType!=''" >AND CUSTOMER_TYPE = #{condition.customerType}</if>
+			<if test="condition.password != null and condition.password!=''" >AND PASSWORD = #{password}</if>
+			<if test="condition.mobile != null and condition.mobile!='' " >AND MOBILE like CONCAT('%','${condition.mobile}','%' )</if>
+			<if test="condition.email != null and condition.email!=''" >AND EMAIL = #{email}</if>
+			<if test="condition.QQ != null and condition.QQ!=''" >AND QQ = #{QQ}</if>
+			<if test="condition.wechat != null and condition.wechat!=''" >AND WECHAT = #{wechat}</if>
+			<if test="condition.idcardCheckStatus != null and condition.idcardCheckStatus!=''" >
+				AND PUB_CUSTOMER_ACCOUNT.CUSTOMER_ID IN (select PUB_CUSTOMER_DETAIL.CUSTOMER_ID from PUB_CUSTOMER_DETAIL where  IDCARD_CHECK_STATUS = 1)</if>
+			<if test="condition.status != null and condition.status!='' " >AND STATUS = #{status}</if>
+    	</where>
+	</sql>
+	<select id="getById" resultType="ltd.moore.ctravel.customer.model.CustomerAccountVO" parameterType="String">
+		select <include refid="Column_List" />
+    	from PUB_CUSTOMER_ACCOUNT where CUSTOMER_ID = #{customerId}
+	</select>
+	<select id="getCustomerAccountVOByAccount" resultType="ltd.moore.ctravel.customer.model.CustomerAccountVO" parameterType="String">
+		select <include refid="Column_List" />
+		from PUB_CUSTOMER_ACCOUNT where Account = #{account}
+	</select>
+
+	<select id="count" resultType="int" parameterType="map">
+		select COUNT(1)
+    	from PUB_CUSTOMER_ACCOUNT
+    	<include refid="Where_Clause" />
+	</select>
+
+	<select id="list" resultType="ltd.moore.ctravel.customer.model.CustomerAccountVO" parameterType="map">
+		select <include refid="Column_List" />
+    	from PUB_CUSTOMER_ACCOUNT
+    	<include refid="Where_Clause" />
+		ORDER BY CREATE_TIME DESC
+	</select>
+	
+<insert id="insert" parameterType="ltd.moore.ctravel.customer.model.CustomerAccountVO">
+insert into PUB_CUSTOMER_ACCOUNT (<include refid="Column_List" />)
+values (
+#{customerId}
+,#{account}
+,#{customerType}
+,#{password}
+,#{mobile}
+,#{email}
+,#{QQ}
+,#{wechat}
+,#{status}
+,sysdate()
+)
+</insert>
+	
+<update id="update" parameterType="ltd.moore.ctravel.customer.model.CustomerAccountVO">
+update PUB_CUSTOMER_ACCOUNT
+<set>
+	<if test="customerId != null" >CUSTOMER_ID = #{customerId},</if>
+	<if test="account != null" >ACCOUNT = #{account},</if>
+	<if test="customerType != null" >CUSTOMER_TYPE = #{customerType},</if>
+	<if test="password != null and password!=''" >PASSWORD = #{password},</if>
+	<if test="mobile != null" >MOBILE = #{mobile},</if>
+	<if test="email != null" >EMAIL = #{email},</if>
+	<if test="QQ != null and QQ!=''" >AND QQ = #{QQ}</if>
+	<if test="wechat != null and wechat!=''" >AND WECHAT = #{wechat}</if>
+	<if test="status != null" >STATUS = #{status},</if>
+</set>
+where CUSTOMER_ID = #{customerId}
+</update>
+	
+	<delete id="delete" parameterType="java.lang.String" >
+		delete from PUB_CUSTOMER_ACCOUNT  where CUSTOME_ID = #{customerId}
+	</delete>
+	
+	<delete id="deleteInBulk" parameterType="java.lang.String">
+		delete from PUB_CUSTOMER_ACCOUNT  where CUSTOMER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+
+	<select id="queryAccountByAccountAndPwd" resultType="ltd.moore.ctravel.customer.model.CustomerAccountVO" parameterType="map">
+		select <include refid="Column_List" />
+		from PUB_CUSTOMER_ACCOUNT
+		where ACCOUNT = #{0} AND PASSWORD = #{1}
+	</select>
+
+</mapper>

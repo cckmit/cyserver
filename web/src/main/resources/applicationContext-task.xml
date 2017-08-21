@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans        
+		http://www.springframework.org/schema/beans/spring-beans.xsd        
+		http://www.springframework.org/schema/task        
+		http://www.springframework.org/schema/task/spring-task.xsd"
+	default-lazy-init="false" >
+
+	<task:annotation-driven scheduler="customScheduler" mode="proxy" />
+	
+	<task:scheduler id="customScheduler" pool-size="10"  />
+	
+	<task:executor id="customExecutor" pool-size="5-25" queue-capacity="100" keep-alive="120" rejection-policy="CALLER_RUNS" />
+	
+	<!--  this is only a backup for annotation version.
+	
+	<task:scheduled-tasks>
+		<task:scheduled ref="xxxTask" method="process" cron="0 0 3 * * ?" />
+	</task:scheduled-tasks>
+	-->
+	
+</beans>

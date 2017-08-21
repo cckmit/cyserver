@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:eventbus="http://webcore.chyblog.com/eventbus"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://webcore.chyblog.com/eventbus http://webcore.chyblog.com/eventbus/eventbus-spring-1.0.xsd">
+
+    <eventbus:handler-scan base-package="com.hdos" eventbus-ref="eventBus" asynceventbus-ref="asyncEventBus" >
+        <eventbus:include type="assignable" expression="com.hdos.platform.common.eventbus.EventHandler"/>
+        <!-- not supported yet
+        <eventbus:include type="annotation" expression="..."/>
+        <eventbus:include type="regex" expression="..."/>
+        <eventbus:include type="custom" expression="..."/>
+        -->
+    </eventbus:handler-scan>
+    
+</beans>
